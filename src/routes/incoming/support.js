@@ -1,10 +1,10 @@
 import { defineRoute } from "./../../motia.js";
 
 export default defineRoute({
-  path: "/api/tickets",
+  path: "/api/support",
   method: "POST",
   transform: (req) => ({
-    type: "ticket.submitted",
+    type: "support.submitted",
     data: {
       text: req.body.text,
       userId: req.body.userId,

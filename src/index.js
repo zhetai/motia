@@ -15,7 +15,7 @@ async function main() {
 
   // Test event
   await core.emit({
-    type: "ticket.submitted",
+    type: "support.submitted",
     data: {
       text: "My account is locked - urgent!",
       userId: "123",

@@ -1,4 +1,4 @@
-export const subscribe = ["ticket.submitted"];
+export const subscribe = ["support.submitted"];
 
 export async function ticketReceived(input, emit) {
   const priority = input.text.toLowerCase().includes("urgent")
@@ -6,7 +6,7 @@ export async function ticketReceived(input, emit) {
     : "normal";
 
   emit({
-    type: "ticket.processed",
+    type: "support.processed",
     data: {
       text: input.text,
       userId: input.userId,
