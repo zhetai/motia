@@ -432,9 +432,15 @@ class MotiaServer {
     const allRouteFiles = await this.findRouteFiles(routePaths);
 
     for (const routeFile of allRouteFiles) {
-      const routeModule = require(routeFile);
-      if (routeModule.default) {
-        this.registerRoute(routeModule.default);
+      // Dynamically import the route file as ESM
+      const routeModule = await import(routeFile + ".js");
+      // If routeModule.default is an array, use it as-is; if not, convert to array
+      const routeConfigs = Array.isArray(routeModule.default)
+        ? routeModule.default
+        : [routeModule.default];
+
+      for (const config of routeConfigs) {
+        this.registerRoute(config);
       }
     }
 
@@ -542,14 +548,54 @@ class MotiaScheduler {
     this.activeJobs = new Map();
   }
 
+  async findScheduleFiles(paths) {
+    const fs = (await import("fs")).default.promises;
+    const path_module = (await import("path")).default;
+    const schedules = [];
+
+    const searchSchedules = async (dir) => {
+      let entries;
+      try {
+        entries = await fs.readdir(dir, { withFileTypes: true });
+      } catch {
+        // Directory might not exist, skip
+        return;
+      }
+
+      for (const entry of entries) {
+        const fullPath = path_module.join(dir, entry.name);
+        if (entry.isDirectory()) {
+          await searchSchedules(fullPath);
+        } else if (
+          entry.name.endsWith(".js") &&
+          !entry.name.endsWith(".test.js")
+        ) {
+          schedules.push(fullPath);
+        }
+      }
+    };
+
+    for (const basePath of paths) {
+      // For each workflow path, look for a 'scheduler' directory
+      const schedulerPath = path_module.join(basePath, "scheduler");
+      await searchSchedules(schedulerPath);
+    }
+
+    return schedules;
+  }
+
   async initialize(core, schedulePaths) {
     this.core = core;
 
-    for (const path of schedulePaths) {
-      const schedule = require(path);
-      if (schedule.default) {
-        const id = path.replace(/\.[jt]s$/, "");
-        this.schedules.set(id, schedule.default);
+    // Find all schedule files from provided directories
+    const scheduleFiles = await this.findScheduleFiles(schedulePaths);
+
+    // Import each schedule file
+    for (const file of scheduleFiles) {
+      const scheduleModule = await import(file);
+      if (scheduleModule.default) {
+        const id = file.replace(/\.[jt]s$/, "");
+        this.schedules.set(id, scheduleModule.default);
       }
     }
   }

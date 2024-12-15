@@ -1,4 +1,4 @@
-import { MotiaCore, MotiaServer, MotiaScheduler } from "./motia";
+import { MotiaCore, MotiaServer, MotiaScheduler } from "./motia.js";
 
 async function main() {
   const core = new MotiaCore();
@@ -13,7 +13,9 @@ async function main() {
 
   await server.initialize(core, ["./routes/google-drive"]);
 
-  await scheduler.initialize(core, ["./src/workflows/policy-approval"]);
+  await scheduler.initialize(core, [
+    "./src/workflows/policy-approval/doc-scheduler.js",
+  ]);
   scheduler.start();
 
   console.log("Workflow initialized. Listening for events...");
