@@ -1,4 +1,3 @@
-import { ComponentFunction, Emit } from "../../../../motia";
 import { google } from "googleapis";
 
 export const subscribe = ["doc.fetch_requested"];

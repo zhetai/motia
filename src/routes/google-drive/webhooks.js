@@ -1,4 +1,4 @@
-import { defineRoute } from "../../motia";
+import { defineRoute } from "../../motia.js";
 
 export default [
   defineRoute({
