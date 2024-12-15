@@ -1,4 +1,3 @@
-import { ComponentFunction, Emit } from "../../../../motia";
 import { Configuration, OpenAIApi } from "openai";
 
 export const subscribe = ["doc.ready_for_classification"];
@@ -8,10 +7,7 @@ const configuration = new Configuration({
 });
 const openai = new OpenAIApi(configuration);
 
-async function classifyDoc(
-  originalDoc: string,
-  rules: string
-): Promise<{ autoApproved: boolean, summary: string }> {
+async function classifyDoc(originalDoc, rules) {
   const prompt = `
 Given these policy rules:
 ${rules}
@@ -53,7 +49,7 @@ SUMMARY: <brief explanation>
   return { autoApproved, summary };
 }
 
-const llmClassifier: ComponentFunction = async (input, emit: Emit) => {
+const llmClassifier = async (input, emit) => {
   const {
     originalDocContent,
     docContent: rulesContent,

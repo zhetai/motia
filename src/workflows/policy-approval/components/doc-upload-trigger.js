@@ -2,7 +2,7 @@ import { ComponentFunction, Emit } from "../../../../motia";
 
 export const subscribe = ["doc.uploaded"];
 
-const docUploadTrigger: ComponentFunction = async (input, emit: Emit) => {
+const docUploadTrigger = async (input, emit) => {
   const { fileId } = input;
   emit({
     type: "doc.fetch_requested",

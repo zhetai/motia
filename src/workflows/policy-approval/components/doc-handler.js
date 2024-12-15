@@ -3,7 +3,7 @@ import { google } from "googleapis";
 
 export const subscribe = ["doc.needs_approval", "doc.updated", "doc.escalate"];
 
-async function fetchDocContentFromDrive(fileId: string): Promise<string> {
+async function fetchDocContentFromDrive(fileId) {
   const credentials = JSON.parse(process.env.GOOGLE_CREDENTIALS || "{}");
   const auth = new google.auth.GoogleAuth({
     credentials,
@@ -23,11 +23,7 @@ async function fetchDocContentFromDrive(fileId: string): Promise<string> {
   return res.data;
 }
 
-const docHandler: ComponentFunction = async (
-  input,
-  emit: Emit,
-  eventType: string
-) => {
+const docHandler = async (input, emit, eventType) => {
   const { fileId } = input;
 
   if (eventType === "doc.updated") {
