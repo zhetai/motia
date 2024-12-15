@@ -1,24 +1,29 @@
-// src/index.ts
-import { MotiaCore, MotiaServer } from "./motia.js";
+import { MotiaCore, MotiaServer, MotiaScheduler } from "./motia";
 
 async function main() {
   const core = new MotiaCore();
   const server = new MotiaServer();
+  const scheduler = new MotiaScheduler();
 
-  // Initialize the framework
+  console.log("Initializing Motia...");
+
   await core.initialize({
     workflowPaths: ["./src/workflows"],
   });
 
-  // Initialize the server
-  await server.initialize(core, ["./routes/incoming"]);
+  await server.initialize(core, ["./routes/google-drive"]);
+
+  await scheduler.initialize(core, ["./src/workflows/policy-approval"]);
+  scheduler.start();
+
+  console.log("Workflow initialized. Listening for events...");
 
   // Test event
   await core.emit({
-    type: "support.submitted",
+    type: "doc.uploaded",
     data: {
-      text: "My account is locked - urgent!",
-      userId: "123",
+      fileId: "YOUR_TEST_FILE_ID",
+      fileName: "Contract.docx",
     },
   });
 }
