@@ -5,8 +5,6 @@ async function main() {
   const core = new MotiaCore();
   const server = new MotiaServer();
 
-  console.log("Initializing Motia...");
-
   // Initialize the framework
   await core.initialize({
     workflowPaths: ["./src/workflows"],
@@ -14,8 +12,6 @@ async function main() {
 
   // Initialize the server
   await server.initialize(core, ["./routes/incoming"]);
-
-  console.log("Sending test ticket...");
 
   // Test event
   await core.emit({

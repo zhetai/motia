@@ -1,9 +1,5 @@
-// src/workflows/support/components/ticket-received.ts
+export const subscribe = ["ticket.*"];
 
-export const subscribe = ["*"];
-
-export async function ticketReceived(input, emit) {
-  console.log("Running:", input);
+export default async function supportEventLogger(input, emit, eventType) {
+  console.log(eventType, input);
 }
-
-export default ticketReceived;

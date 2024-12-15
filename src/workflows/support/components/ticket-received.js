@@ -1,7 +1,6 @@
 export const subscribe = ["ticket.submitted"];
 
 export async function ticketReceived(input, emit) {
-  console.log("Received ticket:", input);
   const priority = input.text.toLowerCase().includes("urgent")
     ? "high"
     : "normal";

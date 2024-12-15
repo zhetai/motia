@@ -44,11 +44,9 @@ class MotiaCore {
 
   async registerComponent(path) {
     try {
-      console.log("Registering component:", path);
       const fixedPath = path
         .replace(/^(\.?\/)?src\//, "./")
         .replace(/\.js$/, ""); // remove .js extension
-      console.log("Fixed path:", fixedPath);
 
       const component = require(fixedPath);
       if (component.subscribe) {
