@@ -1,6 +1,6 @@
-import { defineRoute } from "../../motia.js";
+import { defineTraffic } from "../../motia.js";
 
-export default defineRoute({
+export default defineTraffic({
   path: "/api/docs/uploaded",
   method: "POST",
   transform: (req) => ({

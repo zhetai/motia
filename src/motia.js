@@ -426,7 +426,7 @@ function calculateAccuracy(results) {
  * external triggers (like webhooks or user requests) to generate internal Motia events.
  *
  * Key Responsibilities:
- * - Expose HTTP endpoints defined in routes
+ * - Expose HTTP endpoints defined in traffic
  * - Transform incoming HTTP requests into Motia events
  * - Emit these events into the MotiaCore for processing
  *
@@ -435,22 +435,22 @@ function calculateAccuracy(results) {
  */
 class MotiaServer {
   constructor() {
-    this.routes = new Map();
+    this.traffic = new Map();
     this.express = require("express")();
     this.express.use(require("body-parser").json());
   }
 
-  async findRouteFiles(paths) {
+  async findTrafficFiles(paths) {
     const fs = require("fs").promises;
     const path_module = require("path");
     const routeFiles = [];
 
-    const searchRoutes = async (dir) => {
+    const searchTraffic = async (dir) => {
       const entries = await fs.readdir(dir, { withFileTypes: true });
       for (const entry of entries) {
         const fullPath = path_module.join(dir, entry.name);
         if (entry.isDirectory()) {
-          await searchRoutes(fullPath);
+          await searchTraffic(fullPath);
         } else if (
           entry.name.endsWith(".js") &&
           !entry.name.endsWith(".test.js")
@@ -465,7 +465,7 @@ class MotiaServer {
 
     for (const basePath of paths) {
       const absolutePath = path_module.resolve(__dirname, basePath);
-      await searchRoutes(absolutePath);
+      await searchTraffic(absolutePath);
     }
 
     return routeFiles;
@@ -474,9 +474,9 @@ class MotiaServer {
   async initialize(core, routePaths) {
     this.core = core;
 
-    const allRouteFiles = await this.findRouteFiles(routePaths);
+    const allTrafficFiles = await this.findTrafficFiles(routePaths);
 
-    for (const routeFile of allRouteFiles) {
+    for (const routeFile of allTrafficFiles) {
       // Dynamically import the route file as ESM
       const routeModule = await import(routeFile + ".js");
       // If routeModule.default is an array, use it as-is; if not, convert to array
@@ -485,11 +485,11 @@ class MotiaServer {
         : [routeModule.default];
 
       for (const config of routeConfigs) {
-        this.registerRoute(config);
+        this.registerTraffic(config);
       }
     }
 
-    this.routes.forEach((config, path) => {
+    this.traffic.forEach((config, path) => {
       this.express[config.method.toLowerCase()](path, async (req, res) => {
         try {
           await this.handleRequest(req, res);
@@ -503,9 +503,9 @@ class MotiaServer {
   }
 
   async handleRequest(req, res) {
-    const route = this.routes.get(req.path);
+    const route = this.traffic.get(req.path);
     if (!route) {
-      res.status(404).json({ error: "Route not found" });
+      res.status(404).json({ error: "Traffic not found" });
       return;
     }
 
@@ -536,14 +536,14 @@ class MotiaServer {
     }
   }
 
-  registerRoute(config) {
+  registerTraffic(config) {
     if (!config.path || !config.method || !config.transform) {
       throw new Error("Invalid route configuration");
     }
 
     const path = config.path.startsWith("/") ? config.path : `/${config.path}`;
 
-    this.routes.set(path, config);
+    this.traffic.set(path, config);
   }
 }
 
@@ -735,7 +735,7 @@ class MotiaScheduler {
   }
 }
 
-function defineRoute(config) {
+function defineTraffic(config) {
   return config;
 }
 
@@ -747,5 +747,5 @@ module.exports = {
   MessageBus: InMemoryMessageBus,
   InMemoryMessageBus,
   VersionControl,
-  defineRoute,
+  defineTraffic,
 };

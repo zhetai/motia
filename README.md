@@ -36,7 +36,7 @@ This directory implements and tests the functionality of `motia.js` through real
 - **`workflows`**: Contains example workflows demonstrating how to use the Motia.js framework.
   - **`policy-approval`**: A workflow for automating document approval based on policy rules. This includes components, scheduling, and logging mechanisms.
   - **`example-docs`**: Sample documents for testing workflows.
-- **`routes`**: HTTP route definitions used by `MotiaServer`.
+- **`traffic`**: HTTP traffic definitions used by `MotiaServer`.
 - **`components`**: Modular pieces of workflows, each reacting to specific events.
 - **`test-*` Scripts**: Scripts to validate external integrations, such as Google Drive and OpenAI connections.
 
@@ -68,7 +68,7 @@ The `policy-approval` workflow demonstrates the capabilities of Motia.js by auto
 ## Key Concepts in Motia.js
 
 - **Event-Driven Architecture**: Events trigger component actions, creating loosely coupled workflows.
-- **Dynamic Loading**: Workflows, routes, and schedules are loaded dynamically at runtime.
+- **Dynamic Loading**: Workflows, traffic, and schedules are loaded dynamically at runtime.
 - **Testing Utilities**: `MotiaTest` provides mocks and tools for rigorous component testing.
 - **External Integrations**: Works seamlessly with APIs like Google Drive and OpenAI.
 - **Versioning**: Ensures workflows are incrementally improved and versioned.
