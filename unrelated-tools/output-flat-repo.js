@@ -28,7 +28,7 @@ function loadGitignore(repoPath) {
     ".*",
     "package-lock.json",
     "flat-motia.txt",
-    "output-flat-repo.js",
+    "unrelated-tools/",
   ]);
 }
 

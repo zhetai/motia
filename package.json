@@ -4,7 +4,7 @@
   "main": "index.js",
   "scripts": {
     "start": "node src/index.js",
-    "flat": "node output-flat-repo.js"
+    "flat": "node unrelated-tools/output-flat-repo.js"
   },
   "keywords": [],
   "author": "",

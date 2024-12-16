@@ -45,7 +45,6 @@ This directory implements and tests the functionality of `motia.js` through real
 Defines the npm scripts and dependencies required for the repository. Key scripts include:
 
 - **`npm start`**: Initializes `MotiaCore`, `MotiaServer`, and `MotiaScheduler`.
-- **`npm run flat`**: Outputs all files and contents in a flat text format for debugging and analysis.
 
 ### 4. **Utility Scripts**
 
