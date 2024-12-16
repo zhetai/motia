@@ -7,8 +7,8 @@
   },
   "keywords": [],
   "author": "",
-  "license": "ISC",
-  "description": "",
+  "license": "",
+  "description": "A repository dedicated to iteratively developing and refining 'motia.js.' The files in 'src' serve as a testing ground to experiment with and validate the evolving functionality of 'motia.js' as its capabilities are expanded and improved.",
   "dependencies": {
     "body-parser": "^1.20.3",
     "dotenv": "^16.4.7",

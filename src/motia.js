@@ -1,6 +1,17 @@
 /**
  * In-Memory Message Bus Implementation
- * Default message bus used by motia-core for development and simple deployments
+ * ------------------------------------
+ * The InMemoryMessageBus provides a simple, local-only event bus for the Motia framework.
+ * It manages event subscribers and publishes events to them. This bus operates fully in-memory,
+ * making it ideal for development, testing, and lightweight deployments.
+ *
+ * Key Responsibilities:
+ * - Store a list of subscribers (event handlers)
+ * - When an event is published, deliver it to all subscribers that match the event type
+ * - Handle errors in subscriber callbacks gracefully
+ *
+ * This class does not persist events or maintain any external state,
+ * and is not suitable for production scenarios that require durability or scaling.
  */
 class InMemoryMessageBus {
   constructor() {
@@ -23,8 +34,18 @@ class InMemoryMessageBus {
 }
 
 /**
- * Main Motia Core Class
- * Central orchestrator for the entire framework
+ * Core Orchestrator: MotiaCore
+ * ----------------------------
+ * MotiaCore serves as the central orchestrator of the Motia framework. It manages the lifecycle
+ * of workflows, components, and the event bus, acting as the heart of the entire system.
+ *
+ * Key Responsibilities:
+ * - Initialize and configure the message bus (either in-memory or a provided one)
+ * - Load and register workflows and their associated components
+ * - Emit events into the system and deliver them to subscribed components
+ *
+ * MotiaCore provides the foundational logic that ties together components, events,
+ * and workflows, enabling flexible, event-driven behavior throughout the application.
  */
 class MotiaCore {
   constructor() {
@@ -196,7 +217,17 @@ class MotiaCore {
 }
 
 /**
- * Testing Utilities
+ * Testing Utilities: MotiaTest
+ * ----------------------------
+ * MotiaTest offers testing utilities to validate components, thresholds, and LLM logic within the Motia framework.
+ * It provides mock emit functions, component test helpers, and performance test runners.
+ *
+ * Key Responsibilities:
+ * - Create mock emit functions to simulate event emission in tests
+ * - Provide helper functions for component-level testing and threshold verification
+ * - Offer utilities for load testing and accuracy measurement of LLM outputs
+ *
+ * This class simplifies and standardizes how developers test their Motia-based workflows, ensuring reliability and correctness.
  */
 class MotiaTest {
   /**
@@ -388,6 +419,20 @@ function calculateAccuracy(results) {
   return results.filter((r) => r.passed).length / results.length;
 }
 
+/**
+ * Server Functionality: MotiaServer
+ * ---------------------------------
+ * MotiaServer integrates an HTTP server (e.g., Express) with the Motia framework, enabling
+ * external triggers (like webhooks or user requests) to generate internal Motia events.
+ *
+ * Key Responsibilities:
+ * - Expose HTTP endpoints defined in routes
+ * - Transform incoming HTTP requests into Motia events
+ * - Emit these events into the MotiaCore for processing
+ *
+ * By acting as a bridge between external clients and the internal event-driven system,
+ * MotiaServer allows real-world interactions to drive the workflow logic orchestrated by MotiaCore.
+ */
 class MotiaServer {
   constructor() {
     this.routes = new Map();
@@ -502,6 +547,20 @@ class MotiaServer {
   }
 }
 
+/**
+ * Version Management: VersionControl
+ * ----------------------------------
+ * VersionControl handles the updating and tracking of version information for workflows and components.
+ * It ensures that changes in logic or configuration are versioned and that version files are updated
+ * as new tests or changes are applied.
+ *
+ * Key Responsibilities:
+ * - Load and parse version information from JSON files
+ * - Increment patch versions after successful tests
+ * - Write updated version info back to storage
+ *
+ * VersionControl provides a simple mechanism to track the evolution of workflows and their metrics over time.
+ */
 class VersionControl {
   static async bumpVersion(path, metrics) {
     const fs = require("fs").promises;
@@ -542,6 +601,20 @@ class VersionControl {
   }
 }
 
+/**
+ * Time-Based Scheduling: MotiaScheduler
+ * -------------------------------------
+ * MotiaScheduler introduces time-based triggers into the Motia framework. It periodically emits
+ * events based on defined schedules, enabling recurring or delayed actions.
+ *
+ * Key Responsibilities:
+ * - Parse and manage time-based configurations (e.g., "1h", "30m")
+ * - Set intervals or timers and emit corresponding events at defined intervals
+ * - Integrate with workflows that depend on periodic checks or escalations
+ *
+ * This class allows workflows to incorporate scheduled behavior, such as escalating documents
+ * if not approved within a certain time.
+ */
 class MotiaScheduler {
   constructor() {
     this.schedules = new Map();
