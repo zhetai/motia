@@ -497,7 +497,6 @@ class MotiaServer {
 
     // **NEW CODE**: Serve the built React UI and /api/workflows endpoint
     // Serve static files from dist (after you've run npm run build)
-    console.log("Serving from:", path.join(__dirname, "../dist"));
     this.express.use(express.static(path.join(__dirname, "../dist")));
 
     // Return workflow descriptions
