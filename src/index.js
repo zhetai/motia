@@ -12,7 +12,7 @@ async function main() {
     workflowPaths: ["./src/workflows"],
   });
 
-  await server.initialize(core, ["./traffic/google-drive"]);
+  await server.initialize(core, ["./traffic/inbound"]);
 
   await scheduler.initialize(core, ["./src/workflows/policy-approval"]);
   scheduler.start();
