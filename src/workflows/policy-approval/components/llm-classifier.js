@@ -1,19 +1,20 @@
-import "dotenv/config";
-import OpenAI from "openai";
-
-const client = new OpenAI({
-  apiKey: process.env.OPENAI_API_KEY,
-});
+import { runChatCompletion } from "../../../traffic/outbound/open-api.js";
 
 export const subscribe = ["doc.ready_for_classification"];
 
-async function classifyDoc(originalDoc, rules) {
+export default async function llmClassifier(input, emit) {
+  const {
+    originalDocContent,
+    docContent: rulesContent,
+    originalFileId,
+  } = input;
+
   const prompt = `
 Given these policy rules:
-${rules}
+${rulesContent}
 
 And this new policy document:
-${originalDoc}
+${originalDocContent}
 
 1) Determine if the new document fully complies with the rules.
    If fully compliant, answer with:
@@ -28,14 +29,7 @@ ${originalDoc}
    RECOMMENDATIONS: <list suggestions on how to modify the document to comply with the rules>
 `;
 
-  // Using chat-based completion
-  const response = await client.chat.completions.create({
-    model: "gpt-3.5-turbo", // Use 'gpt-4' if you have access
-    messages: [{ role: "user", content: prompt }],
-    max_tokens: 600,
-    temperature: 0,
-  });
-
+  const response = await runChatCompletion([{ role: "user", content: prompt }]);
   const text = response.choices[0].message.content.trim();
 
   const statusMatch = text.match(/STATUS:\s*(AUTO_APPROVE|NEEDS_APPROVAL)/i);
@@ -56,21 +50,6 @@ ${originalDoc}
     recommendations = recommendationsMatch[1].trim();
   }
 
-  return { autoApproved, summary, recommendations };
-}
-
-const llmClassifier = async (input, emit) => {
-  const {
-    originalDocContent,
-    docContent: rulesContent,
-    originalFileId,
-  } = input;
-
-  const { autoApproved, summary, recommendations } = await classifyDoc(
-    originalDocContent,
-    rulesContent
-  );
-
   if (autoApproved) {
     emit({
       type: "doc.auto_approved",
@@ -82,6 +61,4 @@ const llmClassifier = async (input, emit) => {
       data: { fileId: originalFileId, summary, recommendations },
     });
   }
-};
-
-export default llmClassifier;
+}

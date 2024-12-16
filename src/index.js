@@ -8,13 +8,9 @@ async function main() {
 
   console.log("Initializing Motia...");
 
-  await core.initialize({
-    workflowPaths: ["./src/workflows"],
-  });
-
-  await server.initialize(core, ["./traffic/inbound"]);
-
-  await scheduler.initialize(core, ["./src/workflows/policy-approval"]);
+  await core.initialize();
+  await server.initialize(core);
+  await scheduler.initialize(core);
   scheduler.start();
 
   console.log("Workflow initialized. Listening for events...");

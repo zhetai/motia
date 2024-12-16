@@ -85,38 +85,37 @@ class MotiaCore {
   /**
    * Initialize the Motia runtime
    */
-  async initialize(options) {
-    // Set up message bus - use provided one or create in-memory default
+  async initialize(options = {}) {
+    const workflowPaths = options.workflowPaths || ["./src/workflows"];
     this.messageBus = options.messageBus || new InMemoryMessageBus();
 
-    // Initialize storage
     this.workflows = new Map();
     this.components = new Map();
 
-    // Load all workflows from the provided paths
-    for (const path of options.workflowPaths) {
+    // Load all workflows
+    for (const path of workflowPaths) {
       const workflowFiles = await this.findWorkflowFiles(path);
       for (const file of workflowFiles) {
         this.registerWorkflow(file);
       }
     }
 
-    // Load all components from workflow directories
-    const componentFiles = await this.findComponentFiles(options.workflowPaths);
+    // Load all components from these workflows
+    const componentFiles = await this.findComponentFiles(workflowPaths);
     for (const file of componentFiles) {
       this.registerComponent(file);
     }
 
-    // Subscribe components to message bus
+    // Subscribe components to message bus as before
     this.components.forEach((component, id) => {
       const module = require(id);
       if (module.subscribe) {
         for (const eventPattern of module.subscribe) {
-          this.messageBus.subscribe(async (event, options) => {
+          this.messageBus.subscribe(async (event, opts) => {
             if (this.eventMatchesPattern(event.type, eventPattern)) {
               await component(
                 event.data,
-                (e) => this.emit(e, options),
+                (e) => this.emit(e, opts),
                 event.type
               );
             }
@@ -443,7 +442,7 @@ class MotiaServer {
   async findTrafficFiles(paths) {
     const fs = require("fs").promises;
     const path_module = require("path");
-    const routeFiles = [];
+    const trafficFiles = [];
 
     const searchTraffic = async (dir) => {
       const entries = await fs.readdir(dir, { withFileTypes: true });
@@ -458,7 +457,7 @@ class MotiaServer {
           const relativePath =
             "./" +
             path_module.relative(__dirname, fullPath).replace(/\.js$/, "");
-          routeFiles.push(relativePath);
+          trafficFiles.push(relativePath);
         }
       }
     };
@@ -468,23 +467,20 @@ class MotiaServer {
       await searchTraffic(absolutePath);
     }
 
-    return routeFiles;
+    return trafficFiles;
   }
 
-  async initialize(core, routePaths) {
+  async initialize(core, trafficPaths = ["./traffic/inbound"]) {
     this.core = core;
+    const allTrafficFiles = await this.findTrafficFiles(trafficPaths);
 
-    const allTrafficFiles = await this.findTrafficFiles(routePaths);
+    for (const trafficFile of allTrafficFiles) {
+      const trafficModule = await import(trafficFile + ".js");
+      const trafficConfigs = Array.isArray(trafficModule.default)
+        ? trafficModule.default
+        : [trafficModule.default];
 
-    for (const routeFile of allTrafficFiles) {
-      // Dynamically import the route file as ESM
-      const routeModule = await import(routeFile + ".js");
-      // If routeModule.default is an array, use it as-is; if not, convert to array
-      const routeConfigs = Array.isArray(routeModule.default)
-        ? routeModule.default
-        : [routeModule.default];
-
-      for (const config of routeConfigs) {
+      for (const config of trafficConfigs) {
         this.registerTraffic(config);
       }
     }
@@ -503,23 +499,23 @@ class MotiaServer {
   }
 
   async handleRequest(req, res) {
-    const route = this.traffic.get(req.path);
-    if (!route) {
+    const traffic = this.traffic.get(req.path);
+    if (!traffic) {
       res.status(404).json({ error: "Traffic not found" });
       return;
     }
 
     try {
-      if (route.authorize) {
+      if (traffic.authorize) {
         try {
-          await route.authorize(req);
+          await traffic.authorize(req);
         } catch (error) {
           res.status(401).json({ error: error.message });
           return;
         }
       }
 
-      const event = await route.transform(req);
+      const event = await traffic.transform(req);
 
       await this.core.emit(event, {
         traceId: req.headers["x-trace-id"],
@@ -538,7 +534,7 @@ class MotiaServer {
 
   registerTraffic(config) {
     if (!config.path || !config.method || !config.transform) {
-      throw new Error("Invalid route configuration");
+      throw new Error("Invalid traffic configuration");
     }
 
     const path = config.path.startsWith("/") ? config.path : `/${config.path}`;
@@ -657,13 +653,11 @@ class MotiaScheduler {
     return schedules;
   }
 
-  async initialize(core, schedulePaths) {
+  async initialize(core, schedulePaths = ["./src/workflows"]) {
     this.core = core;
 
-    // Find all schedule files from provided directories
     const scheduleFiles = await this.findScheduleFiles(schedulePaths);
 
-    // Import each schedule file
     for (const file of scheduleFiles) {
       const scheduleModule = await import(file);
       if (scheduleModule.default) {
