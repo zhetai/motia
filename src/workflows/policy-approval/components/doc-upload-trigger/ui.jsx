@@ -2,9 +2,10 @@ import React from 'react';
 
 export default function DocUploadTriggerNode({ data }) {
   return (
-    <div style={{ padding: '10px', border: '1px solid #ccc', borderRadius: '4px' }}>
-      <strong>{data.label}</strong>
-      <p>Subscribes to: {data.subscribe.join(', ')}</p>
+    <div className="node-container">
+      <p className="node-title">{data.label}</p>
+      <p className="node-subtitle">Subscribes to: {data.subscribe.join(', ') || 'None'}</p>
+      <p className="node-subtitle">Some Text</p>
     </div>
   );
 }

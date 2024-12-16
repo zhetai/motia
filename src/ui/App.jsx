@@ -1,6 +1,7 @@
 import React, { useEffect, useState } from 'react';
 import ReactFlow, { Controls, Background } from 'reactflow';
 import 'reactflow/dist/style.css';
+import './styles.css';
 import nodeTypes from './nodeTypes.js';
 
 export default function App() {
@@ -23,7 +24,7 @@ export default function App() {
   return (
     <div style={{ width: '100vw', height: '100vh' }}>
       <ReactFlow nodes={nodes} edges={[]} nodeTypes={nodeTypes} fitView>
-        <Background />
+        <Background variant="dots" gap={20} size={1} color="#eee"/>
         <Controls />
       </ReactFlow>
     </div>
