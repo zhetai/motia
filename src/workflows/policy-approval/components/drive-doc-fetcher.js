@@ -2,9 +2,7 @@ import { google } from "googleapis";
 
 export const subscribe = ["doc.fetch_requested"];
 
-async function fetchDocContentFromDrive(rulesFileId) {
-  // Auth with Google
-  console.log("drive-doc-fetcher", process.env.GOOGLE_CREDENTIALS);
+async function fetchDocContentFromDrive(fileId) {
   const credentials = JSON.parse(process.env.GOOGLE_CREDENTIALS || "{}");
   const auth = new google.auth.GoogleAuth({
     credentials,
