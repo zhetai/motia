@@ -3,12 +3,13 @@
   "version": "1.0.0",
   "main": "index.js",
   "scripts": {
-    "start": "node src/index.js"
+    "start": "node src/index.js",
+    "flat": "node output-flat-repo.js"
   },
   "keywords": [],
   "author": "",
   "license": "",
-  "description": "A repository dedicated to iteratively developing and refining 'motia.js.' The files in 'src' serve as a testing ground to experiment with and validate the evolving functionality of 'motia.js' as its capabilities are expanded and improved.",
+  "description": "A repository dedicated to iteratively developing and refining 'motia.js.' The files in 'src' serve as a testing ground to experiment with and validate the evolving functionality of 'motia.js' as its capabilities are expanded and improved. Asperational goal: Motia is a framework for building event-driven business automations that start simple yet grow gracefully into production-grade systems. At its heart, Motia helps you define workflows as collections of small, testable components reacting to well-defined events. It gives you the tools to quickly spin up logic, integrate external triggers, schedule time-based tasks, and ensure high quality through testing and validation. By streamlining the complexity of event-driven design and encouraging incremental improvements—like adding security checks or scaling across multiple services—Motia helps teams move fast without compromising on maintainability or confidence. In a world where speed, flexibility, and reliability are vital, Motia provides a balanced foundation that evolves with your needs, from simple prototypes to enterprise-ready automation.",
   "dependencies": {
     "body-parser": "^1.20.3",
     "dotenv": "^16.4.7",
