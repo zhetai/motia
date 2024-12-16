@@ -1,9 +1,9 @@
-const fs = require("fs");
-const path = require("path");
-const ignore = require("ignore");
+import fs from "fs";
+import path from "path";
+import ignore from "ignore";
 
 // Maximum file size to include in the output (in bytes)
-const MAX_FILE_SIZE = 2024 * 2024; // 1MB
+const MAX_FILE_SIZE = 20024 * 20024;
 
 // Initialize the ignore parser
 const ig = ignore();
@@ -12,7 +12,7 @@ const ig = ignore();
  * Load .gitignore file and set up the ignore rules.
  * @param {string} repoPath - The root path of the repository.
  */
-function loadGitignore(repoPath) {
+export function loadGitignore(repoPath) {
   const gitignorePath = path.join(repoPath, ".gitignore");
   if (fs.existsSync(gitignorePath)) {
     const gitignoreContent = fs.readFileSync(gitignorePath, "utf8");
@@ -38,7 +38,7 @@ function loadGitignore(repoPath) {
  * @param {fs.WriteStream} outputStream - The writable stream for the output file.
  * @param {string} repoRoot - The root path of the repository.
  */
-function traverseDirectory(dirPath, outputStream, repoRoot) {
+export function traverseDirectory(dirPath, outputStream, repoRoot) {
   const entries = fs.readdirSync(dirPath, { withFileTypes: true });
 
   for (const entry of entries) {
@@ -98,7 +98,7 @@ function traverseDirectory(dirPath, outputStream, repoRoot) {
  * @param {string} repoPath - The path of the repository to export.
  * @param {string} outputFilePath - The path of the output text file.
  */
-function exportRepoToFlatFile(repoPath, outputFilePath) {
+export function exportRepoToFlatFile(repoPath, outputFilePath) {
   const resolvedRepoPath = path.resolve(repoPath); // Ensure absolute path
   const outputStream = fs.createWriteStream(outputFilePath, {
     flags: "w",
@@ -119,6 +119,7 @@ function exportRepoToFlatFile(repoPath, outputFilePath) {
   }
 }
 
+// Example usage
 const repoPath = "./";
 const outputFilePath = "./flat-motia.txt";
 exportRepoToFlatFile(repoPath, outputFilePath);
