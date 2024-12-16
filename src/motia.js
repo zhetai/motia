@@ -447,6 +447,28 @@ class MotiaServer {
     return trafficFiles;
   }
 
+  describeWorkflows() {
+    return {
+      workflows: Array.from(this.workflows.keys()).map((workflowPath) => {
+        const workflowName = path.basename(workflowPath);
+        const componentEntries = Array.from(this.components.entries()).filter(
+          ([compPath]) => compPath.includes(workflowName)
+        );
+
+        return {
+          name: workflowName,
+          components: componentEntries.map(([compPath, compModule]) => {
+            const compDirName = path.basename(path.dirname(compPath));
+            return {
+              id: compDirName,
+              subscribe: compModule.subscribe || [],
+            };
+          }),
+        };
+      }),
+    };
+  }
+
   async initialize(core, trafficPaths = ["./traffic/inbound"]) {
     this.core = core;
     const allTrafficFiles = await this.findTrafficFiles(trafficPaths);
@@ -462,6 +484,7 @@ class MotiaServer {
       }
     }
 
+    // Register traffic routes
     this.traffic.forEach((config, routePath) => {
       this.express[config.method.toLowerCase()](routePath, async (req, res) => {
         try {
@@ -471,6 +494,21 @@ class MotiaServer {
         }
       });
     });
+
+    // **NEW CODE**: Serve the built React UI and /api/workflows endpoint
+    // Serve static files from dist (after you've run npm run build)
+    this.express.use(express.static(path.join(__dirname, "../../dist")));
+
+    // Return workflow descriptions
+    this.express.get("/api/workflows", (req, res) => {
+      res.json(this.core.describeWorkflows());
+    });
+
+    // Catch-all route to serve index.html for any unknown route
+    this.express.get("*", (req, res) => {
+      res.sendFile(path.join(__dirname, "../../dist/index.html"));
+    });
+    // **END NEW CODE**
 
     this.express.listen(process.env.PORT || 3000);
   }

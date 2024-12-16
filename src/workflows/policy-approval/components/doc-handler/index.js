@@ -1,4 +1,4 @@
-import { getDocContent } from "../../../traffic/outbound/google-drive-api.js";
+import { getDocContent } from "../../../../traffic/outbound/google-drive-api.js";
 
 export const subscribe = ["doc.needs_approval", "doc.updated", "doc.escalate"];
 

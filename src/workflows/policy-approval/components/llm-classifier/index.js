@@ -1,4 +1,4 @@
-import { runChatCompletion } from "../../../traffic/outbound/openai-api.js";
+import { runChatCompletion } from "../../../../traffic/outbound/openai-api.js";
 
 export const subscribe = ["doc.ready_for_classification"];
 

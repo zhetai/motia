@@ -1,4 +1,4 @@
-import { updateDocument } from "../../../traffic/outbound/google-docs-api.js";
+import { updateDocument } from "../../../../traffic/outbound/google-docs-api.js";
 
 export const subscribe = ["doc.needs_approval"];
 
