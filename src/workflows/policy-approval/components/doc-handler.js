@@ -3,6 +3,7 @@ import { google } from "googleapis";
 export const subscribe = ["doc.needs_approval", "doc.updated", "doc.escalate"];
 
 async function fetchDocContentFromDrive(fileId) {
+  console.log("doc-handler", process.env.GOOGLE_CREDENTIALS);
   const credentials = JSON.parse(process.env.GOOGLE_CREDENTIALS || "{}");
   const auth = new google.auth.GoogleAuth({
     credentials,

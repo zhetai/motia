@@ -1,4 +1,5 @@
 import { MotiaCore, MotiaServer, MotiaScheduler } from "./motia.js";
+import "dotenv/config";
 
 async function main() {
   const core = new MotiaCore();
@@ -13,21 +14,10 @@ async function main() {
 
   await server.initialize(core, ["./routes/google-drive"]);
 
-  await scheduler.initialize(core, [
-    "./src/workflows/policy-approval/doc-scheduler.js",
-  ]);
+  await scheduler.initialize(core, ["./src/workflows/policy-approval"]);
   scheduler.start();
 
   console.log("Workflow initialized. Listening for events...");
-
-  // Test event
-  await core.emit({
-    type: "doc.uploaded",
-    data: {
-      fileId: "YOUR_TEST_FILE_ID",
-      fileName: "Contract.docx",
-    },
-  });
 }
 
 main().catch(console.error);
