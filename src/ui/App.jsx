@@ -24,8 +24,13 @@ export default function App() {
   return (
     <div style={{ width: '100vw', height: '100vh' }}>
       <ReactFlow nodes={nodes} edges={[]} nodeTypes={nodeTypes} fitView>
-        <Background variant="dots" gap={20} size={1} color="#eee"/>
-        <Controls />
+      <Background 
+        variant="lines" 
+        gap={20} 
+        size={1} 
+        color="#555" // A medium gray on a dark background
+      />
+      <Controls />
       </ReactFlow>
     </div>
   );
