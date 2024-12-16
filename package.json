@@ -4,7 +4,7 @@
   "main": "index.js",
   "scripts": {
     "start": "node src/index.js",
-    "drive-upload-hook": "./unrelated-tools/bin/drive-upload-hook.sh",
+    "drive-upload-hook": "./unrelated-tools/bin/simulate-drive-upload-webhook.sh",
     "flat": "node unrelated-tools/output-flat-repo.js"
   },
   "keywords": [],
