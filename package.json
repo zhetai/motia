@@ -2,8 +2,10 @@
   "name": "my-motia-app",
   "version": "1.0.0",
   "main": "index.js",
+  "type": "module",
   "scripts": {
     "start": "node src/index.js",
+    "test": "node --experimental-vm-modules node_modules/jest/bin/jest.js",
     "drive-upload-hook": "./unrelated-tools/bin/drive-upload-hook.sh",
     "flat": "node unrelated-tools/output-flat-repo.js"
   },
@@ -18,5 +20,8 @@
     "googleapis": "^105.0.0",
     "ignore": "^6.0.2",
     "openai": "^4.76.3"
+  },
+  "devDependencies": {
+    "jest": "^29.7.0"
   }
 }

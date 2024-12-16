@@ -1,3 +1,13 @@
+import fs from "fs";
+import path from "path";
+import { fileURLToPath, pathToFileURL } from "url";
+import express from "express";
+import bodyParser from "body-parser";
+
+// Resolve __dirname equivalent
+const __filename = fileURLToPath(import.meta.url);
+const __dirname = path.dirname(__filename);
+
 /**
  * In-Memory Message Bus Implementation
  * ------------------------------------
@@ -54,27 +64,25 @@ class MotiaCore {
     this.components = new Map();
   }
 
-  async registerWorkflow(path) {
+  async registerWorkflow(workflowPath) {
     try {
-      const config = require(path);
-      this.workflows.set(path, config);
+      const configPath = path.resolve(workflowPath, "config.js");
+      const configModule = await import(pathToFileURL(configPath).href);
+      this.workflows.set(workflowPath, configModule);
     } catch (error) {
-      console.error(`Error registering workflow at ${path}:`, error);
+      console.error(`Error registering workflow at ${workflowPath}:`, error);
     }
   }
 
-  async registerComponent(path) {
+  async registerComponent(componentPath) {
     try {
-      const fixedPath = path
-        .replace(/^(\.?\/)?src\//, "./")
-        .replace(/\.js$/, ""); // remove .js extension
-
-      const component = require(fixedPath);
-      if (component.subscribe) {
-        this.components.set(fixedPath, component.default);
+      // componentPath is absolute now
+      const componentModule = await import(pathToFileURL(componentPath).href);
+      if (componentModule.subscribe) {
+        this.components.set(componentPath, componentModule.default);
       }
     } catch (error) {
-      console.error(`Error registering component at ${path}:`, error);
+      console.error(`Error registering component at ${componentPath}:`, error);
     }
   }
 
@@ -82,9 +90,6 @@ class MotiaCore {
     await this.messageBus.publish(event, options);
   }
 
-  /**
-   * Initialize the Motia runtime
-   */
   async initialize(options = {}) {
     const workflowPaths = options.workflowPaths || ["./src/workflows"];
     this.messageBus = options.messageBus || new InMemoryMessageBus();
@@ -92,23 +97,27 @@ class MotiaCore {
     this.workflows = new Map();
     this.components = new Map();
 
+    // Convert workflowPaths to absolute
+    const absoluteWorkflowPaths = workflowPaths.map((p) => path.resolve(p));
+
     // Load all workflows
-    for (const path of workflowPaths) {
-      const workflowFiles = await this.findWorkflowFiles(path);
+    for (const wPath of absoluteWorkflowPaths) {
+      const workflowFiles = await this.findWorkflowFiles(wPath);
       for (const file of workflowFiles) {
-        this.registerWorkflow(file);
+        await this.registerWorkflow(file);
       }
     }
 
     // Load all components from these workflows
-    const componentFiles = await this.findComponentFiles(workflowPaths);
+    const componentFiles = await this.findComponentFiles(absoluteWorkflowPaths);
     for (const file of componentFiles) {
-      this.registerComponent(file);
+      await this.registerComponent(file);
     }
 
-    // Subscribe components to message bus as before
-    this.components.forEach((component, id) => {
-      const module = require(id);
+    // Subscribe components to message bus
+    for (const [id, component] of this.components.entries()) {
+      const moduleUrl = pathToFileURL(id).href;
+      const module = await import(moduleUrl);
       if (module.subscribe) {
         for (const eventPattern of module.subscribe) {
           this.messageBus.subscribe(async (event, opts) => {
@@ -122,86 +131,79 @@ class MotiaCore {
           });
         }
       }
-    });
+    }
   }
 
-  async findWorkflowFiles(path) {
-    const fs = require("fs").promises;
-    const path_module = require("path");
+  async findWorkflowFiles(basePath) {
     const workflows = [];
-
     try {
-      // Read all directories in workflows path
-      const entries = await fs.readdir(path, { withFileTypes: true });
-
+      const entries = await fs.promises.readdir(basePath, {
+        withFileTypes: true,
+      });
       for (const entry of entries) {
         if (entry.isDirectory()) {
-          const workflowPath = path_module.join(path, entry.name);
-          // Check for config.js and version.json
-          const files = await fs.readdir(workflowPath);
+          const workflowPath = path.join(basePath, entry.name);
+          const files = await fs.promises.readdir(workflowPath);
           if (files.includes("config.js") && files.includes("version.json")) {
-            workflows.push(workflowPath);
+            // Return absolute path
+            workflows.push(path.resolve(workflowPath));
           }
         }
       }
     } catch (error) {
       console.error("Error finding workflow files:", error);
     }
-
     return workflows;
   }
 
   async findComponentFiles(paths) {
-    const fs = require("fs").promises;
-    const path_module = require("path");
     const components = [];
-
-    try {
-      for (const basePath of paths) {
-        // Search for components directory in each workflow
-        const workflowDirs = await fs.readdir(basePath, {
+    for (const basePath of paths) {
+      try {
+        const workflowDirs = await fs.promises.readdir(basePath, {
           withFileTypes: true,
         });
 
         for (const workflowDir of workflowDirs) {
           if (!workflowDir.isDirectory()) continue;
 
-          const componentsPath = path_module.join(
+          const componentsPath = path.join(
             basePath,
             workflowDir.name,
             "components"
           );
-
           try {
-            // Recursively search through component directories
-            const searchComponents = async (dir) => {
-              const entries = await fs.readdir(dir, { withFileTypes: true });
-
-              for (const entry of entries) {
-                const fullPath = path_module.join(dir, entry.name);
-                if (entry.isDirectory()) {
-                  await searchComponents(fullPath);
-                } else if (
-                  entry.name.endsWith(".js") &&
-                  !entry.name.endsWith(".test.js")
-                ) {
-                  components.push(fullPath);
-                }
-              }
-            };
-
-            await searchComponents(componentsPath);
-          } catch (error) {
-            // Skip if components directory doesn't exist
-            continue;
+            await this.searchComponents(componentsPath, components);
+          } catch {
+            // If components dir doesn't exist, skip
           }
         }
+      } catch (error) {
+        console.error("Error finding component files:", error);
       }
-    } catch (error) {
-      console.error("Error finding component files:", error);
+    }
+    return components.map((c) => path.resolve(c));
+  }
+
+  async searchComponents(dir, components) {
+    let entries;
+    try {
+      entries = await fs.promises.readdir(dir, { withFileTypes: true });
+    } catch {
+      return;
     }
 
-    return components;
+    for (const entry of entries) {
+      const fullPath = path.join(dir, entry.name);
+      if (entry.isDirectory()) {
+        await this.searchComponents(fullPath, components);
+      } else if (
+        entry.name.endsWith(".js") &&
+        !entry.name.endsWith(".test.js")
+      ) {
+        components.push(fullPath);
+      }
+    }
   }
 
   eventMatchesPattern(eventType, pattern) {
@@ -229,13 +231,7 @@ class MotiaCore {
  * This class simplifies and standardizes how developers test their Motia-based workflows, ensuring reliability and correctness.
  */
 class MotiaTest {
-  /**
-   * Create a mock emit function for testing
-   */
   static mockEmit() {
-    // jest.Mock type is TS-specific. Just return a generic mock function.
-    // If you're using Jest, it can be jest.fn().
-    // If not, just return a function.
     const mock = (...args) => {};
     mock.mock = { calls: [] };
     const wrapper = (event, options) => {
@@ -244,40 +240,19 @@ class MotiaTest {
     return wrapper;
   }
 
-  /**
-   * Create a test helper for components
-   */
   static createComponentTest(component, options) {
     return async (input, emit) => {
       const mockEmit = emit || MotiaTest.mockEmit();
-
-      // Replace dependencies with mocks if needed
-      if (options && options.mocks) {
-        for (const [key, mock] of Object.entries(options.mocks)) {
-          jest.mock(key, () => mock);
-        }
-      }
-
+      // If mocks needed, must be handled outside this method for ESM.
       await component(input, mockEmit, "test.event");
-
-      // Clear mocks
-      if (options && options.mocks) {
-        jest.resetModules();
-      }
     };
   }
 
-  /**
-   * Create a test helper for thresholds
-   */
   static createThresholdTest(component, options) {
     return async () => {
       const results = {
         accuracy: 0,
-        latency: {
-          p95: 0,
-          p99: 0,
-        },
+        latency: { p95: 0, p99: 0 },
         successRate: 0,
         totalRuns: 0,
         errors: [],
@@ -340,7 +315,6 @@ class MotiaTest {
 
       for (const data of options.testData) {
         const outputs = [];
-
         for (let i = 0; i < (options.consistencyRuns || 1); i++) {
           const mockEmit = MotiaTest.mockEmit();
           try {
@@ -435,19 +409,23 @@ function calculateAccuracy(results) {
 class MotiaServer {
   constructor() {
     this.traffic = new Map();
-    this.express = require("express")();
-    this.express.use(require("body-parser").json());
+    this.express = express();
+    this.express.use(bodyParser.json());
   }
 
   async findTrafficFiles(paths) {
-    const fs = require("fs").promises;
-    const path_module = require("path");
     const trafficFiles = [];
 
     const searchTraffic = async (dir) => {
-      const entries = await fs.readdir(dir, { withFileTypes: true });
+      let entries;
+      try {
+        entries = await fs.promises.readdir(dir, { withFileTypes: true });
+      } catch {
+        return;
+      }
+
       for (const entry of entries) {
-        const fullPath = path_module.join(dir, entry.name);
+        const fullPath = path.join(dir, entry.name);
         if (entry.isDirectory()) {
           await searchTraffic(fullPath);
         } else if (
@@ -455,15 +433,14 @@ class MotiaServer {
           !entry.name.endsWith(".test.js")
         ) {
           const relativePath =
-            "./" +
-            path_module.relative(__dirname, fullPath).replace(/\.js$/, "");
+            "./" + path.relative(__dirname, fullPath).replace(/\.js$/, "");
           trafficFiles.push(relativePath);
         }
       }
     };
 
     for (const basePath of paths) {
-      const absolutePath = path_module.resolve(__dirname, basePath);
+      const absolutePath = path.resolve(__dirname, basePath);
       await searchTraffic(absolutePath);
     }
 
@@ -485,8 +462,8 @@ class MotiaServer {
       }
     }
 
-    this.traffic.forEach((config, path) => {
-      this.express[config.method.toLowerCase()](path, async (req, res) => {
+    this.traffic.forEach((config, routePath) => {
+      this.express[config.method.toLowerCase()](routePath, async (req, res) => {
         try {
           await this.handleRequest(req, res);
         } catch (error) {
@@ -537,9 +514,10 @@ class MotiaServer {
       throw new Error("Invalid traffic configuration");
     }
 
-    const path = config.path.startsWith("/") ? config.path : `/${config.path}`;
-
-    this.traffic.set(path, config);
+    const routePath = config.path.startsWith("/")
+      ? config.path
+      : `/${config.path}`;
+    this.traffic.set(routePath, config);
   }
 }
 
@@ -558,9 +536,8 @@ class MotiaServer {
  * VersionControl provides a simple mechanism to track the evolution of workflows and their metrics over time.
  */
 class VersionControl {
-  static async bumpVersion(path, metrics) {
-    const fs = require("fs").promises;
-    const currentVersion = await VersionControl.loadVersion(path);
+  static async bumpVersion(versionPath, metrics) {
+    const currentVersion = await VersionControl.loadVersion(versionPath);
 
     const [major, minor, patch] = currentVersion.version.split(".").map(Number);
 
@@ -573,13 +550,16 @@ class VersionControl {
       },
     };
 
-    await fs.writeFile(path, JSON.stringify(newVersion, null, 2), "utf8");
+    await fs.promises.writeFile(
+      versionPath,
+      JSON.stringify(newVersion, null, 2),
+      "utf8"
+    );
   }
 
-  static async loadVersion(path) {
-    const fs = require("fs").promises;
+  static async loadVersion(versionPath) {
     try {
-      const content = await fs.readFile(path, "utf8");
+      const content = await fs.promises.readFile(versionPath, "utf8");
       const version = JSON.parse(content);
 
       if (!version.version || !version.lastTested) {
@@ -618,21 +598,19 @@ class MotiaScheduler {
   }
 
   async findScheduleFiles(paths) {
-    const fs = (await import("fs")).default.promises;
-    const path_module = (await import("path")).default;
+    const fsPromises = fs.promises;
     const schedules = [];
 
     const searchSchedules = async (dir) => {
       let entries;
       try {
-        entries = await fs.readdir(dir, { withFileTypes: true });
+        entries = await fsPromises.readdir(dir, { withFileTypes: true });
       } catch {
-        // Directory might not exist, skip
         return;
       }
 
       for (const entry of entries) {
-        const fullPath = path_module.join(dir, entry.name);
+        const fullPath = path.join(dir, entry.name);
         if (entry.isDirectory()) {
           await searchSchedules(fullPath);
         } else if (
@@ -645,8 +623,7 @@ class MotiaScheduler {
     };
 
     for (const basePath of paths) {
-      // For each workflow path, look for a 'scheduler' directory
-      const schedulerPath = path_module.join(basePath, "scheduler");
+      const schedulerPath = path.join(basePath, "scheduler");
       await searchSchedules(schedulerPath);
     }
 
@@ -655,11 +632,12 @@ class MotiaScheduler {
 
   async initialize(core, schedulePaths = ["./src/workflows"]) {
     this.core = core;
-
-    const scheduleFiles = await this.findScheduleFiles(schedulePaths);
+    const scheduleFiles = await this.findScheduleFiles(
+      schedulePaths.map((p) => path.resolve(p))
+    );
 
     for (const file of scheduleFiles) {
-      const scheduleModule = await import(file);
+      const scheduleModule = await import(pathToFileURL(file).href);
       if (scheduleModule.default) {
         const id = file.replace(/\.[jt]s$/, "");
         this.schedules.set(id, scheduleModule.default);
@@ -733,13 +711,17 @@ function defineTraffic(config) {
   return config;
 }
 
-module.exports = {
+function defineRoute(config) {
+  return config;
+}
+
+export {
   MotiaCore,
   MotiaServer,
   MotiaScheduler,
   MotiaTest,
-  MessageBus: InMemoryMessageBus,
   InMemoryMessageBus,
   VersionControl,
   defineTraffic,
+  defineRoute,
 };
