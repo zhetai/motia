@@ -1,6 +1,6 @@
+// packages/motia/src/cli/commands/createComponent.js
 import fs from "fs";
 import path from "path";
-import { toCamelCase, toPascalCase } from "../utils.js";
 import { createIndexJs, createUiJsx } from "../templates.js";
 
 export async function createComponent(workflowName, componentName) {
@@ -12,12 +12,15 @@ export async function createComponent(workflowName, componentName) {
 
   const componentDir = path.join(
     process.cwd(),
+    "playground", // Add playground to the path
     "src",
     "workflows",
     workflowName,
     "components",
     componentName
   );
+
+  console.log("Creating component in:", componentDir);
 
   if (fs.existsSync(componentDir)) {
     throw new Error(`Component directory already exists: ${componentDir}`);
