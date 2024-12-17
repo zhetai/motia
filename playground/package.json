@@ -1,0 +1,12 @@
+{
+  "name": "motia-playground",
+  "private": true,
+  "type": "module",
+  "scripts": {
+    "dev": "concurrently \"nodemon -w ../motia/dist -w src src/index.js\" \"vite\"",
+    "build": "vite build"
+  },
+  "dependencies": {
+    "motia": "workspace:*"
+  }
+}

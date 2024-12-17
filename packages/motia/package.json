@@ -1,0 +1,16 @@
+{
+  "name": "motia",
+  "version": "0.1.0",
+  "type": "module",
+  "exports": {
+    ".": "./dist/node/index.js",
+    "./ui": "./dist/browser/ui.js"
+  },
+  "files": [
+    "dist"
+  ],
+  "scripts": {
+    "dev": "concurrently \"node esbuild.config.js --watch\" \"vite build --watch\"",
+    "build": "node esbuild.config.js && vite build"
+  }
+}

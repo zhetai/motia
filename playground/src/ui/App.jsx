@@ -3,7 +3,7 @@ import ReactFlow, { Controls, Background } from 'reactflow';
 import 'reactflow/dist/style.css';
 import './styles.css';
 
-import { useMotiaFlow, nodeTypes } from '../motia-ui';
+import { useMotiaFlow, nodeTypes } from 'motia/ui';
 
 export default function App() {
   const { nodes, edges, loading, error } = useMotiaFlow();

@@ -1,4 +1,4 @@
-import { defineTraffic } from "../../../motia.js";
+import { defineTraffic } from "motia";
 
 export default defineTraffic({
   path: "/api/docs/uploaded",

@@ -1,5 +1,5 @@
-import { MotiaCore, MotiaServer, MotiaScheduler } from "./motia.js";
 import "dotenv/config";
+import { MotiaCore, MotiaServer, MotiaScheduler } from "motia";
 
 async function main() {
   const core = new MotiaCore();
