@@ -20,7 +20,7 @@ var InMemoryMessageBus = class {
 // src/core/MotiaCore.js
 import { fileURLToPath, pathToFileURL } from "url";
 import path from "path";
-import fs2 from "fs";
+import fs from "fs";
 var __filename = fileURLToPath(import.meta.url);
 var __dirname = path.dirname(__filename);
 var MotiaCore = class {
@@ -108,13 +108,13 @@ var MotiaCore = class {
   async findWorkflowFiles(basePath) {
     const workflows = [];
     try {
-      const entries = await fs2.promises.readdir(basePath, {
+      const entries = await fs.promises.readdir(basePath, {
         withFileTypes: true
       });
       for (const entry of entries) {
         if (entry.isDirectory()) {
           const workflowPath = path.join(basePath, entry.name);
-          const files = await fs2.promises.readdir(workflowPath);
+          const files = await fs.promises.readdir(workflowPath);
           if (files.includes("config.js") && files.includes("version.json")) {
             workflows.push(path.resolve(workflowPath));
           }
@@ -129,7 +129,7 @@ var MotiaCore = class {
     const components = [];
     for (const basePath of paths) {
       try {
-        const workflowDirs = await fs2.promises.readdir(basePath, {
+        const workflowDirs = await fs.promises.readdir(basePath, {
           withFileTypes: true
         });
         for (const workflowDir of workflowDirs) {
@@ -153,7 +153,7 @@ var MotiaCore = class {
   async searchComponents(dir, components) {
     let entries;
     try {
-      entries = await fs2.promises.readdir(dir, { withFileTypes: true });
+      entries = await fs.promises.readdir(dir, { withFileTypes: true });
     } catch {
       return;
     }
@@ -180,8 +180,9 @@ var MotiaCore = class {
 // src/core/MotiaServer.js
 import express from "express";
 import bodyParser from "body-parser";
+import fs2 from "fs";
 import path2 from "path";
-import { fileURLToPath as fileURLToPath2 } from "url";
+import { fileURLToPath as fileURLToPath2, pathToFileURL as pathToFileURL2 } from "url";
 var __filename2 = fileURLToPath2(import.meta.url);
 var __dirname2 = path2.dirname(__filename2);
 var MotiaServer = class {
@@ -195,7 +196,7 @@ var MotiaServer = class {
     const searchTraffic = async (dir) => {
       let entries;
       try {
-        entries = await fs.promises.readdir(dir, { withFileTypes: true });
+        entries = await fs2.promises.readdir(dir, { withFileTypes: true });
       } catch {
         return;
       }
@@ -204,22 +205,22 @@ var MotiaServer = class {
         if (entry.isDirectory()) {
           await searchTraffic(fullPath);
         } else if (entry.name.endsWith(".js") && !entry.name.endsWith(".test.js")) {
-          const relativePath = "./" + path2.relative(__dirname2, fullPath).replace(/\.js$/, "");
-          trafficFiles.push(relativePath);
+          trafficFiles.push(fullPath);
         }
       }
     };
     for (const basePath of paths) {
-      const absolutePath = path2.resolve(__dirname2, basePath);
+      const absolutePath = path2.resolve(basePath);
       await searchTraffic(absolutePath);
     }
+    console.log("Found traffic files:", trafficFiles);
     return trafficFiles;
   }
   async initialize(core, trafficPaths = ["./traffic/inbound"]) {
     this.core = core;
-    const allTrafficFiles = await this.findTrafficFiles(trafficPaths);
-    for (const trafficFile of allTrafficFiles) {
-      const trafficModule = await import(trafficFile + ".js");
+    const trafficFiles = await this.findTrafficFiles(trafficPaths);
+    for (const trafficFile of trafficFiles) {
+      const trafficModule = await import(pathToFileURL2(trafficFile));
       const trafficConfigs = Array.isArray(trafficModule.default) ? trafficModule.default : [trafficModule.default];
       for (const config of trafficConfigs) {
         this.registerTraffic(config);
@@ -241,7 +242,10 @@ var MotiaServer = class {
     this.express.get("*", (req, res) => {
       res.sendFile(path2.join(__dirname2, "../dist/index.html"));
     });
-    this.express.listen(process.env.PORT || 3e3);
+    const port = process.env.PORT || 3e3;
+    this.express.listen(port, () => {
+      console.log(`Server listening on port ${port}`);
+    });
   }
   async handleRequest(req, res) {
     const traffic = this.traffic.get(req.path);
@@ -251,12 +255,7 @@ var MotiaServer = class {
     }
     try {
       if (traffic.authorize) {
-        try {
-          await traffic.authorize(req);
-        } catch (error) {
-          res.status(401).json({ error: error.message });
-          return;
-        }
+        await traffic.authorize(req);
       }
       const event = await traffic.transform(req);
       await this.core.emit(event, {
@@ -284,7 +283,7 @@ var MotiaServer = class {
 // src/core/MotiaScheduler.js
 import fs3 from "fs";
 import path3 from "path";
-import { pathToFileURL as pathToFileURL2 } from "url";
+import { pathToFileURL as pathToFileURL3 } from "url";
 var MotiaScheduler = class {
   constructor() {
     this.schedules = /* @__PURE__ */ new Map();
@@ -321,7 +320,7 @@ var MotiaScheduler = class {
       schedulePaths.map((p) => path3.resolve(p))
     );
     for (const file of scheduleFiles) {
-      const scheduleModule = await import(pathToFileURL2(file).href);
+      const scheduleModule = await import(pathToFileURL3(file).href);
       if (scheduleModule.default) {
         const id = file.replace(/\.[jt]s$/, "");
         this.schedules.set(id, scheduleModule.default);

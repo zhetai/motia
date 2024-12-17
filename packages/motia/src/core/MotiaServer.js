@@ -1,25 +1,12 @@
 import express from "express";
 import bodyParser from "body-parser";
+import fs from "fs";
 import path from "path";
-import { fileURLToPath } from "url";
+import { fileURLToPath, pathToFileURL } from "url";
 
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
 
-/**
- * Server Functionality: MotiaServer
- * ---------------------------------
- * MotiaServer integrates an HTTP server (e.g., Express) with the Motia framework, enabling
- * external triggers (like webhooks or user requests) to generate internal Motia events.
- *
- * Key Responsibilities:
- * - Expose HTTP endpoints defined in traffic
- * - Transform incoming HTTP requests into Motia events
- * - Emit these events into the MotiaCore for processing
- *
- * By acting as a bridge between external clients and the internal event-driven system,
- * MotiaServer allows real-world interactions to drive the workflow logic orchestrated by MotiaCore.
- */
 export class MotiaServer {
   constructor() {
     this.traffic = new Map();
@@ -46,27 +33,26 @@ export class MotiaServer {
           entry.name.endsWith(".js") &&
           !entry.name.endsWith(".test.js")
         ) {
-          const relativePath =
-            "./" + path.relative(__dirname, fullPath).replace(/\.js$/, "");
-          trafficFiles.push(relativePath);
+          trafficFiles.push(fullPath);
         }
       }
     };
 
     for (const basePath of paths) {
-      const absolutePath = path.resolve(__dirname, basePath);
+      const absolutePath = path.resolve(basePath);
       await searchTraffic(absolutePath);
     }
 
+    console.log("Found traffic files:", trafficFiles);
     return trafficFiles;
   }
 
   async initialize(core, trafficPaths = ["./traffic/inbound"]) {
     this.core = core;
-    const allTrafficFiles = await this.findTrafficFiles(trafficPaths);
+    const trafficFiles = await this.findTrafficFiles(trafficPaths);
 
-    for (const trafficFile of allTrafficFiles) {
-      const trafficModule = await import(trafficFile + ".js");
+    for (const trafficFile of trafficFiles) {
+      const trafficModule = await import(pathToFileURL(trafficFile));
       const trafficConfigs = Array.isArray(trafficModule.default)
         ? trafficModule.default
         : [trafficModule.default];
@@ -76,7 +62,7 @@ export class MotiaServer {
       }
     }
 
-    // Register traffic routes
+    // Register routes for each traffic config
     this.traffic.forEach((config, routePath) => {
       this.express[config.method.toLowerCase()](routePath, async (req, res) => {
         try {
@@ -87,6 +73,7 @@ export class MotiaServer {
       });
     });
 
+    // Serve static files
     this.express.use(express.static(path.join(__dirname, "../dist")));
 
     // Return workflow descriptions
@@ -94,12 +81,15 @@ export class MotiaServer {
       res.json(this.core.describeWorkflows());
     });
 
-    // Catch-all route to serve index.html for any unknown route
+    // Catch-all route to serve index.html
     this.express.get("*", (req, res) => {
       res.sendFile(path.join(__dirname, "../dist/index.html"));
     });
 
-    this.express.listen(process.env.PORT || 3000);
+    const port = process.env.PORT || 3000;
+    this.express.listen(port, () => {
+      console.log(`Server listening on port ${port}`);
+    });
   }
 
   async handleRequest(req, res) {
@@ -111,12 +101,7 @@ export class MotiaServer {
 
     try {
       if (traffic.authorize) {
-        try {
-          await traffic.authorize(req);
-        } catch (error) {
-          res.status(401).json({ error: error.message });
-          return;
-        }
+        await traffic.authorize(req);
       }
 
       const event = await traffic.transform(req);
