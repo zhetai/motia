@@ -1,39 +1,41 @@
-import { useState as n, useEffect as p } from "react";
+import { useState as r, useEffect as p } from "react";
 function E() {
-  const [t, s] = n([]), [r, b] = n([]), [f, a] = n(!0), [l, w] = n(null);
+  const [s, t] = r([]), [e, k] = r([]), [l, c] = r(!0), [f, w] = r(null);
   return p(() => {
     async function u() {
-      var c;
+      var i;
       try {
         const o = await fetch("/api/workflows");
         if (!o.ok)
           throw new Error(`Failed to fetch workflows: ${o.statusText}`);
-        const i = (c = (await o.json()).workflows) == null ? void 0 : c[0];
-        if (!i)
+        const d = (i = (await o.json()).workflows) == null ? void 0 : i[0];
+        if (!d)
           throw new Error("No workflows found");
-        const h = i.components.map((e, m) => ({
-          id: e.id,
-          type: e.id,
+        const g = d.components.map((n, m) => ({
+          id: n.id,
+          type: n.id,
           position: { x: m * 200, y: 100 },
-          data: { label: e.id, subscribe: e.subscribe }
+          data: { label: n.id, subscribe: n.subscribe }
         }));
-        s(h), a(!1);
+        t(g), c(!1);
       } catch (o) {
-        w(o.message), a(!1);
+        w(o.message), c(!1);
       }
     }
     u();
-  }, []), { nodes: t, edges: r, loading: f, error: l };
+  }, []), { nodes: s, edges: e, loading: l, error: f };
 }
-const d = /* @__PURE__ */ Object.assign({}), k = {};
-for (const t in d) {
-  const s = t.match(/components\/([^/]+)\/ui\.jsx$/);
-  if (s) {
-    const r = s[1];
-    k[r] = d[t].default;
+const a = /* @__PURE__ */ Object.assign({});
+console.log("Found modules:", a);
+const h = {};
+for (const s in a) {
+  const t = s.match(/components\/([^/]+)\/ui\.jsx$/);
+  if (t) {
+    const e = t[1];
+    console.log("Registering component:", e), h[e] = a[s].default;
   }
 }
 export {
-  k as nodeTypes,
+  h as nodeTypes,
   E as useMotiaFlow
 };
