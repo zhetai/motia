@@ -24,11 +24,12 @@ export function loadGitignore(repoPath) {
 
   // Always ignore `node_modules` and files/directories starting with `.`
   ig.add([
-    "node_modules/",
+    "*node_modules/",
     ".*",
-    "package-lock.json",
+    "*lock.*",
     "flat-motia.txt",
-    "unrelated-tools/",
+    "/unrelated-tools/",
+    "*dist*",
   ]);
 }
 
@@ -121,5 +122,5 @@ export function exportRepoToFlatFile(repoPath, outputFilePath) {
 
 // Example usage
 const repoPath = "./";
-const outputFilePath = "./flat-motia.txt";
+const outputFilePath = "./unrelated-tools/flat-motia.txt";
 exportRepoToFlatFile(repoPath, outputFilePath);

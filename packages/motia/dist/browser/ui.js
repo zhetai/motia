@@ -1,41 +1,52 @@
-import { useState as r, useEffect as p } from "react";
-function E() {
-  const [s, t] = r([]), [e, k] = r([]), [l, c] = r(!0), [f, w] = r(null);
-  return p(() => {
-    async function u() {
-      var i;
-      try {
-        const o = await fetch("/api/workflows");
-        if (!o.ok)
-          throw new Error(`Failed to fetch workflows: ${o.statusText}`);
-        const d = (i = (await o.json()).workflows) == null ? void 0 : i[0];
-        if (!d)
-          throw new Error("No workflows found");
-        const g = d.components.map((n, m) => ({
-          id: n.id,
-          type: n.id,
-          position: { x: m * 200, y: 100 },
-          data: { label: n.id, subscribe: n.subscribe }
-        }));
-        t(g), c(!1);
-      } catch (o) {
-        w(o.message), c(!1);
+var m = Object.defineProperty;
+var b = (s, o, e) => o in s ? m(s, o, { enumerable: !0, configurable: !0, writable: !0, value: e }) : s[o] = e;
+var p = (s, o, e) => b(s, typeof o != "symbol" ? o + "" : o, e);
+import { useState as d, useEffect as k } from "react";
+const t = class t {
+  static registerNodeTypesFromGlob(o) {
+    const e = {};
+    for (const i in o) {
+      const r = i.match(/components\/([^/]+)\/ui\.jsx$/);
+      if (r) {
+        const a = r[1];
+        e[a] = o[i].default;
       }
     }
-    u();
-  }, []), { nodes: s, edges: e, loading: l, error: f };
-}
-const a = /* @__PURE__ */ Object.assign({});
-console.log("Found modules:", a);
-const h = {};
-for (const s in a) {
-  const t = s.match(/components\/([^/]+)\/ui\.jsx$/);
-  if (t) {
-    const e = t[1];
-    console.log("Registering component:", e), h[e] = a[s].default;
+    t.nodeTypes = { ...t.nodeTypes, ...e }, console.log("MotiaUi bootstrap completed. NodeTypes:", t.nodeTypes);
   }
+  static getNodeTypes() {
+    return t.nodeTypes;
+  }
+};
+p(t, "nodeTypes", {});
+let w = t;
+function F() {
+  const [s, o] = d([]), [e, i] = d([]), [r, a] = d(!0), [u, y] = d(null);
+  return k(() => {
+    async function T() {
+      var f;
+      try {
+        const n = await fetch("/api/workflows");
+        if (!n.ok)
+          throw new Error(`Failed to fetch workflows: ${n.statusText}`);
+        const l = (f = (await n.json()).workflows) == null ? void 0 : f[0];
+        if (!l)
+          throw new Error("No workflows found");
+        const g = l.components.map((c, h) => ({
+          id: c.id,
+          type: c.id,
+          position: { x: h * 200, y: 100 },
+          data: { label: c.id, subscribe: c.subscribe }
+        }));
+        o(g), a(!1);
+      } catch (n) {
+        y(n.message), a(!1);
+      }
+    }
+    T();
+  }, []), { nodes: s, edges: e, loading: r, error: u };
 }
 export {
-  h as nodeTypes,
-  E as useMotiaFlow
+  w as MotiaUi,
+  F as useMotiaFlow
 };
