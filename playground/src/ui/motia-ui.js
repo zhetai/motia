@@ -6,9 +6,8 @@ const modules = import.meta.glob("../workflows/**/components/**/ui.jsx", {
   eager: true,
 });
 
-console.log("MotiaUi object:", MotiaUi);
-
+console.log("Registering node types...");
 MotiaUi.registerNodeTypesFromGlob(modules);
-console.log("Registered node types:", MotiaUi.getNodeTypes());
 
-console.log("Registered node types:", MotiaUi.getNodeTypes());
+// Export for use in other files
+export { MotiaUi };

@@ -3,14 +3,21 @@
   "version": "0.1.0",
   "type": "module",
   "exports": {
-    ".": "./dist/node/index.js",
-    "./ui": "./dist/browser/ui.js"
+    ".": {
+      "import": "./src/index.js",
+      "require": "./dist/node/index.js"
+    },
+    "./ui": {
+      "import": "./src/ui/index.js",
+      "require": "./dist/browser/ui.js"
+    }
   },
   "sideEffects": [
     "./src/ui/*"
   ],
   "files": [
-    "dist"
+    "dist",
+    "src"
   ],
   "scripts": {
     "dev": "concurrently \"node esbuild.config.js --watch\" \"vite build --watch\"",

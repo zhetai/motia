@@ -1,6 +1,6 @@
 var m = Object.defineProperty;
 var b = (s, o, e) => o in s ? m(s, o, { enumerable: !0, configurable: !0, writable: !0, value: e }) : s[o] = e;
-var p = (s, o, e) => b(s, typeof o != "symbol" ? o + "" : o, e);
+var w = (s, o, e) => b(s, typeof o != "symbol" ? o + "" : o, e);
 import { useState as d, useEffect as k } from "react";
 const t = class t {
   static registerNodeTypesFromGlob(o) {
@@ -18,21 +18,21 @@ const t = class t {
     return t.nodeTypes;
   }
 };
-p(t, "nodeTypes", {});
-let w = t;
-function F() {
+w(t, "nodeTypes", {});
+let f = t;
+function N() {
   const [s, o] = d([]), [e, i] = d([]), [r, a] = d(!0), [u, y] = d(null);
   return k(() => {
     async function T() {
-      var f;
+      var l;
       try {
         const n = await fetch("/api/workflows");
         if (!n.ok)
           throw new Error(`Failed to fetch workflows: ${n.statusText}`);
-        const l = (f = (await n.json()).workflows) == null ? void 0 : f[0];
-        if (!l)
+        const p = (l = (await n.json()).workflows) == null ? void 0 : l[0];
+        if (!p)
           throw new Error("No workflows found");
-        const g = l.components.map((c, h) => ({
+        const g = p.components.map((c, h) => ({
           id: c.id,
           type: c.id,
           position: { x: h * 200, y: 100 },
@@ -46,7 +46,12 @@ function F() {
     T();
   }, []), { nodes: s, edges: e, loading: r, error: u };
 }
+const j = {
+  MotiaUi: f,
+  useMotiaFlow: N
+};
 export {
-  w as MotiaUi,
-  F as useMotiaFlow
+  f as MotiaUi,
+  j as default,
+  N as useMotiaFlow
 };

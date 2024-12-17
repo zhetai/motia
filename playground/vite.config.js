@@ -1,5 +1,6 @@
 import { defineConfig } from "vite";
 import react from "@vitejs/plugin-react";
+import path from "path";
 
 export default defineConfig({
   server: {
@@ -12,7 +13,18 @@ export default defineConfig({
     },
   },
   plugins: [react()],
+  resolve: {
+    alias: {
+      motia: path.resolve(__dirname, "../packages/motia/src"),
+    },
+  },
   optimizeDeps: {
-    include: ["motia/ui"],
+    include: ["react", "react-dom", "motia/ui"],
+    force: true,
+  },
+  build: {
+    commonjsOptions: {
+      include: [/motia/, /node_modules/],
+    },
   },
 });

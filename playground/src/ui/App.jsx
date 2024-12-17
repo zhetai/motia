@@ -5,8 +5,6 @@ import 'reactflow/dist/style.css';
 import './motia-ui.js';
 import './styles.css';
 
-MotiaUi.bootstrap();
-
 export default function App() {
   const { nodes, edges, loading, error } = useMotiaFlow();
   const nodeTypes = MotiaUi.getNodeTypes();
