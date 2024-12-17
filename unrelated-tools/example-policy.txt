@@ -17,5 +17,3 @@ Operational Urgency:
 All changes should be adopted immediately. It’s not necessary to follow the old approval chains for these updates, as they are minor clarifications.
 Summary:
 These updates aim to reduce administrative burden and speed up approval times. Employees should enjoy greater flexibility in travel expenses without the previous constraints.
-
-What we need to do is just update the status to LLM Reviewed and add the recomendations to the recommendations section
