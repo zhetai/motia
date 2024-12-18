@@ -27,26 +27,30 @@ export function useMotiaFlow() {
           data: {
             label: comp.id,
             subscribe: comp.subscribe || [],
-            emits: comp.emits || []
+            emits: comp.emits || [],
           },
         }));
 
-        // Map event -> nodes that subscribe
+        // Map: event -> list of node IDs that subscribe to it
         const subscribersMap = {};
-        rawNodes.forEach(node => {
-          (node.data.subscribe || []).forEach(evt => {
+        rawNodes.forEach((node) => {
+          (node.data.subscribe || []).forEach((evt) => {
             if (!subscribersMap[evt]) subscribersMap[evt] = [];
             subscribersMap[evt].push(node.id);
           });
         });
 
         const rawEdges = [];
-        rawNodes.forEach(node => {
-          (node.data.emits || []).forEach(emittedEvent => {
+        rawNodes.forEach((node) => {
+          (node.data.emits || []).forEach((emittedEvent) => {
             const subscribers = subscribersMap[emittedEvent] || [];
-            subscribers.forEach(subNodeId => {
+            subscribers.forEach((subNodeId) => {
               if (subNodeId !== node.id) {
-                rawEdges.push({ id: `${node.id}-${subNodeId}-${emittedEvent}`, source: node.id, target: subNodeId });
+                rawEdges.push({
+                  id: `${node.id}-${subNodeId}-${emittedEvent}`,
+                  source: node.id,
+                  target: subNodeId,
+                });
               }
             });
           });

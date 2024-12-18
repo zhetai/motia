@@ -106,12 +106,11 @@ export class MotiaCore {
     }
 
     // Subscribe components to message bus
-    // Subscribe components to message bus
-    for (const [id, component] of this.components.entries()) {
-      for (const eventPattern of component.subscribe) {
+    for (const [id, componentInfo] of this.components.entries()) {
+      for (const eventPattern of componentInfo.subscribe) {
         this.messageBus.subscribe(async (event, opts) => {
           if (this.eventMatchesPattern(event.type, eventPattern)) {
-            await component.handler(
+            await componentInfo.handler(
               event.data,
               (e) => this.emit(e, opts),
               event.type

@@ -11,9 +11,17 @@ export default function App() {
 
   if (loading) return <div style={{ color: '#fff', fontFamily: 'Inter, sans-serif', padding: '20px' }}>Loading workflows...</div>;
   if (error) return <div style={{ color: '#fff', fontFamily: 'Inter, sans-serif', padding: '20px' }}>Error: {error}</div>;
-
+  console.log('$$$$$$$$', nodes, edges, nodeTypes)
   return (
-    <div style={{ width: '100vw', height: '100vh', backgroundColor: '#121212' }}>
+    <div style={
+      { 
+        width: '100vw', 
+        height: '100vh', 
+        backgroundColor: 
+        '#121212', 
+        defalutEdgeStyle: { stroke: '#fff', strokeWidth: 2 }
+      }
+    }>
       <ReactFlow 
         nodes={nodes} 
         edges={edges} 
