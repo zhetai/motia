@@ -8,7 +8,7 @@ export default function WorkflowStarterNode({ data }) {
     setLoading(true);
     setMessage("");
     try {
-      const res = await fetch('/api/workflow/start', {
+      const res = await fetch('/api/greeting/start', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' }
       });
@@ -16,7 +16,7 @@ export default function WorkflowStarterNode({ data }) {
         setMessage("Workflow started successfully!");
       } else {
         const err = await res.json();
-        setMessage("Error starting workflow: " + err.error);
+        setMessage("Error starting greeting: " + err.error);
       }
     } catch (err) {
       setMessage("Error: " + err.message);

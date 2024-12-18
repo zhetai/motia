@@ -1,12 +1,12 @@
 import { defineTraffic } from "motia";
 
 export default defineTraffic({
-  path: "/api/workflow/start",
+  path: "/api/greeting/start",
   method: "POST",
   transform: (req) => {
     return {
-      type: "workflow.start",
-      data: {}
+      type: "greeting.start",
+      data: {},
     };
-  }
+  },
 });
