@@ -62,10 +62,15 @@ export class MotiaCore {
 
   async registerComponent(componentPath) {
     try {
-      // componentPath is absolute now
       const componentModule = await import(pathToFileURL(componentPath).href);
+      console.log("Loaded component module:", componentPath, componentModule);
       if (componentModule.subscribe) {
-        this.components.set(componentPath, componentModule.default);
+        // Store an object that includes the handler, subscribe, and emits arrays
+        this.components.set(componentPath, {
+          handler: componentModule.default,
+          subscribe: componentModule.subscribe || [],
+          emits: componentModule.emits || [],
+        });
       }
     } catch (error) {
       console.error(`Error registering component at ${componentPath}:`, error);
@@ -101,21 +106,18 @@ export class MotiaCore {
     }
 
     // Subscribe components to message bus
+    // Subscribe components to message bus
     for (const [id, component] of this.components.entries()) {
-      const moduleUrl = pathToFileURL(id).href;
-      const module = await import(moduleUrl);
-      if (module.subscribe) {
-        for (const eventPattern of module.subscribe) {
-          this.messageBus.subscribe(async (event, opts) => {
-            if (this.eventMatchesPattern(event.type, eventPattern)) {
-              await component(
-                event.data,
-                (e) => this.emit(e, opts),
-                event.type
-              );
-            }
-          });
-        }
+      for (const eventPattern of component.subscribe) {
+        this.messageBus.subscribe(async (event, opts) => {
+          if (this.eventMatchesPattern(event.type, eventPattern)) {
+            await component.handler(
+              event.data,
+              (e) => this.emit(e, opts),
+              event.type
+            );
+          }
+        });
       }
     }
   }
@@ -187,7 +189,10 @@ export class MotiaCore {
         entry.name.endsWith(".js") &&
         !entry.name.endsWith(".test.js")
       ) {
-        components.push(fullPath);
+        if (entry.name.endsWith(".js") && !entry.name.endsWith(".test.js")) {
+          console.log("entry.name", entry.name);
+          components.push(fullPath);
+        }
       }
     }
   }
