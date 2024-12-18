@@ -1,4 +1,5 @@
 import React, { useState } from 'react';
+import { Handle, Position } from 'reactflow';
 
 export default function WorkflowStarterNode({ data }) {
   const [loading, setLoading] = useState(false);
@@ -26,6 +27,7 @@ export default function WorkflowStarterNode({ data }) {
 
   return (
     <div className="node-container">
+    <Handle type="source" position={Position.Bottom} style={{ background: "#555" }} />
       <p className="node-title">Workflow Starter</p>
       <p className="node-subtitle">Click the button to trigger workflow.start</p>
       <button onClick={handleStart} disabled={loading}>
