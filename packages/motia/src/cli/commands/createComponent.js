@@ -20,8 +20,6 @@ export async function createComponent(workflowName, componentName) {
     componentName
   );
 
-  console.log("Creating component in:", componentDir);
-
   if (fs.existsSync(componentDir)) {
     throw new Error(`Component directory already exists: ${componentDir}`);
   }

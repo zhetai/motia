@@ -42,8 +42,6 @@ export class MotiaServer {
       const absolutePath = path.resolve(basePath);
       await searchTraffic(absolutePath);
     }
-
-    console.log("Found traffic files:", trafficFiles);
     return trafficFiles;
   }
 

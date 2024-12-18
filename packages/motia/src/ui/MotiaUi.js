@@ -11,7 +11,6 @@ export class MotiaUi {
       }
     }
     MotiaUi.nodeTypes = { ...MotiaUi.nodeTypes, ...nodeTypes };
-    console.log("MotiaUi bootstrap completed. NodeTypes:", MotiaUi.nodeTypes);
   }
 
   static getNodeTypes() {

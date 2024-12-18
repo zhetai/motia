@@ -63,7 +63,6 @@ export class MotiaCore {
   async registerComponent(componentPath) {
     try {
       const componentModule = await import(pathToFileURL(componentPath).href);
-      console.log("Loaded component module:", componentPath, componentModule);
       if (componentModule.subscribe) {
         // Store an object that includes the handler, subscribe, and emits arrays
         this.components.set(componentPath, {
@@ -189,7 +188,6 @@ export class MotiaCore {
         !entry.name.endsWith(".test.js")
       ) {
         if (entry.name.endsWith(".js") && !entry.name.endsWith(".test.js")) {
-          console.log("entry.name", entry.name);
           components.push(fullPath);
         }
       }

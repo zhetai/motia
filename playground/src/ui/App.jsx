@@ -11,7 +11,6 @@ export default function App() {
 
   if (loading) return <div style={{ color: '#fff', fontFamily: 'Inter, sans-serif', padding: '20px' }}>Loading workflows...</div>;
   if (error) return <div style={{ color: '#fff', fontFamily: 'Inter, sans-serif', padding: '20px' }}>Error: {error}</div>;
-  console.log('$$$$$$$$', nodes, edges, nodeTypes)
   return (
     <div style={
       { 

@@ -11,12 +11,6 @@ async function main() {
 
     try {
       const componentDir = await createComponent(workflowName, componentName);
-      console.log(
-        `Component ${componentName} created successfully at ${componentDir}`
-      );
-      console.log(
-        "You can now add your logic and it will be rendered automatically by the Motia UI."
-      );
     } catch (err) {
       console.error("Error:", err.message);
       process.exit(1);
