@@ -1,0 +1,5 @@
+I am working on a framework to manage async that will manage async event workflows. This is very much an MVP and I need help iterating both the framework itself in motia.js and the example in src at the same time. Suggestions on improvement focusing on developer experience and rigor in the framework is welcome. 
+
+I need help working on motia.js and also the implementation in src/. Respond by restating my goals to ensure you understand what I am trying to acomplish.
+
+Framework is output in a flat file to help you understand:
