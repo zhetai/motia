@@ -1,7 +1,7 @@
 import "dotenv/config";
 import path from "path";
 import { fileURLToPath } from "url";
-import { MotiaCore, MotiaServer, MotiaScheduler } from "motia";
+import { MotiaCore, MotiaServer } from "motia";
 
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
@@ -9,7 +9,6 @@ const __dirname = path.dirname(__filename);
 async function main() {
   const core = new MotiaCore();
   const server = new MotiaServer();
-  const scheduler = new MotiaScheduler();
 
   console.log("Initializing Motia...");
 

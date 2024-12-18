@@ -27,6 +27,7 @@ export default function App() {
         edges={edges} 
         nodeTypes={nodeTypes} 
         fitView
+        nodesDraggable={true}
         style={{ backgroundColor: '#121212' }}
       >
         <Background variant="lines" gap={20} size={1} color="#555" />

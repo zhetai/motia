@@ -21,9 +21,7 @@ The heart of the repository, this file contains the core framework logic, includ
 - **Event Bus**: Facilitates event-driven communication between components.
 - **MotiaCore**: Central orchestrator that manages workflows, components, and events.
 - **MotiaServer**: Integrates HTTP endpoints with the event-driven system.
-- **MotiaScheduler**: Adds time-based triggers to workflows.
 - **VersionControl**: Tracks workflow versions and metrics.
-- **MotiaTest**: Utilities for testing components and workflows.
 
 The goal of this repo is to refine this framework iteratively and eventually publish it as a package.
 
@@ -69,7 +67,6 @@ The `policy-approval` workflow demonstrates the capabilities of Motia.js by auto
 
 - **Event-Driven Architecture**: Events trigger component actions, creating loosely coupled workflows.
 - **Dynamic Loading**: Workflows, traffic, and schedules are loaded dynamically at runtime.
-- **Testing Utilities**: `MotiaTest` provides mocks and tools for rigorous component testing.
 - **External Integrations**: Works seamlessly with APIs like Google Drive and OpenAI.
 - **Versioning**: Ensures workflows are incrementally improved and versioned.
 
