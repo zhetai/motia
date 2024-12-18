@@ -9,12 +9,18 @@ export default function App() {
   const { nodes, edges, loading, error } = useMotiaFlow();
   const nodeTypes = MotiaUi.getNodeTypes();
 
-  if (loading) return <div>Loading workflows...</div>;
-  if (error) return <div>Error: {error}</div>;
+  if (loading) return <div style={{ color: '#fff', fontFamily: 'Inter, sans-serif', padding: '20px' }}>Loading workflows...</div>;
+  if (error) return <div style={{ color: '#fff', fontFamily: 'Inter, sans-serif', padding: '20px' }}>Error: {error}</div>;
 
   return (
-    <div style={{ width: '100vw', height: '100vh' }}>
-      <ReactFlow nodes={nodes} edges={edges} nodeTypes={nodeTypes} fitView>
+    <div style={{ width: '100vw', height: '100vh', backgroundColor: '#121212' }}>
+      <ReactFlow 
+        nodes={nodes} 
+        edges={edges} 
+        nodeTypes={nodeTypes} 
+        fitView
+        style={{ backgroundColor: '#121212' }}
+      >
         <Background variant="lines" gap={20} size={1} color="#555" />
         <Controls />
       </ReactFlow>

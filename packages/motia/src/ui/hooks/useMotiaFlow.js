@@ -20,14 +20,40 @@ export function useMotiaFlow() {
           throw new Error("No workflows found");
         }
 
-        const transformedNodes = workflow.components.map((comp, idx) => ({
+        const rawNodes = workflow.components.map((comp, idx) => ({
           id: comp.id,
           type: comp.id,
-          position: { x: idx * 200, y: 100 },
-          data: { label: comp.id, subscribe: comp.subscribe },
+          position: { x: idx * 200, y: 100 * (idx % 2 === 0 ? 1 : 2) },
+          data: {
+            label: comp.id,
+            subscribe: comp.subscribe || [],
+            emits: comp.emits || []
+          },
         }));
 
-        setNodes(transformedNodes);
+        // Map event -> nodes that subscribe
+        const subscribersMap = {};
+        rawNodes.forEach(node => {
+          (node.data.subscribe || []).forEach(evt => {
+            if (!subscribersMap[evt]) subscribersMap[evt] = [];
+            subscribersMap[evt].push(node.id);
+          });
+        });
+
+        const rawEdges = [];
+        rawNodes.forEach(node => {
+          (node.data.emits || []).forEach(emittedEvent => {
+            const subscribers = subscribersMap[emittedEvent] || [];
+            subscribers.forEach(subNodeId => {
+              if (subNodeId !== node.id) {
+                rawEdges.push({ id: `${node.id}-${subNodeId}-${emittedEvent}`, source: node.id, target: subNodeId });
+              }
+            });
+          });
+        });
+
+        setNodes(rawNodes);
+        setEdges(rawEdges);
         setLoading(false);
       } catch (err) {
         setError(err.message);

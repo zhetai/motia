@@ -42,6 +42,7 @@ export class MotiaCore {
             return {
               id: compDirName,
               subscribe: compModule.subscribe || [],
+              emits: compModule.emits || [],
             };
           }),
         };
