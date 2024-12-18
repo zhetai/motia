@@ -48,19 +48,3 @@ body, html {
 .node-container button:hover {
   background: #555;
 }
-
-/* Ensure nodes are draggable */
-.react-flow__node {
-  cursor: grab;
-}
-
-.react-flow__node.dragging {
-  cursor: grabbing;
-}
-
-/* Reset any properties that might interfere with dragging */
-.node-container {
-  pointer-events: auto;
-  user-select: none;
-  position: relative;
-}
