@@ -1,37 +1,74 @@
-import React, { useEffect, useState, useMemo } from 'react';
+import React, { useState, useCallback } from 'react';
 import ReactFlow, {
   Controls,
   Background,
   applyEdgeChanges,
-  applyNodeChanges
+  applyNodeChanges,
+  MarkerType
 } from 'reactflow';
-import 'reactflow/dist/style.css';
-import './styles.css';
+import 'reactflow/dist/style.css';    // Ensure ReactFlow styles are included
+import './styles.css';               // Include your own CSS for layout/colors
 import { MotiaUi, useMotiaFlow } from 'motia/ui';
 import './motia-ui.js';
 import EnhancedNode from './EnhancedNode.jsx';
-import { layoutElements } from './utils/layout.js';
 
 export default function EnhancedWorkflowUI() {
   const { nodes: initialNodes, edges: initialEdges, loading, error } = useMotiaFlow();
-  const [nodes, setNodes] = useState([]);
-  const [edges, setEdges] = useState([]);
+  const [nodes, setNodes] = useState(initialNodes);
+  const [edges, setEdges] = useState(initialEdges);
 
-  const nodeTypes = useMemo(() => {
+  // Memoize nodeTypes to avoid re-creating the object on each render
+  const nodeTypes = React.useMemo(() => {
     return { ...MotiaUi.getNodeTypes(), default: EnhancedNode };
   }, []);
 
-  useEffect(() => {
-    // If we have nodes and edges, run them through dagre layout
-    if (initialNodes.length > 0 && initialEdges.length > 0) {
-      const { nodes: layoutedNodes, edges: layoutedEdges } = layoutElements(initialNodes, initialEdges);
+  // Layout nodes in a simple grid
+  React.useEffect(() => {
+    if (initialNodes.length > 0) {
+      const layoutedNodes = initialNodes.map((node, index) => {
+        const subscriberCount = node.data.subscribe?.length || 0;
+        const row = Math.floor(index / 3);
+        const col = index % 3;
+
+        return {
+          ...node,
+          position: {
+            x: col * 300 + (subscriberCount * 20),
+            y: row * 200 + (subscriberCount * 10)
+          },
+          style: {
+            opacity: 1,
+            transition: 'all 0.3s ease'
+          }
+        };
+      });
       setNodes(layoutedNodes);
-      setEdges(layoutedEdges);
-    } else {
-      // If no nodes or edges yet, just set them directly (e.g., while loading)
-      setNodes(initialNodes);
-      setEdges(initialEdges);
     }
+  }, [initialNodes]);
+
+  // Enhance edges
+  React.useEffect(() => {
+    if (initialEdges.length > 0) {
+      const enhancedEdges = initialEdges.map(edge => ({
+        ...edge,
+        type: 'smoothstep',
+        animated: true,
+        style: { strokeWidth: 2 },
+        markerEnd: {
+          type: MarkerType.ArrowClosed,
+          width: 20,
+          height: 20,
+          color: '#666',
+        },
+      }));
+      setEdges(enhancedEdges);
+    }
+  }, [initialEdges]);
+
+  // Update nodes/edges when data changes
+  React.useEffect(() => {
+    setNodes(initialNodes);
+    setEdges(initialEdges);
   }, [initialNodes, initialEdges]);
 
   if (loading) {
@@ -56,6 +93,7 @@ export default function EnhancedWorkflowUI() {
     );
   }
 
+  // Make sure parent has width/height. Here, we set it inline for simplicity.
   return (
     <div style={{ width: '100vw', height: '100vh', backgroundColor: '#111827', position: 'relative' }}>
       <div style={{
@@ -70,14 +108,16 @@ export default function EnhancedWorkflowUI() {
         nodes={nodes}
         edges={edges}
         nodeTypes={nodeTypes}
-        onNodesChange={(changes) => setNodes((ns) => applyNodeChanges(changes, ns))}
-        onEdgesChange={(changes) => setEdges((es) => applyEdgeChanges(changes, es))}
+        onNodesChange={(changes) => setNodes((nds) => applyNodeChanges(changes, nds))}
+        onEdgesChange={(changes) => setEdges((eds) => applyEdgeChanges(changes, eds))}
         fitView
+        minZoom={0.2}
+        maxZoom={1.5}
         defaultEdgeOptions={{
           type: 'smoothstep',
           animated: true,
           style: { stroke: '#666', strokeWidth: 2 },
-          markerEnd: { type: 'arrowclosed' },
+          markerEnd: { type: MarkerType.ArrowClosed },
         }}
         style={{ backgroundColor: '#111827' }}
       >
