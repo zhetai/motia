@@ -1,7 +1,6 @@
 // packages/motia/src/testing/WorkflowTestHelper.js
 import { MotiaCore, MotiaServer } from "motia";
 import { WorkflowTestMessageBus } from "./WorkflowTestMessageBus.js";
-import path from "path";
 
 export class WorkflowTestHelper {
   constructor(basePath) {
