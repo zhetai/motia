@@ -8,3 +8,4 @@ export { defineTraffic, defineRoute } from "./core/index.js";
 
 // Note: UI components are exported separately via './ui' entry point
 // CLI is accessed via the bin entry point
+export { WorkflowTestHelper } from "./testing/WorkflowTestHelper.js";

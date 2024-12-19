@@ -10,6 +10,9 @@
     "./ui": {
       "import": "./src/ui/index.js",
       "require": "./dist/browser/ui.js"
+    },
+    "./testing": {
+      "import": "./src/testing/WorkflowTestHelper.js"
     }
   },
   "sideEffects": [
@@ -21,7 +24,8 @@
   ],
   "scripts": {
     "dev": "concurrently \"node esbuild.config.js --watch\" \"vite build --watch\"",
-    "build": "node esbuild.config.js && vite build"
+    "build": "node esbuild.config.js && vite build",
+    "test": "vitest"
   },
   "devDependencies": {
     "esbuild": "^0.24.0"
