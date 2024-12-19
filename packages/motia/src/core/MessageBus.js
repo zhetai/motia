@@ -19,6 +19,7 @@ export class InMemoryMessageBus {
   }
 
   async publish(event, options) {
+    console.log("Publishing event:", event);
     await Promise.all(
       this.subscribers.map((subscriber) =>
         subscriber(event, options).catch((error) => {

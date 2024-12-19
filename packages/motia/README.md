@@ -2,6 +2,8 @@
 
 Motia.js is a powerful framework designed to simplify the creation of event-driven workflows. By enabling developers to define and connect components through events, Motia.js provides a flexible foundation for automating business processes and building scalable, maintainable systems.
 
+Think, Rails for business process automation
+
 ## Key Features
 
 ### Event-Driven Architecture
