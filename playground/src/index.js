@@ -20,8 +20,6 @@ async function main() {
   // Initialize server with correct traffic paths - note the src/traffic/inbound path
   await server.initialize(core, [path.join(__dirname, "traffic/inbound")]);
 
-  scheduler.start();
-
   console.log("Workflow initialized. Listening for events...");
 }
 
