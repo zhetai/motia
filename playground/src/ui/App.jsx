@@ -86,7 +86,7 @@ export default function EnhancedWorkflowUI() {
         zIndex: 10,
         boxShadow: '0 2px 10px rgba(0,0,0,0.3)'
       }}>
-        <h1 style={{ fontSize: '1.25rem', fontWeight: 'bold', marginBottom: '0.5rem' }}>Motia UI</h1>
+        <h2 style={{ fontSize: '1.25rem', fontWeight: 'bold', marginBottom: '0.5rem', marginTop: '0rem' }}>Motia UI</h2>
   
         {workflows.length > 1 && (
           <div style={{ marginTop: '1rem' }}>
