@@ -66,8 +66,8 @@ export default function EnhancedNode({ data }) {
 
   return (
     <div style={containerStyle}>
-      <Handle type="target" position={Position.Left} style={handleStyle} />
-      <Handle type="source" position={Position.Right} style={handleStyle} />
+      <Handle type="target" position={Position.Top} style={handleStyle} />
+      <Handle type="source" position={Position.Bottom} style={handleStyle} />
 
       <div style={{ marginBottom: '8px' }}>
         <h3 style={titleStyle}>{data.label}</h3>
