@@ -32,8 +32,6 @@ This directory implements and tests the functionality of `motia.js` through real
 #### Key Subdirectories:
 
 - **`workflows`**: Contains example workflows demonstrating how to use the Motia.js framework.
-  - **`policy-approval`**: A workflow for automating document approval based on policy rules. This includes components, scheduling, and logging mechanisms.
-  - **`example-docs`**: Sample documents for testing workflows.
 - **`traffic`**: HTTP traffic definitions used by `MotiaServer`.
 - **`components`**: Modular pieces of workflows, each reacting to specific events.
 - **`test-*` Scripts**: Scripts to validate external integrations, such as Google Drive and OpenAI connections.
@@ -49,10 +47,6 @@ Defines the npm scripts and dependencies required for the repository. Key script
 - **`simulate-webhook.sh`**: Sends a mock webhook to simulate document uploads.
 - **`test-drive-connection.js`**: Validates integration with Google Drive.
 - **`test-openai-connection.js`**: Tests connectivity and functionality with OpenAI's GPT API.
-
-## Workflow: Policy Approval
-
-The `policy-approval` workflow demonstrates the capabilities of Motia.js by automating the review and approval of policy documents.
 
 ### Flow Overview:
 
