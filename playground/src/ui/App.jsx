@@ -1,4 +1,5 @@
 import React, { useEffect, useState, useMemo } from 'react';
+import { useWorkflows } from "./hooks/useWorkflows.js";
 import ReactFlow, {
   Controls,
   Background,
@@ -13,7 +14,10 @@ import EnhancedNode from './EnhancedNode.jsx';
 import { layoutElements } from './utils/layout.js';
 
 export default function EnhancedWorkflowUI() {
-  const { nodes: initialNodes, edges: initialEdges, loading, error } = useMotiaFlow();
+  const { workflows, loading: wfLoading, error: wfError } = useWorkflows();
+  const [selectedWorkflow, setSelectedWorkflow] = useState(null);
+
+  const { nodes: initialNodes, edges: initialEdges, loading, error } = useMotiaFlow(selectedWorkflow);
   const [nodes, setNodes] = useState([]);
   const [edges, setEdges] = useState([]);
 
@@ -22,17 +26,41 @@ export default function EnhancedWorkflowUI() {
   }, []);
 
   useEffect(() => {
-    // If we have nodes and edges, run them through dagre layout
     if (initialNodes.length > 0 && initialEdges.length > 0) {
       const { nodes: layoutedNodes, edges: layoutedEdges } = layoutElements(initialNodes, initialEdges);
       setNodes(layoutedNodes);
       setEdges(layoutedEdges);
     } else {
-      // If no nodes or edges yet, just set them directly (e.g., while loading)
       setNodes(initialNodes);
       setEdges(initialEdges);
     }
   }, [initialNodes, initialEdges]);
+
+  if (wfLoading) {
+    return (
+      <div style={{
+        display: 'flex', alignItems: 'center', justifyContent: 'center',
+        width: '100vw', height: '100vh', backgroundColor: '#111827', color: '#fff'
+      }}>
+        <div style={{ fontSize: '1.5rem' }}>Loading workflows...</div>
+      </div>
+    );
+  }
+
+  if (wfError) {
+    return (
+      <div style={{
+        display: 'flex', alignItems: 'center', justifyContent: 'center',
+        width: '100vw', height: '100vh', backgroundColor: '#111827', color: '#fff'
+      }}>
+        <div style={{ fontSize: '1.5rem', color: 'red' }}>Error: {wfError}</div>
+      </div>
+    );
+  }
+
+  if (workflows.length > 1 && selectedWorkflow === null) {
+    setSelectedWorkflow(workflows[0].name);
+  }
 
   if (loading) {
     return (
@@ -45,55 +73,49 @@ export default function EnhancedWorkflowUI() {
     );
   }
 
-  if (error) {
-    return (
-      <div style={{
-        display: 'flex', alignItems: 'center', justifyContent: 'center',
-        width: '100vw', height: '100vh', backgroundColor: '#111827', color: '#fff'
-      }}>
-        <div style={{ fontSize: '1.5rem', color: 'red' }}>Error: {error}</div>
-      </div>
-    );
-  }
-
   return (
-    <div style={{ width: '100vw', height: '100vh', backgroundColor: '#111827', position: 'relative' }}>
-      <div style={{
-        position: 'absolute', top: '1rem', left: '1rem', backgroundColor: '#1f2937',
-        padding: '1rem', borderRadius: '8px', color: '#fff', zIndex: 10
-      }}>
-        <h1 style={{ fontSize: '1.25rem', fontWeight: 'bold', marginBottom: '0.5rem' }}>Workflow Visualization</h1>
-        <p style={{ fontSize: '0.875rem', color: '#ccc' }}>Drag nodes to rearrange • Zoom to explore</p>
-      </div>
+    <>
+      {workflows.length > 1 && (
+        <div style={{ position: "absolute", top: "5rem", left: "1rem", backgroundColor: "#1f2937", padding: "1rem", borderRadius: "8px", color: "#fff", zIndex: 10 }}>
+          <h2 style={{ fontSize: "1rem", fontWeight: "bold", marginBottom: "0.5rem" }}>Select Workflow</h2>
+          <select
+            value={selectedWorkflow || ""}
+            onChange={(e) => setSelectedWorkflow(e.target.value)}
+            style={{ padding: "0.5rem", backgroundColor: "#333", color: "#fff", borderRadius: "4px" }}
+          >
+            {workflows.map((wf) => (
+              <option key={wf.name} value={wf.name}>{wf.name}</option>
+            ))}
+          </select>
+        </div>
+      )}
 
-      <ReactFlow
-        nodes={nodes}
-        edges={edges}
-        nodeTypes={nodeTypes}
-        onNodesChange={(changes) => setNodes((ns) => applyNodeChanges(changes, ns))}
-        onEdgesChange={(changes) => setEdges((es) => applyEdgeChanges(changes, es))}
-        fitView
-        defaultEdgeOptions={{
-          type: 'smoothstep',
-          animated: true,
-          style: { stroke: '#666', strokeWidth: 2 },
-          markerEnd: { type: 'arrowclosed' },
-        }}
-        style={{ backgroundColor: '#111827' }}
-      >
-        <Background
-          variant="dots"
-          gap={20}
-          size={1}
-          color="#444"
+      <div style={{ width: '100vw', height: '100vh', backgroundColor: '#111827', position: 'relative' }}>
+        <div style={{
+          position: 'absolute', top: '1rem', left: '1rem', backgroundColor: '#1f2937',
+          padding: '1rem', borderRadius: '8px', color: '#fff', zIndex: 10
+        }}>
+          <h1 style={{ fontSize: '1.25rem', fontWeight: 'bold', marginBottom: '0.5rem' }}>Workflow Visualization</h1>
+          <p style={{ fontSize: '0.875rem', color: '#ccc' }}>Drag nodes to rearrange • Zoom to explore</p>
+        </div>
+
+        <ReactFlow
+          nodes={nodes}
+          edges={edges}
+          nodeTypes={nodeTypes}
+          fitView
+          defaultEdgeOptions={{
+            type: 'smoothstep',
+            animated: true,
+            style: { stroke: '#666', strokeWidth: 2 },
+            markerEnd: { type: 'arrowclosed' },
+          }}
           style={{ backgroundColor: '#111827' }}
-        />
-        <Controls style={{
-          backgroundColor: '#333',
-          borderRadius: '4px',
-          color: '#fff'
-        }}/>
-      </ReactFlow>
-    </div>
+        >
+          <Background variant="dots" gap={20} size={1} color="#444" style={{ backgroundColor: '#111827' }} />
+          <Controls style={{ backgroundColor: '#333', borderRadius: '4px', color: '#fff' }} />
+        </ReactFlow>
+      </div>
+    </>
   );
 }

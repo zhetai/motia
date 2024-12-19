@@ -1,6 +1,6 @@
 import { useEffect, useState } from "react";
 
-export function useMotiaFlow() {
+export function useMotiaFlow(selectedWorkflow) {
   const [nodes, setNodes] = useState([]);
   const [edges, setEdges] = useState([]);
   const [loading, setLoading] = useState(true);
@@ -14,8 +14,7 @@ export function useMotiaFlow() {
           throw new Error(`Failed to fetch workflows: ${res.statusText}`);
         }
         const data = await res.json();
-        const workflow = data.workflows?.[0];
-
+        let workflow = data.workflows.find(w => w.name === selectedWorkflow) || data.workflows?.[0];
         if (!workflow) {
           throw new Error("No workflows found");
         }
