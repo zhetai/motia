@@ -13,6 +13,7 @@ import './motia-ui.js';
 import EnhancedNode from './EnhancedNode.jsx';
 import { layoutElements } from './utils/layout.js';
 
+// TODO: refactor this to be simple by default with override options
 export default function EnhancedWorkflowUI() {
   const { workflows, loading: wfLoading, error: wfError } = useWorkflows();
   const [selectedWorkflow, setSelectedWorkflow] = useState(null);

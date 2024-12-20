@@ -10,6 +10,7 @@
     "motia": "node packages/motia/src/cli/index.js"
   },
   "devDependencies": {
+    "@playwright/test": "^1.49.1",
     "@types/node": "^22.10.2",
     "@vitejs/plugin-react": "^4.3.4",
     "concurrently": "^8.0.0",
