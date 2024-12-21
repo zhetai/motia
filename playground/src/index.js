@@ -1,12 +1,13 @@
 import "dotenv/config";
 import path from "path";
 import { fileURLToPath } from "url";
-import { MotiaCore, MotiaServer } from "motia";
+import { MotiaCore, MotiaServer, RedisLogger } from "motia";
 import { createMessageBusAdapter } from "motia/core/adapters";
 
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
 
+// TODO: Move some of this config as defaults to motia
 async function main() {
   // Create and initialize the message bus adapter
   const messageBus = createMessageBusAdapter(
@@ -25,8 +26,17 @@ async function main() {
 
   await messageBus.initialize();
 
+  const logger = new RedisLogger({
+    host: process.env.REDIS_HOST,
+    port: process.env.REDIS_PORT,
+    onEvent: (event) => {
+      console.log("[Redis Event]", event);
+      // Or send to your logging system
+    },
+  });
+
   // Create core with the message bus
-  const core = new MotiaCore();
+  const core = new MotiaCore({ logger });
   const server = new MotiaServer();
 
   console.log("Initializing Motia...");

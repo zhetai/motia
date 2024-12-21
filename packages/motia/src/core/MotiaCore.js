@@ -21,10 +21,11 @@ const __dirname = path.dirname(__filename);
  * and workflows, enabling flexible, event-driven behavior throughout the application.
  */
 export class MotiaCore {
-  constructor() {
+  constructor(options = {}) {
     this.messageBus = new InMemoryMessageBus();
     this.workflows = new Map();
     this.components = new Map();
+    this.logger = options.logger;
   }
 
   describeWorkflows() {
@@ -82,6 +83,9 @@ export class MotiaCore {
 
   async initialize(options = {}) {
     const workflowPaths = options.workflowPaths || ["./src/workflows"];
+    if (this.logger) {
+      await this.logger.initialize();
+    }
     this.messageBus = options.messageBus || new InMemoryMessageBus();
 
     this.workflows = new Map();

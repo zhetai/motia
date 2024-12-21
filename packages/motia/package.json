@@ -15,6 +15,10 @@
       "import": "./src/core/adapters/index.js",
       "require": "./dist/core/adapters/index.js"
     },
+    "./core/logging": {
+      "import": "./src/core/logging/index.js",
+      "require": "./dist/core/logging/index.js"
+    },
     "./testing": {
       "import": "./src/testing/WorkflowTestHelper.js"
     }
