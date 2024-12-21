@@ -21,25 +21,22 @@ export class RedisMessageBusAdapter extends MessageBusAdapter {
     this.publishClient = new Redis(this.config);
     this.subscribeClient = new Redis(this.config);
 
-    // Set up subscriber handling
-    this.subscribeClient.on("message", async (channel, message) => {
+    await this.subscribeClient.psubscribe(`${this.config.channelPrefix}*`);
+    this.subscribeClient.on("pmessage", async (pattern, channel, message) => {
       try {
         const event = JSON.parse(message);
         // Fan out to all subscribers
         await Promise.all(
           Array.from(this.subscribers).map((handler) =>
-            handler(event).catch((err) => {
-              console.error("Error in subscriber:", err);
-            })
+            handler(event).catch((err) =>
+              console.error("Error in subscriber:", err)
+            )
           )
         );
       } catch (err) {
-        console.error("Error processing Redis message:", err);
+        console.error("Error processing Redis pmessage:", err);
       }
     });
-
-    // Subscribe to the events channel
-    await this.subscribeClient.subscribe(`${this.config.channelPrefix}*`);
   }
 
   async publish(event, options = {}) {
