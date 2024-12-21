@@ -55,7 +55,7 @@ async function main() {
   // Handle cleanup on shutdown
   process.on("SIGTERM", async () => {
     console.log("Shutting down...");
-    await messageBus.cleanup();
+    await Promise.all([messageBus.cleanup(), logger.cleanup()]);
     process.exit(0);
   });
 }
