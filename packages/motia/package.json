@@ -11,6 +11,10 @@
       "import": "./src/ui/index.js",
       "require": "./dist/browser/ui.js"
     },
+    "./core/adapters": {
+      "import": "./src/core/adapters/index.js",
+      "require": "./dist/core/adapters/index.js"
+    },
     "./testing": {
       "import": "./src/testing/WorkflowTestHelper.js"
     }
@@ -32,6 +36,8 @@
   },
   "dependencies": {
     "body-parser": "^1.20.3",
-    "express": "^4.21.2"
+    "express": "^4.21.2",
+    "ioredis": "^5.4.2",
+    "kafkajs": "^2.2.4"
   }
 }

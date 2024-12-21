@@ -13,9 +13,16 @@
  * This class does not persist events or maintain any external state,
  * and is not suitable for production scenarios that require durability or scaling.
  */
+// packages/motia/src/core/MessageBus.js
 export class InMemoryMessageBus {
   constructor() {
     this.subscribers = [];
+  }
+
+  // Add initialize method to match adapter interface
+  async initialize() {
+    // No initialization needed for in-memory bus
+    return Promise.resolve();
   }
 
   async publish(event, options) {
@@ -30,5 +37,11 @@ export class InMemoryMessageBus {
 
   subscribe(handler) {
     this.subscribers.push(handler);
+  }
+
+  // Add cleanup method to match adapter interface
+  async cleanup() {
+    this.subscribers = [];
+    return Promise.resolve();
   }
 }
