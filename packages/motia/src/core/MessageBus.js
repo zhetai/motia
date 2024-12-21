@@ -13,7 +13,7 @@
  * This class does not persist events or maintain any external state,
  * and is not suitable for production scenarios that require durability or scaling.
  */
-// packages/motia/src/core/MessageBus.js
+// TODO: Move this to adapters
 export class InMemoryMessageBus {
   constructor() {
     this.subscribers = [];

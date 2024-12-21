@@ -1,4 +1,4 @@
-import { InMemoryMessageBus } from "../core/MessageBus.js";
+import { InMemoryMessageBus } from "motia";
 
 export class WorkflowTestMessageBus extends InMemoryMessageBus {
   constructor() {
