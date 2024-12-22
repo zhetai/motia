@@ -8,7 +8,7 @@ export default defineConfig({
   server: {
     port: 5173,
     proxy: {
-      "/api": "http://localhost:3000", // Proxy API calls to Node server
+      "/api": "http://localhost:4000", // Proxy API calls to Node server
     },
   },
 });

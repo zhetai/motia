@@ -14,10 +14,10 @@ export class RedisMessageBusAdapter extends MessageBusAdapter {
     this.subscribers = new Set();
     this.publishClient = null;
     this.subscribeClient = null;
+    this.processedEvents = new Map();
   }
 
   async initialize() {
-    // Create separate clients for pub/sub
     this.publishClient = new Redis(this.config);
     this.subscribeClient = new Redis(this.config);
 
@@ -25,13 +25,26 @@ export class RedisMessageBusAdapter extends MessageBusAdapter {
     this.subscribeClient.on("pmessage", async (pattern, channel, message) => {
       try {
         const event = JSON.parse(message);
-        // Fan out to all subscribers
+
+        // Only process the event for subscribers that haven't seen it
         await Promise.all(
-          Array.from(this.subscribers).map((handler) =>
-            handler(event).catch((err) =>
-              console.error("Error in subscriber:", err)
-            )
-          )
+          Array.from(this.subscribers).map(async (handler) => {
+            // If this is a component event, use component ID for tracking
+            const eventId = event.metadata?.componentId
+              ? `${event.type}-${event.metadata.componentId}`
+              : `${event.type}-${Date.now()}`;
+
+            if (!this.processedEvents.has(eventId)) {
+              this.processedEvents.set(eventId, true);
+              setTimeout(() => {
+                this.processedEvents.delete(eventId);
+              }, 1000);
+
+              await handler(event).catch((err) =>
+                console.error("Error in subscriber:", err)
+              );
+            }
+          })
         );
       } catch (err) {
         console.error("Error processing Redis pmessage:", err);
@@ -47,7 +60,13 @@ export class RedisMessageBusAdapter extends MessageBusAdapter {
     const channel = `${this.config.channelPrefix}${event.type}`;
     await this.publishClient.publish(
       channel,
-      JSON.stringify({ ...event, metadata: options.metadata })
+      JSON.stringify({
+        ...event,
+        metadata: {
+          ...options.metadata,
+          componentId: options.componentId, // Add component ID to metadata
+        },
+      })
     );
   }
 

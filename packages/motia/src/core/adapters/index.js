@@ -5,6 +5,7 @@ import { KafkaMessageBusAdapter } from "./KafkaMessageBusAdapter.js";
 import { InMemoryMessageBus } from "../MessageBus.js";
 
 export const createMessageBusAdapter = (type, config = {}) => {
+  console.log("[Adapter] Creating message bus of type:", type);
   switch (type.toLowerCase()) {
     case "redis":
       return new RedisMessageBusAdapter(config);

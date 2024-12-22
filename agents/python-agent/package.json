@@ -1,0 +1,7 @@
+{
+  "name": "@motia/python-agent",
+  "version": "1.0.0",
+  "scripts": {
+    "dev": "cd src && ../venv/bin/python -m uvicorn server:app --reload --port 8000"
+  }
+}

@@ -1,7 +1,7 @@
 import "dotenv/config";
 import path from "path";
 import { fileURLToPath } from "url";
-import { MotiaCore, MotiaServer, RedisLogger } from "motia";
+import { MotiaCore, MotiaServer } from "motia";
 import { createMessageBusAdapter } from "motia/core/adapters";
 
 const __filename = fileURLToPath(import.meta.url);
@@ -9,6 +9,10 @@ const __dirname = path.dirname(__filename);
 
 // TODO: Move some of this config as defaults to motia
 async function main() {
+  console.log(
+    "[Startup] Using message bus type:",
+    process.env.MESSAGE_BUS_TYPE
+  );
   // Create and initialize the message bus adapter
   const messageBus = createMessageBusAdapter(
     process.env.MESSAGE_BUS_TYPE || "memory",
@@ -26,17 +30,8 @@ async function main() {
 
   await messageBus.initialize();
 
-  const logger = new RedisLogger({
-    host: process.env.REDIS_HOST,
-    port: process.env.REDIS_PORT,
-    onEvent: (event) => {
-      console.log("[Redis Event]", event);
-      // Or send to your logging system
-    },
-  });
-
   // Create core with the message bus
-  const core = new MotiaCore({ logger });
+  const core = new MotiaCore();
   const server = new MotiaServer();
 
   console.log("Initializing Motia...");
@@ -45,6 +40,16 @@ async function main() {
   await core.initialize({
     workflowPaths: [path.join(__dirname, "workflows")],
     messageBus,
+    agents: {
+      "node-agent": {
+        url: "http://localhost:3000",
+        runtime: "node",
+      },
+      "python-agent": {
+        url: "http://localhost:8000",
+        runtime: "python",
+      },
+    },
   });
 
   // Initialize server with correct traffic paths
@@ -55,7 +60,7 @@ async function main() {
   // Handle cleanup on shutdown
   process.on("SIGTERM", async () => {
     console.log("Shutting down...");
-    await Promise.all([messageBus.cleanup(), logger.cleanup()]);
+    await Promise.all([messageBus.cleanup()]);
     process.exit(0);
   });
 }

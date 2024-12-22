@@ -6,6 +6,6 @@ export default defineTraffic({
   method: "POST",
   transform: (req) => {
     const { rawData } = req.body; // Expect an array of objects
-    return { type: "data.uploaded", data: { rawData } };
+    return { type: "process.uploaded", data: { rawData } };
   },
 });

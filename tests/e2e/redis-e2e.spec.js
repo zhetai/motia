@@ -25,7 +25,7 @@ test.describe("Redis E2E Test", () => {
   });
 
   test("POST /api/data/upload triggers the full workflow via Redis", async () => {
-    const res = await fetch("http://localhost:3000/api/data/upload", {
+    const res = await fetch("http://localhost:4000/api/data/upload", {
       method: "POST",
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify({ rawData: [{ id: 1, value: "test" }] }),
