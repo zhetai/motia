@@ -1,3 +1,4 @@
+// packages/motia/src/core/MotiaServer.js
 import express from "express";
 import bodyParser from "body-parser";
 import fs from "fs";
@@ -18,20 +19,14 @@ export class MotiaServer {
     const trafficFiles = [];
 
     const searchTraffic = async (dir) => {
-      let entries;
-      try {
-        entries = await fs.promises.readdir(dir, { withFileTypes: true });
-      } catch {
-        return;
-      }
-
+      const entries = await fs.promises.readdir(dir, { withFileTypes: true });
       for (const entry of entries) {
         const fullPath = path.join(dir, entry.name);
         if (entry.isDirectory()) {
           await searchTraffic(fullPath);
         } else if (
           entry.name.endsWith(".js") &&
-          !entry.name.endsWith(".test.js")
+          !entry.name.includes(".test.")
         ) {
           trafficFiles.push(fullPath);
         }
@@ -47,8 +42,9 @@ export class MotiaServer {
 
   async initialize(core, trafficPaths = ["./traffic/inbound"]) {
     this.core = core;
-    const trafficFiles = await this.findTrafficFiles(trafficPaths);
 
+    // Load traffic handlers
+    const trafficFiles = await this.findTrafficFiles(trafficPaths);
     for (const trafficFile of trafficFiles) {
       const trafficModule = await import(pathToFileURL(trafficFile));
       const trafficConfigs = Array.isArray(trafficModule.default)
@@ -60,7 +56,7 @@ export class MotiaServer {
       }
     }
 
-    // Register routes for each traffic config
+    // Set up routes
     this.traffic.forEach((config, routePath) => {
       this.express[config.method.toLowerCase()](routePath, async (req, res) => {
         try {
@@ -71,19 +67,18 @@ export class MotiaServer {
       });
     });
 
-    // Serve static files
-    this.express.use(express.static(path.join(__dirname, "../dist")));
-
-    // Return workflow descriptions
+    // API endpoints
     this.express.get("/api/workflows", (req, res) => {
       res.json(this.core.describeWorkflows());
     });
 
-    // Catch-all route to serve index.html
+    // Static files and catch-all
+    this.express.use(express.static(path.join(__dirname, "../dist")));
     this.express.get("*", (req, res) => {
       res.sendFile(path.join(__dirname, "../dist/index.html"));
     });
 
+    // Start server
     const port = process.env.PORT || 4000;
     this.express.listen(port, () => {
       console.log(`Server listening on port ${port}`);
@@ -98,12 +93,15 @@ export class MotiaServer {
     }
 
     try {
+      // Check authorization if required
       if (traffic.authorize) {
         await traffic.authorize(req);
       }
 
+      // Transform request to event
       const event = await traffic.transform(req);
 
+      // Emit through core
       await this.core.emit(event, {
         traceId: req.headers["x-trace-id"],
         metadata: {

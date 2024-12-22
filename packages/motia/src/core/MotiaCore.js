@@ -13,12 +13,10 @@ export class MotiaCore {
     this.messageBus = new InMemoryMessageBus();
     this.agentManager = null;
     this.workflows = new Map();
-    this.components = new Map();
     this.logger = options.logger;
   }
 
   async initialize(options = {}) {
-    const workflowPaths = options.workflowPaths || ["./src/workflows"];
     if (this.logger) {
       await this.logger.initialize();
     }
@@ -38,136 +36,81 @@ export class MotiaCore {
       }
     }
 
-    this.workflows = new Map();
-    this.components = new Map();
-
-    // Convert workflowPaths to absolute
-    const absoluteWorkflowPaths = workflowPaths.map((p) => path.resolve(p));
-
-    // Load all workflows
-    for (const wPath of absoluteWorkflowPaths) {
-      const workflowFiles = await this.findWorkflowFiles(wPath);
-      for (const file of workflowFiles) {
-        await this.registerWorkflow(file);
-      }
-    }
-
-    // Load all components
-    const componentFiles = await this.findComponentFiles(absoluteWorkflowPaths);
-    for (const file of componentFiles) {
-      try {
-        const fileExt = path.extname(file);
-        // For JS files, we can get metadata directly
-        if (fileExt === ".js") {
-          const component = await import(file);
-          if (component.metadata?.agent) {
-            await this.agentManager.registerComponent(
-              file,
-              component.metadata.agent
-            );
-          } else {
-            await this.registerComponent(file);
-          }
-        }
-        // For Python files, parse metadata and register with agent
-        else if (fileExt === ".py") {
-          const code = await fs.promises.readFile(file, "utf-8");
-          const metadataMatch = code.match(/metadata\s*=\s*({[\s\S]*?})/);
-          if (metadataMatch) {
-            const metadata = JSON.parse(metadataMatch[1].replace(/'/g, '"'));
-            if (metadata.agent) {
-              await this.agentManager.registerComponent(file, metadata.agent);
-            }
-          } else {
-            console.warn(`No metadata found in Python component: ${file}`);
-          }
-        }
-      } catch (error) {
-        console.error(`Error loading component ${file}:`, error);
-        console.error(error.stack); // Add stack trace for better debugging
-      }
-    }
-
-    // Subscribe local components to message bus
-    for (const [id, componentInfo] of this.components.entries()) {
-      for (const eventPattern of componentInfo.subscribe) {
-        this.messageBus.subscribe(async (event, opts) => {
-          if (this.eventMatchesPattern(event.type, eventPattern)) {
-            await componentInfo.handler(
-              event.data,
-              (e) => this.emit(e, opts),
-              event.type
-            );
-          }
-        });
-      }
-    }
+    // Load workflows and register components
+    const workflowPaths = options.workflowPaths || ["./src/workflows"];
+    await this.loadWorkflows(workflowPaths);
   }
 
   async emit(event, options) {
     await this.messageBus.publish(event, options);
   }
 
-  // Rest of the existing methods remain unchanged
   describeWorkflows() {
     return {
       workflows: Array.from(this.workflows.keys()).map((workflowPath) => {
         const workflowName = path.basename(workflowPath);
-        const componentEntries = Array.from(this.components.entries()).filter(
-          ([compPath]) => compPath.includes(workflowName)
-        );
-
         return {
           name: workflowName,
-          components: componentEntries.map(([compPath, compModule]) => {
-            const compDirName = path.basename(path.dirname(compPath));
-            return {
-              id: compDirName,
-              subscribe: compModule.subscribe || [],
-              emits: compModule.emits || [],
-            };
-          }),
+          path: workflowPath,
         };
       }),
     };
   }
 
-  async registerWorkflow(workflowPath) {
-    try {
-      const configPath = path.resolve(workflowPath, "config.js");
-      const configModule = await import(pathToFileURL(configPath).href);
-      this.workflows.set(workflowPath, configModule);
-    } catch (error) {
-      console.error(`Error registering workflow at ${workflowPath}:`, error);
-    }
-  }
+  async loadWorkflows(paths) {
+    this.workflows = new Map();
 
-  async registerComponent(componentPath) {
-    try {
-      const componentModule = await import(pathToFileURL(componentPath).href);
-      if (componentModule.subscribe) {
-        this.components.set(componentPath, {
-          handler: componentModule.default,
-          subscribe: componentModule.subscribe || [],
-          emits: componentModule.emits || [],
-        });
+    // Convert paths to absolute
+    const absolutePaths = paths.map((p) => path.resolve(p));
+
+    // Load workflow configurations
+    for (const basePath of absolutePaths) {
+      const workflowDirs = await this.findWorkflowDirectories(basePath);
+      for (const workflowPath of workflowDirs) {
+        await this.registerWorkflow(workflowPath);
       }
-    } catch (error) {
-      console.error(`Error registering component at ${componentPath}:`, error);
+    }
+
+    // Register components with agents
+    if (this.agentManager) {
+      const componentFiles = await this.findComponentFiles(absolutePaths);
+      for (const file of componentFiles) {
+        try {
+          const fileExt = path.extname(file);
+          if (fileExt === ".js" || fileExt === ".py") {
+            const code = await fs.promises.readFile(file, "utf-8");
+            const metadata = await this.extractComponentMetadata(code, fileExt);
+            if (metadata?.agent) {
+              await this.agentManager.registerComponent(file, metadata.agent);
+            }
+          }
+        } catch (error) {
+          console.error(`Error loading component ${file}:`, error);
+        }
+      }
     }
   }
 
-  eventMatchesPattern(eventType, pattern) {
-    if (pattern === "*") return true;
-    if (pattern === eventType) return true;
-    if (pattern.endsWith(".*")) {
-      const prefix = pattern.slice(0, -2);
-      return eventType.startsWith(prefix);
+  async extractComponentMetadata(code, fileExt) {
+    if (fileExt === ".py") {
+      const metadataMatch = code.match(/metadata\s*=\s*({[\s\S]*?})/);
+      if (metadataMatch) {
+        return JSON.parse(metadataMatch[1].replace(/'/g, '"'));
+      }
+    } else {
+      // For JS files, look for export const metadata = {...}
+      const metadataMatch = code.match(
+        /export\s+const\s+metadata\s*=\s*({[\s\S]*?})/
+      );
+      if (metadataMatch) {
+        // Use Function to safely evaluate the metadata object
+        return Function(`return ${metadataMatch[1]}`)();
+      }
     }
-    return false;
+    return null;
   }
 
-  async findWorkflowFiles(basePath) {
+  async findWorkflowDirectories(basePath) {
     const workflows = [];
     try {
       const entries = await fs.promises.readdir(basePath, {
@@ -178,12 +121,12 @@ export class MotiaCore {
           const workflowPath = path.join(basePath, entry.name);
           const files = await fs.promises.readdir(workflowPath);
           if (files.includes("config.js") && files.includes("version.json")) {
-            workflows.push(path.resolve(workflowPath));
+            workflows.push(workflowPath);
           }
         }
       }
     } catch (error) {
-      console.error("Error finding workflow files:", error);
+      console.error("Error finding workflow directories:", error);
     }
     return workflows;
   }
@@ -195,7 +138,6 @@ export class MotiaCore {
         const workflowDirs = await fs.promises.readdir(basePath, {
           withFileTypes: true,
         });
-
         for (const workflowDir of workflowDirs) {
           if (!workflowDir.isDirectory()) continue;
 
@@ -205,38 +147,40 @@ export class MotiaCore {
             "components"
           );
           try {
-            await this.searchComponents(componentsPath, components);
+            await this.searchComponentFiles(componentsPath, components);
           } catch {
-            // If components dir doesn't exist, skip
+            // Skip if components directory doesn't exist
           }
         }
       } catch (error) {
         console.error("Error finding component files:", error);
       }
     }
-    return components.map((c) => path.resolve(c));
+    return components;
   }
 
-  async searchComponents(dir, components) {
-    let entries;
-    try {
-      entries = await fs.promises.readdir(dir, { withFileTypes: true });
-    } catch {
-      return;
-    }
-
+  async searchComponentFiles(dir, components) {
+    const entries = await fs.promises.readdir(dir, { withFileTypes: true });
     for (const entry of entries) {
       const fullPath = path.join(dir, entry.name);
       if (entry.isDirectory()) {
-        await this.searchComponents(fullPath, components);
+        await this.searchComponentFiles(fullPath, components);
       } else if (
-        // Include both .js and .py files, but exclude test files
         (entry.name.endsWith(".js") || entry.name.endsWith(".py")) &&
-        !entry.name.endsWith(".test.js") &&
-        !entry.name.endsWith(".test.py")
+        !entry.name.includes(".test.")
       ) {
         components.push(fullPath);
       }
+    }
+  }
+
+  async registerWorkflow(workflowPath) {
+    try {
+      const configPath = path.join(workflowPath, "config.js");
+      const configModule = await import(pathToFileURL(configPath));
+      this.workflows.set(workflowPath, configModule);
+    } catch (error) {
+      console.error(`Error registering workflow at ${workflowPath}:`, error);
     }
   }
 }

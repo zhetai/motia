@@ -1,38 +1,50 @@
-// agents/node-agent/src/server.js
 import express from "express";
 import bodyParser from "body-parser";
-import { createClient } from "redis";
-import { fileURLToPath } from "url";
-import { dirname } from "path";
+import { pathToFileURL } from "url";
+import path from "path";
 import fs from "fs/promises";
-
-const __filename = fileURLToPath(import.meta.url);
-const __dirname = dirname(__filename);
 
 class NodeAgent {
   constructor() {
     this.app = express();
     this.app.use(bodyParser.json());
     this.components = new Map();
-    this.redis = null;
     this.initialize();
   }
 
   async initialize() {
-    this.redis = createClient({
-      url: process.env.REDIS_URL || "redis://localhost:6379",
-    });
+    // Create components directory if it doesn't exist
+    await fs.mkdir("components", { recursive: true });
 
-    this.redis.on("error", (err) => console.error("Redis Client Error", err));
-    await this.redis.connect();
-
-    this.setupRoutes();
-    await this.setupRedisSubscriber();
+    // Try to restore previously registered components
+    console.log("[NodeAgent] Restoring components...");
+    await this.restoreComponents();
 
     const port = process.env.PORT || 3000;
     this.app.listen(port, () => {
       console.log(`Node agent listening on port ${port}`);
     });
+
+    this.setupRoutes();
+  }
+
+  async restoreComponents() {
+    try {
+      const files = await fs.readdir("components");
+      for (const file of files) {
+        if (file.endsWith(".js")) {
+          const name = file.replace("_", "/").replace(".js", "");
+          const filePath = path.join("components", file);
+          this.components.set(name, { filePath });
+        }
+      }
+      console.log(
+        "[NodeAgent] Restored components:",
+        Array.from(this.components.keys())
+      );
+    } catch (error) {
+      console.error("[NodeAgent] Error restoring components:", error);
+    }
   }
 
   setupRoutes() {
@@ -52,148 +64,59 @@ class NodeAgent {
     });
 
     this.app.post("/execute/:componentId(*)", async (req, res) => {
+      console.log("[NodeAgent] Execute:", {
+        componentId: req.params.componentId,
+        registeredComponents: Array.from(this.components.keys()),
+      });
+
       try {
         const { componentId } = req.params;
-        const event = req.body;
-        await this.executeComponent(componentId, event);
-        res.json({ status: "success" });
+        const component = this.components.get(componentId);
+
+        if (!component) {
+          throw new Error(
+            `Component not found: ${componentId} (registered: ${Array.from(
+              this.components.keys()
+            ).join(", ")})`
+          );
+        }
+
+        const moduleUrl = pathToFileURL(component.filePath).href;
+        const module = await import(moduleUrl + "?update=" + Date.now()); // Force module reload
+        const emittedEvents = [];
+
+        await module.default(req.body.data, async (newEvent) => {
+          emittedEvents.push({
+            ...newEvent,
+            metadata: { componentId },
+          });
+        });
+
+        res.json({ status: "success", events: emittedEvents });
       } catch (error) {
-        console.error("Execution error:", error);
+        console.error("[NodeAgent] Execution error:", error);
         res.status(500).json({ error: error.message });
       }
     });
   }
 
-  async setupRedisSubscriber() {
-    const subscriber = this.redis.duplicate();
-    await subscriber.connect();
-    console.log("[NodeAgent] Setting up Redis subscriber");
-
-    // Subscribe to both channels
-    await subscriber.pSubscribe(`motia:events:*`, (message, channel) => {
-      console.log("[NodeAgent] Event received on:", channel);
-      this.handleRedisMessage(message, channel);
-    });
-
-    await subscriber.subscribe("motia:control", (message, channel) => {
-      console.log("[NodeAgent] Control message:", message);
-    });
-
-    // Publish test message
-    await this.redis.publish(
-      "motia:control",
-      JSON.stringify({
-        type: "node.ready",
-        data: { time: Date.now() },
-      })
-    );
-
-    console.log("[NodeAgent] Redis subscriptions complete");
-  }
-
-  async handleRedisMessage(message, channel) {
-    try {
-      const event = JSON.parse(message);
-
-      console.log("[NodeAgent] Processing event:", event.type);
-      await this.handleEvent(event);
-    } catch (error) {
-      console.error("[NodeAgent] Error processing message:", error);
-    }
-  }
-
   async registerComponent(name, code) {
-    // Parse the component ID into workflow and component name
-    const [workflowName, componentName] = name.split("/");
-    if (!workflowName || !componentName) {
-      throw new Error(`Invalid component ID format: ${name}`);
-    }
-
-    console.log("Registering component:", name);
-
     try {
-      const filePath = `${__dirname}/components/${name.replace("/", "_")}.js`;
-      await fs.mkdir(`${__dirname}/components`, { recursive: true });
-      await fs.writeFile(filePath, code);
-
-      const componentUrl = new URL(`file://${filePath}`);
-      const component = await import(componentUrl);
-
-      // Store with the componentId as the key
-      this.components.set(name, {
-        ...component,
-        filePath,
-        id: name,
-      });
-
-      console.log(`Component ${name} registered successfully`);
-    } catch (error) {
-      console.error("Registration error:", error);
-      throw error;
-    }
-  }
-
-  async executeComponent(componentId, event) {
-    console.log(
-      `[NodeAgent] Executing ${componentId} for event: ${event.type}`
-    );
-    const component = this.components.get(componentId);
-    if (!component) {
-      throw new Error(`Component not found: ${componentId}`);
-    }
-
-    try {
-      await component.default(
-        event.data,
-        async (newEvent) => {
-          console.log(`[NodeAgent] ${componentId} emitting ${newEvent.type}`);
-          const enrichedEvent = {
-            ...newEvent,
-            metadata: {
-              ...event.metadata,
-              componentId,
-              eventId: `${newEvent.type}-${Date.now()}-${crypto.randomUUID()}`,
-            },
-          };
-          console.log(`[NodeAgent] Published ${newEvent.type} to Redis`);
-          const channel = `motia:events:${newEvent.type}`;
-          await this.redis.publish(channel, JSON.stringify(enrichedEvent));
-          console.log(`[NodeAgent] Completed execution ${componentId}`);
-        },
-        event.type
+      const filePath = path.join(
+        "components",
+        `${name.replace(/\//g, "_")}.js`
       );
+      await fs.writeFile(filePath, code, "utf-8");
+      this.components.set(name, { filePath });
+      console.log("[NodeAgent] Registered component:", {
+        name,
+        components: Array.from(this.components.keys()),
+      });
     } catch (error) {
-      console.error("Component execution error:", error);
+      console.error(`Failed to register component ${name}:`, error);
       throw error;
     }
-  }
-
-  async handleEvent(event) {
-    for (const [componentId, component] of this.components.entries()) {
-      if (component.subscribe?.includes(event.type)) {
-        await this.executeComponent(componentId, event);
-      }
-    }
-  }
-
-  async cleanup() {
-    for (const component of this.components.values()) {
-      try {
-        await fs.unlink(component.filePath);
-      } catch (error) {
-        console.warn(`Failed to delete component file: ${error.message}`);
-      }
-    }
-
-    await this.redis.quit();
-    this.components.clear();
   }
 }
 
 const agent = new NodeAgent();
-
-process.on("SIGTERM", async () => {
-  console.log("Shutting down...");
-  await agent.cleanup();
-  process.exit(0);
-});

@@ -6,7 +6,6 @@
 export class MessageBusAdapter {
   /**
    * Initialize the adapter
-   * @returns {Promise<void>}
    */
   async initialize() {
     throw new Error("initialize() must be implemented by adapter");
@@ -14,9 +13,8 @@ export class MessageBusAdapter {
 
   /**
    * Publish an event to the message bus
-   * @param {Object} event The event to publish
-   * @param {Object} options Additional options for publishing
-   * @returns {Promise<void>}
+   * @param {Object} event - The event to publish { type, data, metadata? }
+   * @param {Object} options - Additional options { metadata? }
    */
   async publish(event, options) {
     throw new Error("publish() must be implemented by adapter");
@@ -24,16 +22,14 @@ export class MessageBusAdapter {
 
   /**
    * Subscribe to events on the message bus
-   * @param {Function} handler The event handler function
-   * @returns {Promise<void>}
+   * @param {Function} handler - Async function(event) to handle events
    */
   async subscribe(handler) {
     throw new Error("subscribe() must be implemented by adapter");
   }
 
   /**
-   * Clean up any resources used by the adapter
-   * @returns {Promise<void>}
+   * Clean up adapter resources
    */
   async cleanup() {
     throw new Error("cleanup() must be implemented by adapter");

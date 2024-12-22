@@ -1,47 +1,76 @@
-/**
- * In-Memory Message Bus Implementation
- * ------------------------------------
- * The InMemoryMessageBus provides a simple, local-only event bus for the Motia framework.
- * It manages event subscribers and publishes events to them. This bus operates fully in-memory,
- * making it ideal for development, testing, and lightweight deployments.
- *
- * Key Responsibilities:
- * - Store a list of subscribers (event handlers)
- * - When an event is published, deliver it to all subscribers that match the event type
- * - Handle errors in subscriber callbacks gracefully
- *
- * This class does not persist events or maintain any external state,
- * and is not suitable for production scenarios that require durability or scaling.
- */
-// TODO: Move this to adapters
+// packages/motia/src/core/MessageBus.js
+import crypto from "crypto";
+
 export class InMemoryMessageBus {
   constructor() {
-    this.subscribers = [];
+    this.subscribers = new Set();
+    this.processedEvents = new Map();
+    this.deduplicationWindow = 30000; // 30 seconds, matching Redis adapter
   }
 
-  // Add initialize method to match adapter interface
   async initialize() {
-    // No initialization needed for in-memory bus
+    // Start cleanup interval for processed events
+    this.cleanupInterval = setInterval(() => {
+      const now = Date.now();
+      for (const [eventId, timestamp] of this.processedEvents.entries()) {
+        if (now - timestamp > this.deduplicationWindow) {
+          this.processedEvents.delete(eventId);
+        }
+      }
+    }, 10000);
+
     return Promise.resolve();
   }
 
-  async publish(event, options) {
+  computeEventId(event) {
+    const payload = JSON.stringify({
+      type: event.type,
+      data: event.data,
+    });
+
+    const hash = crypto.createHash("sha256").update(payload).digest("hex");
+    return `evt-${hash.slice(0, 12)}`;
+  }
+
+  async publish(event, options = {}) {
+    const eventId = this.computeEventId(event);
+
+    // Skip if already processed
+    if (this.processedEvents.has(eventId)) {
+      return;
+    }
+
+    // Mark as processed
+    this.processedEvents.set(eventId, Date.now());
+
+    const enrichedEvent = {
+      ...event,
+      metadata: {
+        ...options.metadata,
+        eventId,
+        timestamp: Date.now(),
+      },
+    };
+
+    // Notify all subscribers
     await Promise.all(
-      this.subscribers.map((subscriber) =>
-        subscriber(event, options).catch((error) => {
-          console.error("Error in subscriber:", error);
+      Array.from(this.subscribers).map((handler) =>
+        handler(enrichedEvent).catch((err) => {
+          console.error("Error in event handler:", err);
         })
       )
     );
   }
 
-  subscribe(handler) {
-    this.subscribers.push(handler);
+  async subscribe(handler) {
+    this.subscribers.add(handler);
   }
 
-  // Add cleanup method to match adapter interface
   async cleanup() {
-    this.subscribers = [];
-    return Promise.resolve();
+    if (this.cleanupInterval) {
+      clearInterval(this.cleanupInterval);
+    }
+    this.subscribers.clear();
+    this.processedEvents.clear();
   }
 }
