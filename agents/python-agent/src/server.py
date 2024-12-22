@@ -9,6 +9,7 @@ import importlib.util
 import sys
 from typing import Dict, Any, Optional
 from contextlib import asynccontextmanager
+import time
 
 class ComponentRequest(BaseModel):
     code: str
@@ -18,6 +19,8 @@ class EventRequest(BaseModel):
     type: str
     data: dict
     metadata: Optional[dict] = None
+
+COMPONENTS_REGISTRY = {}  # Class variable to persist across reloads
 
 class PythonAgent:
     def __init__(self):
@@ -55,23 +58,103 @@ class PythonAgent:
                 raise HTTPException(status_code=500, detail=str(e))
 
     async def initialize(self):
-        # Initialize Redis connection
         redis_url = os.getenv("REDIS_URL", "redis://localhost:6379")
+        print(f"[PythonAgent] Connecting to Redis at {redis_url}")
+        
+        # Connect both clients
         self.redis = redis.from_url(redis_url)
+        self.redis_subscriber = redis.from_url(redis_url)
+        
+        print("[PythonAgent] Redis connections established")
+        
+        # Create pubsub and subscribe to both channels
+        self.pubsub = self.redis_subscriber.pubsub()
+        
+        # Subscribe to main event channel and control channel
+        await self.pubsub.psubscribe("motia:events:*")
+        await self.pubsub.subscribe("motia:control")
+        
+        print("[PythonAgent] Subscribed to channels")
+        
+        # Publish a test message
+        await self.redis.publish("motia:control", json.dumps({
+            "type": "python.ready",
+            "data": {"time": time.time()}
+        }))
+    
+        self.listener_task = asyncio.create_task(self.message_loop())
+        print("[PythonAgent] Message loop started")
+
+        print("[PythonAgent] Restoring components from registry")
+        self.components = PythonAgent.COMPONENTS_REGISTRY.copy()
+        print(f"[PythonAgent] Restored {len(self.components)} components")
+        for name, comp in self.components.items():
+        print(f"[PythonAgent] - {name} (subscribes to: {comp['subscribe']})")
+
+    async def message_loop(self):
+        print("[PythonAgent] Message loop running")
+        try:
+            async for message in self.pubsub.listen():
+                print(f"[PythonAgent] Message received: {message}")
+                if message["type"] == "pmessage":
+                    data = message["data"]
+                    if isinstance(data, bytes):
+                        data = data.decode('utf-8')
+                        
+                    try:
+                        event = json.loads(data)
+                        print(f"[PythonAgent] Processed event: {event}")
+                        
+                        if not event.get("metadata", {}).get("fromAgent"):
+                            print(f"[PythonAgent] Processing event type: {event['type']}")
+                            await self.handle_event(event)
+                        else:
+                            print(f"[PythonAgent] Skipping agent event: {event['type']}")
+                    except json.JSONDecodeError as e:
+                        print(f"[PythonAgent] Failed to parse JSON: {e}")
+                    except Exception as e:
+                        print(f"[PythonAgent] Error processing message: {e}")
+        except Exception as e:
+            print(f"[PythonAgent] Message loop error: {e}")
+            # Restart the loop
+            self.listener_task = asyncio.create_task(self.message_loop())
+
+    async def listen_for_events(self, pubsub):
+        print("[PythonAgent] Event listener started")
+        try:
+            while True:  # Add explicit loop
+                message = await pubsub.get_message(ignore_subscribe_messages=True)
+                if message is not None:
+                    print(f"[PythonAgent] Raw message received: {message}")
+                    if message["type"] == "pmessage":
+                        try:
+                            event = json.loads(message["data"])
+                            print(f"[PythonAgent] Parsed event: {event}")
+                            if not event.get("metadata", {}).get("fromAgent"):
+                                print(f"[PythonAgent] Processing event: {event['type']}")
+                                await self.handle_event(event)
+                            else:
+                                print(f"[PythonAgent] Skipping agent event: {event['type']}")
+                        except json.JSONDecodeError as e:
+                            print(f"[PythonAgent] JSON decode error: {str(e)}")
+                await asyncio.sleep(0.01)  # Prevent tight loop
+        except Exception as e:
+            print(f"[PythonAgent] Listener error: {str(e)}")
+            print("[PythonAgent] Attempting to restart listener")
+            asyncio.create_task(self.listen_for_events(pubsub))
 
     async def register_component(self, name: str, code: str):
         try:
-            # Save component code to a temp file
+            print(f"[PythonAgent] Registering component: {name}")
             component_dir = "components"
             os.makedirs(component_dir, exist_ok=True)
             
-            # Use the component name as the filename (sanitized)
             file_name = name.replace('/', '_')
             file_path = os.path.join(component_dir, f"{file_name}.py")
             
             with open(file_path, "w") as f:
                 f.write(code)
-            
+
             # Import the component
             spec = importlib.util.spec_from_file_location(name, file_path)
             if spec is None:
@@ -84,75 +167,90 @@ class PythonAgent:
                 
             spec.loader.exec_module(module)
             
-            # Store the component with its handler
-            if not hasattr(module, 'handler'):
-                raise ValueError(f"Component {name} does not have a handler function")
-                
-            self.components[name] = {
+            # Store in both instance and class registry
+            component_info = {
                 "module": module,
                 "file_path": file_path,
                 "subscribe": getattr(module, 'subscribe', []),
                 "emits": getattr(module, 'emits', [])
             }
-            
-            print(f"Component {name} registered successfully")
+            self.components[name] = component_info
+            PythonAgent.COMPONENTS_REGISTRY[name] = component_info
+                
+            print(f"[PythonAgent] Component {name} registered successfully")
+            print(f"[PythonAgent] Subscriptions: {component_info['subscribe']}")
             
         except Exception as e:
-            print(f"Failed to register component {name}: {str(e)}")
+            print(f"[PythonAgent] Failed to register component {name}: {str(e)}")
             raise
 
     async def execute_component(self, component_id: str, event: EventRequest):
         print(f"[PythonAgent] Executing {component_id} for event: {event.type}")
         if component_id not in self.components:
+            print(f"[PythonAgent] Available components: {list(self.components.keys())}")
             raise KeyError(f"Component not found: {component_id}")
             
         component = self.components[component_id]
         
-        # Create emit function for this component
+        # Create emit function for this component with proper metadata handling
         async def emit(new_event):
             print(f"[PythonAgent] {component_id} emitting: {new_event['type']}")
             channel = f"motia:events:{new_event['type']}"
-            print(f"Component {component_id} emitting: {new_event}")
-            await self.redis.publish(channel, json.dumps(new_event))
-        
-        # Execute the component's handler
+            
+            # Enrich the event with metadata
+            enriched_event = {
+                **new_event,
+                'metadata': {
+                    **(event.metadata or {}),  # Preserve existing metadata
+                    'fromAgent': True,
+                    'componentId': component_id,
+                    'eventId': f"{new_event['type']}-{int(time.time()*1000)}-{str(uuid.uuid4())}",
+                }
+            }
+            
+            print(f"Component {component_id} emitting: {enriched_event}")
+            await self.redis.publish(channel, json.dumps(enriched_event))
+            print(f"[PythonAgent] Published {new_event['type']} to Redis")
         try:
             await component["module"].handler(event.data, emit)
+            print(f"[PythonAgent] Completed execution {component_id}")
         except Exception as e:
             print(f"Error in component {component_id} handler: {str(e)}")
             raise
 
     async def handle_event(self, event):
+        print(f"[PythonAgent] Looking for components that handle: {event['type']}")
         # Find components that subscribe to this event type
         for name, component in self.components.items():
             if event["type"] in component["subscribe"]:
+                print(f"[PythonAgent] Found component {name} subscribing to {event['type']}")
                 try:
                     await self.execute_component(
                         name, 
                         EventRequest(
                             type=event["type"],
                             data=event["data"],
-                            metadata=event.get("metadata")
+                            metadata=event.get("metadata", {})
                         )
                     )
                 except Exception as e:
-                    print(f"Error executing component {name}: {str(e)}")
+                    print(f"[PythonAgent] Error executing component {name}: {str(e)}")
+            else:
+                print(f"[PythonAgent] Component {name} does not subscribe to {event['type']}")
 
     async def cleanup(self):
-        # Clean up component files
-        for component in self.components.values():
-            try:
-                os.remove(component["file_path"])
-            except Exception as e:
-                print(f"Error removing component file: {str(e)}")
+        if hasattr(self, 'listener_task'):
+            self.listener_task.cancel()
         
-        # Close Redis connections
-        if self.redis:
+        if hasattr(self, 'pubsub'):
+            await self.pubsub.punsubscribe()
+            await self.pubsub.close()
+        
+        if hasattr(self, 'redis'):
             await self.redis.close()
-        if self.redis_subscriber:
-            await self.redis_subscriber.close()
         
-        self.components.clear()
+        if hasattr(self, 'redis_subscriber'):
+            await self.redis_subscriber.close()
 
 # Create agent instance
 agent = PythonAgent()

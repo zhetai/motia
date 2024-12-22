@@ -9,12 +9,14 @@ export class RedisMessageBusAdapter extends MessageBusAdapter {
       host: config.host || "localhost",
       port: config.port || 6379,
       channelPrefix: config.channelPrefix || "motia:events:",
+      deduplicationWindow: config.deduplicationWindow || 30000, // 30 seconds default
       ...config,
     };
     this.subscribers = new Set();
     this.publishClient = null;
     this.subscribeClient = null;
     this.processedEvents = new Map();
+    this.startCleanupInterval();
   }
 
   async initialize() {
@@ -25,14 +27,21 @@ export class RedisMessageBusAdapter extends MessageBusAdapter {
     this.subscribeClient.on("pmessage", async (pattern, channel, message) => {
       try {
         const event = JSON.parse(message);
+        const enrichedEvent = {
+          ...event,
+          metadata: {
+            ...event.metadata,
+            fromRedis: true,
+          },
+        };
 
         // Only process the event for subscribers that haven't seen it
         await Promise.all(
           Array.from(this.subscribers).map(async (handler) => {
             // If this is a component event, use component ID for tracking
-            const eventId = event.metadata?.componentId
-              ? `${event.type}-${event.metadata.componentId}`
-              : `${event.type}-${Date.now()}`;
+            const eventId = enrichedEvent.metadata?.componentId
+              ? `${enrichedEvent.type}-${enrichedEvent.metadata.componentId}`
+              : `${enrichedEvent.type}-${Date.now()}`;
 
             if (!this.processedEvents.has(eventId)) {
               this.processedEvents.set(eventId, true);
@@ -40,7 +49,7 @@ export class RedisMessageBusAdapter extends MessageBusAdapter {
                 this.processedEvents.delete(eventId);
               }, 1000);
 
-              await handler(event).catch((err) =>
+              await handler(enrichedEvent).catch((err) =>
                 console.error("Error in subscriber:", err)
               );
             }
@@ -52,10 +61,24 @@ export class RedisMessageBusAdapter extends MessageBusAdapter {
     });
   }
 
-  async publish(event, options = {}) {
-    if (!this.publishClient) {
-      throw new Error("Redis adapter not initialized");
+  async publish(event, options) {
+    const eventId =
+      options.eventId || `${event.type}-${Date.now()}-${Math.random()}`;
+
+    console.log(
+      `[RedisMessageBus] Publishing event: ${event.type}, ID: ${eventId}`
+    );
+
+    if (this.processedEvents.has(eventId)) {
+      console.log(`[RedisMessageBus] Skipping duplicate event: ${eventId}`);
+      return;
     }
+
+    this.processedEvents.set(eventId, Date.now());
+
+    setTimeout(() => {
+      this.processedEvents.delete(eventId);
+    }, this.config.deduplicationWindow);
 
     const channel = `${this.config.channelPrefix}${event.type}`;
     await this.publishClient.publish(
@@ -64,7 +87,8 @@ export class RedisMessageBusAdapter extends MessageBusAdapter {
         ...event,
         metadata: {
           ...options.metadata,
-          componentId: options.componentId, // Add component ID to metadata
+          eventId, // Include eventId in metadata
+          componentId: options.componentId,
         },
       })
     );
@@ -74,7 +98,21 @@ export class RedisMessageBusAdapter extends MessageBusAdapter {
     this.subscribers.add(handler);
   }
 
+  startCleanupInterval() {
+    setInterval(() => {
+      const now = Date.now();
+      for (const [eventId, timestamp] of this.processedEvents.entries()) {
+        if (now - timestamp > this.config.deduplicationWindow) {
+          this.processedEvents.delete(eventId);
+        }
+      }
+    }, 10000); // Cleanup every 10 seconds
+  }
+
   async cleanup() {
+    if (this.cleanupInterval) {
+      clearInterval(this.cleanupInterval);
+    }
     await Promise.all([
       this.publishClient?.quit(),
       this.subscribeClient?.quit(),

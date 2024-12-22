@@ -30,7 +30,9 @@ export class AgentManager {
         `[AgentManager] Received event: ${event.type}`,
         event.metadata?.fromAgent ? "(from agent)" : "(new event)"
       );
-      if (!event.metadata?.fromAgent) {
+
+      // Only handle events from HTTP endpoints (not from Redis)
+      if (!event.metadata?.fromRedis && !event.metadata?.fromAgent) {
         await this.routeEventToComponent(event);
       }
     });
@@ -63,6 +65,17 @@ export class AgentManager {
       agent.status = "ready";
       this.agents.set(name, agent);
       console.log(`Agent ${name} registered successfully`);
+
+      // Test Redis by publishing a specific startup message
+      await this.messageBus.publish(
+        {
+          type: "agent.startup",
+          data: { agent: name, time: Date.now() },
+        },
+        {
+          componentId: `system/${name}`,
+        }
+      );
     } else {
       throw new Error(`Failed to register agent ${name}: health check failed`);
     }
@@ -77,14 +90,36 @@ export class AgentManager {
       const componentId = this.getComponentId(componentPath);
       const fileExt = path.extname(componentPath);
 
-      // Skip if file extension doesn't match agent runtime
-      const expectedExt = agent.runtime === "python" ? ".py" : ".js";
-      if (fileExt !== expectedExt) {
-        console.log(
-          `Skipping ${componentPath} - wrong runtime for ${agentName}`
-        );
-        return;
+      console.log(
+        `[AgentManager] Registering ${componentId} with ${agentName}`
+      );
+
+      // Extract metadata based on file type
+      let metadata;
+      if (fileExt === ".py") {
+        const metadataMatch = code.match(/metadata\s*=\s*({[\s\S]*?})/);
+        metadata = metadataMatch
+          ? JSON.parse(metadataMatch[1].replace(/'/g, '"'))
+          : {};
+        const subscribeMatch = code.match(/subscribe\s*=\s*(\[[^\]]+\])/);
+        const emitsMatch = code.match(/emits\s*=\s*(\[[^\]]+\])/);
+
+        metadata = {
+          ...metadata,
+          subscribe: subscribeMatch
+            ? JSON.parse(subscribeMatch[1].replace(/'/g, '"'))
+            : [],
+          emits: emitsMatch ? JSON.parse(emitsMatch[1].replace(/'/g, '"')) : [],
+        };
+      } else {
+        // For JS files, we can import directly
+        metadata = await import(componentPath);
       }
+
+      console.log(
+        `[AgentManager] Component subscribes to:`,
+        metadata.subscribe
+      );
 
       // Deploy to agent
       const response = await fetch(`${agent.url}/register`, {
@@ -100,26 +135,6 @@ export class AgentManager {
         throw new Error(`Failed to deploy component: ${response.statusText}`);
       }
 
-      // Extract metadata based on runtime
-      let metadata;
-      if (agent.runtime === "python") {
-        const metadataMatch = code.match(/metadata\s*=\s*({[\s\S]*?})/);
-        const subscribeMatch = code.match(/subscribe\s*=\s*(\[[^\]]+\])/);
-        const emitsMatch = code.match(/emits\s*=\s*(\[[^\]]+\])/);
-
-        metadata = {
-          subscribe: subscribeMatch
-            ? JSON.parse(subscribeMatch[1].replace(/'/g, '"'))
-            : [],
-          emits: emitsMatch ? JSON.parse(emitsMatch[1].replace(/'/g, '"')) : [],
-          metadata: metadataMatch
-            ? JSON.parse(metadataMatch[1].replace(/'/g, '"'))
-            : {},
-        };
-      } else {
-        metadata = await import(componentPath);
-      }
-
       // Register component metadata
       this.componentRegistry.set(componentPath, {
         agent: agentName,
@@ -129,7 +144,9 @@ export class AgentManager {
         metadata: metadata.metadata || {},
       });
 
-      console.log(`Component ${componentId} registered with ${agentName}`);
+      console.log(
+        `[AgentManager] Component ${componentId} registered with ${agentName}`
+      );
     } catch (error) {
       console.error(`Failed to register component ${componentPath}:`, error);
       throw error;
@@ -153,8 +170,11 @@ export class AgentManager {
   }
 
   async routeEventToComponent(event) {
+    console.log(`[AgentManager] Routing event: ${event.type}`);
     // Track processed events to prevent duplicates
-    const eventId = `${event.type}-${Date.now()}`;
+    const eventId =
+      event.metadata?.eventId ||
+      `${event.type}-${Date.now()}-${crypto.randomUUID()}`;
     if (this._processedEvents?.has(eventId)) {
       return;
     }
@@ -175,7 +195,7 @@ export class AgentManager {
         ...event.metadata,
         fromAgent: true,
         routedAt: Date.now(),
-        eventId: `${event.type}-${crypto.randomUUID()}`,
+        eventId,
       },
     };
 
@@ -184,10 +204,25 @@ export class AgentManager {
       // Don't route to the component that just emitted
       .filter(([_, comp]) => !(comp.emits || []).includes(event.type));
 
+    console.log(
+      `[AgentManager] Found subscribers:`,
+      subscribers.map(([_, comp]) => comp.componentId)
+    );
+
     if (subscribers.length === 0) {
       console.log(`No subscribers found for event type: ${event.type}`);
       return;
     }
+
+    // Log filtered subscribers after emits check
+    const finalSubscribers = subscribers.filter(
+      ([_, comp]) => !(comp.emits || []).includes(event.type)
+    );
+
+    console.log(
+      `[AgentManager] After emits filter, subscribers:`,
+      finalSubscribers.map(([_, comp]) => comp.componentId)
+    );
 
     const executions = subscribers.map(async ([_, component]) => {
       const agent = this.agents.get(component.agent);

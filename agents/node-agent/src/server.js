@@ -67,6 +67,42 @@ class NodeAgent {
   async setupRedisSubscriber() {
     const subscriber = this.redis.duplicate();
     await subscriber.connect();
+    console.log("[NodeAgent] Setting up Redis subscriber");
+
+    // Subscribe to both channels
+    await subscriber.pSubscribe(`motia:events:*`, (message, channel) => {
+      console.log("[NodeAgent] Event received on:", channel);
+      this.handleRedisMessage(message, channel);
+    });
+
+    await subscriber.subscribe("motia:control", (message, channel) => {
+      console.log("[NodeAgent] Control message:", message);
+    });
+
+    // Publish test message
+    await this.redis.publish(
+      "motia:control",
+      JSON.stringify({
+        type: "node.ready",
+        data: { time: Date.now() },
+      })
+    );
+
+    console.log("[NodeAgent] Redis subscriptions complete");
+  }
+
+  async handleRedisMessage(message, channel) {
+    try {
+      const event = JSON.parse(message);
+      if (!event.metadata?.fromAgent) {
+        console.log("[NodeAgent] Processing event:", event.type);
+        await this.handleEvent(event);
+      } else {
+        console.log("[NodeAgent] Skipping agent event:", event.type);
+      }
+    } catch (error) {
+      console.error("[NodeAgent] Error processing message:", error);
+    }
   }
 
   async registerComponent(name, code) {
@@ -113,15 +149,20 @@ class NodeAgent {
       await component.default(
         event.data,
         async (newEvent) => {
+          console.log(`[NodeAgent] ${componentId} emitting ${newEvent.type}`);
           const enrichedEvent = {
             ...newEvent,
             metadata: {
               ...event.metadata,
               fromAgent: true,
+              componentId,
+              eventId: `${newEvent.type}-${Date.now()}-${crypto.randomUUID()}`,
             },
           };
+          console.log(`[NodeAgent] Published ${newEvent.type} to Redis`);
           const channel = `motia:events:${newEvent.type}`;
           await this.redis.publish(channel, JSON.stringify(enrichedEvent));
+          console.log(`[NodeAgent] Completed execution ${componentId}`);
         },
         event.type
       );
