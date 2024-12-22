@@ -12,11 +12,6 @@ export class RedisLogger {
   }
 
   async initialize() {
-    console.log("[Redis Logger] Initializing with config:", {
-      host: this.config.host,
-      port: this.config.port,
-    });
-
     this.monitorClient = new Redis(this.config);
 
     // Start monitoring Redis commands
@@ -33,8 +28,6 @@ export class RedisLogger {
             channel: args[1],
             message: args[2],
           };
-
-          console.log("[Redis Logger] Pub/Sub Activity:", event);
 
           try {
             const parsedMessage = JSON.parse(args[2]);

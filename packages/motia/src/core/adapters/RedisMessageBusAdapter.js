@@ -32,11 +32,6 @@ export class RedisMessageBusAdapter extends MessageBusAdapter {
     await this.subscribeClient.psubscribe(`${this.config.channelPrefix}*`);
 
     this.subscribeClient.on("pmessage", async (pattern, channel, message) => {
-      console.log("[RedisMB] Processing message:", {
-        pattern,
-        channel,
-      });
-
       try {
         const event = JSON.parse(message);
         await Promise.all(
@@ -66,7 +61,6 @@ export class RedisMessageBusAdapter extends MessageBusAdapter {
   }
 
   async subscribe(handler) {
-    console.log("[RedisMB] Adding subscriber");
     this.subscribers.add(handler);
   }
 

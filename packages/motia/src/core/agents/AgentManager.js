@@ -25,12 +25,8 @@ export class AgentManager {
         this.checkAgentHealth(agent);
       }
     }, 30000);
-    console.log(
-      "[AgentManager] Initializing with messageBus:",
-      !!this.messageBus
-    );
+
     this.messageBus.subscribe(async (event) => {
-      console.log(`[AgentManager] Received event: ${event.type}`);
       await this.routeEventToComponent(event);
     });
   }
@@ -46,7 +42,6 @@ export class AgentManager {
     if (await this.checkAgentHealth(agent)) {
       agent.status = "ready";
       this.agents.set(name, agent);
-      console.log(`Agent ${name} registered successfully`);
     } else {
       throw new Error(`Failed to register agent ${name}: health check failed`);
     }
@@ -98,10 +93,6 @@ export class AgentManager {
         componentId,
         subscribe: metadata.subscribe || [],
       });
-
-      console.log(
-        `[AgentManager] Component ${componentId} registered with ${agentName}`
-      );
     } catch (error) {
       console.error(`Failed to register component ${componentPath}:`, error);
       throw error;
@@ -129,14 +120,8 @@ export class AgentManager {
   }
 
   async routeEventToComponent(event) {
-    console.log("[AgentManager] Finding subscribers for event:", event.type);
     const subscribers = Array.from(this.componentRegistry.entries()).filter(
       ([_, comp]) => comp.subscribe.includes(event.type)
-    );
-
-    console.log(
-      "[AgentManager] Found subscribers:",
-      subscribers.map(([_, comp]) => comp.componentId)
     );
 
     for (const [_, component] of subscribers) {

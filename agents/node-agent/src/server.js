@@ -16,13 +16,11 @@ class NodeAgent {
     // Create components directory if it doesn't exist
     await fs.mkdir("components", { recursive: true });
 
-    // Try to restore previously registered components
-    console.log("[NodeAgent] Restoring components...");
     await this.restoreComponents();
 
     const port = process.env.PORT || 3000;
     this.app.listen(port, () => {
-      console.log(`Node agent listening on port ${port}`);
+      console.log(`[NodeAgentServer] listening on port ${port}`);
     });
 
     this.setupRoutes();
@@ -35,13 +33,10 @@ class NodeAgent {
         if (file.endsWith(".js")) {
           const name = file.replace("_", "/").replace(".js", "");
           const filePath = path.join("components", file);
+          console.log(`[NodeAgent] Restored ${files.length} components`);
           this.components.set(name, { filePath });
         }
       }
-      console.log(
-        "[NodeAgent] Restored components:",
-        Array.from(this.components.keys())
-      );
     } catch (error) {
       console.error("[NodeAgent] Error restoring components:", error);
     }
@@ -64,11 +59,6 @@ class NodeAgent {
     });
 
     this.app.post("/execute/:componentId(*)", async (req, res) => {
-      console.log("[NodeAgent] Execute:", {
-        componentId: req.params.componentId,
-        registeredComponents: Array.from(this.components.keys()),
-      });
-
       try {
         const { componentId } = req.params;
         const component = this.components.get(componentId);
@@ -108,10 +98,6 @@ class NodeAgent {
       );
       await fs.writeFile(filePath, code, "utf-8");
       this.components.set(name, { filePath });
-      console.log("[NodeAgent] Registered component:", {
-        name,
-        components: Array.from(this.components.keys()),
-      });
     } catch (error) {
       console.error(`Failed to register component ${name}:`, error);
       throw error;

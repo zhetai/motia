@@ -81,7 +81,7 @@ export class MotiaServer {
     // Start server
     const port = process.env.PORT || 4000;
     this.express.listen(port, () => {
-      console.log(`Server listening on port ${port}`);
+      console.log(`[MotiaServer] Server listening on port ${port}`);
     });
   }
 

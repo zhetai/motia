@@ -8,11 +8,6 @@ const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
 
 async function main() {
-  console.log(
-    "[Startup] Using message bus type:",
-    process.env.MESSAGE_BUS_TYPE
-  );
-
   // Create and initialize the message bus adapter
   const messageBus = createMessageBusAdapter(
     process.env.MESSAGE_BUS_TYPE || "memory",
@@ -27,7 +22,7 @@ async function main() {
   const core = new MotiaCore();
   const server = new MotiaServer();
 
-  console.log("Initializing Motia...");
+  console.log("[playground/index] Initializing Motia...");
 
   await core.initialize({
     workflowPaths: [path.join(__dirname, "workflows")],
@@ -46,10 +41,12 @@ async function main() {
 
   await server.initialize(core, [path.join(__dirname, "traffic/inbound")]);
 
-  console.log("Workflow initialized. Listening for events...");
+  console.log(
+    "[playground/index] Workflow initialized. Listening for events..."
+  );
 
   process.on("SIGTERM", async () => {
-    console.log("Shutting down...");
+    console.log("[playground/index] Shutting down...");
     await messageBus.cleanup();
     process.exit(0);
   });
