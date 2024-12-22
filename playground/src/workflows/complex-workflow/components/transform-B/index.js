@@ -1,8 +1,15 @@
-export const subscribe = ["data.partB"];
-export const emits = ["data.transformedB"];
+export const subscribe = ["complex.partB"];
+export const emits = ["complex.transformedB"];
 
 export default async function transformBHandler(input, emit) {
   const { partB, cycleCount } = input;
-  const transformedB = partB.map(item => ({ value: item * 3, source: 'B', cycleCount }));
-  await emit({ type: "data.transformedB", data: { cycleCount, transformedB } });
+  const transformedB = partB.map((item) => ({
+    value: item * 3,
+    source: "B",
+    cycleCount,
+  }));
+  await emit({
+    type: "complex.transformedB",
+    data: { cycleCount, transformedB },
+  });
 }

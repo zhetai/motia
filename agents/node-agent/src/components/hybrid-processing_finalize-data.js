@@ -12,6 +12,8 @@ export default async function finalizeData(input, emit) {
   console.log("validateData invocation #", invocationCount);
   const { items, analysis, timestamp } = input;
 
+  console.log("$$$$$$$$$$$$$$$$$$$$$", input);
+
   await emit({
     type: "hybrid.completed",
     data: {

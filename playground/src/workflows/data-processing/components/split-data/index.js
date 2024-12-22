@@ -1,5 +1,5 @@
 export const subscribe = ["processing.validated"];
-export const emits = ["processing.split.partA", "processing.split.partB"];
+export const emits = ["processing.splitpartA", "processing.splitpartB"];
 
 export default async function splitData(input, emit) {
   const { rawData } = input;
@@ -7,6 +7,6 @@ export default async function splitData(input, emit) {
   const partA = rawData.slice(0, mid);
   const partB = rawData.slice(mid);
 
-  await emit({ type: "processing.split.partA", data: { partA } });
-  await emit({ type: "processing.split.partB", data: { partB } });
+  await emit({ type: "processing.splitpartA", data: { partA } });
+  await emit({ type: "processing.splitpartB", data: { partB } });
 }

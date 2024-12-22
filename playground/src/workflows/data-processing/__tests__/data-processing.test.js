@@ -39,13 +39,15 @@ describe("data-processing workflow", () => {
     const events = helper.receivedEvents;
     expect(events).toBeDefined();
 
-    const uploadedEvent = events.find((e) => e.type === "data.uploaded");
+    const uploadedEvent = events.find((e) => e.type === "processing.uploaded");
     expect(uploadedEvent.data.rawData).toEqual(testData);
 
-    const validatedEvent = events.find((e) => e.type === "data.validated");
+    const validatedEvent = events.find(
+      (e) => e.type === "processing.validated"
+    );
     expect(validatedEvent.data.rawData).toEqual(testData);
 
-    const savedEvent = events.find((e) => e.type === "data.saved");
+    const savedEvent = events.find((e) => e.type === "processing.saved");
     expect(savedEvent.data.count).toBe(2);
     expect(savedEvent.data.status).toBe("success");
   });
@@ -64,7 +66,7 @@ describe("data-processing workflow", () => {
     await new Promise((resolve) => setTimeout(resolve, 100));
 
     const events = helper.receivedEvents;
-    expect(events.some((e) => e.type === "data.uploaded")).toBe(true);
-    expect(events.some((e) => e.type === "data.validated")).toBe(false);
+    expect(events.some((e) => e.type === "processing.uploaded")).toBe(true);
+    expect(events.some((e) => e.type === "processing.validated")).toBe(false);
   });
 });

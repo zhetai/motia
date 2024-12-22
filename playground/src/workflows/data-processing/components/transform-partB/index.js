@@ -1,5 +1,5 @@
-export const subscribe = ["processing.split.partB"];
-export const emits = ["processing.transformed.partB"];
+export const subscribe = ["processing.splitpartB"];
+export const emits = ["processing.transformedpartB"];
 
 export default async function transformPartB(input, emit) {
   const { partB } = input;
@@ -9,7 +9,7 @@ export default async function transformPartB(input, emit) {
     part: "B",
   }));
   await emit({
-    type: "processing.transformed.partB",
+    type: "processing.transformedpartB",
     data: { transformedB },
   });
 }

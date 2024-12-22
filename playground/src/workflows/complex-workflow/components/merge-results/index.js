@@ -1,20 +1,20 @@
-export const subscribe = ["data.transformedA", "data.transformedB"];
-export const emits = ["data.merged"];
+export const subscribe = ["processing.transformedA", "processing.transformedB"];
+export const emits = ["processing.merged"];
 
 let tempA = null;
 let tempB = null;
 
 export default async function mergeResultsHandler(input, emit, eventType) {
   const { cycleCount } = input;
-  if (eventType === "data.transformedA") {
+  if (eventType === "processing.transformedA") {
     tempA = input.transformedA;
-  } else if (eventType === "data.transformedB") {
+  } else if (eventType === "processing.transformedB") {
     tempB = input.transformedB;
   }
 
   if (tempA && tempB) {
     const merged = [...tempA, ...tempB];
-    await emit({ type: "data.merged", data: { cycleCount, merged } });
+    await emit({ type: "processing.merged", data: { cycleCount, merged } });
     tempA = null;
     tempB = null;
   }

@@ -1,10 +1,10 @@
-export const subscribe = ["workflow.finalize"];
-export const emits = ["workflow.done"];
+export const subscribe = ["complex.finalize"];
+export const emits = ["complex.done"];
 
 export default async function finalizeHandler(input, emit) {
   const { merged, message } = input;
   await emit({
-    type: "workflow.done",
+    type: "complex.done",
     data: { status: "success", resultCount: merged.length },
   });
 }
