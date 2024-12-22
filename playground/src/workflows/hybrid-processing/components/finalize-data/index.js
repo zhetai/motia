@@ -6,7 +6,10 @@ export const metadata = {
 export const subscribe = ["hybrid.analyzed"];
 export const emits = ["hybrid.completed"];
 
+let invocationCount = 0;
 export default async function finalizeData(input, emit) {
+  invocationCount++;
+  console.log("validateData invocation #", invocationCount);
   const { items, analysis, timestamp } = input;
 
   await emit({

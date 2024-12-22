@@ -10,6 +10,7 @@ import sys
 from typing import Dict, Any, Optional
 from contextlib import asynccontextmanager
 import time
+import uuid
 
 class ComponentRequest(BaseModel):
     code: str
@@ -20,9 +21,9 @@ class EventRequest(BaseModel):
     data: dict
     metadata: Optional[dict] = None
 
-COMPONENTS_REGISTRY = {}  # Class variable to persist across reloads
-
 class PythonAgent:
+    COMPONENTS_REGISTRY = {}  # Class variable to persist across reloads
+
     def __init__(self):
         self.components: Dict[str, Any] = {}
         self.redis: Optional[redis.Redis] = None
@@ -89,7 +90,7 @@ class PythonAgent:
         self.components = PythonAgent.COMPONENTS_REGISTRY.copy()
         print(f"[PythonAgent] Restored {len(self.components)} components")
         for name, comp in self.components.items():
-        print(f"[PythonAgent] - {name} (subscribes to: {comp['subscribe']})")
+            print(f"[PythonAgent] - {name} (subscribes to: {comp['subscribe']})")
 
     async def message_loop(self):
         print("[PythonAgent] Message loop running")
@@ -102,14 +103,10 @@ class PythonAgent:
                         data = data.decode('utf-8')
                         
                     try:
-                        event = json.loads(data)
-                        print(f"[PythonAgent] Processed event: {event}")
+                        event = json.loads(data)                        
+                        print(f"[PythonAgent] Processing event type: {event['type']}")
+                        await self.handle_event(event)
                         
-                        if not event.get("metadata", {}).get("fromAgent"):
-                            print(f"[PythonAgent] Processing event type: {event['type']}")
-                            await self.handle_event(event)
-                        else:
-                            print(f"[PythonAgent] Skipping agent event: {event['type']}")
                     except json.JSONDecodeError as e:
                         print(f"[PythonAgent] Failed to parse JSON: {e}")
                     except Exception as e:
@@ -129,12 +126,8 @@ class PythonAgent:
                     if message["type"] == "pmessage":
                         try:
                             event = json.loads(message["data"])
-                            print(f"[PythonAgent] Parsed event: {event}")
-                            if not event.get("metadata", {}).get("fromAgent"):
-                                print(f"[PythonAgent] Processing event: {event['type']}")
-                                await self.handle_event(event)
-                            else:
-                                print(f"[PythonAgent] Skipping agent event: {event['type']}")
+                            print(f"[PythonAgent] Processing event: {event['type']}")
+                            await self.handle_event(event)
                         except json.JSONDecodeError as e:
                             print(f"[PythonAgent] JSON decode error: {str(e)}")
                 await asyncio.sleep(0.01)  # Prevent tight loop
@@ -202,7 +195,6 @@ class PythonAgent:
                 **new_event,
                 'metadata': {
                     **(event.metadata or {}),  # Preserve existing metadata
-                    'fromAgent': True,
                     'componentId': component_id,
                     'eventId': f"{new_event['type']}-{int(time.time()*1000)}-{str(uuid.uuid4())}",
                 }

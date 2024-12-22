@@ -6,7 +6,10 @@ export const metadata = {
 export const subscribe = ["hybrid.received"];
 export const emits = ["hybrid.validated"];
 
+let invocationCount = 0;
 export default async function validateData(input, emit) {
+  invocationCount++;
+  console.log("validateData invocation #", invocationCount);
   const data = input.data; // This suggests input should have a 'data' property
   if (!Array.isArray(data)) {
     throw new Error("Input must be an array");

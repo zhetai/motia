@@ -31,10 +31,7 @@ export class AgentManager {
         event.metadata?.fromAgent ? "(from agent)" : "(new event)"
       );
 
-      // Only handle events from HTTP endpoints (not from Redis)
-      if (!event.metadata?.fromRedis && !event.metadata?.fromAgent) {
-        await this.routeEventToComponent(event);
-      }
+      await this.routeEventToComponent(event);
     });
   }
 

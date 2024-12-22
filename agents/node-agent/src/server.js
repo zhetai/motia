@@ -94,12 +94,9 @@ class NodeAgent {
   async handleRedisMessage(message, channel) {
     try {
       const event = JSON.parse(message);
-      if (!event.metadata?.fromAgent) {
-        console.log("[NodeAgent] Processing event:", event.type);
-        await this.handleEvent(event);
-      } else {
-        console.log("[NodeAgent] Skipping agent event:", event.type);
-      }
+
+      console.log("[NodeAgent] Processing event:", event.type);
+      await this.handleEvent(event);
     } catch (error) {
       console.error("[NodeAgent] Error processing message:", error);
     }
@@ -154,7 +151,6 @@ class NodeAgent {
             ...newEvent,
             metadata: {
               ...event.metadata,
-              fromAgent: true,
               componentId,
               eventId: `${newEvent.type}-${Date.now()}-${crypto.randomUUID()}`,
             },
