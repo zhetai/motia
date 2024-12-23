@@ -1,36 +1,31 @@
 // packages/motia/src/core/MotiaCore.js
 import { fileURLToPath, pathToFileURL } from "url";
 import path from "path";
-import fs from "fs";
-import { InMemoryMessageBus } from "./MessageBus.js";
+import fs from "fs/promises"; // Use fs/promises instead of fs
+import { EventManager } from "./EventManager.js";
 import { AgentManager } from "./agents/AgentManager.js";
-
-const __filename = fileURLToPath(import.meta.url);
-const __dirname = path.dirname(__filename);
 
 export class MotiaCore {
   constructor(options = {}) {
-    this.messageBus = new InMemoryMessageBus();
-    this.agentManager = null;
     this.workflows = new Map();
-    this.logger = options.logger;
+    this.eventManager = new EventManager({
+      host: process.env.REDIS_HOST || "localhost",
+      port: parseInt(process.env.REDIS_PORT || "6379"),
+      prefix: "motia:events:",
+    });
   }
 
   async initialize(options = {}) {
-    if (this.logger) {
-      await this.logger.initialize();
-    }
+    await this.eventManager.initialize();
 
-    // Initialize message bus first
-    this.messageBus = options.messageBus || new InMemoryMessageBus();
-    await this.messageBus.initialize();
+    // Initialize agent manager with event emission callback
+    this.agentManager = new AgentManager(async (event, componentId) => {
+      await this.eventManager.emit(event, componentId);
+    });
 
-    // Initialize agent manager if agents are configured
+    // Initialize agents if configured
     if (options.agents) {
-      this.agentManager = new AgentManager(this.messageBus);
       await this.agentManager.initialize();
-
-      // Register configured agents
       for (const [name, config] of Object.entries(options.agents)) {
         await this.agentManager.registerAgent(name, config);
       }
@@ -39,28 +34,26 @@ export class MotiaCore {
     // Load workflows and register components
     const workflowPaths = options.workflowPaths || ["./src/workflows"];
     await this.loadWorkflows(workflowPaths);
+
+    console.log("[MotiaCore] Initialized successfully");
   }
 
-  async emit(event, options) {
-    await this.messageBus.publish(event, options);
+  async emit(event, options = { source: "system" }) {
+    await this.eventManager.emit(event, options.source);
   }
 
-  describeWorkflows() {
-    return {
-      workflows: Array.from(this.workflows.keys()).map((workflowPath) => {
-        const workflowName = path.basename(workflowPath);
-        return {
-          name: workflowName,
-          path: workflowPath,
-        };
-      }),
-    };
+  getComponentId(componentPath) {
+    const matches = componentPath.match(
+      /workflows\/([^/]+)\/components\/([^/]+)/
+    );
+    if (!matches) {
+      throw new Error(`Invalid component path: ${componentPath}`);
+    }
+    const [_, workflowName, componentName] = matches;
+    return `${workflowName}/${componentName}`;
   }
 
   async loadWorkflows(paths) {
-    this.workflows = new Map();
-
-    // Convert paths to absolute
     const absolutePaths = paths.map((p) => path.resolve(p));
 
     // Load workflow configurations
@@ -78,10 +71,29 @@ export class MotiaCore {
         try {
           const fileExt = path.extname(file);
           if (fileExt === ".js" || fileExt === ".py") {
-            const code = await fs.promises.readFile(file, "utf-8");
+            const code = await fs.readFile(file, "utf8");
             const metadata = await this.extractComponentMetadata(code, fileExt);
+            const componentId = this.getComponentId(file);
+
             if (metadata?.agent) {
+              // Register with agent
               await this.agentManager.registerComponent(file, metadata.agent);
+
+              // Register event subscriptions
+              if (metadata.subscribe) {
+                for (const eventType of metadata.subscribe) {
+                  // Create handler for this subscription
+                  const handler = async (event) => {
+                    await this.agentManager.executeComponent(file, event);
+                  };
+
+                  await this.eventManager.subscribe(
+                    eventType,
+                    componentId,
+                    handler
+                  );
+                }
+              }
             }
           }
         } catch (error) {
@@ -91,35 +103,14 @@ export class MotiaCore {
     }
   }
 
-  async extractComponentMetadata(code, fileExt) {
-    if (fileExt === ".py") {
-      const metadataMatch = code.match(/metadata\s*=\s*({[\s\S]*?})/);
-      if (metadataMatch) {
-        return JSON.parse(metadataMatch[1].replace(/'/g, '"'));
-      }
-    } else {
-      // For JS files, look for export const metadata = {...}
-      const metadataMatch = code.match(
-        /export\s+const\s+metadata\s*=\s*({[\s\S]*?})/
-      );
-      if (metadataMatch) {
-        // Use Function to safely evaluate the metadata object
-        return Function(`return ${metadataMatch[1]}`)();
-      }
-    }
-    return null;
-  }
-
   async findWorkflowDirectories(basePath) {
     const workflows = [];
     try {
-      const entries = await fs.promises.readdir(basePath, {
-        withFileTypes: true,
-      });
+      const entries = await fs.readdir(basePath, { withFileTypes: true });
       for (const entry of entries) {
         if (entry.isDirectory()) {
           const workflowPath = path.join(basePath, entry.name);
-          const files = await fs.promises.readdir(workflowPath);
+          const files = await fs.readdir(workflowPath);
           if (files.includes("config.js") && files.includes("version.json")) {
             workflows.push(workflowPath);
           }
@@ -135,17 +126,11 @@ export class MotiaCore {
     const components = [];
     for (const basePath of paths) {
       try {
-        const workflowDirs = await fs.promises.readdir(basePath, {
-          withFileTypes: true,
-        });
-        for (const workflowDir of workflowDirs) {
-          if (!workflowDir.isDirectory()) continue;
+        const entries = await fs.readdir(basePath, { withFileTypes: true });
+        for (const entry of entries) {
+          if (!entry.isDirectory()) continue;
 
-          const componentsPath = path.join(
-            basePath,
-            workflowDir.name,
-            "components"
-          );
+          const componentsPath = path.join(basePath, entry.name, "components");
           try {
             await this.searchComponentFiles(componentsPath, components);
           } catch {
@@ -160,7 +145,7 @@ export class MotiaCore {
   }
 
   async searchComponentFiles(dir, components) {
-    const entries = await fs.promises.readdir(dir, { withFileTypes: true });
+    const entries = await fs.readdir(dir, { withFileTypes: true });
     for (const entry of entries) {
       const fullPath = path.join(dir, entry.name);
       if (entry.isDirectory()) {
@@ -181,6 +166,43 @@ export class MotiaCore {
       this.workflows.set(workflowPath, configModule);
     } catch (error) {
       console.error(`Error registering workflow at ${workflowPath}:`, error);
+    }
+  }
+
+  async extractComponentMetadata(code, fileExt) {
+    if (fileExt === ".py") {
+      const metadataMatch = code.match(/metadata\s*=\s*({[\s\S]*?})/);
+      const subscribeMatch = code.match(/subscribe\s*=\s*(\[[^\]]+\])/);
+      return {
+        ...(metadataMatch
+          ? JSON.parse(metadataMatch[1].replace(/'/g, '"'))
+          : {}),
+        subscribe: subscribeMatch
+          ? JSON.parse(subscribeMatch[1].replace(/'/g, '"'))
+          : [],
+      };
+    } else if (fileExt === ".js") {
+      const metadataMatch = code.match(
+        /export\s+const\s+metadata\s*=\s*({[\s\S]*?})/
+      );
+      const subscribeMatch = code.match(
+        /export\s+const\s+subscribe\s*=\s*(\[[^\]]+\])/
+      );
+
+      return {
+        ...(metadataMatch ? Function(`return ${metadataMatch[1]}`)() : {}),
+        subscribe: subscribeMatch
+          ? Function(`return ${subscribeMatch[1]}`)()
+          : [],
+      };
+    }
+    throw new Error(`Unsupported file type: ${fileExt}`);
+  }
+
+  async cleanup() {
+    await this.eventManager.cleanup();
+    if (this.agentManager) {
+      await this.agentManager.cleanup();
     }
   }
 }
