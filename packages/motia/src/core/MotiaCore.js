@@ -173,6 +173,7 @@ export class MotiaCore {
     if (fileExt === ".py") {
       const metadataMatch = code.match(/metadata\s*=\s*({[\s\S]*?})/);
       const subscribeMatch = code.match(/subscribe\s*=\s*(\[[^\]]+\])/);
+      const emitsMatch = code.match(/emits\s*=\s*(\[[^\]]+\])/);
       return {
         ...(metadataMatch
           ? JSON.parse(metadataMatch[1].replace(/'/g, '"'))
@@ -180,6 +181,7 @@ export class MotiaCore {
         subscribe: subscribeMatch
           ? JSON.parse(subscribeMatch[1].replace(/'/g, '"'))
           : [],
+        emits: emitsMatch ? JSON.parse(emitsMatch[1].replace(/'/g, '"')) : [],
       };
     } else if (fileExt === ".js") {
       const metadataMatch = code.match(
@@ -188,15 +190,92 @@ export class MotiaCore {
       const subscribeMatch = code.match(
         /export\s+const\s+subscribe\s*=\s*(\[[^\]]+\])/
       );
+      const emitsMatch = code.match(
+        /export\s+const\s+emits\s*=\s*(\[[^\]]+\])/
+      );
 
       return {
         ...(metadataMatch ? Function(`return ${metadataMatch[1]}`)() : {}),
         subscribe: subscribeMatch
           ? Function(`return ${subscribeMatch[1]}`)()
           : [],
+        emits: emitsMatch ? Function(`return ${emitsMatch[1]}`)() : [],
       };
     }
     throw new Error(`Unsupported file type: ${fileExt}`);
+  }
+
+  // This is for the UI. Probably need to refactor and combine these methods
+  async describeWorkflows() {
+    const workflows = [];
+
+    for (const [workflowPath] of this.workflows.entries()) {
+      try {
+        // Get workflow name from the directory name
+        const workflowName = path.basename(workflowPath);
+
+        // Components are in workflowPath/components
+        const componentsPath = path.join(workflowPath, "components");
+
+        // Get all components for this workflow
+        const components = [];
+        const componentDirs = await fs.readdir(componentsPath, {
+          withFileTypes: true,
+        });
+
+        for (const dir of componentDirs) {
+          if (!dir.isDirectory()) continue;
+
+          // Try to load both JS and Python components
+          const jsPath = path.join(componentsPath, dir.name, "index.js");
+          const pyPath = path.join(componentsPath, dir.name, "index.py");
+
+          let metadata = null;
+          let code = null;
+
+          // Try JS first
+          try {
+            code = await fs.readFile(jsPath, "utf8");
+            metadata = await this.extractComponentMetadata(code, ".js");
+          } catch {
+            // If JS doesn't exist, try Python
+            try {
+              code = await fs.readFile(pyPath, "utf8");
+              metadata = await this.extractComponentMetadata(code, ".py");
+            } catch {
+              continue; // Skip if neither file exists
+            }
+          }
+
+          components.push({
+            id: dir.name,
+            subscribe: metadata.subscribe || [],
+            emits: metadata.emits || [],
+            runtime: metadata.metadata?.runtime || "node",
+            agent: metadata.metadata?.agent,
+          });
+        }
+
+        // Get workflow config
+        const configPath = path.join(workflowPath, "config.js");
+        const configModule = await import(pathToFileURL(configPath));
+
+        workflows.push({
+          name: workflowName,
+          description: configModule.config?.description || "",
+          components,
+        });
+      } catch (error) {
+        console.error(
+          `Error describing workflow ${path.basename(workflowPath)}:`,
+          error
+        );
+        // Continue with other workflows even if one fails
+        continue;
+      }
+    }
+
+    return { workflows };
   }
 
   async cleanup() {

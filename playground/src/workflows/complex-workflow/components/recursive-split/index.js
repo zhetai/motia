@@ -1,5 +1,10 @@
+export const metadata = {
+  runtime: "node",
+  agent: "node-agent",
+};
+
 export const subscribe = ["complex.start"];
-export const emits = ["processing.partA", "processing.partB", "complex.start"];
+export const emits = ["complex.partA", "complex.partB", "complex.start"];
 
 export default async function recursiveSplitHandler(input, emit) {
   const { cycleCount, items } = input;
@@ -8,8 +13,8 @@ export default async function recursiveSplitHandler(input, emit) {
   const partA = items.slice(0, mid);
   const partB = items.slice(mid);
 
-  await emit({ type: "processing.partA", data: { cycleCount, partA } });
-  await emit({ type: "processing.partB", data: { cycleCount, partB } });
+  await emit({ type: "complex.partA", data: { cycleCount, partA } });
+  await emit({ type: "complex.partB", data: { cycleCount, partB } });
 
   // If cycleCount < 3, re-emit the workflow.start to simulate recursion
   if (cycleCount < 3) {

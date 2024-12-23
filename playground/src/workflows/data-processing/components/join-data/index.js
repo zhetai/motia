@@ -1,14 +1,22 @@
-export const subscribe = ["processing.partA", "processing.partB"];
+export const metadata = {
+  runtime: "node",
+  agent: "node-agent",
+};
+
+export const subscribe = [
+  "processing.transformedpartA",
+  "processing.transformedpartB",
+];
 export const emits = ["processing.joined"];
 
 let partAData = null;
 let partBData = null;
 
 export default async function joinData(input, emit, eventType) {
-  if (eventType === "processing.partA") {
+  if (eventType === "processing.transformedpartA") {
     partAData = input.transformedA;
   }
-  if (eventType === "processing.partB") {
+  if (eventType === "processing.transformedpartB") {
     partBData = input.transformedB;
   }
 

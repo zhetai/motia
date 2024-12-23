@@ -1,3 +1,8 @@
+export const metadata = {
+  runtime: "node",
+  agent: "node-agent",
+};
+
 export const subscribe = ["processing.joined"];
 export const emits = ["processing.saved"];
 

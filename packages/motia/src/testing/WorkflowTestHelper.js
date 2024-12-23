@@ -1,41 +1,59 @@
-// packages/motia/src/testing/WorkflowTestHelper.js
 import { MotiaCore, MotiaServer } from "motia";
-import { WorkflowTestMessageBus } from "./WorkflowTestMessageBus.js";
+import { InMemoryMessageBus } from "../core/MessageBus.js";
+import fetch from "node-fetch";
 
 export class WorkflowTestHelper {
-  constructor(basePath, messageBus) {
+  constructor(basePath) {
     this.basePath = basePath;
     this.core = null;
     this.server = null;
-    // Use a provided bus or default to a specialized test bus
-    this.messageBus = messageBus || new WorkflowTestMessageBus();
+    this.port = 4000; // Default port
   }
 
   async setup() {
-    this.core = new MotiaCore();
-    await this.messageBus.initialize();
+    this.core = new MotiaCore({
+      messageBus: new InMemoryMessageBus(),
+    });
     await this.core.initialize({
       workflowPaths: [`${this.basePath}/playground/src/workflows`],
-      messageBus: this.messageBus,
     });
-    // Do NOT initialize server by default unless you need server-based tests
   }
 
-  async startServer(port) {
-    process.env.PORT = port;
+  async startServer(port = 4000) {
+    this.port = port;
     this.server = new MotiaServer();
     await this.server.initialize(this.core, [
       `${this.basePath}/playground/src/traffic/inbound`,
     ]);
   }
 
-  get receivedEvents() {
-    // If we're using WorkflowTestMessageBus, it stores everything in memory
-    // If we are using Redis, you might need a separate approach to read them
-    return this.messageBus.getEvents?.() || [];
+  // Helper method for HTTP POST requests
+  async post(path, body) {
+    const response = await fetch(`http://localhost:${this.port}${path}`, {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify(body),
+    });
+
+    return {
+      statusCode: response.status,
+      body: await response.json(),
+    };
+  }
+
+  // Get events from in-memory bus
+  async getEvents() {
+    return this.core.messageBus.events;
   }
 
   async cleanup() {
-    await this.messageBus.cleanup?.();
+    if (this.server) {
+      await this.server.close(); // Assuming MotiaServer has a close() method
+    }
+    if (this.core) {
+      await this.core.cleanup();
+    }
   }
 }

@@ -1,3 +1,8 @@
+export const metadata = {
+  runtime: "node",
+  agent: "node-agent",
+};
+
 export const subscribe = ["complex.merged"];
 export const emits = ["complex.finalize", "complex.start"];
 

@@ -1,3 +1,8 @@
+export const metadata = {
+  runtime: "node",
+  agent: "node-agent",
+};
+
 export const subscribe = ["processing.validated"];
 export const emits = ["processing.splitpartA", "processing.splitpartB"];
 

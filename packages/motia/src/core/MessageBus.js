@@ -6,6 +6,7 @@ export class InMemoryMessageBus {
     this.subscribers = new Set();
     this.processedEvents = new Map();
     this.deduplicationWindow = 30000; // 30 seconds, matching Redis adapter
+    this.events = []; // Add this to track event history
   }
 
   async initialize() {
@@ -52,6 +53,9 @@ export class InMemoryMessageBus {
       },
     };
 
+    // Store event in history
+    this.events.push(enrichedEvent);
+
     // Notify all subscribers
     await Promise.all(
       Array.from(this.subscribers).map((handler) =>
@@ -66,11 +70,16 @@ export class InMemoryMessageBus {
     this.subscribers.add(handler);
   }
 
+  getEvents() {
+    return this.events;
+  }
+
   async cleanup() {
     if (this.cleanupInterval) {
       clearInterval(this.cleanupInterval);
     }
     this.subscribers.clear();
     this.processedEvents.clear();
+    this.events = []; // Clear events history
   }
 }

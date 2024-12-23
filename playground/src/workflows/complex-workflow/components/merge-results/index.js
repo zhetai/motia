@@ -1,20 +1,25 @@
-export const subscribe = ["processing.transformedA", "processing.transformedB"];
-export const emits = ["processing.merged"];
+export const metadata = {
+  runtime: "node",
+  agent: "node-agent",
+};
+
+export const subscribe = ["complex.transformedA", "complex.transformedB"];
+export const emits = ["complex.merged"];
 
 let tempA = null;
 let tempB = null;
 
 export default async function mergeResultsHandler(input, emit, eventType) {
   const { cycleCount } = input;
-  if (eventType === "processing.transformedA") {
+  if (eventType === "complex.transformedA") {
     tempA = input.transformedA;
-  } else if (eventType === "processing.transformedB") {
+  } else if (eventType === "complex.transformedB") {
     tempB = input.transformedB;
   }
 
   if (tempA && tempB) {
     const merged = [...tempA, ...tempB];
-    await emit({ type: "processing.merged", data: { cycleCount, merged } });
+    await emit({ type: "complex.merged", data: { cycleCount, merged } });
     tempA = null;
     tempB = null;
   }

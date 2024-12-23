@@ -1,3 +1,8 @@
+export const metadata = {
+  runtime: "node",
+  agent: "node-agent",
+};
+
 export const subscribe = ["processing.splitpartB"];
 export const emits = ["processing.transformedpartB"];
 

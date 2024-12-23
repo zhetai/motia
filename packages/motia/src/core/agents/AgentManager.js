@@ -77,11 +77,15 @@ export class AgentManager {
       // Extract metadata (subscriptions etc)
       const metadata = await this.extractComponentMetadata(code, fileExt);
 
+      // Make sure we have the agent property from metadata
+      const agentMetadata = metadata.metadata?.agent || metadata.agent;
+
       console.log(`[AgentManager] Registering component:`, {
         path: componentPath,
         agent: agentName,
         id: componentId,
         subscriptions: metadata.subscribe || [],
+        agentMetadata, // Log to verify we're getting the right value
       });
 
       // Register with agent
@@ -91,6 +95,7 @@ export class AgentManager {
         body: JSON.stringify({
           name: componentId,
           code: code,
+          agent: agentMetadata, // Include agent metadata if needed
         }),
       });
 

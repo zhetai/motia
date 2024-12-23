@@ -21,11 +21,11 @@ export default function EnhancedWorkflowUI() {
   const { nodes: initialNodes, edges: initialEdges, loading, error } = useMotiaFlow(selectedWorkflow);
   const [nodes, setNodes] = useState([]);
   const [edges, setEdges] = useState([]);
-
+  
   const nodeTypes = useMemo(() => {
     return { ...MotiaUi.getNodeTypes(), default: EnhancedNode };
   }, []);
-
+  
   useEffect(() => {
     if (initialNodes.length > 0 && initialEdges.length > 0) {
       const { nodes: layoutedNodes, edges: layoutedEdges } = layoutElements(initialNodes, initialEdges);

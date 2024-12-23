@@ -68,8 +68,13 @@ export class MotiaServer {
     });
 
     // API endpoints
-    this.express.get("/api/workflows", (req, res) => {
-      res.json(this.core.describeWorkflows());
+    this.express.get("/api/workflows", async (req, res) => {
+      try {
+        const workflows = await this.core.describeWorkflows();
+        res.json(workflows);
+      } catch (error) {
+        res.status(500).json({ error: error.message });
+      }
     });
 
     // Static files and catch-all
@@ -126,5 +131,11 @@ export class MotiaServer {
       ? config.path
       : `/${config.path}`;
     this.traffic.set(routePath, config);
+  }
+
+  async close() {
+    if (this.server) {
+      await new Promise((resolve) => this.server.close(resolve));
+    }
   }
 }
