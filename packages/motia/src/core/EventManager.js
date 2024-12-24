@@ -48,13 +48,6 @@ export class EventManager {
   async emit(event, emitter) {
     const eventId = this.computeEventId(event);
 
-    if (this.processedEvents.has(eventId)) {
-      console.log(
-        `[EventManager] Skipping duplicate event ${event.type} (${eventId})`
-      );
-      return;
-    }
-
     const enrichedEvent = {
       ...event,
       metadata: {

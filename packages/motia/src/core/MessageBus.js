@@ -36,11 +36,6 @@ export class InMemoryMessageBus {
   async publish(event, options = {}) {
     const eventId = this.computeEventId(event);
 
-    // Skip if already processed
-    if (this.processedEvents.has(eventId)) {
-      return;
-    }
-
     // Mark as processed
     this.processedEvents.set(eventId, Date.now());
 
