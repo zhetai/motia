@@ -1,10 +1,10 @@
 # Value Prop
 
-Wistro is a developer-first, event-driven framework that lets you focus purely on workflow logic while it handles orchestrating across multiple endpoints, languages, and platforms - providing a unified, type-safe interface with real-time visualization and testing.
+Wistro is a developer-first, event-driven framework that scales with your needs - from simple automation to complex distributed workflows. It lets you focus purely on workflow logic while it handles orchestrating across multiple endpoints, languages, and platforms - providing a unified, type-safe interface with real-time visualization and testing.
 
 ## Pain Points It Solves:
 
-- Developer-First Framework: Wistro provides a rigorous, convention-based framework that developers love. Its carefully crafted guardrails and patterns dramatically speed up development while ensuring consistency and reliability across complex workflows. You get the perfect balance of flexibility and structure.
+- Developer-First Framework: Wistro provides a rigorous, convention-based framework that developers love. Start simple with basic workflows that are up and running in minutes, then seamlessly scale to more sophisticated scenarios as your needs grow. Its carefully crafted guardrails and patterns dramatically speed up development while ensuring consistency and reliability across workflows of any complexity. Whether you're building a simple approval flow or orchestrating complex distributed systems, you get the perfect balance of flexibility and structure.
 
 - Multi-Endpoint Reality: Modern systems rarely live in one place. Write and manage your workflows in one place, then deploy them anywhere. Wistro embraces distributed systems, making it natural to build workflows that connect cloud services, on-prem systems, edge devices, and third-party APIs through a unified event-based interface. Design your workflow once in Wistro's intuitive interface, and let the framework handle the complexity of deploying and orchestrating across your entire infrastructure - from cloud to edge to on-premises systems.
 
