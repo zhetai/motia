@@ -2,6 +2,9 @@
 
 Wistro is a developer-first, event-driven framework that scales with your needs - from simple automation to complex distributed workflows. It lets you focus purely on workflow logic while it handles orchestrating across multiple endpoints, languages, and platforms - providing a unified, type-safe interface with real-time visualization and testing.
 
+WistroFramework: Rails of Workflow Automation
+WistroHub: Github of Workflow Automation
+
 ## Pain Points It Solves:
 
 - Developer-First Framework: Wistro provides a rigorous, convention-based framework that developers love. Start simple with basic workflows that are up and running in minutes, then seamlessly scale to more sophisticated scenarios as your needs grow. Its carefully crafted guardrails and patterns dramatically speed up development while ensuring consistency and reliability across workflows of any complexity. Whether you're building a simple approval flow or orchestrating complex distributed systems, you get the perfect balance of flexibility and structure.

@@ -10,6 +10,7 @@
 - ⬜ [Testing][Feature] Create workflow testing framework
 - ⬜ [Testing][Feature] Create component testing utilities
 - ⬜ [Testing][Feature] Setup conventions for testing and provide examples
+- ⬜ [Core][Architecture] Create a ConFigurationManagment class (MessageBus, Agents, wofklows etc)
 - ⬜ [Core][Architecture] Implement default-first configuration system with clear override patterns
 - ⬜ [UI][Architecture] Restructure App.jsx to use minimal default setup with injectable overrides
 - ⬜ [UI][Architecture] Make UI components optional with smart defaults for visualization with ability to override
@@ -27,6 +28,9 @@
 - ⬜ [Docs][Content] Create getting started guide
 - ⬜ [UI][Feature] Create stunning workflow visualization examples
 
+- ⬜ [Core][Feature] Create lifecycle hooks (before init, before destroy etc)
+- ⬜ [Core][Feature] Standardize Error Handling
+- ⬜ [Core][Feature] Inbound/Outbound traffic validation hook
 - ⬜ [Monitoring][Feature] Create metrics collection system
 - ⬜ [Core][TypeScript] Convert core framework to TypeScript with strict typing
 - ⬜ [DevOps][Feature] Create Docker deployment configuration
