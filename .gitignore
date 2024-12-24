@@ -32,7 +32,7 @@ out/
 # Testing and coverage
 coverage/
 .nyc_output/
-test-results/**
+test-results/*
 
 # IDEs and editors
 .idea/
