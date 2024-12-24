@@ -32,6 +32,7 @@ out/
 # Testing and coverage
 coverage/
 .nyc_output/
+test-results/**
 
 # IDEs and editors
 .idea/
@@ -80,3 +81,5 @@ venv/
 
 # Ignore deployed components in agents
 agents/**/components/
+
+
