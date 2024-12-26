@@ -2,35 +2,17 @@ import React from 'react';
 import { Handle, Position } from 'reactflow';
 
 export default function EnhancedNode({ data }) {
-  const getNodeColor = (type) => {
-    const colors = {
-      generator: '#4f46e5',    // Indigo
-      transformer: '#0891b2',  // Cyan
-      logger: '#059669',       // Emerald
-      default: '#6366f1'       // Violet
-    };
-
-    const lowerType = (type || '').toLowerCase();
-    if (lowerType.includes('generator')) return colors.generator;
-    if (lowerType.includes('transform')) return colors.transformer;
-    if (lowerType.includes('logger')) return colors.logger;
-    return colors.default;
-  };
-
-  const nodeColor = getNodeColor(data.label);
-
   const containerStyle = {
     position: 'relative',
     borderRadius: '8px',
-    boxShadow: '0 1px 3px rgba(0,0,0,0.2)',
-    border: '1px solid #444',
-    backgroundColor: '#2c2c2c',
+    backgroundColor: '#2a2a2a',
     padding: '12px 16px',
     minWidth: '200px',
     color: '#eee',
-    borderLeft: `4px solid ${nodeColor}`,
     fontFamily: 'Arial, sans-serif',
-    fontSize: '14px'
+    fontSize: '14px',
+    // Add the border style to match Validate Data node
+    border: '1px solid #444'
   };
 
   const handleStyle = {
@@ -44,24 +26,15 @@ export default function EnhancedNode({ data }) {
   const titleStyle = {
     fontSize: '16px',
     fontWeight: 'bold',
-    marginBottom: '4px'
+    marginBottom: '4px',
+    textAlign: 'center'
   };
 
   const subtitleStyle = {
     fontSize: '13px',
     color: '#ccc',
-    margin: '2px 0'
-  };
-
-  const badgeStyle = {
-    display: 'inline-block',
-    padding: '2px 4px',
-    borderRadius: '4px',
-    backgroundColor: '#333',
-    color: '#eee',
-    fontSize: '12px',
-    marginRight: '4px',
-    marginBottom: '4px'
+    margin: '2px 0',
+    textAlign: 'center'
   };
 
   return (
@@ -69,29 +42,19 @@ export default function EnhancedNode({ data }) {
       <Handle type="target" position={Position.Top} style={handleStyle} />
       <Handle type="source" position={Position.Bottom} style={handleStyle} />
 
-      <div style={{ marginBottom: '8px' }}>
-        <h3 style={titleStyle}>{data.label}</h3>
-        {data.subscribe?.length > 0 && (
-          <div style={subtitleStyle}>
-            <span style={{ fontWeight: '600' }}>Subscribes to:</span>
-            <div style={{ marginTop: '4px' }}>
-              {data.subscribe.map((event, idx) => (
-                <span key={idx} style={badgeStyle}>{event}</span>
-              ))}
-            </div>
-          </div>
-        )}
-        {data.emits?.length > 0 && (
-          <div style={subtitleStyle}>
-            <span style={{ fontWeight: '600' }}>Emits:</span>
-            <div style={{ marginTop: '4px' }}>
-              {data.emits.map((event, idx) => (
-                <span key={idx} style={{ ...badgeStyle, backgroundColor: '#222' }}>{event}</span>
-              ))}
-            </div>
-          </div>
-        )}
-      </div>
+      <div style={titleStyle}>{data.label}</div>
+      
+      {data.subscribe?.length > 0 && (
+        <div style={subtitleStyle}>
+          <span>Subscribes: {data.subscribe.join(', ')}</span>
+        </div>
+      )}
+      
+      {data.emits?.length > 0 && (
+        <div style={subtitleStyle}>
+          <span>Emits: {data.emits.join(', ')}</span>
+        </div>
+      )}
     </div>
   );
 }
