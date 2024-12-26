@@ -4,7 +4,6 @@
     "host": "localhost",
     "port": 6379
   },
-
   "agents": [
     {
       "name": "node-agent",
@@ -19,129 +18,125 @@
   ],
   "traffic": [
     {
-      "path": "/api/data/upload",
-      "method": "POST",
-      "transformPath": "src/traffic/inbound/data-upload.js",
-      "authorizePath": null
-    },
-    {
       "path": "/api/complex/start",
       "method": "POST",
       "transformPath": "src/traffic/inbound/complex-workflow.js"
     },
     {
+      "path": "/api/data/upload",
+      "method": "POST",
+      "transformPath": "src/traffic/inbound/data-upload.js"
+    },
+    {
       "path": "/api/hybrid/process",
       "method": "POST",
       "transformPath": "src/traffic/inbound/hybrid-process.js"
+    },
+    {
+      "path": "/api/monitor/redis",
+      "method": "GET",
+      "transformPath": "src/traffic/inbound/redis-monitor.js"
     }
   ],
-
   "workflows": [
     {
       "name": "complex-workflow",
       "components": [
         {
-          "id": "start-event",
-          "agent": "node-agent",
-          "subscribe": [],
-          "emits": ["complex.start"],
-          "codePath": "src/workflows/complex-workflow/components/start-event/index.js",
-          "uiPath": "src/workflows/complex-workflow/components/start-event/ui.jsx"
-        },
-        {
-          "id": "recursive-split",
-          "agent": "node-agent",
-          "subscribe": ["complex.start"],
-          "emits": ["complex.partA", "complex.partB", "complex.start"],
-          "codePath": "src/workflows/complex-workflow/components/recursive-split/index.js",
-          "uiPath": "src/workflows/complex-workflow/components/recursive-split/ui.jsx"
-        },
-        {
-          "id": "transform-A",
-          "agent": "node-agent",
-          "subscribe": ["complex.data.partA"],
-          "emits": ["complex.transformedA"],
-          "codePath": "src/workflows/complex-workflow/components/transform-A/index.js",
-          "uiPath": "src/workflows/complex-workflow/components/transform-A/ui.jsx"
-        },
-        {
-          "id": "transform-B",
-          "agent": "node-agent",
-          "subscribe": ["complex.partB"],
-          "emits": ["complex.transformedB"],
-          "codePath": "src/workflows/complex-workflow/components/transform-B/index.js",
-          "uiPath": "src/workflows/complex-workflow/components/transform-B/ui.jsx"
-        },
-        {
-          "id": "merge-results",
-          "agent": "node-agent",
-          "subscribe": ["complex.transformedA", "complex.transformedB"],
-          "emits": ["complex.merged"],
-          "codePath": "src/workflows/complex-workflow/components/merge-results/index.js",
-          "uiPath": "src/workflows/complex-workflow/components/merge-results/ui.jsx"
-        },
-        {
           "id": "conditional-branch",
           "agent": "node-agent",
-          "subscribe": ["complex.merged"],
-          "emits": ["complex.finalize", "complex.start"],
-          "codePath": "src/workflows/complex-workflow/components/conditional-branch/index.js",
-          "uiPath": "src/workflows/complex-workflow/components/conditional-branch/ui.jsx"
+          "subscribe": [
+            "complex.merged"
+          ],
+          "emits": [
+            "complex.finalize",
+            "complex.start"
+          ],
+          "codePath": "src/workflows/complex-workflow/components/conditional-branch/index.js"
         },
         {
           "id": "finalize",
           "agent": "node-agent",
-          "subscribe": ["complex.finalize"],
-          "emits": ["complex.done"],
-          "codePath": "src/workflows/complex-workflow/components/finalize/index.js",
-          "uiPath": "src/workflows/complex-workflow/components/finalize/ui.jsx"
+          "subscribe": [
+            "complex.finalize"
+          ],
+          "emits": [
+            "complex.done"
+          ],
+          "codePath": "src/workflows/complex-workflow/components/finalize/index.js"
+        },
+        {
+          "id": "merge-results",
+          "agent": "node-agent",
+          "subscribe": [
+            "complex.transformedA",
+            "complex.transformedB"
+          ],
+          "emits": [
+            "complex.merged"
+          ],
+          "codePath": "src/workflows/complex-workflow/components/merge-results/index.js"
+        },
+        {
+          "id": "recursive-split",
+          "agent": "node-agent",
+          "subscribe": [
+            "complex.start"
+          ],
+          "emits": [
+            "complex.partA",
+            "complex.partB",
+            "complex.start"
+          ],
+          "codePath": "src/workflows/complex-workflow/components/recursive-split/index.js"
         },
         {
           "id": "repeat-trigger",
           "agent": "node-agent",
-          "subscribe": ["complex.done"],
-          "emits": ["complex.start"],
-          "codePath": "src/workflows/complex-workflow/components/repeat-trigger/index.js",
-          "uiPath": "src/workflows/complex-workflow/components/repeat-trigger/ui.jsx"
+          "subscribe": [
+            "complex.done"
+          ],
+          "emits": [
+            "complex.start"
+          ],
+          "codePath": "src/workflows/complex-workflow/components/repeat-trigger/index.js"
+        },
+        {
+          "id": "start-event",
+          "agent": "node-agent",
+          "subscribe": [],
+          "emits": [
+            "complex.start"
+          ],
+          "codePath": "src/workflows/complex-workflow/components/start-event/index.js"
+        },
+        {
+          "id": "transform-A",
+          "agent": "node-agent",
+          "subscribe": [
+            "complex.data.partA"
+          ],
+          "emits": [
+            "complex.transformedA"
+          ],
+          "codePath": "src/workflows/complex-workflow/components/transform-A/index.js"
+        },
+        {
+          "id": "transform-B",
+          "agent": "node-agent",
+          "subscribe": [
+            "complex.partB"
+          ],
+          "emits": [
+            "complex.transformedB"
+          ],
+          "codePath": "src/workflows/complex-workflow/components/transform-B/index.js"
         }
       ]
     },
-
     {
       "name": "data-processing",
       "components": [
-        {
-          "id": "validate-data",
-          "agent": "node-agent",
-          "subscribe": ["processing.uploaded"],
-          "emits": ["processing.validated"],
-          "codePath": "src/workflows/data-processing/components/validate-data/index.js",
-          "uiPath": "src/workflows/data-processing/components/validate-data/ui.jsx"
-        },
-        {
-          "id": "split-data",
-          "agent": "node-agent",
-          "subscribe": ["processing.validated"],
-          "emits": ["processing.splitpartA", "processing.splitpartB"],
-          "codePath": "src/workflows/data-processing/components/split-data/index.js",
-          "uiPath": "src/workflows/data-processing/components/split-data/ui.jsx"
-        },
-        {
-          "id": "transform-partA",
-          "agent": "node-agent",
-          "subscribe": ["processing.splitpartA"],
-          "emits": ["processing.transformedpartA"],
-          "codePath": "src/workflows/data-processing/components/transform-partA/index.js",
-          "uiPath": "src/workflows/data-processing/components/transform-partA/ui.jsx"
-        },
-        {
-          "id": "transform-partB",
-          "agent": "node-agent",
-          "subscribe": ["processing.splitpartB"],
-          "emits": ["processing.transformedpartB"],
-          "codePath": "src/workflows/data-processing/components/transform-partB/index.js",
-          "uiPath": "src/workflows/data-processing/components/transform-partB/ui.jsx"
-        },
         {
           "id": "join-data",
           "agent": "node-agent",
@@ -149,72 +144,142 @@
             "processing.transformedpartA",
             "processing.transformedpartB"
           ],
-          "emits": ["processing.joined"],
-          "codePath": "src/workflows/data-processing/components/join-data/index.js",
-          "uiPath": "src/workflows/data-processing/components/join-data/ui.jsx"
+          "emits": [
+            "processing.joined"
+          ],
+          "codePath": "src/workflows/data-processing/components/join-data/index.js"
         },
         {
           "id": "save-data",
           "agent": "node-agent",
-          "subscribe": ["processing.joined"],
-          "emits": ["processing.saved"],
-          "codePath": "src/workflows/data-processing/components/save-data/index.js",
-          "uiPath": "src/workflows/data-processing/components/save-data/ui.jsx"
+          "subscribe": [
+            "processing.joined"
+          ],
+          "emits": [
+            "processing.saved"
+          ],
+          "codePath": "src/workflows/data-processing/components/save-data/index.js"
+        },
+        {
+          "id": "split-data",
+          "agent": "node-agent",
+          "subscribe": [
+            "processing.validated"
+          ],
+          "emits": [
+            "processing.splitpartA",
+            "processing.splitpartB"
+          ],
+          "codePath": "src/workflows/data-processing/components/split-data/index.js"
+        },
+        {
+          "id": "transform-partA",
+          "agent": "node-agent",
+          "subscribe": [
+            "processing.splitpartA"
+          ],
+          "emits": [
+            "processing.transformedpartA"
+          ],
+          "codePath": "src/workflows/data-processing/components/transform-partA/index.js"
+        },
+        {
+          "id": "transform-partB",
+          "agent": "node-agent",
+          "subscribe": [
+            "processing.splitpartB"
+          ],
+          "emits": [
+            "processing.transformedpartB"
+          ],
+          "codePath": "src/workflows/data-processing/components/transform-partB/index.js"
+        },
+        {
+          "id": "validate-data",
+          "agent": "node-agent",
+          "subscribe": [
+            "processing.uploaded"
+          ],
+          "emits": [
+            "processing.validated"
+          ],
+          "codePath": "src/workflows/data-processing/components/validate-data/index.js"
         }
       ]
     },
-
     {
       "name": "example-workflow",
       "components": [
         {
           "id": "simple-node",
           "agent": "node-agent",
-          "subscribe": ["example.event"],
-          "emits": ["example.response"],
-          "codePath": "src/workflows/example-workflow/components/simple-node/index.js",
-          "uiPath": "src/workflows/example-workflow/components/simple-node/ui.jsx"
+          "subscribe": [
+            "example.event"
+          ],
+          "emits": [
+            "example.response"
+          ],
+          "codePath": "src/workflows/example-workflow/components/simple-node/index.js"
         }
       ]
     },
-
     {
       "name": "hybrid-processing",
       "components": [
         {
-          "id": "validate-data",
-          "agent": "node-agent",
-          "subscribe": ["hybrid.received"],
-          "emits": ["hybrid.validated"],
-          "codePath": "src/workflows/hybrid-processing/components/validate-data/index.js"
-        },
-        {
-          "id": "transform-data",
+          "id": "analyze-data",
           "agent": "python-agent",
-          "subscribe": ["hybrid.validated"],
-          "emits": ["hybrid.transformed"],
-          "codePath": "src/workflows/hybrid-processing/components/transform-data/index.py"
+          "subscribe": [
+            "hybrid.enriched"
+          ],
+          "emits": [
+            "hybrid.analyzed"
+          ],
+          "codePath": "src/workflows/hybrid-processing/components/analyze-data/index.py"
         },
         {
           "id": "enrich-data",
           "agent": "node-agent",
-          "subscribe": ["hybrid.transformed"],
-          "emits": ["hybrid.enriched"],
+          "subscribe": [
+            "hybrid.transformed"
+          ],
+          "emits": [
+            "hybrid.enriched"
+          ],
           "codePath": "src/workflows/hybrid-processing/components/enrich-data/index.js"
-        },
-        {
-          "id": "analyze-data",
-          "agent": "python-agent",
-          "subscribe": ["hybrid.enriched"],
-          "emits": ["hybrid.analyzed"],
-          "codePath": "src/workflows/hybrid-processing/components/analyze-data/index.py"
         },
         {
           "id": "finalize-data",
           "agent": "node-agent",
-          "subscribe": ["hybrid.analyzed"],
-          "emits": ["hybrid.completed"],
+          "subscribe": [
+            "hybrid.analyzed"
+          ],
+          "emits": [
+            "hybrid.completed"
+          ],
           "codePath": "src/workflows/hybrid-processing/components/finalize-data/index.js"
+        },
+        {
+          "id": "transform-data",
+          "agent": "python-agent",
+          "subscribe": [
+            "hybrid.validated"
+          ],
+          "emits": [
+            "hybrid.transformed"
+          ],
+          "codePath": "src/workflows/hybrid-processing/components/transform-data/index.py"
+        },
+        {
+          "id": "validate-data",
+          "agent": "node-agent",
+          "subscribe": [
+            "hybrid.received"
+          ],
+          "emits": [
+            "hybrid.validated"
+          ],
+          "codePath": "src/workflows/hybrid-processing/components/validate-data/index.js"
         }
       ]
     }

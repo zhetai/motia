@@ -7,6 +7,7 @@
     "dev:agents": "pnpm run -r --parallel dev:node-agent dev:python-agent",
     "dev": "pnpm run dev:agents & sleep 2 && pnpm run -r --parallel dev",
     "build": "pnpm run -r build",
+    "build-config": "node packages/motia/src/cli/MotiaConfigBuilder.js playground",
     "test:unit": "pnpm vitest",
     "test:e2e": "pnpm playwright test",
     "test": "concurrently \"pnpm run test:unit\" \"pnpm run test:e2e\"",
