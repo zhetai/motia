@@ -1,11 +1,9 @@
-// playground/src/traffic/inbound/data-upload.js
-import { defineTraffic } from "motia";
+export const path = "/api/data/upload";
+export const method = "POST";
 
-export default defineTraffic({
-  path: "/api/data/upload",
-  method: "POST",
-  transform: (req) => {
-    const { rawData } = req.body; // Expect an array of objects
-    return { type: "processing.uploaded", data: { rawData } };
-  },
-});
+export default (req) => {
+  return {
+    type: "processing.uploaded",
+    data: { rawData },
+  };
+};

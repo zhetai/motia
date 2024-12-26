@@ -1,9 +1,12 @@
-export default function transformHybridProcess(req) {
+export const path = "/api/hybrid/process";
+export const method = "POST";
+
+export default (req) => {
   return {
     type: "hybrid.received",
     data: { data: req.body.data },
   };
-}
+};
 
 // curl -X POST http://localhost:4000/api/hybrid/process \
 // -H "Content-Type: application/json" \

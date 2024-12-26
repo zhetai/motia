@@ -34,7 +34,7 @@
     },
     {
       "path": "/api/monitor/redis",
-      "method": "GET",
+      "method": "POST",
       "transformPath": "src/traffic/inbound/redis-monitor.js"
     }
   ],

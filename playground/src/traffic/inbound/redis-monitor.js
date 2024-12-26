@@ -1,15 +1,12 @@
-import { defineTraffic } from "motia";
+export const path = "/api/monitor/redis";
+export const method = "POST";
 
-export default defineTraffic({
-  path: "/api/monitor/redis",
-  method: "GET",
-  transform: (req) => {
-    return {
-      type: "monitor.redis.status",
-      data: {
-        status: "monitoring",
-        timestamp: new Date().toISOString(),
-      },
-    };
-  },
-});
+export default (req) => {
+  return {
+    type: "monitor.redis.status",
+    data: {
+      status: "monitoring",
+      timestamp: new Date().toISOString(),
+    },
+  };
+};

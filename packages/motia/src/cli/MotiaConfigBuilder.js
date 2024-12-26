@@ -117,21 +117,25 @@ async function findAllTraffic(baseDir, absoluteBase) {
   const files = fs.readdirSync(trafficDir);
 
   for (const file of files) {
-    if (!file.endsWith(".js")) continue;
+    if (!file.endsWith(".js")) continue; // or .ts, etc.
     const fullPath = path.join(trafficDir, file);
 
+    // 1) Dynamically import the module
     const mod = await import(pathToFileURL(fullPath));
-    let routes = mod.default;
-    if (!Array.isArray(routes)) routes = [routes];
 
-    for (const r of routes) {
-      routeDefs.push({
-        path: r.path,
-        method: r.method,
-        // Also relative to base
-        transformPath: path.relative(absoluteBase, fullPath),
-      });
-    }
+    // 2) Extract path, method, and transform
+    const routePath = mod.path || "/unknown";
+    const routeMethod = mod.method || "GET";
+    const transformFn = mod.default; // the transform function
+
+    // 3) Build a config entry referencing only transformPath
+    //    Because MotiaServer will re-import the file at runtime and call the default export.
+    routeDefs.push({
+      path: routePath,
+      method: routeMethod,
+      transformPath: path.relative(absoluteBase, fullPath),
+      // Could also do authorizePath if you want
+    });
   }
   return routeDefs;
 }
