@@ -5,7 +5,7 @@
     "dev:node-agent": "node agents/node-agent/src/server.js",
     "dev:python-agent": "cd agents/python-agent && uvicorn src.server:app --reload --port 8000",
     "dev:agents": "pnpm run -r --parallel dev:node-agent dev:python-agent",
-    "dev": "pnpm run dev:agents & sleep 2 && pnpm run -r --parallel dev",
+    "dev": "pnpm run build-config && pnpm run dev:agents & sleep 2 && pnpm run -r --parallel dev",
     "build": "pnpm run -r build",
     "build-config": "node packages/motia/src/cli/MotiaConfigBuilder.js playground",
     "test:unit": "pnpm vitest",
