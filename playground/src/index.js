@@ -36,9 +36,12 @@ async function main() {
   console.log("[playground/index] Initializing Motia from config...");
   await core.initialize(config);
 
-  // 5) (Optional) If you still want an HTTP server for inbound traffic, set it up
+  // 1) After reading motia.config.json:
+  const trafficDefs = config.traffic || [];
+
+  // 2) Then:
   const server = new MotiaServer();
-  await server.initialize(core, [path.join(__dirname, "traffic/inbound")]);
+  await server.initialize(core, trafficDefs);
 
   console.log(
     "[playground/index] Workflow initialized. Listening for events..."

@@ -17,6 +17,24 @@
       "runtime": "python"
     }
   ],
+  "traffic": [
+    {
+      "path": "/api/data/upload",
+      "method": "POST",
+      "transformPath": "src/traffic/inbound/data-upload.js",
+      "authorizePath": null
+    },
+    {
+      "path": "/api/complex/start",
+      "method": "POST",
+      "transformPath": "src/traffic/inbound/complex-workflow.js"
+    },
+    {
+      "path": "/api/hybrid/process",
+      "method": "POST",
+      "transformPath": "src/traffic/inbound/hybrid-process.js"
+    }
+  ],
 
   "workflows": [
     {

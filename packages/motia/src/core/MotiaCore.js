@@ -4,34 +4,6 @@ import { EventManager } from "./EventManager.js";
 import { AgentManager } from "./agents/AgentManager.js";
 
 export class MotiaCore {
-  /**
-   * MotiaCore no longer scans directories.
-   * We rely exclusively on a config object that describes everything:
-   * {
-   *   "messageBus": { "type": "redis", "host": "localhost", "port": 6379 },
-   *   "agents": [
-   *     { "name": "node-agent", "url": "...", "runtime": "node" },
-   *     { "name": "python-agent", "url": "...", "runtime": "python" }
-   *   ],
-   *   "workflows": [
-   *     {
-   *       "name": "example-workflow",
-   *       "components": [
-   *         {
-   *           "id": "simple-node",
-   *           "agent": "node-agent",
-   *           "subscribe": ["example.event"],
-   *           "emits": ["example.response"],
-   *           "codePath": "path/to/code.js"
-   *           // optional: "uiPath": "path/to/ui.jsx"
-   *         }
-   *         // ...
-   *       ]
-   *     }
-   *   ]
-   * }
-   */
-
   constructor() {
     // You can remove environment-based defaults if you want them fully in config
     this.eventManager = new EventManager({

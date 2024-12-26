@@ -1,12 +1,9 @@
 // packages/motia/src/core/MotiaServer.js
+
 import express from "express";
 import bodyParser from "body-parser";
-import fs from "fs";
 import path from "path";
 import { fileURLToPath, pathToFileURL } from "url";
-
-const __filename = fileURLToPath(import.meta.url);
-const __dirname = path.dirname(__filename);
 
 export class MotiaServer {
   constructor() {
@@ -15,48 +12,35 @@ export class MotiaServer {
     this.express.use(bodyParser.json());
   }
 
-  async findTrafficFiles(paths) {
-    const trafficFiles = [];
-
-    const searchTraffic = async (dir) => {
-      const entries = await fs.promises.readdir(dir, { withFileTypes: true });
-      for (const entry of entries) {
-        const fullPath = path.join(dir, entry.name);
-        if (entry.isDirectory()) {
-          await searchTraffic(fullPath);
-        } else if (
-          entry.name.endsWith(".js") &&
-          !entry.name.includes(".test.")
-        ) {
-          trafficFiles.push(fullPath);
-        }
-      }
-    };
-
-    for (const basePath of paths) {
-      const absolutePath = path.resolve(basePath);
-      await searchTraffic(absolutePath);
-    }
-    return trafficFiles;
-  }
-
-  async initialize(core, trafficPaths = ["./traffic/inbound"]) {
+  // Instead of trafficPaths, accept traffic array directly
+  async initialize(core, trafficDefs = []) {
     this.core = core;
 
-    // Load traffic handlers
-    const trafficFiles = await this.findTrafficFiles(trafficPaths);
-    for (const trafficFile of trafficFiles) {
-      const trafficModule = await import(pathToFileURL(trafficFile));
-      const trafficConfigs = Array.isArray(trafficModule.default)
-        ? trafficModule.default
-        : [trafficModule.default];
+    // For each definition in trafficDefs, dynamic import the transform function
+    for (const def of trafficDefs) {
+      // def = { path, method, transformPath, authorizePath? }
+      const transformModule = def.transformPath
+        ? await import(pathToFileURL(def.transformPath))
+        : null;
+      const transformFn = transformModule?.default;
 
-      for (const config of trafficConfigs) {
-        this.registerTraffic(config);
+      // If there's an optional authorizePath, import that too
+      let authorizeFn = null;
+      if (def.authorizePath) {
+        const authorizeModule = await import(pathToFileURL(def.authorizePath));
+        authorizeFn = authorizeModule?.default;
       }
+
+      // Register this route
+      this.registerTraffic({
+        path: def.path,
+        method: def.method,
+        transform: transformFn,
+        authorize: authorizeFn,
+      });
     }
 
-    // Set up routes
+    // Now attach each route to Express
     this.traffic.forEach((config, routePath) => {
       this.express[config.method.toLowerCase()](routePath, async (req, res) => {
         try {
@@ -67,7 +51,7 @@ export class MotiaServer {
       });
     });
 
-    // API endpoints
+    // Optionally, define additional endpoints (e.g. /api/workflows)
     this.express.get("/api/workflows", async (req, res) => {
       try {
         const workflows = await this.core.describeWorkflows();
@@ -77,13 +61,15 @@ export class MotiaServer {
       }
     });
 
-    // Static files and catch-all
+    // Serve static files, etc.
+    const __filename = fileURLToPath(import.meta.url);
+    const __dirname = path.dirname(__filename);
     this.express.use(express.static(path.join(__dirname, "../dist")));
     this.express.get("*", (req, res) => {
       res.sendFile(path.join(__dirname, "../dist/index.html"));
     });
 
-    // Start server
+    // Start listening
     const port = process.env.PORT || 4000;
     this.express.listen(port, () => {
       console.log(`[MotiaServer] Server listening on port ${port}`);
@@ -93,29 +79,18 @@ export class MotiaServer {
   async handleRequest(req, res) {
     const traffic = this.traffic.get(req.path);
     if (!traffic) {
-      res.status(404).json({ error: "Traffic not found" });
-      return;
+      return res.status(404).json({ error: "Traffic not found" });
     }
 
     try {
-      // Check authorization if required
       if (traffic.authorize) {
         await traffic.authorize(req);
       }
-
-      // Transform request to event
       const event = await traffic.transform(req);
-
-      // Emit through core
       await this.core.emit(event, {
         traceId: req.headers["x-trace-id"],
-        metadata: {
-          source: "http",
-          path: req.path,
-          method: req.method,
-        },
+        metadata: { source: "http", path: req.path, method: req.method },
       });
-
       res.status(200).json({ success: true, eventType: event.type });
     } catch (error) {
       res.status(400).json({ error: error.message });
@@ -126,7 +101,6 @@ export class MotiaServer {
     if (!config.path || !config.method || !config.transform) {
       throw new Error("Invalid traffic configuration");
     }
-
     const routePath = config.path.startsWith("/")
       ? config.path
       : `/${config.path}`;
