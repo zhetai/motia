@@ -9,7 +9,7 @@
     "build": "pnpm run -r build",
     "build-config": "node packages/motia/src/cli/MotiaConfigBuilder.js playground",
     "test:unit": "pnpm vitest",
-    "test:e2e": "pnpm playwright test",
+    "test:e2e": "pnpm run build-config && pnpm playwright test",
     "test": "concurrently \"pnpm run test:unit\" \"pnpm run test:e2e\"",
     "motia": "node packages/motia/src/cli/index.js"
   },
