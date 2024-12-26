@@ -7,8 +7,8 @@ export class MotiaCore {
   constructor() {
     // You can remove environment-based defaults if you want them fully in config
     this.eventManager = new EventManager({
-      host: process.env.REDIS_HOST || "localhost",
-      port: parseInt(process.env.REDIS_PORT || "6379"),
+      host: process.env.REDIS_HOST,
+      port: parseInt(process.env.REDIS_PORT),
       prefix: "motia:events:",
     });
 
@@ -53,20 +53,18 @@ export class MotiaCore {
         // For each workflow, register all components
         if (Array.isArray(wf.components)) {
           for (const comp of wf.components) {
-            // A) Register the component with the correct agent
+            // pass in comp.id so the NodeAgent sees the correct name
             await this.agentManager.registerComponent(
               comp.codePath,
-              comp.agent
+              comp.agent,
+              comp.id // e.g. "complex-workflow/conditional-branch"
             );
 
-            // B) For each subscribed event, create a handler that calls agentManager
+            // Then for each subscribed event, register a handler
             if (Array.isArray(comp.subscribe)) {
               for (const eventType of comp.subscribe) {
-                const handler = async (event) => {
-                  await this.agentManager.executeComponent(
-                    comp.codePath,
-                    event
-                  );
+                const handler = async (evt) => {
+                  await this.agentManager.executeComponent(comp.codePath, evt);
                 };
                 await this.eventManager.subscribe(eventType, comp.id, handler);
               }

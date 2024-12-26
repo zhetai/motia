@@ -1,31 +1,51 @@
 // packages/motia/src/core/agents/AgentManager.js
+
 import fetch from "node-fetch";
 import fs from "fs/promises";
 import path from "path";
 
 export class AgentManager {
   constructor(emitCallback) {
+    /**
+     * Maps agentName -> { name, url, runtime, status }
+     */
     this.agents = new Map();
+
+    /**
+     * Maps componentPath -> { agent, componentId }
+     */
     this.componentRegistry = new Map();
+
+    /**
+     * A Set of "agentName:componentPath" strings to track duplicates
+     */
     this.registeredComponents = new Set();
+
     this.healthCheckInterval = null;
-    this.emitCallback = emitCallback; // Function to emit events via EventManager
+    this.emitCallback = emitCallback; // function(event, componentId) => void
   }
 
   async initialize() {
+    // Start a health-check timer for all registered agents
     if (this.healthCheckInterval) {
       clearInterval(this.healthCheckInterval);
     }
 
     this.healthCheckInterval = setInterval(() => {
       for (const agent of this.agents.values()) {
-        this.checkAgentHealth(agent);
+        this.checkAgentHealth(agent).catch((err) =>
+          console.error("[AgentManager] Health check error:", err)
+        );
       }
     }, 30000);
 
     console.log("[AgentManager] Initialized");
   }
 
+  /**
+   * Register or update an agent definition in our local Map.
+   * e.g. { name: "node-agent", url: "http://localhost:3000", runtime: "node" }
+   */
   async registerAgent(name, config) {
     if (this.agents.has(name)) {
       console.log(
@@ -44,7 +64,7 @@ export class AgentManager {
       status: "initializing",
     };
 
-    // Check health with retries
+    // Attempt up to 3 health checks
     for (let i = 0; i < 3; i++) {
       if (await this.checkAgentHealth(agent)) {
         agent.status = "ready";
@@ -58,44 +78,43 @@ export class AgentManager {
     throw new Error(`Failed to register agent ${name}: health check failed`);
   }
 
-  async registerComponent(componentPath, agentName) {
+  /**
+   * Register a component's source code with the correct remote agent
+   * @param {string} componentPath - local path to the component's code
+   * @param {string} agentName - name of the agent to deploy to
+   * @param {string} componentId - ID of the component ("workflowName/componentName")
+   *
+   * Note: We no longer parse code for metadata. We'll rely on config to supply agentName, etc.
+   */
+  async registerComponent(componentPath, agentName, componentId) {
     const componentKey = `${agentName}:${componentPath}`;
-
-    // Clean up existing registration if necessary
+    // If we already have this, remove old registration
     if (this.registeredComponents.has(componentKey)) {
       await this.cleanupComponent(componentPath);
     }
 
     const agent = this.agents.get(agentName);
-    if (!agent) throw new Error(`Agent ${agentName} not found`);
+    if (!agent) {
+      throw new Error(`[AgentManager] Agent not found: ${agentName}`);
+    }
 
     try {
+      // Read the entire code file; we do *no* metadata parsing
       const code = await fs.readFile(componentPath, "utf-8");
-      const componentId = this.getComponentId(componentPath);
-      const fileExt = path.extname(componentPath);
-
-      // Extract metadata (subscriptions etc)
-      const metadata = await this.extractComponentMetadata(code, fileExt);
-
-      // Make sure we have the agent property from metadata
-      const agentMetadata = metadata.metadata?.agent || metadata.agent;
 
       console.log(`[AgentManager] Registering component:`, {
         path: componentPath,
         agent: agentName,
-        id: componentId,
-        subscriptions: metadata.subscribe || [],
-        agentMetadata, // Log to verify we're getting the right value
+        componentId,
       });
 
-      // Register with agent
+      // Send it to the remote agent's /register
       const response = await fetch(`${agent.url}/register`, {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({
           name: componentId,
-          code: code,
-          agent: agentMetadata, // Include agent metadata if needed
+          code,
         }),
       });
 
@@ -103,13 +122,11 @@ export class AgentManager {
         throw new Error(`Failed to deploy component: ${response.statusText}`);
       }
 
-      // Store component info
+      // Store the registry info
       this.componentRegistry.set(componentPath, {
         agent: agentName,
         componentId,
-        metadata,
       });
-
       this.registeredComponents.add(componentKey);
 
       console.log(
@@ -121,6 +138,9 @@ export class AgentManager {
     }
   }
 
+  /**
+   * Execute a component by calling the remote agent's /execute endpoint
+   */
   async executeComponent(componentPath, event) {
     const component = this.componentRegistry.get(componentPath);
     if (!component) {
@@ -143,6 +163,7 @@ export class AgentManager {
         }
       );
 
+      // POST to agent
       const response = await fetch(
         `${agent.url}/execute/${component.componentId}`,
         {
@@ -161,8 +182,8 @@ export class AgentManager {
 
       const result = await response.json();
 
-      // Emit result events through callback
-      if (result.events?.length) {
+      // If the component emitted events, we forward them via emitCallback
+      if (Array.isArray(result.events) && result.events.length > 0) {
         console.log(
           `[AgentManager] Component ${component.componentId} emitted ${result.events.length} events`
         );
@@ -181,11 +202,13 @@ export class AgentManager {
     }
   }
 
+  /**
+   * Remove a previously registered component from our internal registry
+   */
   async cleanupComponent(componentPath) {
     const component = this.componentRegistry.get(componentPath);
     if (!component) return;
 
-    // Remove from registries
     this.componentRegistry.delete(componentPath);
     const componentKey = `${component.agent}:${componentPath}`;
     this.registeredComponents.delete(componentKey);
@@ -193,37 +216,28 @@ export class AgentManager {
     console.log(`[AgentManager] Cleaned up component: ${componentPath}`);
   }
 
+  /**
+   * Clean up all agents & components
+   */
   async cleanup() {
     if (this.healthCheckInterval) {
       clearInterval(this.healthCheckInterval);
     }
-
-    // Clean up all components
     for (const componentPath of this.componentRegistry.keys()) {
       await this.cleanupComponent(componentPath);
     }
-
-    // Clear collections
     this.componentRegistry.clear();
     this.agents.clear();
     this.registeredComponents.clear();
-
     console.log("[AgentManager] Cleanup completed");
   }
 
-  // Helper methods
-  getComponentId(componentPath) {
-    const matches = componentPath.match(
-      /workflows\/([^/]+)\/components\/([^/]+)/
-    );
-    if (!matches) throw new Error(`Invalid component path: ${componentPath}`);
-    const [_, workflowName, componentName] = matches;
-    return `${workflowName}/${componentName}`;
-  }
-
+  /**
+   * Utility to check an agent’s /health endpoint
+   */
   async checkAgentHealth(agent, attempt = 1) {
     if (!agent) {
-      console.error("No agent provided to checkAgentHealth");
+      console.error("[AgentManager] No agent provided to checkAgentHealth");
       return false;
     }
     try {
@@ -236,35 +250,5 @@ export class AgentManager {
       console.error(`Health check failed for agent ${agent.name}:`, error);
       return false;
     }
-  }
-
-  async extractComponentMetadata(code, fileExt) {
-    if (fileExt === ".py") {
-      const metadataMatch = code.match(/metadata\s*=\s*({[\s\S]*?})/);
-      const subscribeMatch = code.match(/subscribe\s*=\s*(\[[^\]]+\])/);
-      return {
-        ...(metadataMatch
-          ? JSON.parse(metadataMatch[1].replace(/'/g, '"'))
-          : {}),
-        subscribe: subscribeMatch
-          ? JSON.parse(subscribeMatch[1].replace(/'/g, '"'))
-          : [],
-      };
-    } else if (fileExt === ".js") {
-      const metadataMatch = code.match(
-        /export\s+const\s+metadata\s*=\s*({[\s\S]*?})/
-      );
-      const subscribeMatch = code.match(
-        /export\s+const\s+subscribe\s*=\s*(\[[^\]]+\])/
-      );
-
-      return {
-        ...(metadataMatch ? Function(`return ${metadataMatch[1]}`)() : {}),
-        subscribe: subscribeMatch
-          ? Function(`return ${subscribeMatch[1]}`)()
-          : [],
-      };
-    }
-    throw new Error(`Unsupported file type: ${fileExt}`);
   }
 }
