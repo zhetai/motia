@@ -1,5 +1,5 @@
 import { describe, test, expect, beforeEach, afterEach } from "vitest";
-import { WorkflowTestHelper } from "motia/testing";
+import { WorkflowTestHelper } from "wistro/testing";
 import path from "path";
 
 describe("data-processing workflow", () => {

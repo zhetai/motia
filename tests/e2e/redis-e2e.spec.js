@@ -8,10 +8,10 @@ test.describe("Hybrid Workflow E2E", () => {
 
   const subscribeToEvents = async () => {
     redisSubscriber = new Redis({ host: "127.0.0.1", port: 6379 });
-    redisSubscriber.psubscribe("motia:events:*");
+    redisSubscriber.psubscribe("wistro:events:*");
 
     redisSubscriber.on("pmessage", (_, channel, message) => {
-      const eventType = channel.replace("motia:events:", "");
+      const eventType = channel.replace("wistro:events:", "");
       const event = JSON.parse(message);
       collectedEvents.push({ eventType, ...event });
     });

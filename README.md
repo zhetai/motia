@@ -1,10 +1,10 @@
-# Motia Monorepo
+# Wistro Monorepo
 
-This repository hosts the development of **Motia.js**, a framework for building event-driven business automation workflows. The repository is structured to facilitate the iterative development and testing of the core framework and includes a playground environment for real-world use cases.
+This repository hosts the development of **Wistro.js**, a framework for building event-driven business automation workflows. The repository is structured to facilitate the iterative development and testing of the core framework and includes a playground environment for real-world use cases.
 
 ## Overview
 
-Motia.js aims to simplify the creation and scaling of event-driven workflows by:
+Wistro.js aims to simplify the creation and scaling of event-driven workflows by:
 
 - Providing a **core framework** for defining workflows as collections of testable components.
 - Supporting **real-time event handling** with loose coupling between components.
@@ -13,7 +13,7 @@ Motia.js aims to simplify the creation and scaling of event-driven workflows by:
 
 ### Aspirational Vision
 
-Motia.js strives to be:
+Wistro.js strives to be:
 
 - **Developer-Friendly**: Easy to adopt and extend.
 - **Production-Ready**: Scales gracefully from prototypes to enterprise-grade workflows.
@@ -24,7 +24,7 @@ Motia.js strives to be:
 ```
 .
 ├── packages/                   # Core framework and supporting tools
-│   ├── motia/                  # The Motia.js framework
+│   ├── wistro/                  # The Wistro.js framework
 │   │   ├── src/                # Source code
 │   │   ├── dist/               # Compiled output
 │   │   ├── package.json        # Package metadata
@@ -57,7 +57,7 @@ Motia.js strives to be:
 
    ```bash
    git clone <repository_url>
-   cd motia-monorepo
+   cd wistro-monorepo
    ```
 
 2. Install dependencies:
@@ -75,7 +75,7 @@ Motia.js strives to be:
 
 ### Running the Playground
 
-The playground allows you to test and refine workflows built using Motia.js.
+The playground allows you to test and refine workflows built using Wistro.js.
 
 ```bash
 pnpm run dev
@@ -83,8 +83,8 @@ pnpm run dev
 
 This command starts the following services:
 
-- **MotiaCore**: The workflow orchestrator.
-- **MotiaServer**: Provides HTTP endpoints for triggering workflows.
+- **WistroCore**: The workflow orchestrator.
+- **WistroServer**: Provides HTTP endpoints for triggering workflows.
 - **Playground UI**: A React-based visualization tool for workflows.
 
 ## How to Contribute
@@ -99,7 +99,7 @@ This command starts the following services:
 
 2. Make changes to the codebase.
 
-   - Framework changes: Update `packages/motia`.
+   - Framework changes: Update `packages/wistro`.
    - Workflow examples: Update `playground/src/workflows`.
 
 3. Run tests:
@@ -128,7 +128,7 @@ This command starts the following services:
 - Expand the set of example workflows.
 - Enhance the visualization capabilities of the playground.
 - Improve documentation for public release.
-- Publish `motia` to npm with comprehensive guides and examples.
+- Publish `wistro` to npm with comprehensive guides and examples.
 
 ## License
 

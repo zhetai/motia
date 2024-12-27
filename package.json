@@ -1,5 +1,5 @@
 {
-  "name": "motia-monorepo",
+  "name": "wistro-monorepo",
   "private": true,
   "scripts": {
     "dev:node-agent": "node agents/node-agent/src/server.js",
@@ -7,11 +7,11 @@
     "dev:agents": "pnpm run -r --parallel dev:node-agent dev:python-agent",
     "dev": "pnpm run build-config && pnpm run dev:agents & sleep 2 && pnpm run -r --parallel dev",
     "build": "pnpm run -r build",
-    "build-config": "node packages/motia/src/cli/MotiaConfigBuilder.js playground",
+    "build-config": "node packages/wistro/src/cli/WistroConfigBuilder.js playground",
     "test:unit": "pnpm vitest",
     "test:e2e": "pnpm run build-config && pnpm playwright test",
     "test": "concurrently \"pnpm run test:unit\" \"pnpm run test:e2e\"",
-    "motia": "node packages/motia/src/cli/index.js"
+    "wistro": "node packages/wistro/src/cli/index.js"
   },
   "devDependencies": {
     "@playwright/test": "^1.49.1",

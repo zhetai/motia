@@ -15,16 +15,16 @@ export default defineConfig({
   plugins: [react()],
   resolve: {
     alias: {
-      motia: path.resolve(__dirname, "../packages/motia/src"),
+      wistro: path.resolve(__dirname, "../packages/wistro/src"),
     },
   },
   optimizeDeps: {
-    include: ["react", "react-dom", "motia/ui"],
+    include: ["react", "react-dom", "wistro/ui"],
     force: true,
   },
   build: {
     commonjsOptions: {
-      include: [/motia/, /node_modules/],
+      include: [/wistro/, /node_modules/],
     },
   },
 });

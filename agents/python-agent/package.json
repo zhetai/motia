@@ -1,5 +1,5 @@
 {
-  "name": "@motia/python-agent",
+  "name": "@wistro/python-agent",
   "version": "1.0.0",
   "scripts": {
     "dev": "cd src && ../venv/bin/python -m uvicorn server:app --port 8000"
