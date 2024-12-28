@@ -83,3 +83,4 @@ venv/
 agents/**/components/
 
 
+.aider*
