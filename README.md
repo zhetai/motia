@@ -49,6 +49,7 @@ Wistro.js strives to be:
 ### Prerequisites
 
 - **Node.js** (v16+ recommended)
+- **Python** (LTS recommended)
 - **pnpm** (for managing the monorepo)
 
 ### Setup
@@ -66,7 +67,23 @@ Wistro.js strives to be:
    pnpm install
    ```
 
-3. Set up environment variables:
+3. Setup python
+
+   ```bash
+   # Install pyenv
+   brew update
+   brew install pyenv
+
+   # Change the version to the latest LTS
+   pyenv install 3.11.10
+
+   # Install the python agent dependencies
+   pip install -r ./agents/python-agent/requirements.txt
+   ```
+
+   Add the following to your profile, bashrc or zshrc file `export PYTHON_BIN_PATH=$(which python)`
+
+4. Set up environment variables:
    - Copy the example `.env` file:
      ```bash
      cp playground/.env.example playground/.env
