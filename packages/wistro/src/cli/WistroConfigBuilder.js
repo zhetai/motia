@@ -7,37 +7,88 @@ import { pathToFileURL } from "url";
 
 async function extractMetadata(filePath) {
   const code = fs.readFileSync(filePath, "utf8");
+
+  // JS vs. Python logic, etc.
   if (filePath.endsWith(".js")) {
-    const metadataMatch = code.match(
-      /export\s+const\s+metadata\s*=\s*({[\s\S]*?})/
+    // 1) Find `export const config = {...}`
+    const configMatch = code.match(
+      /export\s+const\s+config\s*=\s*({[\s\S]*?})/
     );
+    let configObject = {};
+
+    if (configMatch) {
+      try {
+        // Safely parse the object
+        configObject = Function(`return ${configMatch[1]}`)() || {};
+      } catch (err) {
+        console.error("Error parsing JS config object:", err);
+      }
+    }
+
+    // 2) Extract `configObject.subscribe || subscribes` and `configObject.emits`
+    const subscribeFromConf =
+      configObject.subscribe || configObject.subscribes || [];
+    const emitsFromConf = configObject.emits || [];
+
+    // 3) Also check if user still has old `export const subscribe = [...]` lines
     const subscribeMatch = code.match(
       /export\s+const\s+subscribe\s*=\s*(\[[^\]]+\])/
     );
     const emitsMatch = code.match(/export\s+const\s+emits\s*=\s*(\[[^\]]+\])/);
 
-    const metadata = metadataMatch
-      ? Function(`return ${metadataMatch[1]}`)()
-      : {};
-    const subscribe = subscribeMatch
+    let fallbackSubscribe = subscribeMatch
       ? Function(`return ${subscribeMatch[1]}`)()
       : [];
-    const emits = emitsMatch ? Function(`return ${emitsMatch[1]}`)() : [];
-    return { ...metadata, subscribe, emits };
-  } else if (filePath.endsWith(".py")) {
-    // naive replace of ' to " for JSON parse
-    const code2 = code.replace(/'/g, '"');
-    const metadataMatch = code2.match(/metadata\s*=\s*({[\s\S]*?})/);
-    const subscribeMatch = code2.match(/subscribe\s*=\s*(\[[^\]]+\])/);
-    const emitsMatch = code2.match(/emits\s*=\s*(\[[^\]]+\])/);
+    let fallbackEmits = emitsMatch ? Function(`return ${emitsMatch[1]}`)() : [];
 
+    // 4) Final arrays prefer the new config fields
+    const finalSubscribes = subscribeFromConf.length
+      ? subscribeFromConf
+      : fallbackSubscribe;
+    const finalEmits = emitsFromConf.length ? emitsFromConf : fallbackEmits;
+
+    // 5) Return combined result with agent, subscribes/emits, etc.
     return {
-      ...(metadataMatch ? JSON.parse(metadataMatch[1]) : {}),
-      subscribe: subscribeMatch ? JSON.parse(subscribeMatch[1]) : [],
-      emits: emitsMatch ? JSON.parse(emitsMatch[1]) : [],
+      ...configObject,
+      subscribe: finalSubscribes,
+      emits: finalEmits,
+    };
+  } else if (filePath.endsWith(".py")) {
+    // 1) Convert single quotes to double for naive JSON parse
+    const code2 = code.replace(/'/g, '"');
+
+    // 2) Find the config block
+    // e.g. `config = { "agent": "server", "subscribes": [...], "emits": [...] }`
+    const configMatch = code2.match(/config\s*=\s*({[\s\S]*?})/);
+    let configObj = {};
+
+    if (configMatch) {
+      try {
+        // Attempt to parse as JSON
+        configObj = JSON.parse(configMatch[1]);
+      } catch (err) {
+        console.error("Error parsing Python config block:", err);
+      }
+    }
+
+    // 3) Extract subscribe / emits from configObj
+    // Note: your user might name them `subscribes` or `subscribe`. Adjust as needed.
+    const subscribe = configObj.subscribe || configObj.subscribes || [];
+    const emits = configObj.emits || [];
+
+    // Also handle agent or endpoint
+    const agent = configObj.agent || configObj.endpoint || "server";
+
+    // Return combined
+    return {
+      ...configObj,
+      subscribe,
+      emits,
+      agent,
     };
   }
-  // Unsupported file type
+
+  // default
   return {};
 }
 
@@ -68,13 +119,14 @@ async function findAllComponents(workflowDir, absoluteBase) {
     }
 
     const componentId = dir.name;
-    const agent = metadata.agent || metadata.metadata?.agent || "node-agent";
+    const agent = metadata.agent || metadata.metadata?.agent || "server";
 
     components.push({
       id: componentId,
       agent,
       subscribe: metadata.subscribe || [],
       emits: metadata.emits || [],
+      name: metadata.name || componentId,
       // Make the path relative to the base dir, NOT process.cwd()
       codePath: path.relative(absoluteBase, filePath),
     });
@@ -96,7 +148,7 @@ async function findAllWorkflows(baseDir, absoluteBase) {
 
     // Optionally skip if missing config.js or version.json
     const files = fs.readdirSync(workflowPath);
-    if (!files.includes("config.js") || !files.includes("version.json")) {
+    if (!files.includes("config.js")) {
       continue;
     }
 
@@ -110,33 +162,20 @@ async function findAllWorkflows(baseDir, absoluteBase) {
 }
 
 async function findAllTraffic(baseDir, absoluteBase) {
-  const trafficDir = path.join(baseDir, "src", "traffic", "inbound");
-  if (!fs.existsSync(trafficDir)) return [];
+  const trafficFile = path.join(baseDir, "src", "traffic", "index.js");
+  if (!fs.existsSync(trafficFile)) return [];
 
-  const routeDefs = [];
-  const files = fs.readdirSync(trafficDir);
+  // Import it, read 'export const config = {...}' if that’s how your traffic is defined
+  const mod = await import(pathToFileURL(trafficFile));
+  // Then parse and push each route
+  const trafficMap = mod.config || {};
+  const routeDefs = Object.values(trafficMap).map((t) => ({
+    // path, method, maybe transformPath or direct event
+    path: t.path,
+    method: t.method,
+    type: t.type,
+  }));
 
-  for (const file of files) {
-    if (!file.endsWith(".js")) continue; // or .ts, etc.
-    const fullPath = path.join(trafficDir, file);
-
-    // 1) Dynamically import the module
-    const mod = await import(pathToFileURL(fullPath));
-
-    // 2) Extract path, method, and transform
-    const routePath = mod.path || "/unknown";
-    const routeMethod = mod.method || "GET";
-    const transformFn = mod.default; // the transform function
-
-    // 3) Build a config entry referencing only transformPath
-    //    Because WistroServer will re-import the file at runtime and call the default export.
-    routeDefs.push({
-      path: routePath,
-      method: routeMethod,
-      transformPath: path.relative(absoluteBase, fullPath),
-      // Could also do authorizePath if you want
-    });
-  }
   return routeDefs;
 }
 

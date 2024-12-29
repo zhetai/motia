@@ -28,7 +28,7 @@ export function useWistroFlow(selectedWorkflow) {
           type: comp.id,
           position: { x: idx * 200, y: 100 * (idx % 2 === 0 ? 1 : 2) },
           data: {
-            label: comp.id,
+            label: comp.name,
             subscribe: comp.subscribe || [],
             emits: comp.emits || [],
           },

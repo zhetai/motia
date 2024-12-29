@@ -2,7 +2,6 @@
 export * from "./core/WistroCore.js";
 export * from "./core/WistroServer.js";
 export * from "./core/MessageBus.js";
-export * from "./core/logging/index.js";
 
 // Helper functions
 export { defineTraffic, defineRoute } from "./core/index.js";

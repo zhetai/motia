@@ -87,6 +87,13 @@ export class AgentManager {
    * Note: We no longer parse code for metadata. We'll rely on config to supply agentName, etc.
    */
   async registerComponent(componentPath, agentName, componentId) {
+    if (!agentName || agentName === "server") {
+      console.log(
+        `[AgentManager] Skipping server-based component: ${componentId}`
+      );
+      return; // so we don't push code to an external agent
+    }
+
     const componentKey = `${agentName}:${componentPath}`;
     // If we already have this, remove old registration
     if (this.registeredComponents.has(componentKey)) {

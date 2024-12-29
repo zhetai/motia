@@ -16,13 +16,13 @@ export class WistroServer {
   async initialize(core, trafficDefs = []) {
     this.core = core;
 
-    // For each definition in trafficDefs, dynamic import the transform function
     for (const def of trafficDefs) {
-      // def = { path, method, transformPath, authorizePath? }
-      const transformModule = def.transformPath
-        ? await import(pathToFileURL(def.transformPath))
-        : null;
-      const transformFn = transformModule?.default;
+      // If def.transformPath is given, dynamically import the module
+      let transformFn = null;
+      if (def.transformPath) {
+        const transformModule = await import(pathToFileURL(def.transformPath));
+        transformFn = transformModule?.default;
+      }
 
       // If there's an optional authorizePath, import that too
       let authorizeFn = null;
@@ -31,7 +31,23 @@ export class WistroServer {
         authorizeFn = authorizeModule?.default;
       }
 
-      // Register this route
+      // If we still have no transform function, provide a default
+      if (!transformFn) {
+        // We need to know 'type' to build an event
+        if (!def.type) {
+          throw new Error(
+            `No transform function or 'type' field found for route: ${def.path}`
+          );
+        }
+
+        // A simple default transform that sets event.type = def.type, event.data = req.body
+        transformFn = (req) => ({
+          type: def.type,
+          data: req.body,
+        });
+      }
+
+      // Register this route into our local Map
       this.registerTraffic({
         path: def.path,
         method: def.method,

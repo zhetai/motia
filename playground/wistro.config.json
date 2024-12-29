@@ -18,213 +18,63 @@
   ],
   "traffic": [
     {
-      "path": "/api/complex/start",
+      "path": "/api/hybrid-endpoint-example",
       "method": "POST",
-      "transformPath": "src/traffic/inbound/complex-workflow.js"
+      "type": "hybrid.received"
     },
     {
-      "path": "/api/data/upload",
+      "path": "/api/wistro-server-example",
       "method": "POST",
-      "transformPath": "src/traffic/inbound/data-upload.js"
+      "type": "ws-server-example.trigger"
     },
     {
-      "path": "/api/hybrid/process",
+      "path": "/api/endpoint-server-handshake",
       "method": "POST",
-      "transformPath": "src/traffic/inbound/hybrid-process.js"
-    },
-    {
-      "path": "/api/monitor/redis",
-      "method": "POST",
-      "transformPath": "src/traffic/inbound/redis-monitor.js"
+      "type": "handshake.initiate"
     }
   ],
   "workflows": [
     {
-      "name": "complex-workflow",
+      "name": "endpointServerHandshake",
       "components": [
         {
-          "id": "conditional-branch",
-          "agent": "node-agent",
+          "id": "api-caller",
+          "agent": "server",
           "subscribe": [
-            "complex.merged"
+            "handshake.callApi"
           ],
           "emits": [
-            "complex.finalize",
-            "complex.start"
+            "handshake.apiResponse"
           ],
-          "codePath": "src/workflows/complex-workflow/components/conditional-branch/index.js"
+          "name": "API Caller",
+          "codePath": "src/workflows/endpointServerHandshake/components/api-caller/index.js"
         },
         {
-          "id": "finalize",
-          "agent": "node-agent",
+          "id": "node-finalizer",
+          "agent": "server",
           "subscribe": [
-            "complex.finalize"
+            "handshake.apiResponse"
           ],
-          "emits": [
-            "complex.done"
-          ],
-          "codePath": "src/workflows/complex-workflow/components/finalize/index.js"
+          "emits": [],
+          "name": "Node Finalizer",
+          "codePath": "src/workflows/endpointServerHandshake/components/node-finalizer/index.js"
         },
         {
-          "id": "merge-results",
-          "agent": "node-agent",
+          "id": "node-starter",
+          "agent": "server",
           "subscribe": [
-            "complex.transformedA",
-            "complex.transformedB"
+            "handshake.initiate"
           ],
           "emits": [
-            "complex.merged"
+            "handshake.callApi"
           ],
-          "codePath": "src/workflows/complex-workflow/components/merge-results/index.js"
-        },
-        {
-          "id": "recursive-split",
-          "agent": "node-agent",
-          "subscribe": [
-            "complex.start"
-          ],
-          "emits": [
-            "complex.partA",
-            "complex.partB",
-            "complex.start"
-          ],
-          "codePath": "src/workflows/complex-workflow/components/recursive-split/index.js"
-        },
-        {
-          "id": "repeat-trigger",
-          "agent": "node-agent",
-          "subscribe": [
-            "complex.done"
-          ],
-          "emits": [
-            "complex.start"
-          ],
-          "codePath": "src/workflows/complex-workflow/components/repeat-trigger/index.js"
-        },
-        {
-          "id": "start-event",
-          "agent": "node-agent",
-          "subscribe": [],
-          "emits": [
-            "complex.start"
-          ],
-          "codePath": "src/workflows/complex-workflow/components/start-event/index.js"
-        },
-        {
-          "id": "transform-A",
-          "agent": "node-agent",
-          "subscribe": [
-            "complex.data.partA"
-          ],
-          "emits": [
-            "complex.transformedA"
-          ],
-          "codePath": "src/workflows/complex-workflow/components/transform-A/index.js"
-        },
-        {
-          "id": "transform-B",
-          "agent": "node-agent",
-          "subscribe": [
-            "complex.partB"
-          ],
-          "emits": [
-            "complex.transformedB"
-          ],
-          "codePath": "src/workflows/complex-workflow/components/transform-B/index.js"
+          "name": "Node Starter",
+          "codePath": "src/workflows/endpointServerHandshake/components/node-starter/index.js"
         }
       ]
     },
     {
-      "name": "data-processing",
-      "components": [
-        {
-          "id": "join-data",
-          "agent": "node-agent",
-          "subscribe": [
-            "processing.transformedpartA",
-            "processing.transformedpartB"
-          ],
-          "emits": [
-            "processing.joined"
-          ],
-          "codePath": "src/workflows/data-processing/components/join-data/index.js"
-        },
-        {
-          "id": "save-data",
-          "agent": "node-agent",
-          "subscribe": [
-            "processing.joined"
-          ],
-          "emits": [
-            "processing.saved"
-          ],
-          "codePath": "src/workflows/data-processing/components/save-data/index.js"
-        },
-        {
-          "id": "split-data",
-          "agent": "node-agent",
-          "subscribe": [
-            "processing.validated"
-          ],
-          "emits": [
-            "processing.splitpartA",
-            "processing.splitpartB"
-          ],
-          "codePath": "src/workflows/data-processing/components/split-data/index.js"
-        },
-        {
-          "id": "transform-partA",
-          "agent": "node-agent",
-          "subscribe": [
-            "processing.splitpartA"
-          ],
-          "emits": [
-            "processing.transformedpartA"
-          ],
-          "codePath": "src/workflows/data-processing/components/transform-partA/index.js"
-        },
-        {
-          "id": "transform-partB",
-          "agent": "node-agent",
-          "subscribe": [
-            "processing.splitpartB"
-          ],
-          "emits": [
-            "processing.transformedpartB"
-          ],
-          "codePath": "src/workflows/data-processing/components/transform-partB/index.js"
-        },
-        {
-          "id": "validate-data",
-          "agent": "node-agent",
-          "subscribe": [
-            "processing.uploaded"
-          ],
-          "emits": [
-            "processing.validated"
-          ],
-          "codePath": "src/workflows/data-processing/components/validate-data/index.js"
-        }
-      ]
-    },
-    {
-      "name": "example-workflow",
-      "components": [
-        {
-          "id": "simple-node",
-          "agent": "node-agent",
-          "subscribe": [
-            "example.event"
-          ],
-          "emits": [
-            "example.response"
-          ],
-          "codePath": "src/workflows/example-workflow/components/simple-node/index.js"
-        }
-      ]
-    },
-    {
-      "name": "hybrid-processing",
+      "name": "hybridEndpointExmaple",
       "components": [
         {
           "id": "analyze-data",
@@ -235,29 +85,32 @@
           "emits": [
             "hybrid.analyzed"
           ],
-          "codePath": "src/workflows/hybrid-processing/components/analyze-data/index.py"
+          "name": "analyze-data",
+          "codePath": "src/workflows/hybridEndpointExmaple/components/analyze-data/index.py"
         },
         {
           "id": "enrich-data",
-          "agent": "node-agent",
+          "agent": "server",
           "subscribe": [
             "hybrid.transformed"
           ],
           "emits": [
             "hybrid.enriched"
           ],
-          "codePath": "src/workflows/hybrid-processing/components/enrich-data/index.js"
+          "name": "Enrich Data",
+          "codePath": "src/workflows/hybridEndpointExmaple/components/enrich-data/index.js"
         },
         {
           "id": "finalize-data",
-          "agent": "node-agent",
+          "agent": "server",
           "subscribe": [
             "hybrid.analyzed"
           ],
           "emits": [
             "hybrid.completed"
           ],
-          "codePath": "src/workflows/hybrid-processing/components/finalize-data/index.js"
+          "name": "Fanialize Data",
+          "codePath": "src/workflows/hybridEndpointExmaple/components/finalize-data/index.js"
         },
         {
           "id": "transform-data",
@@ -268,18 +121,59 @@
           "emits": [
             "hybrid.transformed"
           ],
-          "codePath": "src/workflows/hybrid-processing/components/transform-data/index.py"
+          "name": "Transform Data",
+          "codePath": "src/workflows/hybridEndpointExmaple/components/transform-data/index.py"
         },
         {
           "id": "validate-data",
-          "agent": "node-agent",
+          "agent": "server",
           "subscribe": [
             "hybrid.received"
           ],
           "emits": [
             "hybrid.validated"
           ],
-          "codePath": "src/workflows/hybrid-processing/components/validate-data/index.js"
+          "name": "Validate Data",
+          "codePath": "src/workflows/hybridEndpointExmaple/components/validate-data/index.js"
+        }
+      ]
+    },
+    {
+      "name": "wistroServerExample",
+      "components": [
+        {
+          "id": "finalizer",
+          "agent": "server",
+          "subscribe": [
+            "ws-server-example.processed"
+          ],
+          "emits": [],
+          "name": "Finalizer",
+          "codePath": "src/workflows/wistroServerExample/components/finalizer/index.js"
+        },
+        {
+          "id": "processor",
+          "agent": "server",
+          "subscribe": [
+            "ws-server-example.start"
+          ],
+          "emits": [
+            "ws-server-example.processed"
+          ],
+          "name": "Processor",
+          "codePath": "src/workflows/wistroServerExample/components/processor/index.js"
+        },
+        {
+          "id": "start-event",
+          "agent": "server",
+          "subscribe": [
+            "ws-server-example.trigger"
+          ],
+          "emits": [
+            "ws-server-example.start"
+          ],
+          "name": "Start Event",
+          "codePath": "src/workflows/wistroServerExample/components/start-event/index.js"
         }
       ]
     }
