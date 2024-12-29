@@ -1,6 +1,5 @@
 // packages/wistro/src/core/WistroCore.js
 import { pathToFileURL } from "url";
-import path from "path";
 import { EventManager } from "./EventManager.js";
 import { AgentManager } from "./agents/AgentManager.js";
 
@@ -112,12 +111,14 @@ export class WistroCore {
     await this.eventManager.emit(event, source);
   }
 
+  // todo: need to refactor these out of core
   registerServerComponent(comp) {
     // comp => { id, agent, codePath, subscribe, emits, ... }
     this.serverComponents.set(comp.id, comp.codePath);
     console.log(`[WistroCore] Registered server-based component: ${comp.id}`);
   }
 
+  // todo: need to refactor these out of core
   async executeServerComponent(componentId, event) {
     const codePath = this.serverComponents.get(componentId);
     if (!codePath) {
@@ -126,6 +127,7 @@ export class WistroCore {
     }
 
     try {
+      // TODO: I don't think we need to do this. Need to remove any path related things from core
       // Force fresh import each time (if you want a hot-reload style)
       const moduleUrl = pathToFileURL(codePath).href + `?update=${Date.now()}`;
       const compModule = await import(moduleUrl);
