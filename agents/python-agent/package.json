@@ -2,6 +2,6 @@
   "name": "@wistro/python-agent",
   "version": "1.0.0",
   "scripts": {
-    "dev:agent": "python3 -m uvicorn src.server:app --reload --port 8000"
+    "dev:agent": "python -m uvicorn src.server:app --reload --port 8000"
   }
 }
