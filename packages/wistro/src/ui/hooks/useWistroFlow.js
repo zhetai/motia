@@ -9,7 +9,7 @@ export function useWistroFlow(selectedWorkflow) {
   useEffect(() => {
     async function loadWorkflows() {
       try {
-        const res = await fetch("/api/workflows");
+        const res = await fetch("/api/workflows", {method: "POST"});
         if (!res.ok) {
           throw new Error(`Failed to fetch workflows: ${res.statusText}`);
         }

@@ -31,13 +31,16 @@ export class AgentManager {
       clearInterval(this.healthCheckInterval);
     }
 
+    // NOTE: sleep before checking health checks in order to give time for the server to start
+    await new Promise((resolve) => setTimeout(resolve, 10_000));
+
     this.healthCheckInterval = setInterval(() => {
       for (const agent of this.agents.values()) {
         this.checkAgentHealth(agent).catch((err) =>
           console.error("[AgentManager] Health check error:", err)
         );
       }
-    }, 30000);
+    }, 30_000);
 
     console.log("[AgentManager] Initialized");
   }

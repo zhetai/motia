@@ -1,4 +1,7 @@
 {
+  "wistroServer": {
+    "port": 4000
+  },
   "messageBus": {
     "type": "redis",
     "host": "localhost",
@@ -12,7 +15,7 @@
     },
     {
       "name": "python-agent",
-      "url": "http://localhost:8000",
+      "url": "http://localhost:8888",
       "runtime": "python"
     }
   ],
@@ -74,7 +77,7 @@
       ]
     },
     {
-      "name": "hybridEndpointExmaple",
+      "name": "hybridEndpointExample",
       "components": [
         {
           "id": "analyze-data",
@@ -86,7 +89,7 @@
             "hybrid.analyzed"
           ],
           "name": "analyze-data",
-          "codePath": "src/workflows/hybridEndpointExmaple/components/analyze-data/index.py"
+          "codePath": "src/workflows/hybridEndpointExample/components/analyze-data/index.py"
         },
         {
           "id": "enrich-data",
@@ -98,7 +101,7 @@
             "hybrid.enriched"
           ],
           "name": "Enrich Data",
-          "codePath": "src/workflows/hybridEndpointExmaple/components/enrich-data/index.js"
+          "codePath": "src/workflows/hybridEndpointExample/components/enrich-data/index.js"
         },
         {
           "id": "finalize-data",
@@ -110,7 +113,7 @@
             "hybrid.completed"
           ],
           "name": "Fanialize Data",
-          "codePath": "src/workflows/hybridEndpointExmaple/components/finalize-data/index.js"
+          "codePath": "src/workflows/hybridEndpointExample/components/finalize-data/index.js"
         },
         {
           "id": "transform-data",
@@ -122,7 +125,7 @@
             "hybrid.transformed"
           ],
           "name": "Transform Data",
-          "codePath": "src/workflows/hybridEndpointExmaple/components/transform-data/index.py"
+          "codePath": "src/workflows/hybridEndpointExample/components/transform-data/index.py"
         },
         {
           "id": "validate-data",
@@ -134,7 +137,7 @@
             "hybrid.validated"
           ],
           "name": "Validate Data",
-          "codePath": "src/workflows/hybridEndpointExmaple/components/validate-data/index.js"
+          "codePath": "src/workflows/hybridEndpointExample/components/validate-data/index.js"
         }
       ]
     },

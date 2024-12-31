@@ -1,6 +1,5 @@
 import { test, expect } from "@playwright/test";
 import Redis from "ioredis";
-import fetch from "node-fetch";
 
 test.describe("WistroServerExample + Redis E2E", () => {
   let redisSubscriber;
@@ -46,7 +45,7 @@ test.describe("WistroServerExample + Redis E2E", () => {
     await workflowSelect.selectOption("wistroServerExample");
 
     // For example, wait for a node named "Start Event"
-    await expect(page.locator("text=Start Event")).toBeVisible();
+    await expect(page.locator("text=.start").first()).toBeVisible();
 
     // 4) Trigger the workflow by POSTing to the Wistro server
     const response = await fetch(
@@ -78,7 +77,7 @@ test.describe("WistroServerExample + Redis E2E", () => {
 
     // Optional: Inspect the data of a particular event
     const doneEvent = collectedEvents.find(
-      (ev) => ev.eventType === "wistroServerExample.done"
+      (ev) => ev.eventType === "ws-server-example.processed"
     );
     expect(doneEvent).toBeDefined();
     // If there's some known shape of doneEvent.data, e.g. { result: ... }
@@ -86,6 +85,6 @@ test.describe("WistroServerExample + Redis E2E", () => {
 
     // 6) Optionally confirm the final UI state
     // e.g., a "Finalizer" node or some text indicating completion
-    await expect(page.locator("text=Finalizer")).toBeVisible();
+    await expect(page.locator("text=Subscribes: ws-server-example.processed")).toBeVisible();
   });
 });

@@ -1,18 +1,18 @@
 // packages/wistro/src/core/WistroServer.js
 
-import express from "express";
-import bodyParser from "body-parser";
+import Fastify from "fastify";
 import path from "path";
 import { fileURLToPath, pathToFileURL } from "url";
 
 export class WistroServer {
-  constructor() {
+  constructor(config) {
     this.traffic = new Map();
-    this.express = express();
-    this.express.use(bodyParser.json());
+    this.fastify = Fastify();
+    this.serverConfig = config ?? {
+      port: process.env.PORT || 4000,
+    };
   }
 
-  // Instead of trafficPaths, accept traffic array directly
   async initialize(core, trafficDefs = []) {
     this.core = core;
 
@@ -33,83 +33,97 @@ export class WistroServer {
 
       // If we still have no transform function, provide a default
       if (!transformFn) {
-        // We need to know 'type' to build an event
         if (!def.type) {
           throw new Error(
             `No transform function or 'type' field found for route: ${def.path}`
           );
         }
-
-        // A simple default transform that sets event.type = def.type, event.data = req.body
+        // Default transform function
         transformFn = (req) => ({
           type: def.type,
           data: req.body,
         });
       }
 
+      const routePath = this.standardizePath(def.path);
+
       // Register this route into our local Map
       this.registerTraffic({
-        path: def.path,
+        path: routePath,
         method: def.method,
         transform: transformFn,
         authorize: authorizeFn,
       });
+
+      // Attach the route to Fastify
+      this.fastify.route({
+        method: def.method.toUpperCase(),
+        url: routePath,
+        handler: async (request, reply) => {
+          try {
+            await this.handleRequest(request, reply);
+          } catch (error) {
+            console.error("[WistroServer] Error handling request:", error);
+            reply.status(500).send({ error: "Internal server error" });
+          }
+        },
+      });
     }
 
-    // Now attach each route to Express
-    this.traffic.forEach((config, routePath) => {
-      this.express[config.method.toLowerCase()](routePath, async (req, res) => {
+    // Optionally define additional endpoints (e.g., /api/workflows)
+    this.fastify.route({
+      url: "/api/workflows", 
+      handler: async (_, reply) => {
         try {
-          await this.handleRequest(req, res);
+          const workflows = await this.core.describeWorkflows();
+          reply.send(workflows);
         } catch (error) {
-          res.status(500).json({ error: error.message });
+          reply.status(500).send({ error: error.message });
         }
-      });
+      }, 
+      method: 'POST'
     });
 
-    // Optionally, define additional endpoints (e.g. /api/workflows)
-    this.express.get("/api/workflows", async (req, res) => {
-      try {
-        const workflows = await this.core.describeWorkflows();
-        res.json(workflows);
-      } catch (error) {
-        res.status(500).json({ error: error.message });
-      }
-    });
-
-    // Serve static files, etc.
+    // Serve static files
     const __filename = fileURLToPath(import.meta.url);
     const __dirname = path.dirname(__filename);
-    this.express.use(express.static(path.join(__dirname, "../dist")));
-    this.express.get("*", (req, res) => {
-      res.sendFile(path.join(__dirname, "../dist/index.html"));
+    this.fastify.register(import("@fastify/static"), {
+      root: path.join(__dirname, "../dist"),
+      prefix: "/",
     });
 
-    // Start listening
-    const port = process.env.PORT || 4000;
-    this.express.listen(port, () => {
-      console.log(`[WistroServer] Server listening on port ${port}`);
-    });
+    // Start the Fastify server
+    try {
+      await this.fastify.listen({ port: this.serverConfig.port, host: '::' });
+      console.log(`[WistroServer] Server listening on port ${this.serverConfig.port}`);
+    } catch (err) {
+      console.error("[WistroServer] Failed to start server:", err);
+      process.exit(1);
+    }
   }
 
-  async handleRequest(req, res) {
-    const traffic = this.traffic.get(req.path);
+  async handleRequest(request, reply) {
+    const traffic = this.traffic.get(request.raw.url);
     if (!traffic) {
-      return res.status(404).json({ error: "Traffic not found" });
+      return reply.status(404).send({ error: "Route not found" });
     }
 
     try {
       if (traffic.authorize) {
-        await traffic.authorize(req);
+        await traffic.authorize(request);
       }
-      const event = await traffic.transform(req);
+      const event = await traffic.transform(request);
       await this.core.emit(event, {
-        traceId: req.headers["x-trace-id"],
-        metadata: { source: "http", path: req.path, method: req.method },
+        traceId: request.headers["x-trace-id"],
+        metadata: {
+          source: "http",
+          path: request.raw.url,
+          method: request.raw.method,
+        },
       });
-      res.status(200).json({ success: true, eventType: event.type });
+      reply.status(200).send({ success: true, eventType: event.type });
     } catch (error) {
-      res.status(400).json({ error: error.message });
+      reply.status(400).send({ error: error.message });
     }
   }
 
@@ -117,15 +131,19 @@ export class WistroServer {
     if (!config.path || !config.method || !config.transform) {
       throw new Error("Invalid traffic configuration");
     }
-    const routePath = config.path.startsWith("/")
-      ? config.path
-      : `/${config.path}`;
-    this.traffic.set(routePath, config);
+    if (this.traffic.has(config.path)) {
+      throw new Error(`Duplicate traffic path: ${config.path}`);
+    }
+    this.traffic.set(config.path, config);
+  }
+
+  standardizePath(path) {
+    return path.startsWith("/") ? path : `/${path}`;
   }
 
   async close() {
-    if (this.server) {
-      await new Promise((resolve) => this.server.close(resolve));
+    if (this.fastify) {
+      await this.fastify.close();
     }
   }
 }

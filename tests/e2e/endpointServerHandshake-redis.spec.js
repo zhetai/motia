@@ -1,6 +1,5 @@
 import { test, expect } from "@playwright/test";
 import Redis from "ioredis";
-import fetch from "node-fetch";
 
 test.describe("endpointServerHandshake + Redis E2E", () => {
   let redisSubscriber;

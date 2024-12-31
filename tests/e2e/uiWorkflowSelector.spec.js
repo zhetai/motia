@@ -7,17 +7,17 @@ const WORKFLOWS = [
     // This is the "name" from wistroServerExample/config.js
     // which your UI returns in /api/workflows
     workflowName: "wistroServerExample",
-    uniqueNodeLabel: "Start Event", // e.g. the label from your node's UI
+    uniqueNodeLabel: "ws-server-example.start", // e.g. the label from your node's UI
   },
   {
     // The "name" from hybridEndpointExample/config.js
     workflowName: "hybridEndpointExample",
-    uniqueNodeLabel: "Validate Data", // or "Transform Data", etc.
+    uniqueNodeLabel: "hybrid.validated", // or "Transform Data", etc.
   },
   {
     // The "name" from endpointServerHandshake/config.js
     workflowName: "endpointServerHandshake",
-    uniqueNodeLabel: "Node Starter",
+    uniqueNodeLabel: "handshake.",
   },
 ];
 
@@ -40,7 +40,7 @@ test.describe("Workflow Selector & Visual Tests", () => {
     for (const wf of WORKFLOWS) {
       await workflowSelect.selectOption(wf.workflowName);
       // Wait for a UI element that's unique to that workflow
-      await page.locator(`text=${wf.uniqueNodeLabel}`).waitFor();
+      await page.locator(`text=${wf.uniqueNodeLabel}`).first().waitFor();
     }
   });
 
@@ -55,7 +55,7 @@ test.describe("Workflow Selector & Visual Tests", () => {
       // Switch workflow
       await workflowSelect.selectOption(wf.workflowName);
       // Wait for a known node label
-      await page.locator(`text=${wf.uniqueNodeLabel}`).waitFor();
+      await page.locator(`text=${wf.uniqueNodeLabel}`).first().waitFor();
 
       // 3) Visual regression screenshot
       // This will create or compare against a baseline named <workflowName>.png

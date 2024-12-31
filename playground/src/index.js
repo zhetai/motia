@@ -40,7 +40,7 @@ async function main() {
   const trafficDefs = config.traffic || [];
 
   // 2) Then:
-  const server = new WistroServer();
+  const server = new WistroServer(config?.wistroServer);
   await server.initialize(core, trafficDefs);
 
   console.log(

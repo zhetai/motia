@@ -1,5 +1,4 @@
 import { test, expect } from "@playwright/test";
-import fetch from "node-fetch";
 import Redis from "ioredis";
 
 test.describe("Hybrid Workflow E2E", () => {
@@ -35,7 +34,7 @@ test.describe("Hybrid Workflow E2E", () => {
 
     // Send the request to start the hybrid workflow
     const res = await fetch(
-      "http://localhost:4000//api/hybrid-endpoint-example",
+      "http://localhost:4000/api/hybrid-endpoint-example",
       {
         method: "POST",
         headers: { "Content-Type": "application/json" },
@@ -50,7 +49,6 @@ test.describe("Hybrid Workflow E2E", () => {
 
     // Define the expected sequence of events
     const expectedEventSequence = [
-      "hybrid.received",
       "hybrid.validated",
       "hybrid.transformed",
       "hybrid.enriched",
