@@ -1,4 +1,4 @@
-// stepC/index.js
+// playground/src/workflows/parallelMergeState/components/stepC/index.js
 export const config = {
   name: "stepC",
   subscribe: ["pms.start"],
@@ -6,16 +6,14 @@ export const config = {
 };
 
 export default async function stepCHandler(input, emit, ctx) {
-  const traceId = input.metadata?.workflowTraceId;
+  const traceId = ctx.traceId;
   console.log("[stepC] received pms.start, traceId =", traceId);
 
-  const partialResultC = { isFinished: true, details: "All done in Step C" };
-
-  await ctx.state.set(traceId, "stepC", partialResultC);
+  const partialResultA = { msg: "Hello from Step A", timestamp: Date.now() };
+  await ctx.state.set(traceId, "stepC", partialResultA);
 
   await emit({
     type: "pms.stepC.done",
-    data: {},
-    metadata: { workflowTraceId: traceId },
+    data: partialResultA,
   });
 }

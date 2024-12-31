@@ -1,5 +1,3 @@
-// packages/wistro/src/core/agents/AgentManager.js
-
 import fetch from "node-fetch";
 import fs from "fs/promises";
 import path from "path";
@@ -148,9 +146,6 @@ export class AgentManager {
     }
   }
 
-  /**
-   * Execute a component by calling the remote agent's /execute endpoint
-   */
   async executeComponent(componentPath, event) {
     const component = this.componentRegistry.get(componentPath);
     if (!component) {
@@ -158,6 +153,7 @@ export class AgentManager {
       return;
     }
 
+    // Get the agent from component.agent
     const agent = this.agents.get(component.agent);
     if (!agent || agent.status !== "ready") {
       console.error(`[AgentManager] Agent ${component.agent} not ready`);
@@ -170,10 +166,10 @@ export class AgentManager {
         {
           eventType: event.type,
           eventId: event.metadata?.eventId,
+          traceId: event.metadata?.workflowTraceId,
         }
       );
 
-      // POST to agent
       const response = await fetch(
         `${agent.url}/execute/${component.componentId}`,
         {
@@ -192,13 +188,19 @@ export class AgentManager {
 
       const result = await response.json();
 
-      // If the component emitted events, we forward them via emitCallback
       if (Array.isArray(result.events) && result.events.length > 0) {
         console.log(
           `[AgentManager] Component ${component.componentId} emitted ${result.events.length} events`
         );
         for (const newEvent of result.events) {
-          await this.emitCallback(newEvent, component.componentId);
+          const enrichedEvent = {
+            ...newEvent,
+            metadata: {
+              ...(newEvent.metadata || {}),
+              workflowTraceId: event.metadata?.workflowTraceId,
+            },
+          };
+          await this.emitCallback(enrichedEvent, component.componentId);
         }
       }
 

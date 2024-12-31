@@ -1,11 +1,14 @@
 {
-  "wistroServer": {
-    "port": 4000
-  },
   "messageBus": {
     "type": "redis",
     "host": "localhost",
     "port": 6379
+  },
+  "state": {
+    "adapter": "redis",
+    "host": "localhost",
+    "port": 6379,
+    "ttl": 3600
   },
   "agents": [
     {
@@ -17,28 +20,6 @@
       "name": "python-agent",
       "url": "http://localhost:8000",
       "runtime": "python"
-    }
-  ],
-  "traffic": [
-    {
-      "path": "/api/hybrid-endpoint-example",
-      "method": "POST",
-      "type": "hybrid.received"
-    },
-    {
-      "path": "/api/wistro-server-example",
-      "method": "POST",
-      "type": "ws-server-example.trigger"
-    },
-    {
-      "path": "/api/endpoint-server-handshake",
-      "method": "POST",
-      "type": "handshake.initiate"
-    },
-    {
-      "path": "/api/parallel-merge",
-      "method": "POST",
-      "type": "pms.initialize"
     }
   ],
   "workflows": [
@@ -251,6 +232,28 @@
           "codePath": "src/workflows/wistroServerExample/components/start-server-example/index.js"
         }
       ]
+    }
+  ],
+  "traffic": [
+    {
+      "path": "/api/hybrid-endpoint-example",
+      "method": "POST",
+      "type": "hybrid.received"
+    },
+    {
+      "path": "/api/wistro-server-example",
+      "method": "POST",
+      "type": "ws-server-example.trigger"
+    },
+    {
+      "path": "/api/endpoint-server-handshake",
+      "method": "POST",
+      "type": "handshake.initiate"
+    },
+    {
+      "path": "/api/parallel-merge",
+      "method": "POST",
+      "type": "pms.initialize"
     }
   ]
 }

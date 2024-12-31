@@ -1,11 +1,11 @@
-// packages/wistro/src/core/WistroCore.js
 import { pathToFileURL } from "url";
 import { EventManager } from "./EventManager.js";
 import { AgentManager } from "./agents/AgentManager.js";
+import { createStateAdapter } from "./state/index.js";
+import crypto from "crypto";
 
 export class WistroCore {
   constructor() {
-    // You can remove environment-based defaults if you want them fully in config
     this.eventManager = new EventManager({
       host: process.env.REDIS_HOST,
       port: parseInt(process.env.REDIS_PORT),
@@ -13,14 +13,11 @@ export class WistroCore {
       prefix: "wistro:events:",
     });
 
-    // We'll store the config for reference (e.g., if we want to describeWorkflows)
     this._config = null;
     this.serverComponents = new Map();
+    this.stateAdapter = null;
   }
 
-  /**
-   * Initialize the core from a config object (no fallback scanning).
-   */
   async initialize(config) {
     if (!config) {
       throw new Error(
@@ -29,16 +26,19 @@ export class WistroCore {
     }
     this._config = config;
 
-    // 1) EventManager init
+    // Initialize state adapter
+    this.stateAdapter = createStateAdapter(config.state);
+
+    // Initialize event manager
     await this.eventManager.initialize();
 
-    // 2) AgentManager
+    // Initialize agent manager
     this.agentManager = new AgentManager(async (event, componentId) => {
       await this.eventManager.emit(event, componentId);
     });
     await this.agentManager.initialize();
 
-    // 3) Register any globally declared agents
+    // Register globally declared agents
     if (Array.isArray(config.agents)) {
       for (const agentDef of config.agents) {
         await this.agentManager.registerAgent(agentDef.name, {
@@ -48,22 +48,19 @@ export class WistroCore {
       }
     }
 
-    // 4) Register workflows & components
+    // Register workflows & components
     if (Array.isArray(config.workflows)) {
       for (const wf of config.workflows) {
         if (Array.isArray(wf.components)) {
           for (const comp of wf.components) {
-            // Distinguish endpoint-based vs. server-based
             const agent = comp.agent;
             if (agent && agent !== "server") {
-              // Endpoint-based
               await this.agentManager.registerComponent(
                 comp.codePath,
                 agent,
                 comp.id
               );
 
-              // Subscribe each event => calls agentManager.executeComponent
               if (Array.isArray(comp.subscribe)) {
                 for (const eventType of comp.subscribe) {
                   const handler = async (evt) => {
@@ -80,7 +77,6 @@ export class WistroCore {
                 }
               }
             } else {
-              // Server-based
               this.registerServerComponent(comp);
 
               if (Array.isArray(comp.subscribe)) {
@@ -104,21 +100,32 @@ export class WistroCore {
     console.log("[WistroCore] Initialized successfully from config.");
   }
 
-  /**
-   * Emit an event into the system, optionally specifying a source.
-   */
-  async emit(event, { source = "system" } = {}) {
-    await this.eventManager.emit(event, source);
+  generateTraceId() {
+    return crypto.randomBytes(6).toString("hex");
   }
 
-  // todo: need to refactor these out of core
+  async emit(event, { source = "system", traceId = null } = {}) {
+    // Generate traceId if not provided
+    const workflowTraceId = traceId || this.generateTraceId();
+
+    // Ensure metadata exists and includes traceId
+    const enrichedEvent = {
+      ...event,
+      metadata: {
+        ...(event.metadata || {}),
+        workflowTraceId,
+        source,
+      },
+    };
+
+    await this.eventManager.emit(enrichedEvent, source);
+  }
+
   registerServerComponent(comp) {
-    // comp => { id, agent, codePath, subscribe, emits, ... }
     this.serverComponents.set(comp.id, comp.codePath);
     console.log(`[WistroCore] Registered server-based component: ${comp.id}`);
   }
 
-  // todo: need to refactor these out of core
   async executeServerComponent(componentId, event) {
     const codePath = this.serverComponents.get(componentId);
     if (!codePath) {
@@ -127,18 +134,31 @@ export class WistroCore {
     }
 
     try {
-      // TODO: I don't think we need to do this. Need to remove any path related things from core
-      // Force fresh import each time (if you want a hot-reload style)
       const moduleUrl = pathToFileURL(codePath).href + `?update=${Date.now()}`;
       const compModule = await import(moduleUrl);
 
       const emittedEvents = [];
-      // Run the default export
-      await compModule.default(event.data, async (newEvent) => {
-        emittedEvents.push(newEvent);
-        // Re-emit via eventManager
-        await this.eventManager.emit(newEvent, componentId);
-      });
+      const traceId = event.metadata?.workflowTraceId;
+
+      const ctx = {
+        state: this.stateAdapter,
+        traceId,
+        emit: async (newEvent) => {
+          // Ensure child events maintain the same traceId
+          const enrichedEvent = {
+            ...newEvent,
+            metadata: {
+              ...(newEvent.metadata || {}),
+              workflowTraceId: traceId,
+            },
+          };
+          emittedEvents.push(enrichedEvent);
+          await this.eventManager.emit(enrichedEvent, componentId);
+        },
+      };
+
+      // Note: We pass ctx.emit instead of a bare emit function
+      await compModule.default(event.data, ctx.emit, ctx);
 
       if (emittedEvents.length > 0) {
         console.log(
@@ -154,39 +174,32 @@ export class WistroCore {
     }
   }
 
-  /**
-   * Cleanup any resources (like message bus connections, agent processes, etc.).
-   */
   async cleanup() {
+    if (this.stateAdapter) {
+      await this.stateAdapter.cleanup();
+    }
     await this.eventManager.cleanup();
     if (this.agentManager) {
       await this.agentManager.cleanup();
     }
   }
 
-  /**
-   * (Optional) Return a simplified description of workflows & components
-   * using the loaded config.
-   */
   async describeWorkflows() {
     if (!this._config || !Array.isArray(this._config.workflows)) {
       return { workflows: [] };
     }
 
-    const workflows = this._config.workflows.map((wf) => {
-      return {
-        name: wf.name,
-        // If you had extra workflow-level fields (like "description"), include them
-        components: (wf.components || []).map((comp) => ({
-          id: comp.id,
-          agent: comp.agent,
-          subscribe: comp.subscribe || [],
-          emits: comp.emits || [],
-          codePath: comp.codePath,
-          uiPath: comp.uiPath || null,
-        })),
-      };
-    });
+    const workflows = this._config.workflows.map((wf) => ({
+      name: wf.name,
+      components: (wf.components || []).map((comp) => ({
+        id: comp.id,
+        agent: comp.agent,
+        subscribe: comp.subscribe || [],
+        emits: comp.emits || [],
+        codePath: comp.codePath,
+        uiPath: comp.uiPath || null,
+      })),
+    }));
 
     return { workflows };
   }
