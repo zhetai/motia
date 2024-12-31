@@ -7,6 +7,10 @@ export const config = {
 };
 
 export default async (_, emit) => {
+  console.log(
+    "[WISTRO_SERVER_EXAMPLE] start-event is loaded from:",
+    import.meta.url
+  );
   console.log("[Start Event] triggered via /api/wistro-server-example");
   await emit({
     type: "ws-server-example.start",

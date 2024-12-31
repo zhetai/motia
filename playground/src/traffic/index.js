@@ -37,4 +37,14 @@ export const config = {
   //   -d '{
   //     "message": "Starting the endpoint-server handshake"
   //   }'
+  parallelMergeStateExample: {
+    path: "/api/parallel-merge",
+    method: "POST",
+    type: "pms.initialize",
+  },
+  // curl -X POST http://localhost:4000/api/parallel-merge \
+  //    -H "Content-Type: application/json" \
+  //    -d '{
+  //      "message": "Begin parallel merge workflow!"
+  //    }'
 };

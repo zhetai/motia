@@ -5,9 +5,6 @@ config = {
     "emits": ["hybrid.transformed"]
 }
 
-subscribe = ["hybrid.validated"]
-emits = ["hybrid.transformed"]
-
 # Add a static counter at module level
 instance_id = id(object())  # or random, e.g., random.randint(1, 10000)
 invocation_count = 0

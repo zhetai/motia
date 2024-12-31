@@ -34,6 +34,11 @@
       "path": "/api/endpoint-server-handshake",
       "method": "POST",
       "type": "handshake.initiate"
+    },
+    {
+      "path": "/api/parallel-merge",
+      "method": "POST",
+      "type": "pms.initialize"
     }
   ],
   "workflows": [
@@ -142,6 +147,73 @@
       ]
     },
     {
+      "name": "parallelMergeState",
+      "components": [
+        {
+          "id": "join-step",
+          "agent": "server",
+          "subscribe": [
+            "pms.stepA.done",
+            "pms.stepB.done",
+            "pms.stepC.done"
+          ],
+          "emits": [
+            "pms.join.complete"
+          ],
+          "name": "join-step",
+          "codePath": "src/workflows/parallelMergeState/components/join-step/index.js"
+        },
+        {
+          "id": "start-parallel-merge",
+          "agent": "server",
+          "subscribe": [
+            "pms.initialize"
+          ],
+          "emits": [
+            "pms.start"
+          ],
+          "name": "Start Event",
+          "codePath": "src/workflows/parallelMergeState/components/start-parallel-merge/index.js"
+        },
+        {
+          "id": "stepA",
+          "agent": "server",
+          "subscribe": [
+            "pms.start"
+          ],
+          "emits": [
+            "pms.stepA.done"
+          ],
+          "name": "stepA",
+          "codePath": "src/workflows/parallelMergeState/components/stepA/index.js"
+        },
+        {
+          "id": "stepB",
+          "agent": "server",
+          "subscribe": [
+            "pms.start"
+          ],
+          "emits": [
+            "pms.stepB.done"
+          ],
+          "name": "stepB",
+          "codePath": "src/workflows/parallelMergeState/components/stepB/index.js"
+        },
+        {
+          "id": "stepC",
+          "agent": "server",
+          "subscribe": [
+            "pms.start"
+          ],
+          "emits": [
+            "pms.stepC.done"
+          ],
+          "name": "stepC",
+          "codePath": "src/workflows/parallelMergeState/components/stepC/index.js"
+        }
+      ]
+    },
+    {
       "name": "wistroServerExample",
       "components": [
         {
@@ -167,7 +239,7 @@
           "codePath": "src/workflows/wistroServerExample/components/processor/index.js"
         },
         {
-          "id": "start-event",
+          "id": "start-server-example",
           "agent": "server",
           "subscribe": [
             "ws-server-example.trigger"
@@ -176,7 +248,7 @@
             "ws-server-example.start"
           ],
           "name": "Start Event",
-          "codePath": "src/workflows/wistroServerExample/components/start-event/index.js"
+          "codePath": "src/workflows/wistroServerExample/components/start-server-example/index.js"
         }
       ]
     }
