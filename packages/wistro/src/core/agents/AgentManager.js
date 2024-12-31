@@ -32,7 +32,7 @@ export class AgentManager {
     }
 
     // NOTE: sleep before checking health checks in order to give time for the server to start
-    await new Promise((resolve) => setTimeout(resolve, 10_000));
+    await new Promise((resolve) => setTimeout(resolve, 200));
 
     this.healthCheckInterval = setInterval(() => {
       for (const agent of this.agents.values()) {
@@ -75,7 +75,7 @@ export class AgentManager {
         console.log(`[AgentManager] Successfully registered agent ${name}`);
         return;
       }
-      await new Promise((resolve) => setTimeout(resolve, 1000));
+      await new Promise((resolve) => setTimeout(resolve, 200));
     }
 
     throw new Error(`Failed to register agent ${name}: health check failed`);

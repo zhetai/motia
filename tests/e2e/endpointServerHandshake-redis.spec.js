@@ -52,7 +52,7 @@ test.describe("endpointServerHandshake + Redis E2E", () => {
     await workflowSelect.selectOption("endpointServerHandshake");
 
     // Wait for some node label to appear, e.g. "Node Starter"
-    await expect(page.locator("text=Node Starter")).toBeVisible();
+    await expect(page.locator("text=handshake.initiate")).toBeVisible();
 
     // 3) Trigger the workflow by calling the inbound route
     const response = await fetch(
@@ -95,6 +95,8 @@ test.describe("endpointServerHandshake + Redis E2E", () => {
     // expect(finalEvent.data).toHaveProperty("userMessage");
 
     // 5) (Optional) Confirm final node label or UI text
-    await expect(page.locator("text=Node Finalizer")).toBeVisible();
+    await expect(
+      page.locator("text=Subscribes: handshake.apiResponse")
+    ).toBeVisible();
   });
 });
