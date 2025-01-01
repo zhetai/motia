@@ -1,6 +1,6 @@
 export const config = {
   name: "Validate Data",
-  endpoint: "node-agent",
+  endpoint: "node-endpoint",
   subscribes: ["hybrid.received"],
   emits: ["hybrid.validated"],
 };

@@ -77,8 +77,8 @@ Wistro.js strives to be:
    # Change the version to the latest LTS
    pyenv install 3.11.10
 
-   # Install the python agent dependencies
-   pip install -r ./agents/python-agent/requirements.txt
+   # Install the python endpoint dependencies
+   pip install -r ./endpoints/python-endpoint/requirements.txt
    ```
 
    Add the following to your profile, bashrc or zshrc file `export PYTHON_BIN_PATH=$(which python)`

@@ -47,7 +47,7 @@ async function extractMetadata(filePath) {
       : fallbackSubscribe;
     const finalEmits = emitsFromConf.length ? emitsFromConf : fallbackEmits;
 
-    // 5) Return combined result with agent, subscribes/emits, etc.
+    // 5) Return combined result with endpoint, subscribes/emits, etc.
     return {
       ...configObject,
       subscribe: finalSubscribes,
@@ -58,7 +58,7 @@ async function extractMetadata(filePath) {
     const code2 = code.replace(/'/g, '"');
 
     // 2) Find the config block
-    // e.g. `config = { "agent": "server", "subscribes": [...], "emits": [...] }`
+    // e.g. `config = { "endpoint": "server", "subscribes": [...], "emits": [...] }`
     const configMatch = code2.match(/config\s*=\s*({[\s\S]*?})/);
     let configObj = {};
 
@@ -76,15 +76,15 @@ async function extractMetadata(filePath) {
     const subscribe = configObj.subscribe || configObj.subscribes || [];
     const emits = configObj.emits || [];
 
-    // Also handle agent or endpoint
-    const agent = configObj.agent || configObj.endpoint || "server";
+    // Also handle endpoint or endpoint
+    const endpoint = configObj.endpoint || configObj.endpoint || "server";
 
     // Return combined
     return {
       ...configObj,
       subscribe,
       emits,
-      agent,
+      endpoint,
     };
   }
 
@@ -119,11 +119,12 @@ async function findAllComponents(workflowDir, absoluteBase) {
     }
 
     const componentId = dir.name;
-    const agent = metadata.agent || metadata.metadata?.agent || "server";
+    const endpoint =
+      metadata.endpoint || metadata.metadata?.endpoint || "server";
 
     components.push({
       id: componentId,
-      agent,
+      endpoint,
       subscribe: metadata.subscribe || [],
       emits: metadata.emits || [],
       name: metadata.name || componentId,

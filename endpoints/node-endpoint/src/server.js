@@ -1,11 +1,11 @@
-// agents/node-agent/src/server.js
+// endpoints/node-endpoint/src/server.js
 import express from "express";
 import bodyParser from "body-parser";
 import { pathToFileURL } from "url";
 import path from "path";
 import fs from "fs/promises";
 
-class NodeAgent {
+class NodeEndpoint {
   constructor() {
     this.app = express();
     this.app.use(bodyParser.json());
@@ -21,7 +21,7 @@ class NodeAgent {
 
     const port = process.env.PORT || 3000;
     this.app.listen(port, () => {
-      console.log(`[NodeAgentServer] Listening on port ${port}`);
+      console.log(`[NodeEndpointServer] Listening on port ${port}`);
     });
 
     this.setupRoutes();
@@ -42,10 +42,10 @@ class NodeAgent {
       }
 
       if (restoredCount > 0) {
-        console.log(`[NodeAgent] Restored ${restoredCount} components`);
+        console.log(`[NodeEndpoint] Restored ${restoredCount} components`);
       }
     } catch (error) {
-      console.error("[NodeAgent] Error restoring components:", error);
+      console.error("[NodeEndpoint] Error restoring components:", error);
     }
   }
 
@@ -60,7 +60,7 @@ class NodeAgent {
         await this.registerComponent(name, code);
         res.json({ status: "success" });
       } catch (error) {
-        console.error("[NodeAgent] Registration error:", error);
+        console.error("[NodeEndpoint] Registration error:", error);
         res.status(500).json({ error: error.message });
       }
     });
@@ -89,7 +89,7 @@ class NodeAgent {
 
         res.json({ status: "success", events: emittedEvents });
       } catch (error) {
-        console.error("[NodeAgent] Execution error:", error);
+        console.error("[NodeEndpoint] Execution error:", error);
         res.status(500).json({ error: error.message });
       }
     });
@@ -103,12 +103,15 @@ class NodeAgent {
       );
       await fs.writeFile(filePath, code, "utf-8");
       this.components.set(name, { filePath });
-      console.log(`[NodeAgent] Registered component: ${name}`);
+      console.log(`[NodeEndpoint] Registered component: ${name}`);
     } catch (error) {
-      console.error(`[NodeAgent] Failed to register component ${name}:`, error);
+      console.error(
+        `[NodeEndpoint] Failed to register component ${name}:`,
+        error
+      );
       throw error;
     }
   }
 }
 
-const agent = new NodeAgent();
+const endpoint = new NodeEndpoint();

@@ -1,5 +1,5 @@
 import { EventManager } from "./EventManager.js";
-import { AgentManager } from "./agents/AgentManager.js";
+import { EndpointManager } from "./endpoints/EndpointManager.js";
 import { createStateAdapter } from "./state/index.js";
 import { ServerComponentManager } from "./ServerComponentManager.js";
 import { WorkflowManager } from "./WorkflowManager.js";
@@ -15,7 +15,7 @@ export class WistroCore {
 
     this.stateAdapter = null;
     this.serverComponentManager = null;
-    this.agentManager = null;
+    this.endpointManager = null;
     this.workflowManager = null;
   }
 
@@ -29,8 +29,8 @@ export class WistroCore {
     // Initialize core services
     await this.initializeServices(config);
 
-    // Register agents
-    await this.registerAgents(config.agents);
+    // Register endpoints
+    await this.registerEndpoints(config.endpoints);
 
     // Register workflows
     await this.registerWorkflows(config.workflows);
@@ -45,11 +45,11 @@ export class WistroCore {
     // Initialize event manager
     await this.eventManager.initialize();
 
-    // Initialize agent manager
-    this.agentManager = new AgentManager(async (event, componentId) => {
+    // Initialize endpoint manager
+    this.endpointManager = new EndpointManager(async (event, componentId) => {
       await this.eventManager.emit(event, componentId);
     });
-    await this.agentManager.initialize();
+    await this.endpointManager.initialize();
 
     // Initialize server component manager
     this.serverComponentManager = new ServerComponentManager(this.stateAdapter);
@@ -58,16 +58,16 @@ export class WistroCore {
     this.workflowManager = new WorkflowManager(
       this.eventManager,
       this.serverComponentManager,
-      this.agentManager
+      this.endpointManager
     );
     this.workflowManager.setConfig(config);
   }
 
-  async registerAgents(agents = []) {
-    for (const agent of agents) {
-      await this.agentManager.registerAgent(agent.name, {
-        url: agent.url,
-        runtime: agent.runtime,
+  async registerEndpoints(endpoints = []) {
+    for (const endpoint of endpoints) {
+      await this.endpointManager.registerEndpoint(endpoint.name, {
+        url: endpoint.url,
+        runtime: endpoint.runtime,
       });
     }
   }
@@ -102,8 +102,8 @@ export class WistroCore {
       await this.stateAdapter.cleanup();
     }
     await this.eventManager.cleanup();
-    if (this.agentManager) {
-      await this.agentManager.cleanup();
+    if (this.endpointManager) {
+      await this.endpointManager.cleanup();
     }
     this.serverComponentManager.clear();
   }

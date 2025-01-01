@@ -79,7 +79,8 @@ tsconfig.tsbuildinfo
 venv/
 .env/
 
-# Ignore deployed components in agents
+# Ignore deployed components in endpoints
+endpoints/**/components/
 agents/**/components/
 
 

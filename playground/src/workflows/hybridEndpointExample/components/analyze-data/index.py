@@ -1,6 +1,6 @@
 config = {
     "name:": "Analyze Data",
-    "endpoint": "python-agent",
+    "endpoint": "python-endpoint",
     "subscribes": ["hybrid.enriched"],
     "emits": ["hybrid.analyzed"]
 }

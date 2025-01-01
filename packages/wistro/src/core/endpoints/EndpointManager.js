@@ -2,20 +2,20 @@ import fetch from "node-fetch";
 import fs from "fs/promises";
 import path from "path";
 
-export class AgentManager {
+export class EndpointManager {
   constructor(emitCallback) {
     /**
-     * Maps agentName -> { name, url, runtime, status }
+     * Maps endpointName -> { name, url, runtime, status }
      */
-    this.agents = new Map();
+    this.endpoints = new Map();
 
     /**
-     * Maps componentPath -> { agent, componentId }
+     * Maps componentPath -> { endpoint, componentId }
      */
     this.componentRegistry = new Map();
 
     /**
-     * A Set of "agentName:componentPath" strings to track duplicates
+     * A Set of "endpointName:componentPath" strings to track duplicates
      */
     this.registeredComponents = new Set();
 
@@ -24,7 +24,7 @@ export class AgentManager {
   }
 
   async initialize() {
-    // Start a health-check timer for all registered agents
+    // Start a health-check timer for all registered endpoints
     if (this.healthCheckInterval) {
       clearInterval(this.healthCheckInterval);
     }
@@ -33,32 +33,32 @@ export class AgentManager {
     await new Promise((resolve) => setTimeout(resolve, 200));
 
     this.healthCheckInterval = setInterval(() => {
-      for (const agent of this.agents.values()) {
-        this.checkAgentHealth(agent).catch((err) =>
-          console.error("[AgentManager] Health check error:", err)
+      for (const endpoint of this.endpoints.values()) {
+        this.checkEndpointHealth(endpoint).catch((err) =>
+          console.error("[EndpointManager] Health check error:", err)
         );
       }
     }, 30_000);
 
-    console.log("[AgentManager] Initialized");
+    console.log("[EndpointManager] Initialized");
   }
 
   /**
-   * Register or update an agent definition in our local Map.
-   * e.g. { name: "node-agent", url: "http://localhost:3000", runtime: "node" }
+   * Register or update an endpoint definition in our local Map.
+   * e.g. { name: "node-endpoint", url: "http://localhost:3000", runtime: "node" }
    */
-  async registerAgent(name, config) {
-    if (this.agents.has(name)) {
+  async registerEndpoint(name, config) {
+    if (this.endpoints.has(name)) {
       console.log(
-        `[AgentManager] Agent ${name} already registered, updating config`
+        `[EndpointManager] Endpoint ${name} already registered, updating config`
       );
-      const existingAgent = this.agents.get(name);
-      existingAgent.url = config.url;
-      existingAgent.runtime = config.runtime;
+      const existingEndpoint = this.endpoints.get(name);
+      existingEndpoint.url = config.url;
+      existingEndpoint.runtime = config.runtime;
       return;
     }
 
-    const agent = {
+    const endpoint = {
       name,
       url: config.url,
       runtime: config.runtime,
@@ -67,57 +67,59 @@ export class AgentManager {
 
     // Attempt up to 3 health checks
     for (let i = 0; i < 3; i++) {
-      if (await this.checkAgentHealth(agent)) {
-        agent.status = "ready";
-        this.agents.set(name, agent);
-        console.log(`[AgentManager] Successfully registered agent ${name}`);
+      if (await this.checkEndpointHealth(endpoint)) {
+        endpoint.status = "ready";
+        this.endpoints.set(name, endpoint);
+        console.log(
+          `[EndpointManager] Successfully registered endpoint ${name}`
+        );
         return;
       }
       await new Promise((resolve) => setTimeout(resolve, 200));
     }
 
-    throw new Error(`Failed to register agent ${name}: health check failed`);
+    throw new Error(`Failed to register endpoint ${name}: health check failed`);
   }
 
   /**
-   * Register a component's source code with the correct remote agent
+   * Register a component's source code with the correct remote endpoint
    * @param {string} componentPath - local path to the component's code
-   * @param {string} agentName - name of the agent to deploy to
+   * @param {string} endpointName - name of the endpoint to deploy to
    * @param {string} componentId - ID of the component ("workflowName/componentName")
    *
-   * Note: We no longer parse code for metadata. We'll rely on config to supply agentName, etc.
+   * Note: We no longer parse code for metadata. We'll rely on config to supply endpointName, etc.
    */
-  async registerComponent(componentPath, agentName, componentId) {
-    if (!agentName || agentName === "server") {
+  async registerComponent(componentPath, endpointName, componentId) {
+    if (!endpointName || endpointName === "server") {
       console.log(
-        `[AgentManager] Skipping server-based component: ${componentId}`
+        `[EndpointManager] Skipping server-based component: ${componentId}`
       );
-      return; // so we don't push code to an external agent
+      return; // so we don't push code to an external endpoint
     }
 
-    const componentKey = `${agentName}:${componentPath}`;
+    const componentKey = `${endpointName}:${componentPath}`;
     // If we already have this, remove old registration
     if (this.registeredComponents.has(componentKey)) {
       await this.cleanupComponent(componentPath);
     }
 
-    const agent = this.agents.get(agentName);
-    if (!agent) {
-      throw new Error(`[AgentManager] Agent not found: ${agentName}`);
+    const endpoint = this.endpoints.get(endpointName);
+    if (!endpoint) {
+      throw new Error(`[EndpointManager] Endpoint not found: ${endpointName}`);
     }
 
     try {
       // Read the entire code file; we do *no* metadata parsing
       const code = await fs.readFile(componentPath, "utf-8");
 
-      console.log(`[AgentManager] Registering component:`, {
+      console.log(`[EndpointManager] Registering component:`, {
         path: componentPath,
-        agent: agentName,
+        endpoint: endpointName,
         componentId,
       });
 
-      // Send it to the remote agent's /register
-      const response = await fetch(`${agent.url}/register`, {
+      // Send it to the remote endpoint's /register
+      const response = await fetch(`${endpoint.url}/register`, {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({
@@ -132,13 +134,13 @@ export class AgentManager {
 
       // Store the registry info
       this.componentRegistry.set(componentPath, {
-        agent: agentName,
+        endpoint: endpointName,
         componentId,
       });
       this.registeredComponents.add(componentKey);
 
       console.log(
-        `[AgentManager] Successfully registered component: ${componentPath}`
+        `[EndpointManager] Successfully registered component: ${componentPath}`
       );
     } catch (error) {
       console.error(`Failed to register component ${componentPath}:`, error);
@@ -149,20 +151,22 @@ export class AgentManager {
   async executeComponent(componentPath, event) {
     const component = this.componentRegistry.get(componentPath);
     if (!component) {
-      console.error(`[AgentManager] Component not found: ${componentPath}`);
+      console.error(`[EndpointManager] Component not found: ${componentPath}`);
       return;
     }
 
-    // Get the agent from component.agent
-    const agent = this.agents.get(component.agent);
-    if (!agent || agent.status !== "ready") {
-      console.error(`[AgentManager] Agent ${component.agent} not ready`);
+    // Get the endpoint from component.endpoint
+    const endpoint = this.endpoints.get(component.endpoint);
+    if (!endpoint || endpoint.status !== "ready") {
+      console.error(
+        `[EndpointManager] Endpoint ${component.endpoint} not ready`
+      );
       return;
     }
 
     try {
       console.log(
-        `[AgentManager] Executing component ${component.componentId}`,
+        `[EndpointManager] Executing component ${component.componentId}`,
         {
           eventType: event.type,
           eventId: event.metadata?.eventId,
@@ -171,7 +175,7 @@ export class AgentManager {
       );
 
       const response = await fetch(
-        `${agent.url}/execute/${component.componentId}`,
+        `${endpoint.url}/execute/${component.componentId}`,
         {
           method: "POST",
           headers: { "Content-Type": "application/json" },
@@ -190,7 +194,7 @@ export class AgentManager {
 
       if (Array.isArray(result.events) && result.events.length > 0) {
         console.log(
-          `[AgentManager] Component ${component.componentId} emitted ${result.events.length} events`
+          `[EndpointManager] Component ${component.componentId} emitted ${result.events.length} events`
         );
         for (const newEvent of result.events) {
           const enrichedEvent = {
@@ -207,7 +211,7 @@ export class AgentManager {
       return result;
     } catch (error) {
       console.error(
-        `[AgentManager] Failed to execute component ${component.componentId}:`,
+        `[EndpointManager] Failed to execute component ${component.componentId}:`,
         error
       );
       throw error;
@@ -222,14 +226,14 @@ export class AgentManager {
     if (!component) return;
 
     this.componentRegistry.delete(componentPath);
-    const componentKey = `${component.agent}:${componentPath}`;
+    const componentKey = `${component.endpoint}:${componentPath}`;
     this.registeredComponents.delete(componentKey);
 
-    console.log(`[AgentManager] Cleaned up component: ${componentPath}`);
+    console.log(`[EndpointManager] Cleaned up component: ${componentPath}`);
   }
 
   /**
-   * Clean up all agents & components
+   * Clean up all endpoints & components
    */
   async cleanup() {
     if (this.healthCheckInterval) {
@@ -239,27 +243,32 @@ export class AgentManager {
       await this.cleanupComponent(componentPath);
     }
     this.componentRegistry.clear();
-    this.agents.clear();
+    this.endpoints.clear();
     this.registeredComponents.clear();
-    console.log("[AgentManager] Cleanup completed");
+    console.log("[EndpointManager] Cleanup completed");
   }
 
   /**
-   * Utility to check an agent’s /health endpoint
+   * Utility to check an endpoint’s /health endpoint
    */
-  async checkAgentHealth(agent, attempt = 1) {
-    if (!agent) {
-      console.error("[AgentManager] No agent provided to checkAgentHealth");
+  async checkEndpointHealth(endpoint, attempt = 1) {
+    if (!endpoint) {
+      console.error(
+        "[EndpointManager] No endpoint provided to checkEndpointHealth"
+      );
       return false;
     }
     try {
       console.log(
-        `[AgentManager] Checking health for ${agent.name} (attempt ${attempt}/3)`
+        `[EndpointManager] Checking health for ${endpoint.name} (attempt ${attempt}/3)`
       );
-      const response = await fetch(`${agent.url}/health`);
+      const response = await fetch(`${endpoint.url}/health`);
       return response.ok;
     } catch (error) {
-      console.error(`Health check failed for agent ${agent.name}:`, error);
+      console.error(
+        `Health check failed for endpoint ${endpoint.name}:`,
+        error
+      );
       return false;
     }
   }

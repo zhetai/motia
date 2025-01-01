@@ -1,6 +1,6 @@
 export const config = {
   name: "Node Starter",
-  endpoint: "node-agent", // This indicates the node endpoint
+  endpoint: "node-endpoint", // This indicates the node endpoint
   subscribes: ["handshake.initiate"],
   emits: ["handshake.callApi"],
 };

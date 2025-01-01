@@ -1,6 +1,6 @@
 # Wistro Dev Central Development Checklist
 
-- ⬜ [MonoRepo][Refactor] Rename monorepo to Wistro Dev Central and agents to endpoints
+- ⬜ [MonoRepo][Refactor] Rename monorepo to Wistro Dev Central and endpoints to endpoints
 - ⬜ [WistroServer][Architecture] Centralize all inbound/outbound traffic through WistroServer
 - ✅ [Testing][Architecture] Restructure tests to run e2e at top level by default
 - ⬜ [MonoRepo][Infra] Harden monorepo to be more rigorous
@@ -10,7 +10,7 @@
 - ⬜ [Testing][Feature] Create workflow testing framework
 - ⬜ [Testing][Feature] Create component testing utilities
 - ⬜ [Testing][Feature] Setup conventions for testing and provide examples
-- ⬜ [Core][Architecture] Create a ConFigurationManagment class (MessageBus, Agents, wofklows etc)
+- ⬜ [Core][Architecture] Create a ConFigurationManagment class (MessageBus, Endpoints, wofklows etc)
 - ⬜ [Core][Architecture] Implement default-first configuration system with clear override patterns
 - ⬜ [UI][Architecture] Restructure App.jsx to use minimal default setup with injectable overrides
 - ⬜ [UI][Architecture] Make UI components optional with smart defaults for visualization with ability to override

@@ -1,10 +1,10 @@
 import crypto from "crypto";
 
 export class WorkflowManager {
-  constructor(eventManager, serverComponentManager, agentManager) {
+  constructor(eventManager, serverComponentManager, endpointManager) {
     this.eventManager = eventManager;
     this.serverComponentManager = serverComponentManager;
-    this.agentManager = agentManager;
+    this.endpointManager = endpointManager;
     this._config = null;
   }
 
@@ -23,9 +23,9 @@ export class WorkflowManager {
   }
 
   async registerComponent(component) {
-    const { id, agent, codePath, subscribe = [] } = component;
+    const { id, endpoint, codePath, subscribe = [] } = component;
 
-    if (!agent || agent === "server") {
+    if (!endpoint || endpoint === "server") {
       this.serverComponentManager.register(id, codePath);
 
       for (const eventType of subscribe) {
@@ -40,11 +40,11 @@ export class WorkflowManager {
         await this.eventManager.subscribe(eventType, id, handler);
       }
     } else {
-      await this.agentManager.registerComponent(codePath, agent, id);
+      await this.endpointManager.registerComponent(codePath, endpoint, id);
 
       for (const eventType of subscribe) {
         const handler = async (evt) => {
-          await this.agentManager.executeComponent(codePath, evt);
+          await this.endpointManager.executeComponent(codePath, evt);
         };
         await this.eventManager.subscribe(eventType, id, handler);
       }
@@ -61,7 +61,7 @@ export class WorkflowManager {
         name: wf.name,
         components: (wf.components || []).map((comp) => ({
           id: comp.id,
-          agent: comp.agent,
+          endpoint: comp.endpoint,
           subscribe: comp.subscribe || [],
           emits: comp.emits || [],
           codePath: comp.codePath,

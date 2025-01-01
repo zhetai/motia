@@ -1,6 +1,6 @@
 export const config = {
   name: "Fanialize Data",
-  endpoint: "node-agent",
+  endpoint: "node-endpoint",
   subscribes: ["hybrid.analyzed"],
   emits: ["hybrid.completed"],
 };

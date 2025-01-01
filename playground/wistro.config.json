@@ -10,14 +10,14 @@
     "port": 6379,
     "ttl": 3600
   },
-  "agents": [
+  "endpoints": [
     {
-      "name": "node-agent",
+      "name": "node-endpoint",
       "url": "http://localhost:3000",
       "runtime": "node"
     },
     {
-      "name": "python-agent",
+      "name": "python-endpoint",
       "url": "http://localhost:8000",
       "runtime": "python"
     }
@@ -28,7 +28,7 @@
       "components": [
         {
           "id": "api-caller",
-          "agent": "server",
+          "endpoint": "server",
           "subscribe": [
             "handshake.callApi"
           ],
@@ -40,7 +40,7 @@
         },
         {
           "id": "node-finalizer",
-          "agent": "server",
+          "endpoint": "node-endpoint",
           "subscribe": [
             "handshake.apiResponse"
           ],
@@ -50,7 +50,7 @@
         },
         {
           "id": "node-starter",
-          "agent": "server",
+          "endpoint": "node-endpoint",
           "subscribe": [
             "handshake.initiate"
           ],
@@ -67,7 +67,7 @@
       "components": [
         {
           "id": "analyze-data",
-          "agent": "python-agent",
+          "endpoint": "python-endpoint",
           "subscribe": [
             "hybrid.enriched"
           ],
@@ -79,7 +79,7 @@
         },
         {
           "id": "enrich-data",
-          "agent": "server",
+          "endpoint": "node-endpoint",
           "subscribe": [
             "hybrid.transformed"
           ],
@@ -91,7 +91,7 @@
         },
         {
           "id": "finalize-data",
-          "agent": "server",
+          "endpoint": "node-endpoint",
           "subscribe": [
             "hybrid.analyzed"
           ],
@@ -103,7 +103,7 @@
         },
         {
           "id": "transform-data",
-          "agent": "python-agent",
+          "endpoint": "python-endpoint",
           "subscribe": [
             "hybrid.validated"
           ],
@@ -115,7 +115,7 @@
         },
         {
           "id": "validate-data",
-          "agent": "server",
+          "endpoint": "node-endpoint",
           "subscribe": [
             "hybrid.received"
           ],
@@ -132,7 +132,7 @@
       "components": [
         {
           "id": "join-step",
-          "agent": "server",
+          "endpoint": "server",
           "subscribe": [
             "pms.stepA.done",
             "pms.stepB.done",
@@ -146,7 +146,7 @@
         },
         {
           "id": "start-parallel-merge",
-          "agent": "server",
+          "endpoint": "server",
           "subscribe": [
             "pms.initialize"
           ],
@@ -158,7 +158,7 @@
         },
         {
           "id": "stepA",
-          "agent": "server",
+          "endpoint": "server",
           "subscribe": [
             "pms.start"
           ],
@@ -170,7 +170,7 @@
         },
         {
           "id": "stepB",
-          "agent": "server",
+          "endpoint": "server",
           "subscribe": [
             "pms.start"
           ],
@@ -182,7 +182,7 @@
         },
         {
           "id": "stepC",
-          "agent": "server",
+          "endpoint": "server",
           "subscribe": [
             "pms.start"
           ],
@@ -199,7 +199,7 @@
       "components": [
         {
           "id": "finalizer",
-          "agent": "server",
+          "endpoint": "server",
           "subscribe": [
             "ws-server-example.processed"
           ],
@@ -209,7 +209,7 @@
         },
         {
           "id": "processor",
-          "agent": "server",
+          "endpoint": "server",
           "subscribe": [
             "ws-server-example.start"
           ],
@@ -221,7 +221,7 @@
         },
         {
           "id": "start-server-example",
-          "agent": "server",
+          "endpoint": "server",
           "subscribe": [
             "ws-server-example.trigger"
           ],

@@ -1,4 +1,4 @@
-# agents/python-agent/src/server.py
+# endpoints/python-endpoint/src/server.py
 from fastapi import FastAPI, HTTPException
 from pydantic import BaseModel
 import importlib.util
@@ -21,7 +21,7 @@ class EventResponse(BaseModel):
     status: str
     events: List[Event]
 
-class PythonAgent:
+class PythonEndpoint:
     def __init__(self):
         self.components = {}
         self.app = FastAPI()
@@ -51,7 +51,7 @@ class PythonAgent:
     async def register_component(self, name: str, code: str):
         """Register a new component or update an existing one."""
         try:
-            print(f"[PythonAgent] Registering component: {name}")
+            print(f"[PythonEndpoint] Registering component: {name}")
             component_dir = "components"
             os.makedirs(component_dir, exist_ok=True)
             
@@ -81,10 +81,10 @@ class PythonAgent:
                 "loaded_at": datetime.now().isoformat()
             }
             
-            print(f"[PythonAgent] Component {name} registered successfully")
+            print(f"[PythonEndpoint] Component {name} registered successfully")
             
         except Exception as e:
-            print(f"[PythonAgent] Failed to register component {name}: {str(e)}")
+            print(f"[PythonEndpoint] Failed to register component {name}: {str(e)}")
             raise
 
     async def execute_component(self, component_id: str, event: dict):
@@ -115,7 +115,7 @@ class PythonAgent:
                 "events": emitted_events
             }
         except Exception as e:
-            print(f"[PythonAgent] Error executing component {component_id}: {str(e)}")
+            print(f"[PythonEndpoint] Error executing component {component_id}: {str(e)}")
             raise
 
     async def restore_components(self):
@@ -145,14 +145,14 @@ class PythonAgent:
                         restored_count += 1
                     
             if restored_count > 0:
-                print(f"[PythonAgent] Restored {restored_count} components")
+                print(f"[PythonEndpoint] Restored {restored_count} components")
                     
         except Exception as e:
-            print(f"[PythonAgent] Error restoring components: {e}")
+            print(f"[PythonEndpoint] Error restoring components: {e}")
 
-agent = PythonAgent()
-app = agent.app
+endpoint = PythonEndpoint()
+app = endpoint.app
 
 @app.on_event("startup")
 async def startup_event():
-    await agent.restore_components()
+    await endpoint.restore_components()
