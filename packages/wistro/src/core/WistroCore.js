@@ -3,16 +3,12 @@ import { EndpointManager } from "./endpoints/EndpointManager.js";
 import { createStateAdapter } from "./state/index.js";
 import { ServerComponentManager } from "./ServerComponentManager.js";
 import { WorkflowManager } from "./WorkflowManager.js";
+import { ConfigurationManager } from "./config/ConfigurationManager.js";
 
 export class WistroCore {
   constructor() {
-    this.eventManager = new EventManager({
-      host: process.env.REDIS_HOST,
-      port: parseInt(process.env.REDIS_PORT),
-      password: process.env.REDIS_PASSWORD,
-      prefix: "wistro:events:",
-    });
-
+    this.configManager = new ConfigurationManager();
+    this.eventManager = null;
     this.stateAdapter = null;
     this.serverComponentManager = null;
     this.endpointManager = null;
@@ -26,23 +22,29 @@ export class WistroCore {
       );
     }
 
-    // Initialize core services
-    await this.initializeServices(config);
+    // Initialize configuration
+    const validatedConfig = await this.configManager.initialize(config);
 
-    // Register endpoints
-    await this.registerEndpoints(config.endpoints);
+    // Initialize services with validated config
+    await this.initializeServices(validatedConfig);
 
-    // Register workflows
-    await this.registerWorkflows(config.workflows);
+    // Register endpoints and workflows
+    await this.registerEndpoints(validatedConfig.endpoints);
+    await this.registerWorkflows(validatedConfig.workflows);
 
     console.log("[WistroCore] Initialized successfully from config.");
   }
 
   async initializeServices(config) {
-    // Initialize state adapter
+    console.log("[WistroCore] Initializing endpoints:", config.endpoints);
+    // Initialize state adapter with validated config
     this.stateAdapter = createStateAdapter(config.state);
 
-    // Initialize event manager
+    // Initialize event manager with Redis config
+    this.eventManager = new EventManager({
+      ...this.configManager.getRedisConfig(),
+      prefix: "wistro:events:",
+    });
     await this.eventManager.initialize();
 
     // Initialize endpoint manager

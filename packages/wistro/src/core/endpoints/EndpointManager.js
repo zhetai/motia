@@ -22,6 +22,7 @@ export class EndpointManager {
   }
 
   async registerEndpoint(name, config) {
+    console.log("[EndpointManager] Registering endpoint:", name, config);
     const endpoint = this.registry.registerEndpoint(name, config);
 
     // Wait for initial delay before first health check
