@@ -2,3 +2,4 @@ packages:
   - "packages/*"
   - "playground"
   - "endpoints/*"
+  - "playground-2"

@@ -1,0 +1,11 @@
+{
+  "name": "wistro2",
+  "private": true,
+  "bin": {
+    "wistro": "wistro.js"
+  },
+  "dependencies": {
+    "yaml": "^2.7.0",
+    "zod": "^3.24.1"
+  }
+}
