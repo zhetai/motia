@@ -1,6 +1,6 @@
 export const config = {
   name: "Enrich Data",
-  endpoint: "node-agent",
+  endpoint: "node-endpoint",
   subscribes: ["hybrid.transformed"],
   emits: ["hybrid.enriched"],
 };

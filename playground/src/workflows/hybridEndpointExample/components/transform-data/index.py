@@ -1,6 +1,6 @@
 config = {
     "name": "Transform Data", 
-    "endpoint": "python-agent",
+    "endpoint": "python-endpoint",
     "subscribes": ["hybrid.validated"],
     "emits": ["hybrid.transformed"]
 }

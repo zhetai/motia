@@ -1,6 +1,6 @@
 export const config = {
   name: "Node Finalizer",
-  endpoint: "node-agent",
+  endpoint: "node-endpoint",
   subscribes: ["handshake.apiResponse"],
   emits: [],
 };
