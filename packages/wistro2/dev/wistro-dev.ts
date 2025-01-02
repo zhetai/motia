@@ -1,23 +1,22 @@
-#!/usr/bin/env node
-require('dotenv/config')
-
-const path = require('path')
-const fs = require('fs')
-const { parse } = require('yaml')
-const { EventManager } = require('./EventManager')
-const { createServer } = require('./server')
-const { createWorkflowHandlers } = require('./createWorkflowHandlers')
-const { getPythonConfig } = require('./python/getPythonConfig')
+import path from 'path'
+import fs from 'fs'
+import { parse } from 'yaml'
+import { createServer } from './server'
+import { createWorkflowHandlers } from './workflow-handlers'
+import { getPythonConfig } from './python/get-python-config'
+import { createEventManager } from './event-manager'
+import { Workflow } from './config.types'
+import { FlowConfig } from '../wistro.types'
 
 require('ts-node').register({
   transpileOnly: true,
   compilerOptions: { module: 'commonjs' }
 });
 
-async function buildWorkflows() {
+async function buildWorkflows(): Promise<Workflow[]> {
   // Read all workflow folders under /flows directory
   const flowsDir = path.join(process.cwd(), 'flows')
-  const workflows = []
+  const workflows: Workflow[] = []
 
   // Check if flows directory exists
   if (!fs.existsSync(flowsDir)) {
@@ -42,7 +41,8 @@ async function buildWorkflows() {
       workflows.push({ config, file })
     } else {
       console.log('[Workflows] Building Node workflow', file)
-      const { config } = require(path.join(flowsDir, file))
+      const module = require(path.join(flowsDir, file))
+      const config = module.config as FlowConfig<any>
       workflows.push({ config, file })
     }
   }
@@ -50,20 +50,12 @@ async function buildWorkflows() {
   return workflows
 }
 
-async function main() {
-  console.log('Current working directory is:', process.cwd())
-  // 1) Read your new config file
+export const dev = async () => {
   const configYaml = fs.readFileSync(path.join(process.cwd(), 'config.yml'), 'utf8')
   const config = parse(configYaml) 
 
-  // let's build the workflows with the file system scanning
   const workflows = await buildWorkflows()
-
-  const eventManager = new EventManager({
-    ...config.messageBus.config, // we're supporting only redis for now
-    prefix: "wistro:events:",
-  });
-  await eventManager.initialize();
+  const eventManager = createEventManager()
 
   const server = createServer(config.api, eventManager)
   createWorkflowHandlers(workflows, eventManager)
@@ -72,9 +64,6 @@ async function main() {
   process.on('SIGTERM', async () => {
     console.log('[playground/index] Shutting down...')
     server.close()
-    eventManager.cleanup()
     process.exit(0)
   })
 }
-
-main().catch(console.error)

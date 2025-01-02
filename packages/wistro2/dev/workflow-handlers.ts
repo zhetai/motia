@@ -1,10 +1,12 @@
-const { spawn } = require('child_process')
-const path = require('path')
+import { Event, EventManager } from './event-manager'
+import { spawn } from 'child_process'
+import path from 'path'
+import { Workflow } from './config.types'
 
-const nodeRunner = path.join(__dirname, 'node', 'nodeRunner.js')
-const pythonRunner = path.join(__dirname, 'python', 'pythonRunner.py')
+const nodeRunner = path.join(__dirname, 'node', 'node-runner.js')
+const pythonRunner = path.join(__dirname, 'python', 'python-runner.py')
 
-const callWorkflowFile = (file, data, eventManager) => {
+const callWorkflowFile = <TData>(file: string, data: TData, eventManager: EventManager): Promise<void> => {
   const isPython = file.endsWith('.py')
 
   return new Promise((resolve, reject) => {
@@ -18,7 +20,7 @@ const callWorkflowFile = (file, data, eventManager) => {
       stdio: ['inherit', 'inherit', 'inherit', 'ipc']
     })
 
-    child.on('message', (message) => {
+    child.on('message', (message: Event<unknown>) => {
       console.log(`[${command} Runner] Received message`, message)
       eventManager.emit(message)
     })
@@ -33,8 +35,7 @@ const callWorkflowFile = (file, data, eventManager) => {
   })
 }
 
-
-const createWorkflowHandlers = (workflows, eventManager) => {
+export const createWorkflowHandlers = (workflows: Workflow[], eventManager: EventManager) => {
   console.log(`[Workflows] Creating workflow handlers for ${workflows.length} workflows`)
   
   workflows.forEach(workflow => {
@@ -42,7 +43,6 @@ const createWorkflowHandlers = (workflows, eventManager) => {
     const { subscribes } = config
 
     subscribes.forEach(subscribe => {
-      console.log(`[Workflow Sub] ${file} subscribing to ${subscribe}`)
       eventManager.subscribe(subscribe, file, async (event) => {
         console.log(`[Workflow] ${file} received event`, event)
 
@@ -55,5 +55,3 @@ const createWorkflowHandlers = (workflows, eventManager) => {
     })
   })
 }
-
-exports.createWorkflowHandlers = createWorkflowHandlers

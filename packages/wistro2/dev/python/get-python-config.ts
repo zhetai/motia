@@ -1,11 +1,12 @@
-const { spawn } = require('child_process')
-const path = require('path')
+import { spawn } from 'child_process'
+import path from 'path'
+import { FlowConfig } from '../../wistro.types'
 
-module.exports.getPythonConfig = (file) => {
-  const getConfig = path.join(__dirname, 'getConfig.py')
+export const getPythonConfig = (file: string): Promise<FlowConfig<any>> => {
+  const getConfig = path.join(__dirname, 'get-config.py')
 
   return new Promise((resolve, reject) => {
-    let config = null
+    let config: FlowConfig<any> | null = null
 
     const child = spawn('python', [getConfig, file], {
       stdio: ['inherit', 'inherit', 'inherit', 'ipc']
@@ -13,7 +14,7 @@ module.exports.getPythonConfig = (file) => {
   
     child.on('message', (message) => {
       console.log('[Python Config] Received message', message)
-      config = message
+      config = message as FlowConfig<any>
     })
 
     child.on('close', (code) => {

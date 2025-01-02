@@ -1,16 +1,3 @@
-messageBus:
-  type: redis
-  config:
-    host: localhost
-    port: 6379
-
-state:
-  adapter: redis
-  config:
-    host: localhost
-    port: 6379
-    ttl: 3600
-
 api:
   port: 3000
   paths:

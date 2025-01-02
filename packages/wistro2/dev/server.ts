@@ -1,29 +1,27 @@
-const { randomUUID } = require('crypto')
-const Fastify = require('fastify')
+import { randomUUID } from 'crypto'
+import Fastify, { FastifyRequest, FastifyReply } from 'fastify'
+import { ApiConfig } from './config.types'
+import { Event, EventManager } from './event-manager'
 
-module.exports.createServer = (apiConfig, eventManager) => {
+export const createServer = (apiConfig: ApiConfig, eventManager: EventManager) => {
   const fastify = Fastify()
   const { paths } = apiConfig
 
   console.log('[API] Registering routes', paths)
 
-  const asyncHandler = (emits) => {
-    return async (req, res) => {
+  const asyncHandler = (emits: string) => {
+    return async (req: FastifyRequest, res: FastifyReply) => {
       const traceId = randomUUID()
-      const event = {
+      const event: Event<unknown> = {
         traceId,
-        metadata: {
-          source: 'http',
-          path: req.raw.url,
-          method: req.raw.method,
-          body: req.body,
-        },
+        type: emits,
+        data: req.body,
       }
   
       console.log('[API] Request received', event)
   
       try {
-        await eventManager.emit({ type: emits, data: req.body, traceId })
+        await eventManager.emit(event)
         res.send({ success: true, eventType: emits, traceId })
       } catch (error) {
         console.error('[API] Error emitting event', error)

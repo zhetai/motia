@@ -1,4 +1,4 @@
-const path = require('path')
+import path from 'path'
 
 // Add ts-node registration before dynamic imports
 require('ts-node').register({
@@ -6,7 +6,7 @@ require('ts-node').register({
   compilerOptions: { module: 'commonjs' }
 });
 
-function parseArgs(arg) {
+function parseArgs(arg: string) {
   try {
     return JSON.parse(arg);
   } catch {
@@ -14,7 +14,7 @@ function parseArgs(arg) {
   }
 }
 
-async function runTypescriptModule(filePath, args) {
+async function runTypescriptModule(filePath: string, args: any) {
   try {
     // Remove pathToFileURL since we'll use require
     const module = require(path.resolve(filePath));
@@ -24,8 +24,8 @@ async function runTypescriptModule(filePath, args) {
       throw new Error(`Function executor not found in module ${filePath}`);
     }
 
-    const emit = async (data) => {
-      process.send(data)
+    const emit = async (data: any) => {
+      process.send?.(data)
     }
 
     // Call the function with provided arguments
