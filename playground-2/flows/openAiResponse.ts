@@ -15,5 +15,5 @@ export const config: FlowConfig<Input> = {
 };
 
 export const executor: FlowExecutor<Input> = async (input) => {
-  console.log('[OpenAI Response 2] Received event', input);
+  console.log('[OpenAI Response] Received event', input);
 };

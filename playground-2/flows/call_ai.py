@@ -1,6 +1,14 @@
+config = {
+    "name": "Call OpenAI",
+    "subscribes": ["call-openai"], 
+    "emits": ["openai-response"],
+    "input": None  # No schema validation in Python version
+}
+
 async def executor(args, emit):
-    # Use the emit function to send data
-    await emit({"status": "processing"})
-    
-    # Process args and return result
-    return {"result": args}
+    print('[Call Python OpenAI] Received call_ai event', args);
+
+    await emit({
+        "type": "openai-response",
+        "data": { "message": args.message },
+    });

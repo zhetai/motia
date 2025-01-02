@@ -1,18 +1,25 @@
 const { spawn } = require('child_process')
 const path = require('path')
 
+const nodeRunner = path.join(__dirname, 'node', 'nodeRunner.js')
+const pythonRunner = path.join(__dirname, 'python', 'pythonRunner.py')
+
 const callWorkflowFile = (file, data, eventManager) => {
+  const isPython = file.endsWith('.py')
+
   return new Promise((resolve, reject) => {
-    const nodeRunner = path.join(__dirname, 'nodeRunner.js')
     const flowPath = path.join(process.cwd(), 'flows', file)
     const jsonData = JSON.stringify(data)
 
-    const child = spawn('node', [nodeRunner, flowPath, jsonData], {
+    const runner = isPython ? pythonRunner : nodeRunner
+    const command = isPython ? 'python' : 'node'
+
+    const child = spawn(command, [runner, flowPath, jsonData], {
       stdio: ['inherit', 'inherit', 'inherit', 'ipc']
     })
 
     child.on('message', (message) => {
-      console.log('[Node Runner] Received message', message)
+      console.log(`[${command} Runner] Received message`, message)
       eventManager.emit(message)
     })
 

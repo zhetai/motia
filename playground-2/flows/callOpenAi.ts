@@ -15,7 +15,7 @@ export const config: FlowConfig<Input> = {
 };
 
 export const executor: FlowExecutor<Input> = async (input, emit) => {
-  console.log('[Call OpenAI 2] Received callOpenAi event:', input);
+  console.log('[Call OpenAI] Received callOpenAi event:', input);
 
   await emit({
     type: 'openai-response',

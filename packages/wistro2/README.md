@@ -3,7 +3,7 @@
 ## Node
 
 ```bash
-node nodeRunner.js flows/callOpenAi.ts '{"message": "Hello, world!"}'
+node nodeRunner.js callOpenAi.ts '{"message": "Hello, world!"}'
 ```
 
 ## Python
