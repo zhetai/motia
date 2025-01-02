@@ -19,7 +19,7 @@ export const createEventManager = (): EventManager => {
 
     console.log(`[Workflow Emit] ${event.type} emitted`, { handlers: handler.length })
 
-    await Promise.all(handler.map(h => h(event)))
+    await Promise.all(handler.map((h) => h(event)))
   }
 
   const subscribe = <TData>(event: string, handlerName: string, handler: Handler<TData>) => {

@@ -9,9 +9,9 @@ export const getPythonConfig = (file: string): Promise<FlowConfig<any>> => {
     let config: FlowConfig<any> | null = null
 
     const child = spawn('python', [getConfig, file], {
-      stdio: ['inherit', 'inherit', 'inherit', 'ipc']
+      stdio: ['inherit', 'inherit', 'inherit', 'ipc'],
     })
-  
+
     child.on('message', (message) => {
       console.log('[Python Config] Received message', message)
       config = message as FlowConfig<any>

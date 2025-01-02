@@ -1,4 +1,4 @@
-import { FlowConfig } from "../wistro.types"
+import { FlowConfig } from '../wistro.types'
 
 export type ApiPath = {
   method: string

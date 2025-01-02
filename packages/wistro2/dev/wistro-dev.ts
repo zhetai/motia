@@ -10,8 +10,8 @@ import { FlowConfig } from '../wistro.types'
 
 require('ts-node').register({
   transpileOnly: true,
-  compilerOptions: { module: 'commonjs' }
-});
+  compilerOptions: { module: 'commonjs' },
+})
 
 async function buildWorkflows(): Promise<Workflow[]> {
   // Read all workflow folders under /flows directory
@@ -25,7 +25,8 @@ async function buildWorkflows(): Promise<Workflow[]> {
   }
 
   // Get all workflow folders
-  const workflowFiles = fs.readdirSync(flowsDir, { withFileTypes: true })
+  const workflowFiles = fs
+    .readdirSync(flowsDir, { withFileTypes: true })
     .filter(({ name }) => name.endsWith('.ts') || name.endsWith('.js') || name.endsWith('.py'))
     .map(({ name }) => name)
 
@@ -35,7 +36,7 @@ async function buildWorkflows(): Promise<Workflow[]> {
     const isPython = file.endsWith('.py')
 
     if (isPython) {
-      console.log('[Workflows] Building Python workflow', file) 
+      console.log('[Workflows] Building Python workflow', file)
       const config = await getPythonConfig(path.join(flowsDir, file))
       console.log('[Workflows] Python workflow config', config)
       workflows.push({ config, file })
@@ -52,7 +53,7 @@ async function buildWorkflows(): Promise<Workflow[]> {
 
 export const dev = async () => {
   const configYaml = fs.readFileSync(path.join(process.cwd(), 'config.yml'), 'utf8')
-  const config = parse(configYaml) 
+  const config = parse(configYaml)
 
   const workflows = await buildWorkflows()
   const eventManager = createEventManager()

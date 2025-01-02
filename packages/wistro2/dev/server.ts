@@ -17,9 +17,9 @@ export const createServer = (apiConfig: ApiConfig, eventManager: EventManager) =
         type: emits,
         data: req.body,
       }
-  
+
       console.log('[API] Request received', event)
-  
+
       try {
         await eventManager.emit(event)
         res.send({ success: true, eventType: emits, traceId })
@@ -42,7 +42,7 @@ export const createServer = (apiConfig: ApiConfig, eventManager: EventManager) =
     })
   }
 
-  fastify.listen({ port: apiConfig.port, host: '::' });
+  fastify.listen({ port: apiConfig.port, host: '::' })
 
   return fastify
 }

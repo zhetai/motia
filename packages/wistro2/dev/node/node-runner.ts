@@ -3,25 +3,25 @@ import path from 'path'
 // Add ts-node registration before dynamic imports
 require('ts-node').register({
   transpileOnly: true,
-  compilerOptions: { module: 'commonjs' }
-});
+  compilerOptions: { module: 'commonjs' },
+})
 
 function parseArgs(arg: string) {
   try {
-    return JSON.parse(arg);
+    return JSON.parse(arg)
   } catch {
-    return arg;
+    return arg
   }
 }
 
 async function runTypescriptModule(filePath: string, args: any) {
   try {
     // Remove pathToFileURL since we'll use require
-    const module = require(path.resolve(filePath));
+    const module = require(path.resolve(filePath))
 
     // Check if the specified function exists in the module
     if (typeof module.executor !== 'function') {
-      throw new Error(`Function executor not found in module ${filePath}`);
+      throw new Error(`Function executor not found in module ${filePath}`)
     }
 
     const emit = async (data: any) => {
@@ -29,28 +29,26 @@ async function runTypescriptModule(filePath: string, args: any) {
     }
 
     // Call the function with provided arguments
-    const result = await module.executor(args, emit);
-    
+    const result = await module.executor(args, emit)
+
     // Log the result if any
     if (result !== undefined) {
-      console.log('Result:', result);
+      console.log('Result:', result)
     }
   } catch (error) {
-    console.error('Error running TypeScript module:', error);
-    process.exit(1);
+    console.error('Error running TypeScript module:', error)
+    process.exit(1)
   }
 }
 
-
-const [,, filePath, arg] = process.argv;
+const [, , filePath, arg] = process.argv
 
 if (!filePath) {
-  console.error('Usage: node nodeRunner.js <file-path> <arg>');
-  process.exit(1);
+  console.error('Usage: node nodeRunner.js <file-path> <arg>')
+  process.exit(1)
 }
 
-runTypescriptModule(filePath, parseArgs(arg))
-  .catch(err => {
-    console.error('Error:', err);
-    process.exit(1);
-  });
+runTypescriptModule(filePath, parseArgs(arg)).catch((err) => {
+  console.error('Error:', err)
+  process.exit(1)
+})

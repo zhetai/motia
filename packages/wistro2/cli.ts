@@ -3,7 +3,8 @@ import 'dotenv/config'
 import { program } from 'commander'
 import { dev } from './dev/wistro-dev'
 
-program.command('dev')
+program //
+  .command('dev')
   .description('Start the development server')
   .action(dev)
 

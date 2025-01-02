@@ -17,7 +17,7 @@ const callWorkflowFile = <TData>(file: string, data: TData, eventManager: EventM
     const command = isPython ? 'python' : 'node'
 
     const child = spawn(command, [runner, flowPath, jsonData], {
-      stdio: ['inherit', 'inherit', 'inherit', 'ipc']
+      stdio: ['inherit', 'inherit', 'inherit', 'ipc'],
     })
 
     child.on('message', (message: Event<unknown>) => {
@@ -37,12 +37,12 @@ const callWorkflowFile = <TData>(file: string, data: TData, eventManager: EventM
 
 export const createWorkflowHandlers = (workflows: Workflow[], eventManager: EventManager) => {
   console.log(`[Workflows] Creating workflow handlers for ${workflows.length} workflows`)
-  
-  workflows.forEach(workflow => {
+
+  workflows.forEach((workflow) => {
     const { config, file } = workflow
     const { subscribes } = config
 
-    subscribes.forEach(subscribe => {
+    subscribes.forEach((subscribe) => {
       eventManager.subscribe(subscribe, file, async (event) => {
         console.log(`[Workflow] ${file} received event`, event)
 
