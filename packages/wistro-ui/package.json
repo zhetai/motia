@@ -1,0 +1,27 @@
+{
+  "name": "wistro-ui",
+  "version": "0.1.0",
+  "type": "module",
+  "exports": {
+    ".": {
+      "import": "./src/ui/index.js",
+      "require": "./dist/browser/ui.js"
+    }
+  },
+  "sideEffects": [
+    "./src/*"
+  ],
+  "files": [
+    "dist",
+    "src"
+  ],
+  "scripts": {
+    "dev": "concurrently \"node esbuild.config.js --watch\" \"vite build --watch\"",
+    "build": "node esbuild.config.js && vite build",
+    "test": "vitest"
+  },
+  "devDependencies": {
+    "esbuild": "^0.24.0"
+  },
+  "dependencies": {}
+}

@@ -1,0 +1,19 @@
+api:
+  port: 3000
+  paths:
+    /api/openai:
+      method: POST
+      emits: call-openai
+    /api/hybrid-endpoint-example:
+      method: POST
+      emits: hybrid.received
+    /api/wistro-server-example:
+      method: POST
+      emits: ws-server-example.trigger
+    /api/endpoint-server-handshake:
+      method: POST
+      emits: handshake.initiate
+    /api/parallel-merge:
+      method: POST
+      emits: pms.initialize
+  

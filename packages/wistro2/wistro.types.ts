@@ -1,7 +1,15 @@
 import { z, ZodObject } from 'zod'
 
 export type Emitter = (event: any) => Promise<void>;
-export type FlowExecutor<TInput extends ZodObject<any>> = (input: z.infer<TInput>, emit: Emitter) => Promise<void>;
+export type FlowContext = {
+  traceId: string;
+  state: {
+    get: <T>(traceId: string, key: string) => Promise<T>;
+    clear: (traceId: string) => Promise<void>;
+    set: <T>(traceId: string, key: string, value: T) => Promise<void>;
+  }
+}
+export type FlowExecutor<TInput extends ZodObject<any>> = (input: z.infer<TInput>, emit: Emitter, ctx: FlowContext) => Promise<void>;
 
 export type FlowConfig<TInput extends ZodObject<any>> = {
   name: string;

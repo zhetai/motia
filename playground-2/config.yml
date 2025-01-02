@@ -1,7 +1,0 @@
-api:
-  port: 3000
-  paths:
-    /api/openai:
-      method: POST
-      emits: call-openai
-  
