@@ -1,3 +1,4 @@
+import { useListWorkflows } from '@/hooks/use-list-workflows'
 import {
   Sidebar,
   SidebarContent,
@@ -10,8 +11,11 @@ import {
   SidebarMenuButton,
   SidebarMenuItem,
 } from './ui/sidebar'
+import { Workflow } from 'lucide-react'
 
 export const AppSidebar = () => {
+  const { workflows } = useListWorkflows()
+
   return (
     <Sidebar>
       <SidebarHeader />
@@ -20,16 +24,16 @@ export const AppSidebar = () => {
           <SidebarGroupLabel>Workflows</SidebarGroupLabel>
           <SidebarGroupContent>
             <SidebarMenu>
-              <SidebarMenuItem>
-                <SidebarMenuButton asChild isActive>
-                  <span>Chatbot</span>
-                </SidebarMenuButton>
-              </SidebarMenuItem>
-              <SidebarMenuItem>
-                <SidebarMenuButton asChild>
-                  <span>Process payment</span>
-                </SidebarMenuButton>
-              </SidebarMenuItem>
+              {workflows.map((workflow) => (
+                <SidebarMenuItem key={workflow.id}>
+                  <SidebarMenuButton asChild className="cursor-pointer">
+                    <div className="flex items-center gap-2">
+                      <Workflow />
+                      <span>{workflow.name}</span>
+                    </div>
+                  </SidebarMenuButton>
+                </SidebarMenuItem>
+              ))}
             </SidebarMenu>
           </SidebarGroupContent>
         </SidebarGroup>

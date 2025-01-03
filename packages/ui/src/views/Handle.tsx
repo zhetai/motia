@@ -38,10 +38,10 @@ export const Handle: React.FC<Props> = (props) => {
         'absolute w-6 h-6',
         position === Position.Top && 'top-[-26px]',
         position === Position.Bottom && 'bottom-[-13px]',
-        position === Position.Left && 'left-[-42px]',
-        position === Position.Right && 'right-[-30px]',
+        position === Position.Left && 'left-[-32px]',
+        position === Position.Right && 'right-[-20px]',
         [Position.Top, Position.Bottom].includes(position) && 'left-[calc(50%-20px)]',
-        [Position.Left, Position.Right].includes(position) && 'bottom-[calc(50%-20px)]',
+        [Position.Left, Position.Right].includes(position) && 'bottom-[calc(50%+10px)]',
         isHidden && 'hidden',
       )}
     >

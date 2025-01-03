@@ -1,5 +1,5 @@
 config = {
-    "name:": "Analyze Data",
+    "name": "Analyze Data",
     "subscribes": ["hybrid.enriched"],
     "emits": ["hybrid.analyzed"],
     "input": None  # No schema validation in Python version

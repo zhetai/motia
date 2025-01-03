@@ -1,16 +1,16 @@
 export type BaseNodeData = {
-  label: string
+  name: string
   description: string
   subscribes: string[]
-  emits: string[]
+  emits: Array<string | { type: string; label?: string; conditional?: boolean }>
 }
 
 export type TriggerNodeData = {
-  label: string
+  name: string
   description: string
   emits: string[]
   action: 'webhook' | 'cron'
-  cronSchedule?: string
+  cron?: string
   webhookUrl?: string
 }
 
