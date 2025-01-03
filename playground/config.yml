@@ -4,26 +4,66 @@ api:
     /api/openai:
       method: POST
       emits: call-openai
+      name: OpenAI
+      description: Triggered when a message is received from chatbot
+      tags:
+        - customer
     /api/hybrid-endpoint-example:
       method: POST
       emits: hybrid.received
+      name: Hybrid Endpoint Example
+      description: Triggered when a message is received from hybrid endpoint
+      tags:
+        - customer
     /api/wistro-server-example:
       method: POST
       emits: ws-server-example.trigger
+      name: Wistro Server Example
+      description: Triggered when a message is received from wistro server
+      tags:
+        - customer
     /api/endpoint-server-handshake:
       method: POST
       emits: handshake.initiate
+      name: Endpoint Server Handshake
+      description: Triggered when a message is received from endpoint server
+      tags:
+        - customer
     /api/parallel-merge:
       method: POST
       emits: pms.initialize
     /api/dbz/initialize:
+      name: DBZ Initialize
+      description: Triggered when a message is received from dbz
       method: POST
       emits: dbz.initialize
+      tags:
+        - dbz
     /api/dbz/search-upgrades:
+      name: DBZ Search Upgrades
+      description: Triggered when a message is received from dbz
       method: POST
       emits: dbz.evaluate-upgrades
+      tags:
+        - dbz
+
 state:
   adapter: redis
   host: localhost
   port: 6379
   password: pingpong
+
+workflows:
+  customer:
+    name: Customer
+  dbz:
+    name: DBZ
+
+cron:
+  parallel-merge:
+    name: Parallel Merge
+    description: Triggered every 5 minutes
+    cron: '0/5 * * * *'
+    emits: pms.initialize
+    tags:
+      - customer

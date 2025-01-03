@@ -10,7 +10,7 @@ const inputSchema = z.object({
 export const config: FlowConfig<Input> = {
   name: 'Call OpenAI',
   subscribes: ['call-openai'],
-  emits: ['openai-response'],
+  emits: [{ type: 'openai-response', label: 'OpenAI Response' }],
   input: inputSchema,
 }
 

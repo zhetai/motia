@@ -1,13 +1,14 @@
 import { randomUUID } from 'crypto'
 import Fastify, { FastifyRequest, FastifyReply } from 'fastify'
-import { ApiConfig } from './config.types'
+import { Config } from './config.types'
 import { Event, EventManager } from './event-manager'
+import { Workflow } from './config.types'
+import { workflowsEndpoint } from './workflows-endpoint'
 
-export const createServer = (apiConfig: ApiConfig, eventManager: EventManager) => {
+export const createServer = (config: Config, workflows: Workflow[], eventManager: EventManager) => {
   const fastify = Fastify()
-  const { paths } = apiConfig
 
-  console.log('[API] Registering routes', paths)
+  console.log('[API] Registering routes', config.api.paths)
 
   const asyncHandler = (emits: string) => {
     return async (req: FastifyRequest, res: FastifyReply) => {
@@ -30,8 +31,8 @@ export const createServer = (apiConfig: ApiConfig, eventManager: EventManager) =
     }
   }
 
-  for (const path in paths) {
-    const { method, emits } = paths[path]
+  for (const path in config.api.paths) {
+    const { method, emits } = config.api.paths[path]
 
     console.log('[API] Registering route', { method, path, emits })
 
@@ -42,7 +43,22 @@ export const createServer = (apiConfig: ApiConfig, eventManager: EventManager) =
     })
   }
 
-  fastify.listen({ port: apiConfig.port, host: '::' })
+  fastify.addHook('onRequest', (request, reply, done) => {
+    reply.header('Access-Control-Allow-Origin', '*')
+    reply.header('Access-Control-Allow-Methods', 'GET,POST,PUT,DELETE,OPTIONS')
+    reply.header('Access-Control-Allow-Headers', 'Content-Type')
+
+    if (request.method === 'OPTIONS') {
+      reply.send()
+      return
+    }
+
+    done()
+  })
+
+  workflowsEndpoint(config, workflows, fastify)
+
+  fastify.listen({ port: config.api.port, host: '::' })
 
   return fastify
 }
