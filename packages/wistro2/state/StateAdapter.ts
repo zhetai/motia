@@ -2,19 +2,19 @@
  * Interface for state management adapters
  */
 export class StateAdapter {
-  async get(traceId, key) {
+  async get(traceId: string, key: string) {
     throw new Error('Method not implemented');
   }
 
-  async set(traceId, key, value) {
+  async set(traceId: string, key: string, value: unknown) {
     throw new Error('Method not implemented');
   }
 
-  async delete(traceId, key) {
+  async delete(traceId: string, key: string) {
     throw new Error('Method not implemented');
   }
 
-  async clear(traceId) {
+  async clear(traceId: string) {
     throw new Error('Method not implemented');
   }
 

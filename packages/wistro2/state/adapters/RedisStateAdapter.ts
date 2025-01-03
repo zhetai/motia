@@ -1,31 +1,44 @@
 import { StateAdapter } from '../StateAdapter.js';
 import Redis from 'ioredis';
 
+export type RedisAdapterConfig = {
+  host: string;
+  port: number;
+  password?: string;
+  ttl?: number;
+}
+
 export class RedisStateAdapter extends StateAdapter {
-  constructor(config) {
+  private client: Redis;
+  private prefix: string;
+  private ttl = 3600;
+
+  constructor(config: RedisAdapterConfig) {
     super();
     this.client = new Redis(config);
     this.prefix = 'wistro:state:';
-    this.ttl = config.ttl || 3600; // Default 1 hour TTL
+    if (config.ttl) {
+      this.ttl = config.ttl
+    }
   }
 
-  async get(traceId, key) {
+  async get(traceId: string, key: string) {
     const fullKey = this._makeKey(traceId, key);
     const value = await this.client.get(fullKey);
     return value ? JSON.parse(value) : null;
   }
 
-  async set(traceId, key, value) {
+  async set(traceId: string, key: string, value: string) {
     const fullKey = this._makeKey(traceId, key);
     await this.client.set(fullKey, JSON.stringify(value), 'EX', this.ttl);
   }
 
-  async delete(traceId, key) {
+  async delete(traceId: string, key: string) {
     const fullKey = this._makeKey(traceId, key);
     await this.client.del(fullKey);
   }
 
-  async clear(traceId) {
+  async clear(traceId: string) {
     const pattern = this._makeKey(traceId, '*');
     const keys = await this.client.keys(pattern);
     if (keys.length > 0) {
@@ -37,7 +50,7 @@ export class RedisStateAdapter extends StateAdapter {
     await this.client.quit();
   }
 
-  _makeKey(traceId, key) {
+  _makeKey(traceId: string, key: string) {
     return `${this.prefix}${traceId}:${key}`;
   }
 }

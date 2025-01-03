@@ -17,4 +17,5 @@ export type Config = {
 export type Workflow = {
   config: FlowConfig<any>
   file: string
+  filePath: string
 }

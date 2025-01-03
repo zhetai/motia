@@ -7,10 +7,6 @@
       "import": "./src/index.js",
       "require": "./dist/node/index.js"
     },
-    "./ui": {
-      "import": "./src/ui/index.js",
-      "require": "./dist/browser/ui.js"
-    },
     "./core/adapters": {
       "import": "./src/core/adapters/index.js",
       "require": "./dist/core/adapters/index.js"
@@ -31,8 +27,8 @@
     "src"
   ],
   "scripts": {
-    "dev": "concurrently \"node esbuild.config.js --watch\" \"vite build --watch\"",
-    "build": "node esbuild.config.js && vite build",
+    "dev": "concurrently \"node esbuild.config.js --watch\"",
+    "build": "node esbuild.config.js",
     "test": "vitest"
   },
   "devDependencies": {

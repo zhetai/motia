@@ -1,6 +1,5 @@
 import { EventManager } from "./EventManager.js";
 import { EndpointManager } from "./endpoints/EndpointManager.js";
-import { createStateAdapter } from "./state/index.js";
 import { ServerComponentManager } from "./ServerComponentManager.js";
 import { WorkflowManager } from "./WorkflowManager.js";
 import { ConfigurationManager } from "./config/ConfigurationManager.js";
@@ -38,7 +37,7 @@ export class WistroCore {
   async initializeServices(config) {
     console.log("[WistroCore] Initializing endpoints:", config.endpoints);
     // Initialize state adapter with validated config
-    this.stateAdapter = createStateAdapter(config.state);
+    // this.stateAdapter = createStateAdapter(config.state);
 
     // Initialize event manager with Redis config
     this.eventManager = new EventManager({
@@ -54,7 +53,7 @@ export class WistroCore {
     await this.endpointManager.initialize();
 
     // Initialize server component manager
-    this.serverComponentManager = new ServerComponentManager(this.stateAdapter);
+    this.serverComponentManager = new ServerComponentManager(undefined);
 
     // Initialize workflow manager
     this.workflowManager = new WorkflowManager(

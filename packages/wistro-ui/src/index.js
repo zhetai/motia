@@ -1,4 +1,4 @@
-// packages/wistro/src/ui/index.js
+// packages/wistro/src/index.js
 import { WistroUi } from "./WistroUi.js";
 import { useWistroFlow } from "./hooks/useWistroFlow.js";
 

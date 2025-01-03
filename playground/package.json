@@ -1,5 +1,5 @@
 {
-  "name": "wistro-playground-2",
+  "name": "wistro-playground",
   "private": true,
   "scripts": {
     "dev": "wistro dev"

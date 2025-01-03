@@ -15,7 +15,7 @@ export const config: FlowConfig<Input> = {
 export const executor: FlowExecutor<Input> = async (_, emit) => {
   console.log(
     "[WISTRO_SERVER_EXAMPLE] start-event is loaded from:",
-    import.meta.url
+    // import.meta.url
   );
   console.log("[Start Event] triggered via /api/wistro-server-example");
   await emit({

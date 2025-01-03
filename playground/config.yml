@@ -16,4 +16,14 @@ api:
     /api/parallel-merge:
       method: POST
       emits: pms.initialize
-  
+    /api/dbz/initialize:
+      method: POST
+      emits: dbz.initialize
+    /api/dbz/search-upgrades:
+      method: POST
+      emits: dbz.evaluate-upgrades
+state:
+  adapter: redis
+  host: localhost
+  port: 6379
+  password: pingpong

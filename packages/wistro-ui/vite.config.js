@@ -4,7 +4,7 @@ import react from "@vitejs/plugin-react";
 export default defineConfig({
   build: {
     lib: {
-      entry: "src/ui/index.js",
+      entry: "src/index.js",
       formats: ["es"],
       fileName: "ui",
     },
