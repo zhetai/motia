@@ -1,5 +1,4 @@
 packages:
   - "packages/*"
   - "playground"
-  - "endpoints/*"
-  - "playground-2"
+  - "wistro/*"

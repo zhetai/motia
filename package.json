@@ -2,7 +2,6 @@
   "name": "wistro-monorepo",
   "private": true,
   "scripts": {
-    "dev:endpoints": "pnpm run -r --parallel dev:endpoint",
     "dev": "pnpm run build && pnpm run -r --parallel dev",
     "build": "pnpm run -r build",
     "build-config": "node packages/wistro/src/cli/WistroConfigBuilder.js playground",
@@ -14,7 +13,7 @@
   },
   "devDependencies": {
     "@playwright/test": "^1.49.1",
-    "@types/node": "^22.10.4",
+    "@types/node": "^22.10.5",
     "@vitejs/plugin-react": "^4.3.4",
     "concurrently": "^8.2.2",
     "dotenv": "^16.4.7",

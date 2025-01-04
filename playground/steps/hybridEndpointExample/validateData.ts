@@ -1,4 +1,4 @@
-import { FlowConfig, FlowExecutor } from 'wistro2'
+import { FlowConfig, FlowExecutor } from 'wistro'
 import { ItemsListSchema } from './items.schema';
 import { z } from 'zod';
 

@@ -1,5 +1,5 @@
 import { z } from 'zod'
-import { FlowConfig, FlowExecutor } from 'wistro2'
+import { FlowConfig, FlowExecutor } from 'wistro'
 
 type Input = typeof inputSchema
 

@@ -1,5 +1,0 @@
-{
-  "watch": ["src"],
-  "ignore": ["components/*", "*.component.js", "*.component.ts"],
-  "ext": "js,ts"
-}

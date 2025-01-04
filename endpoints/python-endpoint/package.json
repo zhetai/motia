@@ -1,7 +1,0 @@
-{
-  "name": "@wistro/python-endpoint",
-  "version": "1.0.0",
-  "scripts": {
-    "dev:endpoint": "python -m uvicorn src.server:app --reload --port 8000"
-  }
-}

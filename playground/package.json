@@ -5,7 +5,7 @@
     "dev": "wistro dev"
   },
   "dependencies": {
-    "wistro2": "workspace:*",
+    "wistro": "workspace:*",
     "zod": "^3.24.1"
   }
 }

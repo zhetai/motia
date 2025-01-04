@@ -80,7 +80,6 @@ venv/
 .env/
 
 # Ignore deployed components in endpoints
-endpoints/**/components/
 agents/**/components/
 
 

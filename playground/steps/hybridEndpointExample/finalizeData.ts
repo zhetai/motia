@@ -1,4 +1,4 @@
-import { FlowConfig, FlowExecutor } from 'wistro2'
+import { FlowConfig, FlowExecutor } from 'wistro'
 import { SharedFlowInputSchema } from './items.schema';
 
 type Input = typeof inputSchema
