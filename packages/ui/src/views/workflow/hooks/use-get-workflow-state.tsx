@@ -1,11 +1,28 @@
-import { useGetWorkflow } from '@/hooks/use-get-workflow'
 import { Edge, Node, useEdgesState, useNodesState } from '@xyflow/react'
 import { useEffect } from 'react'
 import { BaseNodeData, EdgeData, TriggerNodeData } from '../nodes/nodes.types'
 
-export const useGetWorkflowState = (id?: string) => {
-  const { workflow } = useGetWorkflow(id)
+type Emit = string | { type: string; label?: string; conditional?: boolean }
 
+type WorkflowStep = {
+  id: string
+  name: string
+  type: 'base' | 'trigger'
+  description?: string
+  subscribes?: string[]
+  emits: Emit[]
+  action?: 'webhook' | 'cron'
+  webhookUrl?: string
+  cron?: string
+}
+
+export type WorkflowResponse = {
+  id: string
+  name: string
+  steps: WorkflowStep[]
+}
+
+export const useGetWorkflowState = (workflow: WorkflowResponse) => {
   const [nodes, setNodes, onNodesChange] = useNodesState<Node<BaseNodeData | TriggerNodeData>>([])
   const [edges, setEdges, onEdgesChange] = useEdgesState<Edge<EdgeData>>([])
 

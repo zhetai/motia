@@ -29,7 +29,7 @@ const handleClasses = [
   'after:!rounded-full',
 ].join(' ')
 
-export const Handle: React.FC<Props> = (props) => {
+export const BaseHandle: React.FC<Props> = (props) => {
   const { isHidden, position, ...rest } = props
 
   return (
