@@ -4,7 +4,9 @@ import { FlowConfig, FlowExecutor } from 'wistro'
 type Input = typeof inputSchema
 
 const inputSchema = z.object({
-  message: z.string(),
+  message: z.string({
+    description: 'The message to send to OpenAI',
+  }),
 })
 
 export const config: FlowConfig<Input> = {

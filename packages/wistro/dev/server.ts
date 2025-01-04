@@ -2,10 +2,10 @@ import { randomUUID } from 'crypto'
 import Fastify, { FastifyRequest, FastifyReply } from 'fastify'
 import { Config } from './config.types'
 import { Event, EventManager } from './event-manager'
-import { Workflow } from './config.types'
+import { WorkflowStep } from './config.types'
 import { workflowsEndpoint } from './workflows-endpoint'
 
-export const createServer = (config: Config, workflowSteps: Workflow[], eventManager: EventManager) => {
+export const createServer = (config: Config, workflowSteps: WorkflowStep[], eventManager: EventManager) => {
   const fastify = Fastify()
 
   console.log('[API] Registering routes', config.api.paths)

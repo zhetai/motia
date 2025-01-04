@@ -8,10 +8,12 @@ import { useGetWorkflowState, WorkflowResponse } from './hooks/use-get-workflow-
 import { useCallback, useEffect, useState } from 'react'
 import { NodeOrganizer } from './node-organizer'
 import { WorkflowLoader } from './workflow-loader'
+import { NoopNode } from './nodes/noop-node'
 
 const nodeTypes = {
   base: BaseNode,
   trigger: TriggerNode,
+  noop: NoopNode,
 }
 
 const edgeTypes = {

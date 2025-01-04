@@ -30,6 +30,8 @@ api:
       tags:
         - handshake
     /api/parallel-merge:
+      name: Parallel Merge
+      description: Triggered when a message is received from parallel merge
       method: POST
       emits: pms.initialize
       tags:
@@ -56,7 +58,7 @@ state:
   password: pingpong
 
 workflows:
-  # NOTE: describe your workflow here, these descriptions are used for the workflow visualizer, 
+  # NOTE: describe your workflow here, these descriptions are used for the workflow visualizer,
   # don't forget to tag your steps with the appropriate workflow name
   booking:
     name: Booking Example

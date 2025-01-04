@@ -5,7 +5,7 @@ import { createServer } from './server'
 import { createWorkflowHandlers } from './workflow-handlers'
 import { getPythonConfig } from './python/get-python-config'
 import { createEventManager } from './event-manager'
-import { Config, Workflow } from './config.types'
+import { Config, WorkflowStep } from './config.types'
 import { FlowConfig } from '../wistro.types'
 
 require('ts-node').register({
@@ -13,13 +13,13 @@ require('ts-node').register({
   compilerOptions: { module: 'commonjs' },
 })
 
-async function parseWorkflowFolder(folderPath: string, nextWorkflows: Workflow[]): Promise<Workflow[]> {
+async function parseWorkflowFolder(folderPath: string, nextWorkflows: WorkflowStep[]): Promise<WorkflowStep[]> {
   const workflowFolderItems = fs.readdirSync(folderPath, { withFileTypes: true })
   const workflowFiles = workflowFolderItems
     .filter(({ name }) => name.endsWith('.ts') || name.endsWith('.js') || name.endsWith('.py'))
     .map(({ name }) => name)
   const workflowRootFolders = workflowFolderItems.filter((item) => item.isDirectory())
-  let workflows: Workflow[] = [...nextWorkflows]
+  let workflows: WorkflowStep[] = [...nextWorkflows]
 
   console.log('[Workflows] Building workflows', workflowFiles)
 
@@ -57,10 +57,9 @@ async function parseWorkflowFolder(folderPath: string, nextWorkflows: Workflow[]
   return workflows
 }
 
-async function buildWorkflows(): Promise<Workflow[]> {
+async function buildWorkflows(): Promise<WorkflowStep[]> {
   // Read all workflow folders under /flows directory
   const flowsDir = path.join(process.cwd(), 'steps')
-  const workflows: Workflow[] = []
 
   // Check if steps directory exists
   if (!fs.existsSync(flowsDir)) {
@@ -69,7 +68,7 @@ async function buildWorkflows(): Promise<Workflow[]> {
   }
 
   // Get all workflow folders
-  return await parseWorkflowFolder(flowsDir, [])
+  return parseWorkflowFolder(flowsDir, [])
 }
 
 export const dev = async (): Promise<void> => {

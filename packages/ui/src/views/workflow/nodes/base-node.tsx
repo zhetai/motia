@@ -12,7 +12,7 @@ export const BaseNode = ({ data }: { data: BaseNodeData }) => {
       <div className="flex flex-col ">
         <div className="flex flex-col gap-1">
           <div className="text-sm font-semibold">{data.name}</div>
-          <div className="text-xs">{data.description}</div>
+          {data.description && <div className="text-xs">{data.description}</div>}
         </div>
         <div className="flex flex-col mt-2">
           {data.subscribes.length > 0 && (

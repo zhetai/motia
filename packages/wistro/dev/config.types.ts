@@ -1,3 +1,4 @@
+import { ZodObject } from 'zod'
 import { FlowConfig } from '../wistro.types'
 
 export type ApiPath = {
@@ -40,8 +41,8 @@ export type Config = {
   state: StateConfig
 }
 
-export type Workflow = {
-  config: FlowConfig<any>
+export type WorkflowStep = {
+  config: FlowConfig<ZodObject<any>>
   file: string
   filePath: string
 }

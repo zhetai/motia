@@ -1,7 +1,7 @@
 import { Event, EventManager } from './event-manager'
 import { spawn } from 'child_process'
 import path from 'path'
-import { Workflow } from './config.types'
+import { WorkflowStep } from './config.types'
 import { AdapterConfig } from '../state/createStateAdapter'
 
 const nodeRunner = path.join(__dirname, 'node', 'node-runner.js')
@@ -35,7 +35,11 @@ const callWorkflowFile = <TData>(flowPath: string, data: TData, eventManager: Ev
   })
 }
 
-export const createWorkflowHandlers = (workflows: Workflow[], eventManager: EventManager, stateConfig: AdapterConfig) => {
+export const createWorkflowHandlers = (
+  workflows: WorkflowStep[],
+  eventManager: EventManager,
+  stateConfig: AdapterConfig,
+) => {
   console.log(`[Workflows] Creating workflow handlers for ${workflows.length} workflows`)
 
   workflows.forEach((workflow) => {
@@ -51,7 +55,7 @@ export const createWorkflowHandlers = (workflows: Workflow[], eventManager: Even
         try {
           await callWorkflowFile(filePath, [event.data, stateConfig], eventManager)
         } catch (error) {
-          console.error(`[Workflow] ${file} error calling workflow`, {error, filePath})
+          console.error(`[Workflow] ${file} error calling workflow`, { error, filePath })
         }
       })
     })
