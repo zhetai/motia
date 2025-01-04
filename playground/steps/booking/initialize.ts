@@ -27,8 +27,6 @@ export const executor: FlowExecutor<Input> = async (input, emit, ctx) => {
     return;
   }
 
-  await ctx.state.set('123', 'test', 'ping');
-
   await emit({
     type: "dbz.search-customer",
     data: {

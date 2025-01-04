@@ -5,9 +5,9 @@ type Input = typeof inputSchema
 
 const inputSchema = z.object({
   customerPhoneNumber: z.string().min(1),
-  section: z.number(),
-  row: z.number(),
-  seat: z.number(),
+  section: z.coerce.number(),
+  row: z.coerce.number(),
+  seat: z.coerce.number(),
 })
 
 export const config: FlowConfig<Input> = {
@@ -30,12 +30,13 @@ export const executor: FlowExecutor<Input> = async (input, emit, ctx) => {
   }
 
   try {
-    const customerResponse = await fetch(
-      `https://supreme-voltaic-flyaway.glitch.me/customer/${input.customerPhoneNumber}`
-    );
+    const reservation = await ctx.state.get<{
+      customer: {id: string, phoneNumber: string},
+      venue: {id: string, phoneNumber: string, name: string},
+    }>(`booking_${input.customerPhoneNumber}`, 'reservation');
 
-    if (!customerResponse.ok) {
-      throw new Error("invalid customer phone number");
+    if (reservation?.customer?.phoneNumber !== input.customerPhoneNumber) {
+      throw new Error("there is no reservation for the phone number provided, please check the phone number and try again");
     }
 
     const seatsResponse = await fetch(
