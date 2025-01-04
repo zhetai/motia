@@ -23,6 +23,7 @@ export type CronDefinition = {
   cron: string
   emits: string
   tags?: string[]
+  workflow: string
 }
 
 export type StateConfig = {

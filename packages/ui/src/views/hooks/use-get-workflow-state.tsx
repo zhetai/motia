@@ -3,7 +3,7 @@ import { Edge, Node, useEdgesState, useNodesState } from '@xyflow/react'
 import { useEffect } from 'react'
 import { BaseNodeData, EdgeData, TriggerNodeData } from '../nodes/nodes.types'
 
-export const useGetWorkflowState = (id: string) => {
+export const useGetWorkflowState = (id?: string) => {
   const { workflow } = useGetWorkflow(id)
 
   const [nodes, setNodes, onNodesChange] = useNodesState<Node<BaseNodeData | TriggerNodeData>>([])

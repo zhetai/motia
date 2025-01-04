@@ -10,6 +10,7 @@ export const config: FlowConfig<Input> = {
   subscribes: ["ws-server-example.processed"],
   emits: [],
   input: inputSchema,
+  workflow: "wistro-server"
 }
 
 export const executor: FlowExecutor<Input> = async (input: unknown) => {

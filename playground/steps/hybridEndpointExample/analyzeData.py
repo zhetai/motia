@@ -2,7 +2,8 @@ config = {
     "name": "Analyze Data",
     "subscribes": ["hybrid.enriched"],
     "emits": ["hybrid.analyzed"],
-    "input": None  # No schema validation in Python version
+    "input": None,  # No schema validation in Python version
+    "workflow": "hybrid-example"
 }
 
 # Add a static counter at module level

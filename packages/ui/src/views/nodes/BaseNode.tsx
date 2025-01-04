@@ -18,13 +18,13 @@ export const BaseNode = ({ data }: { data: BaseNodeData }) => {
           {data.subscribes.length > 0 && (
             <div className="flex gap-1 items-center">
               <Eye className="w-3 h-3 text-muted-foreground" />
-              <div className="text-xs font-mono">{data.subscribes.join(', ')}</div>
+              <div className="text-xs font-mono" data-testid={data.subscribes.map((topic) => `subscribes__${topic}`).join(' ')}>{data.subscribes.join(', ')}</div>
             </div>
           )}
           {data.emits.length > 0 && (
             <div className="flex gap-1 items-center">
               <Send className="w-3 h-3 text-muted-foreground" />
-              <div className="text-xs font-mono">{data.emits.map(toType).join(', ')}</div>
+              <div className="text-xs font-mono" data-testid={data.emits.map((topic) => `emits__${topic}`).join(' ')}>{data.emits.map(toType).join(', ')}</div>
             </div>
           )}
         </div>

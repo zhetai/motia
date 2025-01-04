@@ -12,6 +12,7 @@ import {
   SidebarMenuItem,
 } from './ui/sidebar'
 import { Workflow } from 'lucide-react'
+import { Link } from '@tanstack/react-router'
 
 export const AppSidebar = () => {
   const { workflows } = useListWorkflows()
@@ -27,10 +28,10 @@ export const AppSidebar = () => {
               {workflows.map((workflow) => (
                 <SidebarMenuItem key={workflow.id}>
                   <SidebarMenuButton asChild className="cursor-pointer">
-                    <div className="flex items-center gap-2">
+                    <Link to="." search={(prev) => ({ ...prev, workflowId: workflow.id })} className="flex items-center gap-2" data-testid={workflow.id}>
                       <Workflow />
                       <span>{workflow.name}</span>
-                    </div>
+                    </Link>
                   </SidebarMenuButton>
                 </SidebarMenuItem>
               ))}

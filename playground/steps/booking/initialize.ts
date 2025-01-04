@@ -13,6 +13,7 @@ export const config: FlowConfig<Input> = {
   subscribes: ["dbz.initialize"],
   emits: ["dbz.search-customer", "dbz.error"],
   input: inputSchema,
+  workflow: 'booking'
 }
 
 export const executor: FlowExecutor<Input> = async (input, emit, ctx) => {

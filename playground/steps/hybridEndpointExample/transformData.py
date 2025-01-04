@@ -2,7 +2,8 @@ config = {
     "name": "Transform Data", 
     "subscribes": ["hybrid.validated"],
     "emits": ["hybrid.transformed"],
-    "input": None  # No schema validation in Python version
+    "input": None,  # No schema validation in Python version
+    "workflow": "hybrid-example"
 }
 
 # Add a static counter at module level

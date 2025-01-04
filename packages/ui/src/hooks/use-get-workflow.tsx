@@ -20,16 +20,18 @@ type WorkflowResponse = {
   steps: WorkflowStep[]
 }
 
-export const useGetWorkflow = (id: string) => {
+export const useGetWorkflow = (id?: string) => {
   const [isLoading, setIsLoading] = useState(true)
   const [workflow, setWorkflow] = useState<WorkflowResponse>()
 
   useEffect(() => {
+    if (!id) return
+    
     fetch(`http://localhost:3000/workflows/${id}`) // TODO add env
       .then((res) => res.json())
       .then(setWorkflow)
       .finally(() => setIsLoading(false))
-  }, [])
+  }, [id])
 
   return { workflow, isLoading }
 }

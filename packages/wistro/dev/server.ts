@@ -5,7 +5,7 @@ import { Event, EventManager } from './event-manager'
 import { Workflow } from './config.types'
 import { workflowsEndpoint } from './workflows-endpoint'
 
-export const createServer = (config: Config, workflows: Workflow[], eventManager: EventManager) => {
+export const createServer = (config: Config, workflowSteps: Workflow[], eventManager: EventManager) => {
   const fastify = Fastify()
 
   console.log('[API] Registering routes', config.api.paths)
@@ -56,7 +56,7 @@ export const createServer = (config: Config, workflows: Workflow[], eventManager
     done()
   })
 
-  workflowsEndpoint(config, workflows, fastify)
+  workflowsEndpoint(config, workflowSteps, fastify)
 
   fastify.listen({ port: config.api.port, host: '::' })
 

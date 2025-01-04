@@ -75,11 +75,11 @@ async function buildWorkflows(): Promise<Workflow[]> {
 export const dev = async (): Promise<void> => {
   const configYaml = fs.readFileSync(path.join(process.cwd(), 'config.yml'), 'utf8')
   const config: Config = parse(configYaml)
-  const workflows = await buildWorkflows()
+  const workflowSteps = await buildWorkflows()
   const eventManager = createEventManager()
-  const server = createServer(config, workflows, eventManager)
+  const server = createServer(config, workflowSteps, eventManager)
 
-  createWorkflowHandlers(workflows, eventManager, config.state)
+  createWorkflowHandlers(workflowSteps, eventManager, config.state)
 
   // 6) Gracefully shut down on SIGTERM
   process.on('SIGTERM', async () => {

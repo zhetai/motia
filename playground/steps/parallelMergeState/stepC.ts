@@ -10,6 +10,7 @@ export const config: FlowConfig<Input> = {
   subscribes: ["pms.start"],
   emits: ["pms.stepC.done"],
   input: inputSchema,
+  workflow: "parallel-merge"
 }
 
 export const executor: FlowExecutor<Input> = async (_, emit, ctx) => {

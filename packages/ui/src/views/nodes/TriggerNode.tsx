@@ -28,7 +28,7 @@ export const TriggerNode = ({ data }: { data: TriggerNodeData }) => {
             {data.emits.length > 0 && (
               <div className="flex gap-1 items-center">
                 <Speech className="w-3 h-3 text-sky-950" />
-                <div className="text-xs  font-mono">{data.emits.join(', ')}</div>
+                <div className="text-xs  font-mono" data-testid={data.emits.map((topic) => `emits__${topic}`).join(' ')}>{data.emits.join(', ')}</div>
               </div>
             )}
           </div>

@@ -13,6 +13,7 @@ export const config: FlowConfig<Input> = {
   subscribes: ["hybrid.received"],
   emits: ["hybrid.validated"],
   input: inputSchema,
+  workflow: "hybrid-example"
 }
 
 export const executor: FlowExecutor<Input> = async (input, emit) => {
