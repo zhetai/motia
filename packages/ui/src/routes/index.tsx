@@ -6,7 +6,7 @@ export const Route = createFileRoute('/')({
 
 function Index() {
   return (
-    <div className="flex items-center justify-center h-full">
+    <div className="flex items-center justify-center w-full h-screen">
       <p className="text-gray-500">Select a workflow</p>
     </div>
   )
