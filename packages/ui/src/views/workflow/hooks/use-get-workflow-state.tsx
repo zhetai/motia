@@ -1,6 +1,6 @@
 import { Edge, Node, useEdgesState, useNodesState } from '@xyflow/react'
 import { useEffect } from 'react'
-import { BaseNodeData, EdgeData, TriggerNodeData } from '../nodes/nodes.types'
+import type { EdgeData, NodeData } from '../nodes/nodes.types'
 
 type Emit = string | { type: string; label?: string; conditional?: boolean }
 
@@ -23,18 +23,18 @@ export type WorkflowResponse = {
 }
 
 export const useGetWorkflowState = (workflow: WorkflowResponse) => {
-  const [nodes, setNodes, onNodesChange] = useNodesState<Node<BaseNodeData | TriggerNodeData>>([])
+  const [nodes, setNodes, onNodesChange] = useNodesState<Node<NodeData>>([])
   const [edges, setEdges, onEdgesChange] = useEdgesState<Edge<EdgeData>>([])
 
   useEffect(() => {
     if (!workflow) return
 
     // we need to check all subscribes and emits to connect the nodes using edges
-    const nodes: Node<BaseNodeData | TriggerNodeData>[] = workflow.steps.map((step) => ({
+    const nodes: Node<NodeData>[] = workflow.steps.map((step) => ({
       id: step.id,
       type: step.type,
       position: { x: 0, y: 0 },
-      data: step as BaseNodeData | TriggerNodeData,
+      data: step,
     }))
 
     const edges: Edge<EdgeData>[] = []

@@ -52,7 +52,6 @@ export const NodeOrganizer: React.FC<Props> = ({ onInitialized }) => {
   const nodesInitialized = useNodesInitialized()
 
   useEffect(() => {
-    console.log('nodesInitialized', nodesInitialized)
     if (nodesInitialized) {
       const nodes = getNodes() as Node<BaseNodeData | TriggerNodeData>[]
       const edges = getEdges() as Edge<EdgeData>[]
