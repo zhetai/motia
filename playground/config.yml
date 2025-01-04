@@ -1,62 +1,3 @@
-api:
-  port: 3000
-  paths:
-    /api/openai:
-      method: POST
-      emits: call-openai
-      name: OpenAI
-      description: Triggered when a message is received from chatbot
-      tags:
-        - openai
-    /api/hybrid-endpoint-example:
-      method: POST
-      emits: hybrid.received
-      name: Hybrid Endpoint Example
-      description: Triggered when a message is received from hybrid endpoint
-      tags:
-        - hybrid-example
-    /api/wistro-server-example:
-      method: POST
-      emits: ws-server-example.trigger
-      name: Wistro Server Example
-      description: Triggered when a message is received from wistro server
-      tags:
-        - wistro-server
-    /api/endpoint-server-handshake:
-      method: POST
-      emits: handshake.initiate
-      name: Endpoint Server Handshake
-      description: Triggered when a message is received from endpoint server
-      tags:
-        - handshake
-    /api/parallel-merge:
-      name: Parallel Merge
-      description: Triggered when a message is received from parallel merge
-      method: POST
-      emits: pms.initialize
-      tags:
-        - parallel-merge
-    /api/dbz/initialize:
-      name: DBZ Initialize
-      description: Triggered when a message is received from dbz
-      method: POST
-      emits: dbz.initialize
-      tags:
-        - booking
-    /api/dbz/search-upgrades:
-      name: DBZ Search Upgrades
-      description: Triggered when a message is received from dbz
-      method: POST
-      emits: dbz.evaluate-upgrades
-      tags:
-        - booking
-
-state:
-  adapter: redis
-  host: localhost
-  port: 6379
-  password: pingpong
-
 workflows:
   # NOTE: describe your workflow here, these descriptions are used for the workflow visualizer,
   # don't forget to tag your steps with the appropriate workflow name
@@ -79,6 +20,53 @@ workflows:
     name: OpenAI Example
     description: A workflow that demonstrates the use of OpenAI in a workflow
 
+
+api:
+  port: 3000
+  paths:
+    /api/openai:
+      method: POST
+      emits: call-openai
+      name: OpenAI
+      description: Triggered when a message is received from chatbot
+      workflow: openai
+    /api/hybrid-endpoint-example:
+      method: POST
+      emits: hybrid.received
+      name: Hybrid Endpoint Example
+      description: Triggered when a message is received from hybrid endpoint
+      workflow: hybrid-example
+    /api/wistro-server-example:
+      method: POST
+      emits: ws-server-example.trigger
+      name: Wistro Server Example
+      description: Triggered when a message is received from wistro server
+      workflow: wistro-server
+    /api/endpoint-server-handshake:
+      method: POST
+      emits: handshake.initiate
+      name: Endpoint Server Handshake
+      description: Triggered when a message is received from endpoint server
+      workflow: handshake
+    /api/parallel-merge:
+      name: Parallel Merge
+      description: Triggered when a message is received from parallel merge
+      method: POST
+      emits: pms.initialize
+      workflow: parallel-merge
+    /api/dbz/initialize:
+      name: DBZ Initialize
+      description: Triggered when a message is received from dbz
+      method: POST
+      emits: dbz.initialize
+      workflow: booking
+    /api/dbz/search-upgrades:
+      name: DBZ Search Upgrades
+      description: Triggered when a message is received from dbz
+      method: POST
+      emits: dbz.evaluate-upgrades
+      workflow: booking
+
 cron:
   parallel-merge-cron:
     name: Parallel Merge
@@ -86,3 +74,10 @@ cron:
     cron: '0/5 * * * *'
     emits: pms.initialize
     workflow: parallel-merge
+
+state:
+  adapter: redis
+  host: localhost
+  port: 6379
+  password: pingpong
+

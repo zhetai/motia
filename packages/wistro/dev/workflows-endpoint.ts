@@ -1,5 +1,5 @@
 import { FastifyInstance } from 'fastify'
-import { Config, WorkflowStep } from './config.types'
+import { ApiRoute, Config, WorkflowStep } from './config.types'
 import { randomUUID } from 'crypto'
 import { Emit } from '..'
 import zodToJsonSchema from 'zod-to-json-schema'
@@ -26,41 +26,67 @@ type WorkflowResponse = WorkflowListResponse & {
   steps: WorkflowStepResponse[]
 }
 
-const exists = <T>(item: T | undefined | null): item is T => item !== undefined && item !== null
-
-export const workflowsEndpoint = (config: Config, workflowSteps: WorkflowStep[], fastify: FastifyInstance) => {
+export const generateWorkflowsList = (config: Config, workflowSteps: WorkflowStep[]): WorkflowResponse[] => {
   const list: WorkflowResponse[] = []
-  const findStepBySubscribes = (subscribes: string) => {
-    return workflowSteps.find((step) => step.config.subscribes.includes(subscribes))
-  }
 
-  function getWorkflowSteps(eventTypes: string[], importedSteps: WorkflowStep[]): WorkflowStep[] {
-    const filteredWorkflows = workflowSteps.filter((step) => !importedSteps.includes(step))
-    const steps = eventTypes
-      .map((eventType) => filteredWorkflows.filter((step) => step.config.subscribes.includes(eventType)))
-      .filter(exists)
-      .flat()
-
-    const result = [...steps]
-
-    for (const step of steps) {
-      const emitsString = step.config.emits.map((emit: Emit) => (typeof emit === 'string' ? emit : emit.type))
-      result.push(...getWorkflowSteps(emitsString, [...importedSteps, ...result]))
+  const configuredWorkflowIdentifiers = Object.keys(config.workflows);
+  const workflowStepsMap = workflowSteps.reduce((mappedSteps, workflowStep) => {
+    const workflowName = workflowStep.config.workflow;
+    if (!workflowName) {
+      throw Error(`Invalid step config in ${workflowStep.filePath}, a workflow name is required`);
     }
 
-    return result
+    if (!configuredWorkflowIdentifiers.includes(workflowName)){
+      throw Error(`Unknown workflow name ${workflowName} in ${workflowStep.filePath}, all workflows should be defined in the config.yml`);
+    }
+
+    const nextMappedSteps = { ...mappedSteps };
+    if (workflowName in nextMappedSteps) {
+      nextMappedSteps[workflowName].push(workflowStep);
+    } else {
+      nextMappedSteps[workflowName] = [workflowStep];
+    }
+
+    return nextMappedSteps;
+  }, {} as Record<string, WorkflowStep[]>);
+
+  const findStepBySubscribes = (workflowId: string, emits: string) => {
+    return workflowStepsMap[workflowId].find((step) => step.config.subscribes.includes(emits))
   }
+
+  const triggerMappingByWorkflowId = Object.keys(config.api.paths).reduce((mapping, path) => {
+    const route = config.api.paths[path];
+    const workflow = route.workflow;
+    const nextRoute = { ...route, path };
+
+    const nextMapping = { ...mapping };
+
+    if (workflow in nextMapping) {
+      nextMapping[workflow].push(nextRoute);
+    } else {
+      nextMapping[workflow] = [nextRoute];
+    }
+
+    return nextMapping;
+
+  }, {} as Record<string, ApiRoute[]>);
 
   Object.keys(config.workflows).forEach((workflowId) => {
     const steps: WorkflowStepResponse[] = []
     const workflowDetails = config.workflows[workflowId]
-    const allSteps: WorkflowStep[] = []
 
-    Object.keys(config.api.paths)
-      .filter((path) => config.api.paths[path].tags?.includes(workflowId))
-      .forEach((path) => {
-        const route = config.api.paths[path]
-        const step = findStepBySubscribes(route.emits)
+    if (!(workflowId in workflowStepsMap)) {
+      throw Error(`No workflow steps found for workflow with id ${workflowId}`);
+    }
+    
+    if (!(workflowId in triggerMappingByWorkflowId)) {
+      throw Error(`No triggers (api or cron) found for workflow with id ${workflowId}`);
+    }
+    
+    triggerMappingByWorkflowId[workflowId]
+      .forEach((route) => {
+        const step = findStepBySubscribes(workflowId, route.emits);
+
         steps.push({
           id: randomUUID(),
           type: 'trigger',
@@ -68,22 +94,21 @@ export const workflowsEndpoint = (config: Config, workflowSteps: WorkflowStep[],
           description: route.description,
           emits: [route.emits],
           action: 'webhook',
-          webhookUrl: `${route.method} ${path}`,
+          webhookUrl: `${route.method} ${route.path}`,
           inputSchema: step?.config.input ? zodToJsonSchema(step.config.input) : undefined,
         })
-
-        getWorkflowSteps([route.emits], allSteps).forEach((workflow) => {
-          allSteps.push(workflow)
-          steps.push({
-            id: randomUUID(),
-            type: 'base',
-            name: workflow.config.name,
-            description: workflow.config.description,
-            emits: workflow.config.emits,
-            subscribes: workflow.config.subscribes,
-          })
-        })
       })
+
+    workflowStepsMap[workflowId].forEach((workflow) => {
+      steps.push({
+        id: randomUUID(),
+        type: 'base',
+        name: workflow.config.name,
+        description: workflow.config.description,
+        emits: workflow.config.emits,
+        subscribes: workflow.config.subscribes,
+      })
+    })
 
     Object.keys(config.cron).forEach((cronId) => {
       const cron = config.cron[cronId]
@@ -99,21 +124,16 @@ export const workflowsEndpoint = (config: Config, workflowSteps: WorkflowStep[],
         action: 'cron',
         cron: cron.cron,
       })
-
-      getWorkflowSteps([cron.emits], allSteps).forEach((workflow) => {
-        steps.push({
-          id: randomUUID(),
-          type: 'base',
-          name: workflow.config.name,
-          description: workflow.config.description,
-          emits: workflow.config.emits,
-          subscribes: workflow.config.subscribes,
-        })
-      })
     })
 
     list.push({ id: workflowId, name: workflowDetails.name, steps })
   })
+
+  return list;
+}
+
+export const workflowsEndpoint = (config: Config, workflowSteps: WorkflowStep[], fastify: FastifyInstance) => {
+  const list = generateWorkflowsList(config, workflowSteps);
 
   fastify.get('/workflows', async (_, res) => {
     res.status(200).send(list.map(({ id, name }) => ({ id, name })))

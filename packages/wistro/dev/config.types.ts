@@ -5,9 +5,12 @@ export type ApiPath = {
   method: string
   emits: string
   name: string
+  workflow: string
   description?: string
   tags?: string[]
 }
+
+export type ApiRoute = ApiPath & {path: string};
 
 export type ApiConfig = {
   port: number
@@ -31,7 +34,7 @@ export type StateConfig = {
   adapter: string
   host: string
   port: number
-  password: string
+  password?: string
 }
 
 export type Config = {

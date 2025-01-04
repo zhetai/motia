@@ -84,3 +84,5 @@ agents/**/components/
 
 
 .aider*
+
+**/tsconfig.app.tsbuildinfo
