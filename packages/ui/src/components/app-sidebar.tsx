@@ -12,10 +12,15 @@ import {
   SidebarMenuItem,
 } from './ui/sidebar'
 import { Workflow } from 'lucide-react'
-import { Link } from '@tanstack/react-router'
+import { Link, useMatchRoute } from '@tanstack/react-router'
 
 export const AppSidebar = () => {
   const { workflows } = useListWorkflows()
+  const matchRoute = useMatchRoute()
+
+  const isActive = (workflowId: string) => {
+    return !!matchRoute({ to: '/workflow/$id', params: { id: workflowId } })
+  }
 
   return (
     <Sidebar>
@@ -27,8 +32,13 @@ export const AppSidebar = () => {
             <SidebarMenu>
               {workflows.map((workflow) => (
                 <SidebarMenuItem key={workflow.id}>
-                  <SidebarMenuButton asChild className="cursor-pointer">
-                    <Link to="." search={(prev) => ({ ...prev, workflowId: workflow.id })} className="flex items-center gap-2" data-testid={workflow.id}>
+                  <SidebarMenuButton asChild className="cursor-pointer" isActive={isActive(workflow.id)}>
+                    <Link
+                      to="/workflow/$id"
+                      params={{ id: workflow.id }}
+                      className="flex items-center gap-2"
+                      data-testid={workflow.id}
+                    >
                       <Workflow />
                       <span>{workflow.name}</span>
                     </Link>

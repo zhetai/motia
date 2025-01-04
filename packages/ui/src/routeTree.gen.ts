@@ -12,12 +12,19 @@
 
 import { Route as rootRoute } from './routes/__root'
 import { Route as IndexImport } from './routes/index'
+import { Route as WorkflowIdImport } from './routes/workflow/$id'
 
 // Create/Update Routes
 
 const IndexRoute = IndexImport.update({
   id: '/',
   path: '/',
+  getParentRoute: () => rootRoute,
+} as any)
+
+const WorkflowIdRoute = WorkflowIdImport.update({
+  id: '/workflow/$id',
+  path: '/workflow/$id',
   getParentRoute: () => rootRoute,
 } as any)
 
@@ -32,6 +39,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof IndexImport
       parentRoute: typeof rootRoute
     }
+    '/workflow/$id': {
+      id: '/workflow/$id'
+      path: '/workflow/$id'
+      fullPath: '/workflow/$id'
+      preLoaderRoute: typeof WorkflowIdImport
+      parentRoute: typeof rootRoute
+    }
   }
 }
 
@@ -39,32 +53,37 @@ declare module '@tanstack/react-router' {
 
 export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
+  '/workflow/$id': typeof WorkflowIdRoute
 }
 
 export interface FileRoutesByTo {
   '/': typeof IndexRoute
+  '/workflow/$id': typeof WorkflowIdRoute
 }
 
 export interface FileRoutesById {
   __root__: typeof rootRoute
   '/': typeof IndexRoute
+  '/workflow/$id': typeof WorkflowIdRoute
 }
 
 export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
-  fullPaths: '/'
+  fullPaths: '/' | '/workflow/$id'
   fileRoutesByTo: FileRoutesByTo
-  to: '/'
-  id: '__root__' | '/'
+  to: '/' | '/workflow/$id'
+  id: '__root__' | '/' | '/workflow/$id'
   fileRoutesById: FileRoutesById
 }
 
 export interface RootRouteChildren {
   IndexRoute: typeof IndexRoute
+  WorkflowIdRoute: typeof WorkflowIdRoute
 }
 
 const rootRouteChildren: RootRouteChildren = {
   IndexRoute: IndexRoute,
+  WorkflowIdRoute: WorkflowIdRoute,
 }
 
 export const routeTree = rootRoute
@@ -77,11 +96,15 @@ export const routeTree = rootRoute
     "__root__": {
       "filePath": "__root.tsx",
       "children": [
-        "/"
+        "/",
+        "/workflow/$id"
       ]
     },
     "/": {
       "filePath": "index.tsx"
+    },
+    "/workflow/$id": {
+      "filePath": "workflow/$id.tsx"
     }
   }
 }

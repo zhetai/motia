@@ -1,4 +1,4 @@
-import { RouteWrapper } from '@/RouteWrapper'
+import { RouteWrapper } from '@/route-wrapper'
 import { createRootRoute, Outlet } from '@tanstack/react-router'
 import React, { Suspense } from 'react'
 
@@ -14,13 +14,13 @@ const TanStackRouterDevtools =
         })),
       )
 
-export const Route = createRootRoute({
-  component: () => (
-    <RouteWrapper>
-      <Outlet />
-      <Suspense>
-        <TanStackRouterDevtools />
-      </Suspense>
-    </RouteWrapper>
-  ),
-})
+const RouteComponent = () => (
+  <RouteWrapper>
+    <Outlet />
+    <Suspense>
+      <TanStackRouterDevtools />
+    </Suspense>
+  </RouteWrapper>
+)
+
+export const Route = createRootRoute({ component: RouteComponent })

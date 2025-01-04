@@ -43,7 +43,11 @@ const organizeNodes = (
   })
 }
 
-export const NodeOrganizer = () => {
+type Props = {
+  onInitialized: () => void
+}
+
+export const NodeOrganizer: React.FC<Props> = ({ onInitialized }) => {
   const { setNodes, getNodes, getEdges, fitView } = useReactFlow()
   const nodesInitialized = useNodesInitialized()
 
@@ -55,10 +59,13 @@ export const NodeOrganizer = () => {
       const organizedNodes = organizeNodes(nodes, edges)
 
       setNodes(organizedNodes)
+      onInitialized()
 
-      setTimeout(fitView, 1)
+      setTimeout(async () => {
+        await fitView()
+      }, 1)
     }
-  }, [nodesInitialized])
+  }, [nodesInitialized, onInitialized])
 
   return null
 }

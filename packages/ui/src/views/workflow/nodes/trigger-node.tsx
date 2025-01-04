@@ -1,7 +1,7 @@
 import { Position } from '@xyflow/react'
 import { Clock, Speech, Webhook } from 'lucide-react'
 import { TriggerNodeData } from './nodes.types'
-import { Handle } from '../Handle'
+import { BaseHandle } from '../base-handle'
 
 export const TriggerNode = ({ data }: { data: TriggerNodeData }) => {
   return (
@@ -28,12 +28,17 @@ export const TriggerNode = ({ data }: { data: TriggerNodeData }) => {
             {data.emits.length > 0 && (
               <div className="flex gap-1 items-center">
                 <Speech className="w-3 h-3 text-sky-950" />
-                <div className="text-xs  font-mono" data-testid={data.emits.map((topic) => `emits__${topic}`).join(' ')}>{data.emits.join(', ')}</div>
+                <div
+                  className="text-xs  font-mono"
+                  data-testid={data.emits.map((topic) => `emits__${topic}`).join(' ')}
+                >
+                  {data.emits.join(', ')}
+                </div>
               </div>
             )}
           </div>
         </div>
-        <Handle type="source" position={Position.Bottom} />
+        <BaseHandle type="source" position={Position.Bottom} />
       </div>
     </div>
   )
