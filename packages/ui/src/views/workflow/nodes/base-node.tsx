@@ -15,25 +15,22 @@ export const BaseNode = ({ data }: { data: BaseNodeData }) => {
           {data.description && <div className="text-xs">{data.description}</div>}
         </div>
         <div className="flex flex-col mt-2">
-          {data.subscribes.length > 0 && (
-            <div className="flex gap-1 items-center">
+          {data.subscribes.map((subscribe) => (
+            <div key={subscribe} className="flex gap-1 items-center">
               <Eye className="w-3 h-3 text-muted-foreground" />
-              <div
-                className="text-xs font-mono"
-                data-testid={data.subscribes.map((topic) => `subscribes__${topic}`).join(' ')}
-              >
-                {data.subscribes.join(', ')}
+              <div className="text-xs font-mono" data-testid={`subscribes__${subscribe}`}>
+                {subscribe}
               </div>
             </div>
-          )}
-          {data.emits.length > 0 && (
-            <div className="flex gap-1 items-center">
+          ))}
+          {data.emits.map((emit) => (
+            <div key={toType(emit)} className="flex gap-1 items-center">
               <Send className="w-3 h-3 text-muted-foreground" />
-              <div className="text-xs font-mono" data-testid={data.emits.map((topic) => `emits__${topic}`).join(' ')}>
-                {data.emits.map(toType).join(', ')}
+              <div className="text-xs font-mono" data-testid={`emits__${toType(emit)}`}>
+                {toType(emit)}
               </div>
             </div>
-          )}
+          ))}
         </div>
       </div>
       <BaseHandle type="target" position={Position.Top} />
