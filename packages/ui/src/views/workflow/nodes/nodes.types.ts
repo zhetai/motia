@@ -25,6 +25,6 @@ export type TriggerNodeData = {
 export type NodeData = BaseNodeData | TriggerNodeData | NoopNodeData
 
 export type EdgeData = {
-  label: string
+  label?: string
   variant: 'default' | 'conditional'
 }

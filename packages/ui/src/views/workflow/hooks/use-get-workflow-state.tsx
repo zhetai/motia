@@ -52,12 +52,17 @@ export const useGetWorkflowState = (workflow: WorkflowResponse) => {
           const emitType = typeof emit === 'string' ? emit : emit.type
 
           if (subscribes.includes(emitType)) {
+            const label = typeof emit !== 'string' ? emit.label : undefined
+            const variant = typeof emit !== 'string' && emit.conditional ? 'conditional' : 'default'
+            const data: EdgeData = { variant, label }
+
             edges.push({
               id: `${sourceNode.id}-${targetNode.id}`,
               type: 'base',
               source: sourceNode.id,
               target: targetNode.id,
-              label: typeof emit !== 'string' ? emit.label : undefined,
+              label,
+              data,
             })
           }
         })
