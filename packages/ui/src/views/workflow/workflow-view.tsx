@@ -9,6 +9,8 @@ import { useCallback, useEffect, useState } from 'react'
 import { NodeOrganizer } from './node-organizer'
 import { WorkflowLoader } from './workflow-loader'
 import { NoopNode } from './nodes/noop-node'
+import { useLogListener } from '@/hooks/use-log-listener'
+import { LogConsole } from '@/components/log-console'
 
 const nodeTypes = {
   base: BaseNode,
@@ -27,6 +29,7 @@ type Props = {
 export const WorkflowView: React.FC<Props> = ({ workflow }) => {
   const { nodes, edges, onNodesChange, onEdgesChange } = useGetWorkflowState(workflow)
   const [initialized, setInitialized] = useState(false)
+  useLogListener()
 
   // necessary to remove blinking effect when workflow is loaded before is organized
   useEffect(() => setInitialized(false), [workflow])
@@ -54,6 +57,7 @@ export const WorkflowView: React.FC<Props> = ({ workflow }) => {
           </defs>
         </svg>
       </ReactFlow>
+      <LogConsole />
     </div>
   )
 }

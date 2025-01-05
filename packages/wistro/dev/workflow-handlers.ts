@@ -3,6 +3,7 @@ import { spawn } from 'child_process'
 import path from 'path'
 import { WorkflowStep } from './config.types'
 import { AdapterConfig } from '../state/createStateAdapter'
+import { broadcastLog } from './wistro-ws'
 
 const nodeRunner = path.join(__dirname, 'node', 'node-runner.js')
 const pythonRunner = path.join(__dirname, 'python', 'python-runner.py')
@@ -51,6 +52,7 @@ export const createWorkflowHandlers = (
     subscribes.forEach((subscribe) => {
       eventManager.subscribe(subscribe, file, async (event) => {
         console.log(`[Workflow] ${file} received event`, event)
+        broadcastLog(`[Workflow] ${file} received event`, { event })
 
         try {
           await callWorkflowFile(filePath, [event.data, stateConfig], eventManager)

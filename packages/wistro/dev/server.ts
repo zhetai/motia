@@ -4,9 +4,13 @@ import { Config } from './config.types'
 import { Event, EventManager } from './event-manager'
 import { WorkflowStep } from './config.types'
 import { workflowsEndpoint } from './workflows-endpoint'
+import fastifyWebsocket from '@fastify/websocket'
+import { wistroWsRouteHandler } from './wistro-ws'
 
 export const createServer = (config: Config, workflowSteps: WorkflowStep[], eventManager: EventManager) => {
   const fastify = Fastify()
+
+  fastify.register(fastifyWebsocket)
 
   console.log('[API] Registering routes', config.api.paths)
 
@@ -57,6 +61,10 @@ export const createServer = (config: Config, workflowSteps: WorkflowStep[], even
   })
 
   workflowsEndpoint(config, workflowSteps, fastify)
+
+  fastify.register(async (fastifyWebsocketServer) => {
+    fastifyWebsocketServer.get('/ws', { websocket: true }, wistroWsRouteHandler)
+  })
 
   fastify.listen({ port: config.api.port, host: '::' })
 
