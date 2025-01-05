@@ -1,19 +1,19 @@
-import { RedisAdapterConfig, RedisStateAdapter } from './adapters/RedisStateAdapter.js';
+import { RedisAdapterConfig, RedisStateAdapter } from './adapters/RedisStateAdapter'
 
 type BaseConfig = {
   // NOTE: add more adapters here
-  adapter: 'redis';
+  adapter: 'redis'
 }
 
-export type AdapterConfig = BaseConfig & RedisAdapterConfig | Record<string, unknown>;
+export type AdapterConfig = (BaseConfig & RedisAdapterConfig) | Record<string, unknown>
 
 export function createStateAdapter(config: Record<string, unknown>) {
-  const { adapter = 'redis', ...adapterConfig } = config;
+  const { adapter = 'redis', ...adapterConfig } = config
 
   switch (adapter) {
     case 'redis':
-      return new RedisStateAdapter(adapterConfig as RedisAdapterConfig);
+      return new RedisStateAdapter(adapterConfig as RedisAdapterConfig)
     default:
-      throw new Error(`Unknown state adapter type: ${adapter}`);
+      throw new Error(`Unknown state adapter type: ${adapter}`)
   }
 }

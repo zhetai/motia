@@ -17,11 +17,7 @@ export const TriggerForm = ({ data }: { data: TriggerNodeData }) => {
     console.log('data.webhookUrl', data.webhookUrl)
     const [method, url] = data.webhookUrl.split(' ')
 
-    // TODO: get url from env
-    fetch(`http://localhost:3000${url}`, {
-      method,
-      body: JSON.stringify(formData),
-    })
+    fetch(url, { method, body: JSON.stringify(formData) })
     console.log('run', formData)
   }
 

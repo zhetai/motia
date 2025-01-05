@@ -7,12 +7,16 @@ import { AdapterConfig } from '../state/createStateAdapter'
 const nodeRunner = path.join(__dirname, 'node', 'node-runner.js')
 const pythonRunner = path.join(__dirname, 'python', 'python-runner.py')
 
-const callWorkflowFile = <TData>(flowPath: string, data: TData, eventManager: EventManager): Promise<void> => {
+const callWorkflowFile = <TData>(
+  flowPath: string,
+  event: Event<TData>,
+  stateConfig: AdapterConfig,
+  eventManager: EventManager,
+): Promise<void> => {
   const isPython = flowPath.endsWith('.py')
 
   return new Promise((resolve, reject) => {
-    const jsonData = JSON.stringify(data)
-
+    const jsonData = JSON.stringify({ ...event, stateConfig })
     const runner = isPython ? pythonRunner : nodeRunner
     const command = isPython ? 'python' : 'node'
 
@@ -53,7 +57,7 @@ export const createWorkflowHandlers = (
         console.log(`[Workflow] ${file} received event`, event)
 
         try {
-          await callWorkflowFile(filePath, [event.data, stateConfig], eventManager)
+          await callWorkflowFile(filePath, event, stateConfig, eventManager)
         } catch (error) {
           console.error(`[Workflow] ${file} error calling workflow`, { error, filePath })
         }
