@@ -10,7 +10,7 @@ export const useListWorkflows = () => {
   const [workflows, setWorkflows] = useState<Workflow[]>([])
 
   useEffect(() => {
-    fetch('/workflows') // TODO add env
+    fetch('/workflows')
       .then((res) => res.json())
       .then(setWorkflows)
       .finally(() => setIsLoading(false))
