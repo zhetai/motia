@@ -33,9 +33,6 @@
 
 ## Eval, test, data sampling
 
-- Users should be able to visualize metrics and be able to compare metrics between versions
-- Users should be able to add a specific run as a sample dataset to be able to test and eval workflows
-- Wistro CLI should be able to authenticate with Hub to grab datasamples and run workflows locally against them to compare results
 - Users should be able to unit test their steps
 - Users should be able to e2e/integration test thier components
 - Users shoudl be able to eval their components
@@ -50,23 +47,26 @@
   - Be able to see what happened in a specific workflow run (logs, which steps were triggered with inputs and emitted events)
   - Test/eval in UI?
 
-## Logging and observability
-
-- Should be able to see all workflows and their runs (local and on hub)
--
-
-## Deployments and versioning
-
-- Environment variables configuration
-- Different environments (dev, staging, prod)
-- Deployments should be one line command and auto integrate with github/gitlab/etc like vercel
-- All versions should be visible in Hub UI and users should be able to configure traffic for versions they want to test (e.g. 25% of traffic to v1, 25% to v2, 50% to v3)
-
 ## Authentication
 
 - devs should be able to configure OIDC or other auth providers on the webhook
 
 ## Hub
+
+- Logging and observability
+- Should be able to see all workflows and their runs
+
+### Deployments and versioning
+
+- Environment variables configuration
+- Different environments (dev, staging, prod)
+- Deployments should be one line command and auto integrate with github/gitlab/etc like vercel
+- All versions should be visible in Hub UI and users should be able to configure traffic for versions they want to test (e.g. 25% of traffic to v1, 25% to v2, 50% to v3)
+- Authentication: devs should be able to configure OIDC or other auth providers on the webhook
+- Eval, test, data sampling
+- Users should be able to visualize metrics and be able to compare metrics between versions
+- Users should be able to add a specific run as a sample dataset to be able to test and eval workflows
+- Wistro CLI should be able to authenticate with Hub to grab datasamples and run workflows locally against them to compare results
 
 ## Overall Conventions/Best Practices
 
