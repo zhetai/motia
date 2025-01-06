@@ -3,7 +3,7 @@ import { spawn } from 'child_process'
 import path from 'path'
 import { WorkflowStep } from './config.types'
 import { AdapterConfig } from '../state/createStateAdapter'
-import { broadcastLog } from './wistro-ws'
+import { Server } from 'socket.io'
 
 const nodeRunner = path.join(__dirname, 'node', 'node-runner.js')
 const pythonRunner = path.join(__dirname, 'python', 'python-runner.py')
@@ -27,7 +27,7 @@ const callWorkflowFile = <TData>(
 
     child.on('message', (message: Event<unknown>) => {
       console.log(`[${command} Runner] Received message`, message)
-      eventManager.emit(message)
+      eventManager.emit({ ...message, traceId: event.traceId })
     })
 
     child.on('close', (code) => {
@@ -44,6 +44,7 @@ export const createWorkflowHandlers = (
   workflows: WorkflowStep[],
   eventManager: EventManager,
   stateConfig: AdapterConfig,
+  socketServer: Server,
 ) => {
   console.log(`[Workflows] Creating workflow handlers for ${workflows.length} workflows`)
 
@@ -56,7 +57,7 @@ export const createWorkflowHandlers = (
     subscribes.forEach((subscribe) => {
       eventManager.subscribe(subscribe, file, async (event) => {
         console.log(`[Workflow] ${file} received event`, event)
-        broadcastLog(`[Workflow] ${file} received event`, { event })
+        socketServer.emit('event', { time: Date.now(), event, file, traceId: event.traceId })
 
         try {
           await callWorkflowFile(filePath, event, stateConfig, eventManager)

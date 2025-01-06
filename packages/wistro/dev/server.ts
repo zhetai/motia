@@ -1,4 +1,5 @@
 import { applyMiddleware } from '@wistro/ui'
+import { Server as SocketIOServer } from 'socket.io'
 import bodyParser from 'body-parser'
 import { randomUUID } from 'crypto'
 import express, { Request, Response } from 'express'
@@ -10,6 +11,7 @@ import { workflowsEndpoint } from './workflows-endpoint'
 export const createServer = async (config: Config, workflowSteps: WorkflowStep[], eventManager: EventManager) => {
   const app = express()
   const server = http.createServer(app)
+  const io = new SocketIOServer(server)
 
   console.log('[API] Registering routes', config.api.paths)
 
@@ -54,5 +56,8 @@ export const createServer = async (config: Config, workflowSteps: WorkflowStep[]
   await applyMiddleware(app)
 
   console.log('[API] Server listening on port', config.port)
-  return server.listen(config.port)
+
+  server.listen(config.port)
+
+  return { server, socketServer: io }
 }

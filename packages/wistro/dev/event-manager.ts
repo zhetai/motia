@@ -1,5 +1,3 @@
-import { broadcastLog } from './wistro-ws'
-
 export type Event<TData> = {
   type: string
   data: TData
@@ -17,14 +15,10 @@ export const createEventManager = (): EventManager => {
   const handlers: Record<string, Handler[]> = {}
 
   const emit = async <TData>(event: Event<TData>) => {
-    const handler = handlers[event.type] ?? []
+    const eventHandlers = handlers[event.type] ?? []
 
-    console.log(`[Workflow Emit] ${event.type} emitted`, { handlers: handler.length })
-    broadcastLog(`[Workflow Emit] ${event.type} emitted`)
-
-    handler.map((h) => h(event))
-
-    return;
+    console.log(`[Workflow Emit] ${event.type} emitted`, { handlers: eventHandlers.length })
+    eventHandlers.map((handler) => handler(event))
   }
 
   const subscribe = <TData>(event: string, handlerName: string, handler: Handler<TData>) => {
@@ -33,8 +27,6 @@ export const createEventManager = (): EventManager => {
     }
 
     console.log(`[Workflow Sub] ${handlerName} subscribing to ${event}`)
-
-    broadcastLog(`[Workflow Sub] ${handlerName} subscribing to ${event}`)
 
     handlers[event].push(handler as Handler)
   }

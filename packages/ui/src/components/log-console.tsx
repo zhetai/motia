@@ -7,9 +7,9 @@ import { ArrowDownToLine, ArrowUpToLine, Trash2, Terminal } from 'lucide-react'
 
 export const LogConsole = () => {
   const [isExpanded, setIsExpanded] = useState(false)
-  const messagesMapped = useTriggerLogs((state) => state.messages)
+  const messages = useTriggerLogs((state) => state.messages)
   const resetMessages = useTriggerLogs((state) => state.resetMessages)
-  const messages = useMemo(() => Object.values(messagesMapped), [messagesMapped])
+  const traceIds = useMemo(() => Object.keys(messages), [messages])
 
   const toggleExpand = () => setIsExpanded((prev) => !prev)
 
@@ -17,7 +17,7 @@ export const LogConsole = () => {
     <div className="absolute bottom-0 left-0 right-0 w-full bg-black border-t-2 border-solid border-green-500 h-fit z-40">
       <div className="flex justify-between w-full items-center p-2">
         <label className="text-green-500 w-full text-left justify-start h-full">Logs</label>
-        {messages.length > 0 && (
+        {traceIds.length > 0 && (
           <Button variant="link" onClick={() => resetMessages()} className="text-green-500">
             <Trash2 className="w-4 h-4 text-green-500" />
           </Button>
@@ -36,11 +36,14 @@ export const LogConsole = () => {
             animate={{ height: '25vh' }}
             transition={{ duration: 0.3 }}
           >
-            {messages.map((msg, index) => (
-              <div key={index} className="flex items-center gap-1">
-                <Terminal className="h-4 w-4 text-green-500" />
-                {msg}
-                <br />
+            {traceIds.map((traceId, index) => (
+              <div key={index} className="flex flex-col gap-1">
+                {messages[traceId]?.map((message, mIndex) => (
+                  <div key={mIndex} className="flex items-center gap-1">
+                    <Terminal className="h-4 w-4 text-green-500" />
+                    {message.message}
+                  </div>
+                ))}
               </div>
             ))}
           </motion.div>
