@@ -44,6 +44,12 @@
 
 ## UI
 
+- Be able to trigger a workflow
+- Work flow visualization
+  - Be able to see a workflow in a graph
+  - Be able to see what happened in a specific workflow run (logs, which steps were triggered with inputs and emitted events)
+  - Test/eval in UI?
+
 ## Logging and observability
 
 - Should be able to see all workflows and their runs (local and on hub)
@@ -61,3 +67,9 @@
 - devs should be able to configure OIDC or other auth providers on the webhook
 
 ## Hub
+
+## Overall Conventions/Best Practices
+
+- steps and flows (name, description) are written in a way that non-technical folks can read/understand them
+  - "Document uploaded to "Policy" folder in Google Drive" not: "api/google-drive/upload"
+  - The technical details CAN be displayed as well but we need the non-tech level description of what is happening in a flow
