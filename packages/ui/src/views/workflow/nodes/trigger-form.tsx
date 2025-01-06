@@ -17,7 +17,11 @@ export const TriggerForm = ({ data }: { data: TriggerNodeData }) => {
     console.log('data.webhookUrl', data.webhookUrl)
     const [method, url] = data.webhookUrl.split(' ')
 
-    fetch(url, { method, body: JSON.stringify(formData) })
+    fetch(url, {
+      method,
+      body: JSON.stringify(formData),
+      headers: { 'Content-Type': 'application/json' },
+    })
     console.log('run', formData)
   }
 

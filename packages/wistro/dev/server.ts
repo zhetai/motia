@@ -37,6 +37,7 @@ export const createServer = async (config: Config, workflowSteps: WorkflowStep[]
   }
 
   app.use(bodyParser.json())
+  app.use(bodyParser.urlencoded({ extended: true }))
 
   for (const path in config.api.paths) {
     const { method, emits } = config.api.paths[path]
