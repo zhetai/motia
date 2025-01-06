@@ -2,8 +2,9 @@
   "name": "wistro-monorepo",
   "private": true,
   "scripts": {
+    "dev:docs": "pnpm -r --filter=docs start",
     "dev": "pnpm run build && pnpm run -r --parallel dev",
-    "build": "pnpm run -r build",
+    "build": "pnpm --filter=!docs run -r build",
     "build-config": "node packages/wistro/src/cli/WistroConfigBuilder.js playground",
     "test:unit": "pnpm vitest",
     "test:e2e": "pnpm playwright test",
