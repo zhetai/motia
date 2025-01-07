@@ -48,6 +48,7 @@ This document describes the **Wistro** platform at an MVP level—spanning descr
 
 ### 3.2 Local vs. Production Step Registry
 
+- **Active vs Inactive Registry** Users will have a way to activate or inactiveate steps
 - **Local Registry**
   - When developing locally, the engine scans all `*.step.*` files, creating an in-memory list of active steps.
   - The **Workbench** can then display these steps, allowing you to run or debug them.
