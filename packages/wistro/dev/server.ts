@@ -1,21 +1,22 @@
+import { applyMiddleware } from '@wistro/ui'
+import { Server as SocketIOServer } from 'socket.io'
+import bodyParser from 'body-parser'
 import { randomUUID } from 'crypto'
-import Fastify, { FastifyRequest, FastifyReply } from 'fastify'
-import { Config } from './config.types'
+import express, { Request, Response } from 'express'
+import http from 'http'
+import { Config, WorkflowStep } from './config.types'
 import { Event, EventManager } from './event-manager'
-import { WorkflowStep } from './config.types'
 import { workflowsEndpoint } from './workflows-endpoint'
-import fastifyWebsocket from '@fastify/websocket'
-import { wistroWsRouteHandler } from './wistro-ws'
 
-export const createServer = (config: Config, workflowSteps: WorkflowStep[], eventManager: EventManager) => {
-  const fastify = Fastify()
-
-  fastify.register(fastifyWebsocket)
+export const createServer = async (config: Config, workflowSteps: WorkflowStep[], eventManager: EventManager) => {
+  const app = express()
+  const server = http.createServer(app)
+  const io = new SocketIOServer(server)
 
   console.log('[API] Registering routes', config.api.paths)
 
   const asyncHandler = (emits: string) => {
-    return async (req: FastifyRequest, res: FastifyReply) => {
+    return async (req: Request, res: Response) => {
       const traceId = randomUUID()
       const event: Event<unknown> = {
         traceId,
@@ -35,38 +36,29 @@ export const createServer = (config: Config, workflowSteps: WorkflowStep[], even
     }
   }
 
+  app.use(bodyParser.json())
+  app.use(bodyParser.urlencoded({ extended: true }))
+
   for (const path in config.api.paths) {
     const { method, emits } = config.api.paths[path]
 
     console.log('[API] Registering route', { method, path, emits })
 
-    fastify.route({
-      method: method.toUpperCase(),
-      url: path,
-      handler: asyncHandler(emits),
-    })
+    if (method === 'POST') {
+      app.post(path, asyncHandler(emits))
+    } else if (method === 'GET') {
+      app.get(path, asyncHandler(emits))
+    } else {
+      throw new Error(`Unsupported method: ${method}`)
+    }
   }
 
-  fastify.addHook('onRequest', (request, reply, done) => {
-    reply.header('Access-Control-Allow-Origin', '*')
-    reply.header('Access-Control-Allow-Methods', 'GET,POST,PUT,DELETE,OPTIONS')
-    reply.header('Access-Control-Allow-Headers', 'Content-Type')
+  workflowsEndpoint(config, workflowSteps, app)
+  await applyMiddleware(app)
 
-    if (request.method === 'OPTIONS') {
-      reply.send()
-      return
-    }
+  console.log('[API] Server listening on port', config.port)
 
-    done()
-  })
+  server.listen(config.port)
 
-  workflowsEndpoint(config, workflowSteps, fastify)
-
-  fastify.register(async (fastifyWebsocketServer) => {
-    fastifyWebsocketServer.get('/ws', { websocket: true }, wistroWsRouteHandler)
-  })
-
-  fastify.listen({ port: config.api.port, host: '::' })
-
-  return fastify
+  return { server, socketServer: io }
 }

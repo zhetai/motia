@@ -1,12 +1,11 @@
-/** @type {import('tailwindcss').Config} */
-export default {
+import { Config } from 'tailwindcss'
+import path from 'path'
+
+const config: Config = {
   darkMode: ['class'],
-  content: ['./index.html', './src/**/*.{ts,tsx,js,jsx}'],
+  content: [path.resolve(__dirname, './index.html'), path.resolve(__dirname, './src/**/*.{ts,tsx,js,jsx}')],
   theme: {
     extend: {
-      zIndex: {
-        100: '100',
-      },
       borderRadius: {
         lg: 'var(--radius)',
         md: 'calc(var(--radius) - 2px)',
@@ -47,11 +46,11 @@ export default {
         input: 'hsl(var(--input))',
         ring: 'hsl(var(--ring))',
         chart: {
-          1: 'hsl(var(--chart-1))',
-          2: 'hsl(var(--chart-2))',
-          3: 'hsl(var(--chart-3))',
-          4: 'hsl(var(--chart-4))',
-          5: 'hsl(var(--chart-5))',
+          '1': 'hsl(var(--chart-1))',
+          '2': 'hsl(var(--chart-2))',
+          '3': 'hsl(var(--chart-3))',
+          '4': 'hsl(var(--chart-4))',
+          '5': 'hsl(var(--chart-5))',
         },
         sidebar: {
           DEFAULT: 'hsl(var(--sidebar-background))',
@@ -68,3 +67,5 @@ export default {
   },
   plugins: [require('tailwindcss-animate')],
 }
+
+export default config

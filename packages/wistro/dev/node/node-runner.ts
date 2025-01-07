@@ -23,24 +23,14 @@ async function runTypescriptModule(filePath: string, args: [any, AdapterConfig])
     // Check if the specified function exists in the module
     if (typeof module.executor !== 'function') {
       throw new Error(`Function executor not found in module ${filePath}`)
-    }
-
-    if (!Array.isArray(args)) {
+    } else if (!Array.isArray(args)) {
       throw new Error('Arguments must be an array')
-    }
-
-    if (!args?.[1]) {
+    } else if (!args?.[1]) {
       throw new Error('State adapter config is required')
     }
 
-    const state = createStateAdapter({
-      ...args[1],
-    });
-  
-    const context = {
-      state,
-    }
-
+    const state = createStateAdapter({ ...args[1] })
+    const context = { state }
     const emit = async (data: any) => {
       process.send?.(data)
     }

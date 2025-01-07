@@ -76,9 +76,9 @@ export const dev = async (): Promise<void> => {
   const config: Config = parse(configYaml)
   const workflowSteps = await buildWorkflows()
   const eventManager = createEventManager()
-  const server = createServer(config, workflowSteps, eventManager)
+  const { server, socketServer } = await createServer(config, workflowSteps, eventManager)
 
-  createWorkflowHandlers(workflowSteps, eventManager, config.state)
+  createWorkflowHandlers(workflowSteps, eventManager, config.state, socketServer)
 
   // 6) Gracefully shut down on SIGTERM
   process.on('SIGTERM', async () => {

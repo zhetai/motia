@@ -3,17 +3,21 @@ import { spawn } from 'child_process'
 import path from 'path'
 import { WorkflowStep } from './config.types'
 import { AdapterConfig } from '../state/createStateAdapter'
-import { broadcastLog } from './wistro-ws'
+import { Server } from 'socket.io'
 
 const nodeRunner = path.join(__dirname, 'node', 'node-runner.js')
 const pythonRunner = path.join(__dirname, 'python', 'python-runner.py')
 
-const callWorkflowFile = <TData>(flowPath: string, data: TData, eventManager: EventManager): Promise<void> => {
+const callWorkflowFile = <TData>(
+  flowPath: string,
+  event: Event<TData>,
+  stateConfig: AdapterConfig,
+  eventManager: EventManager,
+): Promise<void> => {
   const isPython = flowPath.endsWith('.py')
 
   return new Promise((resolve, reject) => {
-    const jsonData = JSON.stringify(data)
-
+    const jsonData = JSON.stringify({ ...event, stateConfig })
     const runner = isPython ? pythonRunner : nodeRunner
     const command = isPython ? 'python' : 'node'
 
@@ -23,7 +27,7 @@ const callWorkflowFile = <TData>(flowPath: string, data: TData, eventManager: Ev
 
     child.on('message', (message: Event<unknown>) => {
       console.log(`[${command} Runner] Received message`, message)
-      eventManager.emit(message)
+      eventManager.emit({ ...message, traceId: event.traceId })
     })
 
     child.on('close', (code) => {
@@ -40,6 +44,7 @@ export const createWorkflowHandlers = (
   workflows: WorkflowStep[],
   eventManager: EventManager,
   stateConfig: AdapterConfig,
+  socketServer: Server,
 ) => {
   console.log(`[Workflows] Creating workflow handlers for ${workflows.length} workflows`)
 
@@ -52,10 +57,10 @@ export const createWorkflowHandlers = (
     subscribes.forEach((subscribe) => {
       eventManager.subscribe(subscribe, file, async (event) => {
         console.log(`[Workflow] ${file} received event`, event)
-        broadcastLog(`[Workflow] ${file} received event`, { event })
+        socketServer.emit('event', { time: Date.now(), event, file, traceId: event.traceId })
 
         try {
-          await callWorkflowFile(filePath, [event.data, stateConfig], eventManager)
+          await callWorkflowFile(filePath, event, stateConfig, eventManager)
         } catch (error) {
           console.error(`[Workflow] ${file} error calling workflow`, { error, filePath })
         }

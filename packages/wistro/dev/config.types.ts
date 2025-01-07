@@ -10,10 +10,9 @@ export type ApiPath = {
   tags?: string[]
 }
 
-export type ApiRoute = ApiPath & {path: string};
+export type ApiRoute = ApiPath & { path: string }
 
 export type ApiConfig = {
-  port: number
   paths: Record<string, ApiPath>
 }
 
@@ -38,6 +37,7 @@ export type StateConfig = {
 }
 
 export type Config = {
+  port: number
   api: ApiConfig
   workflows: Record<string, WorkflowDefinition>
   cron: Record<string, CronDefinition>

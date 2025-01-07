@@ -2,7 +2,7 @@
   "name": "wistro",
   "private": true,
   "bin": {
-    "wistro": "dist/cli.js"
+    "wistro": "cli.js"
   },
   "scripts": {
     "move:python": "cp dev/python/*.py dist/dev/python",
@@ -11,18 +11,21 @@
     "test": "jest"
   },
   "dependencies": {
-    "@fastify/websocket": "^11.0.1",
+    "@wistro/ui": "workspace:*",
+    "body-parser": "^1.20.3",
     "commander": "^13.0.0",
-    "fastify": "^5.2.0",
+    "express": "^4.21.2",
     "ioredis": "^5.4.2",
+    "socket.io": "^4.8.1",
     "ts-node": "^10.9.2",
     "yaml": "^2.7.0",
     "zod": "^3.24.1",
     "zod-to-json-schema": "^3.24.1"
   },
   "devDependencies": {
+    "@types/body-parser": "^1.19.5",
+    "@types/express": "^5.0.0",
     "@types/jest": "^29.5.14",
-    "@types/ws": "^8.5.13",
     "jest": "^29.7.0",
     "ts-jest": "^29.2.5",
     "typescript": "^5.7.2"
