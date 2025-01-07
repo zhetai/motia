@@ -11,13 +11,13 @@
 - state adapters: implementations of a state manager that can be provided through configuration in order to override the default (file storage cache) state manager
 - core: system that takes in the lock file, and repo and wires up the system, primary concern is steps and the orchestration of steps (only knows about flows for tracing, logging and providing UI with what it needs). it is in charge of providing a development environment with a server that hosts the workbench and the triggers which allow access to trigger flows
 - workbench: local UI for visualization of flows, logging, debugging, eval?, etc
-- hub: Comercial product for
+- hub: Comercial product for hosting, monitoring, versioning, ci/cd
 
 ## wistro-core
 
 - Dead simple to get running both local and prod with minimal required config
 - One command install, run dev, deploy scripts
-- A project must have a /src folder
+- A project must have a /src folder (can be configured to another folder but defaults to src)
 - Any file inside of /src that has `*.step.*` will be registered as a step
   - These steps will be considered registered, listen for events
 - steps can be written in JS, TS, Python or Go
