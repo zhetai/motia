@@ -1,5 +1,4 @@
-import { Config } from "../../dev/config.types";
-
+import { Config } from '../../dev/config.types'
 
 export const mockValidConfig: Config = {
   workflows: {
@@ -10,7 +9,6 @@ export const mockValidConfig: Config = {
       '/path1': { name: 'Path 1', emits: 'event1', workflow: 'workflow1', method: 'GET' },
       '/path2': { name: 'Path 2', emits: 'event2', workflow: 'workflow1', method: 'POST' },
     },
-    port: 3000,
   },
   cron: {
     cron1: { name: 'Cron Job 1', emits: 'event1', workflow: 'workflow1', cron: '* * * * *' },
@@ -18,19 +16,21 @@ export const mockValidConfig: Config = {
   state: {
     adapter: 'redis',
     host: 'localhost',
-    port: 6379,
-  }
-};
+    port: 6397,
+  },
+  port: 3000,
+}
 
 export const mockConfigWithoutTriggers: Config = {
   workflows: {
     workflow1: { name: 'Workflow 1' },
   },
-  api: { paths: {}, port: 3000 },
+  api: { paths: {} },
   cron: {},
   state: {
     adapter: 'redis',
     host: 'localhost',
     port: 6379,
-  }
-};
+  },
+  port: 3000,
+}
