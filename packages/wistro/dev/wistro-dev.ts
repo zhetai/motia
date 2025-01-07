@@ -16,7 +16,7 @@ require('ts-node').register({
 async function parseWorkflowFolder(folderPath: string, nextWorkflows: WorkflowStep[]): Promise<WorkflowStep[]> {
   const workflowFolderItems = fs.readdirSync(folderPath, { withFileTypes: true })
   const workflowFiles = workflowFolderItems
-    .filter(({ name }) => name.endsWith('.ts') || name.endsWith('.js') || name.endsWith('.py'))
+    .filter(({ name }) => name.endsWith('.step.ts') || name.endsWith('.step.js') || name.endsWith('.step.py'))
     .map(({ name }) => name)
   const workflowRootFolders = workflowFolderItems.filter((item) => item.isDirectory())
   let workflows: WorkflowStep[] = [...nextWorkflows]
