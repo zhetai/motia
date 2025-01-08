@@ -14,7 +14,7 @@ export const config: FlowConfig<Input> = {
   subscribes: ['call-openai'],
   emits: [{ type: 'openai-response', label: 'OpenAI Response' }],
   input: inputSchema,
-  workflows: ['openai'],
+  flows: ['openai'],
 }
 
 export const executor: FlowExecutor<Input> = async (input, emit) => {

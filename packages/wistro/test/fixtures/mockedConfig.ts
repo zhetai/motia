@@ -1,20 +1,20 @@
 import { Config } from '../../dev/config.types'
 
 export const mockValidConfig: Config = {
-  workflows: {
-    workflow1: { name: 'Workflow 1' },
+  flows: {
+    flow1: { name: 'Flow 1' },
   },
   api: {
     paths: {
-      '/path1': { name: 'Path 1', emits: 'event1', workflows: ['workflow1'], method: 'GET' },
-      '/path2': { name: 'Path 2', emits: 'event2', workflows: ['workflow1'], method: 'POST' },
+      '/path1': { name: 'Path 1', emits: 'event1', flows: ['flow1'], method: 'GET' },
+      '/path2': { name: 'Path 2', emits: 'event2', flows: ['flow1'], method: 'POST' },
     },
   },
   cron: {
     cron1: {
       name: 'Cron Job 1',
       emits: 'event1',
-      workflows: ['workflow1'],
+      flows: ['flow1'],
       cron: '* * * * *',
     },
   },
@@ -27,8 +27,8 @@ export const mockValidConfig: Config = {
 }
 
 export const mockConfigWithoutTriggers: Config = {
-  workflows: {
-    workflow1: { name: 'Workflow 1' },
+  flows: {
+    flow1: { name: 'Flow 1' },
   },
   api: { paths: {} },
   cron: {},

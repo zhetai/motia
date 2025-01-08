@@ -15,7 +15,7 @@ export const config: FlowConfig<Input> = {
   subscribes: ['dbz.evaluate-upgrades'],
   emits: ['dbz.error', 'dbz.send-text'],
   input: inputSchema,
-  workflows: ['booking'],
+  flows: ['booking'],
 }
 
 export const executor: FlowExecutor<Input> = async (input, emit, ctx) => {

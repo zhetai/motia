@@ -17,7 +17,7 @@ The wistro repo is structured in the following way
 │   └── other-packages/         # Placeholder for future packages
 ├── playground/                 # Sandbox environment for testing
 │   ├── src/                    # Source code for testing and examples
-│   │   ├── workflows/          # Workflow implementations
+│   │   ├── flows/          # Flow implementations
 │   │   ├── traffic/            # Traffic definitions (inbound/outbound)
 │   │   ├── ui/                 # Custom UI components
 │   │   └── index.js            # Playground entry point

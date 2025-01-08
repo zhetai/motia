@@ -1,4 +1,4 @@
-# Calling a workflow in a separate process
+# Calling a flow in a separate process
 
 ## Node
 

@@ -1,14 +1,14 @@
 # Wistro Monorepo
 
-This repository hosts the development of **Wistro.js**, a framework for building event-driven business automation workflows. The repository is structured to facilitate the iterative development and testing of the core framework and includes a playground environment for real-world use cases.
+This repository hosts the development of **Wistro.js**, a framework for building event-driven business automation flows. The repository is structured to facilitate the iterative development and testing of the core framework and includes a playground environment for real-world use cases.
 
 ## Overview
 
-Wistro.js aims to simplify the creation and scaling of event-driven workflows by:
+Wistro.js aims to simplify the creation and scaling of event-driven flows by:
 
-- Providing a **core framework** for defining workflows as collections of testable components.
+- Providing a **core framework** for defining flows as collections of testable components.
 - Supporting **real-time event handling** with loose coupling between components.
-- Offering tools for **UI-based workflow visualization**.
+- Offering tools for **UI-based flow visualization**.
 - Enabling seamless **integration with external APIs** like Google Drive and OpenAI.
 
 ### Aspirational Vision
@@ -16,7 +16,7 @@ Wistro.js aims to simplify the creation and scaling of event-driven workflows by
 Wistro.js strives to be:
 
 - **Developer-Friendly**: Easy to adopt and extend.
-- **Production-Ready**: Scales gracefully from prototypes to enterprise-grade workflows.
+- **Production-Ready**: Scales gracefully from prototypes to enterprise-grade flows.
 - **Integration-First**: Works seamlessly with third-party tools and services.
 
 ## Repository Structure
@@ -32,7 +32,7 @@ Wistro.js strives to be:
 │   └── other-packages/         # Placeholder for future packages
 ├── playground/                 # Sandbox environment for testing
 │   ├── src/                    # Source code for testing and examples
-│   │   ├── workflows/          # Workflow implementations
+│   │   ├── flows/          # Flow implementations
 │   │   ├── traffic/            # Traffic definitions (inbound/outbound)
 │   │   ├── ui/                 # Custom UI components
 │   │   └── index.js            # Playground entry point
@@ -76,7 +76,7 @@ Wistro.js strives to be:
 
 ### Running the Playground
 
-The playground allows you to test and refine workflows built using Wistro.js.
+The playground allows you to test and refine flows built using Wistro.js.
 
 ```bash
 pnpm run dev
@@ -84,13 +84,13 @@ pnpm run dev
 
 This command starts the following services:
 
-- **WistroCore**: The workflow orchestrator.
-- **WistroServer**: Provides HTTP endpoints for triggering workflows.
-- **Playground UI**: A React-based visualization tool for workflows.
+- **WistroCore**: The flow orchestrator.
+- **WistroServer**: Provides HTTP endpoints for triggering flows.
+- **Playground UI**: A React-based visualization tool for flows.
 
 ## How to Contribute
 
-### Development Workflow
+### Development Flow
 
 1. Create a new branch for your changes:
 
@@ -101,7 +101,7 @@ This command starts the following services:
 2. Make changes to the codebase.
 
    - Framework changes: Update `packages/wistro`.
-   - Workflow examples: Update `playground/src/workflows`.
+   - Flow examples: Update `playground/src/flows`.
 
 3. Run tests:
 
@@ -126,7 +126,7 @@ This command starts the following services:
 
 ## Roadmap
 
-- Expand the set of example workflows.
+- Expand the set of example flows.
 - Enhance the visualization capabilities of the playground.
 - Improve documentation for public release.
 - Publish `wistro` to npm with comprehensive guides and examples.

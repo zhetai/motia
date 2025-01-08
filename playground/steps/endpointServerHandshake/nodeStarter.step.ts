@@ -12,7 +12,7 @@ export const config: FlowConfig<Input> = {
   subscribes: ['handshake.initiate'],
   emits: ['handshake.callApi'],
   input: inputSchema,
-  workflows: ['handshake'],
+  flows: ['handshake'],
 }
 
 export const executor: FlowExecutor<Input> = async (input, emit) => {

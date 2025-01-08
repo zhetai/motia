@@ -10,7 +10,7 @@ export const config: FlowConfig<Input> = {
   subscribes: ['ws-server-example.trigger'],
   emits: ['ws-server-example.start'],
   input: inputSchema,
-  workflows: ['wistro-server'],
+  flows: ['wistro-server'],
 }
 
 export const executor: FlowExecutor<Input> = async (_, emit) => {
@@ -21,6 +21,6 @@ export const executor: FlowExecutor<Input> = async (_, emit) => {
   console.log('[Start Event] triggered via /api/wistro-server-example')
   await emit({
     type: 'ws-server-example.start',
-    data: { message: 'The workflow has been started!' },
+    data: { message: 'The flow has been started!' },
   })
 }

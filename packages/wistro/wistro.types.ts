@@ -23,7 +23,7 @@ export type FlowConfig<TInput extends ZodObject<any>> = {
   subscribes: string[]
   emits: Emit[]
   input: TInput
-  workflows: string[]
+  flows: string[]
 }
 
 export type Flow<TInput extends ZodObject<any>> = {

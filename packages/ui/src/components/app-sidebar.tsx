@@ -1,4 +1,4 @@
-import { useListWorkflows } from '@/hooks/use-list-workflows'
+import { useListFlows } from '@/hooks/use-list-flows'
 import {
   Sidebar,
   SidebarContent,
@@ -11,15 +11,15 @@ import {
   SidebarMenuButton,
   SidebarMenuItem,
 } from './ui/sidebar'
-import { Workflow } from 'lucide-react'
+import { Flow } from 'lucide-react'
 import { Link, useMatchRoute } from '@tanstack/react-router'
 
 export const AppSidebar = () => {
-  const { workflows } = useListWorkflows()
+  const { flows } = useListFlows()
   const matchRoute = useMatchRoute()
 
-  const isActive = (workflowId: string) => {
-    return !!matchRoute({ to: '/workflow/$id', params: { id: workflowId } })
+  const isActive = (flowId: string) => {
+    return !!matchRoute({ to: '/flow/$id', params: { id: flowId } })
   }
 
   return (
@@ -27,20 +27,20 @@ export const AppSidebar = () => {
       <SidebarHeader />
       <SidebarContent>
         <SidebarGroup>
-          <SidebarGroupLabel>Workflows</SidebarGroupLabel>
+          <SidebarGroupLabel>Flows</SidebarGroupLabel>
           <SidebarGroupContent>
             <SidebarMenu>
-              {workflows.map((workflow) => (
-                <SidebarMenuItem key={workflow.id}>
-                  <SidebarMenuButton asChild className="cursor-pointer" isActive={isActive(workflow.id)}>
+              {flows.map((flow) => (
+                <SidebarMenuItem key={flow.id}>
+                  <SidebarMenuButton asChild className="cursor-pointer" isActive={isActive(flow.id)}>
                     <Link
-                      to="/workflow/$id"
-                      params={{ id: workflow.id }}
+                      to="/flow/$id"
+                      params={{ id: flow.id }}
                       className="flex items-center gap-2"
-                      data-testid={workflow.id}
+                      data-testid={flow.id}
                     >
-                      <Workflow />
-                      <span>{workflow.name}</span>
+                      <Flow />
+                      <span>{flow.name}</span>
                     </Link>
                   </SidebarMenuButton>
                 </SidebarMenuItem>
