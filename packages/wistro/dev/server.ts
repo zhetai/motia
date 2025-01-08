@@ -7,27 +7,30 @@ import http from 'http'
 import { Config, FlowStep } from './config.types'
 import { Event, EventManager } from './event-manager'
 import { flowsEndpoint } from './flows-endpoint'
+import { globalLogger, Logger } from './logger'
 
 export const createServer = async (config: Config, flowSteps: FlowStep[], eventManager: EventManager) => {
   const app = express()
   const server = http.createServer(app)
   const io = new SocketIOServer(server)
 
-  console.log('[API] Registering routes', config.api.paths)
+  globalLogger.debug('[API] Registering routes', { paths: config.api.paths })
 
-  const asyncHandler = (emits: string) => {
+  const asyncHandler = (emits: string, flows: string[]) => {
     return async (req: Request, res: Response) => {
       const traceId = randomUUID()
-      const event: Event<unknown> = {
+      const logger = new Logger(traceId, flows, io)
+      const event: Omit<Event<unknown>, 'logger'> = {
         traceId,
+        flows,
         type: emits,
         data: req.body,
       }
 
-      console.log('[API] Request received', event)
+      globalLogger.debug('[API] Request received', { event })
 
       try {
-        await eventManager.emit(event)
+        await eventManager.emit({ ...event, logger })
         res.send({ success: true, eventType: emits, traceId })
       } catch (error) {
         console.error('[API] Error emitting event', error)
@@ -40,14 +43,14 @@ export const createServer = async (config: Config, flowSteps: FlowStep[], eventM
   app.use(bodyParser.urlencoded({ extended: true }))
 
   for (const path in config.api.paths) {
-    const { method, emits } = config.api.paths[path]
+    const { method, emits, flows } = config.api.paths[path]
 
-    console.log('[API] Registering route', { method, path, emits })
+    globalLogger.debug('[API] Registering route', { method, path, emits })
 
     if (method === 'POST') {
-      app.post(path, asyncHandler(emits))
+      app.post(path, asyncHandler(emits, flows))
     } else if (method === 'GET') {
-      app.get(path, asyncHandler(emits))
+      app.get(path, asyncHandler(emits, flows))
     } else {
       throw new Error(`Unsupported method: ${method}`)
     }
@@ -56,7 +59,7 @@ export const createServer = async (config: Config, flowSteps: FlowStep[], eventM
   flowsEndpoint(config, flowSteps, app)
   await applyMiddleware(app)
 
-  console.log('[API] Server listening on port', config.port)
+  globalLogger.debug('[API] Server listening on port', config.port)
 
   server.listen(config.port)
 
