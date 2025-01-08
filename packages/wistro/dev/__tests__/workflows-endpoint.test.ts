@@ -28,7 +28,7 @@ describe('generateWorkflowsList', () => {
     const mockWorkflowSteps: WorkflowStep[] = [
       {
         config: {
-          workflow: 'workflow2', // Invalid workflow
+          workflows: ['workflow2'], // Invalid workflow
           name: 'Step 1',
           description: 'First step',
           emits: ['event1'],
@@ -57,7 +57,7 @@ describe('generateWorkflowsList', () => {
     const mockWorkflowSteps: WorkflowStep[] = [
       {
         config: {
-          workflow: 'workflow1',
+          workflows: ['workflow1'],
           name: 'Step 1',
           description: 'First step',
           emits: ['event1'],

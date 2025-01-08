@@ -6,12 +6,17 @@ export const mockValidConfig: Config = {
   },
   api: {
     paths: {
-      '/path1': { name: 'Path 1', emits: 'event1', workflow: 'workflow1', method: 'GET' },
-      '/path2': { name: 'Path 2', emits: 'event2', workflow: 'workflow1', method: 'POST' },
+      '/path1': { name: 'Path 1', emits: 'event1', workflows: ['workflow1'], method: 'GET' },
+      '/path2': { name: 'Path 2', emits: 'event2', workflows: ['workflow1'], method: 'POST' },
     },
   },
   cron: {
-    cron1: { name: 'Cron Job 1', emits: 'event1', workflow: 'workflow1', cron: '* * * * *' },
+    cron1: {
+      name: 'Cron Job 1',
+      emits: 'event1',
+      workflows: ['workflow1'],
+      cron: '* * * * *',
+    },
   },
   state: {
     adapter: 'redis',

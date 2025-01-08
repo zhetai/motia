@@ -28,29 +28,33 @@ type WorkflowResponse = WorkflowListResponse & {
 
 export const generateWorkflowsList = (config: Config, workflowSteps: WorkflowStep[]): WorkflowResponse[] => {
   const list: WorkflowResponse[] = []
-
   const configuredWorkflowIdentifiers = Object.keys(config.workflows)
   const workflowStepsMap = workflowSteps.reduce(
     (mappedSteps, workflowStep) => {
-      const workflowName = workflowStep.config.workflow
-      if (!workflowName) {
-        throw Error(`Invalid step config in ${workflowStep.filePath}, a workflow name is required`)
+      const workflowNames = workflowStep.config.workflows // Now an array
+      if (!workflowNames || workflowNames.length === 0) {
+        throw Error(`Invalid step config in ${workflowStep.filePath}, at least one workflow name is required`)
       }
 
-      if (!configuredWorkflowIdentifiers.includes(workflowName)) {
-        throw Error(
-          `Unknown workflow name ${workflowName} in ${workflowStep.filePath}, all workflows should be defined in the config.yml`,
-        )
-      }
+      // Validate each workflow name
+      workflowNames.forEach((workflowName: string) => {
+        if (!configuredWorkflowIdentifiers.includes(workflowName)) {
+          throw Error(
+            `Unknown workflow name ${workflowName} in ${workflowStep.filePath}, all workflows should be defined in the config.yml`,
+          )
+        }
+      })
 
-      const nextMappedSteps = { ...mappedSteps }
-      if (workflowName in nextMappedSteps) {
-        nextMappedSteps[workflowName].push(workflowStep)
-      } else {
-        nextMappedSteps[workflowName] = [workflowStep]
-      }
+      // Add step to each workflow it belongs to
+      workflowNames.forEach((workflowName: string) => {
+        if (workflowName in mappedSteps) {
+          mappedSteps[workflowName].push(workflowStep)
+        } else {
+          mappedSteps[workflowName] = [workflowStep]
+        }
+      })
 
-      return nextMappedSteps
+      return mappedSteps
     },
     {} as Record<string, WorkflowStep[]>,
   )
@@ -62,18 +66,18 @@ export const generateWorkflowsList = (config: Config, workflowSteps: WorkflowSte
   const triggerMappingByWorkflowId = Object.keys(config.api.paths).reduce(
     (mapping, path) => {
       const route = config.api.paths[path]
-      const workflow = route.workflow
+      const workflows = route.workflows
       const nextRoute = { ...route, path }
 
-      const nextMapping = { ...mapping }
+      workflows.forEach((workflow) => {
+        if (workflow in mapping) {
+          mapping[workflow].push(nextRoute)
+        } else {
+          mapping[workflow] = [nextRoute]
+        }
+      })
 
-      if (workflow in nextMapping) {
-        nextMapping[workflow].push(nextRoute)
-      } else {
-        nextMapping[workflow] = [nextRoute]
-      }
-
-      return nextMapping
+      return mapping // Return the original mapping that we modified
     },
     {} as Record<string, ApiRoute[]>,
   )
@@ -119,7 +123,7 @@ export const generateWorkflowsList = (config: Config, workflowSteps: WorkflowSte
     Object.keys(config.cron).forEach((cronId) => {
       const cron = config.cron[cronId]
 
-      if (cron.workflow !== workflowId) return
+      if (!cron.workflows.includes(workflowId)) return
 
       steps.push({
         id: randomUUID(),

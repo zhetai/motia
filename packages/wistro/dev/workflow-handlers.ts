@@ -52,7 +52,7 @@ export const createWorkflowHandlers = (
     const { config, file, filePath } = workflow
     const { subscribes } = config
 
-    console.log(`[Workflows] Establishing workflow subscriptions ${file}`)
+    console.log(`[Workflows] Establishing workflow subscriptions ${file} for workflows: ${config.workflows.join(', ')}`)
 
     subscribes.forEach((subscribe) => {
       eventManager.subscribe(subscribe, file, async (event) => {

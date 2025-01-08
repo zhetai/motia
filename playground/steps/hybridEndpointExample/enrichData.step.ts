@@ -7,25 +7,25 @@ type Input = typeof inputSchema
 const inputSchema = SharedFlowInputSchema
 
 export const config: FlowConfig<Input> = {
-  name: "Enrich Data",
-  subscribes: ["hybrid.transformed"],
-  emits: ["hybrid.enriched"],
+  name: 'Enrich Data',
+  subscribes: ['hybrid.transformed'],
+  emits: ['hybrid.enriched'],
   input: inputSchema,
-  workflow: "hybrid-example"
+  workflows: ['hybrid-example'],
 }
 
 export const executor: FlowExecutor<Input> = async (input, emit) => {
   const enriched = input.items.map((item) => ({
     ...item,
-    enriched_by: "node",
+    enriched_by: 'node',
     processed_at: new Date().toISOString(),
-  }));
+  }))
 
   await emit({
-    type: "hybrid.enriched",
+    type: 'hybrid.enriched',
     data: {
       items: enriched,
       timestamp: input.timestamp,
     },
-  });
-};
+  })
+}

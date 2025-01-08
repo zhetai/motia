@@ -17,7 +17,7 @@ export const config: FlowConfig<Input> = {
     { type: 'ecommerce.notify-user', label: 'Out of stock', conditional: true },
   ],
   input: inputSchema,
-  workflow: 'ecommerce',
+  workflows: ['ecommerce'],
 }
 
 export const executor: FlowExecutor<Input> = async (input, emit, ctx) => {

@@ -5,7 +5,7 @@ export type ApiPath = {
   method: string
   emits: string
   name: string
-  workflow: string
+  workflows: string[]
   description?: string
   tags?: string[]
 }
@@ -26,7 +26,7 @@ export type CronDefinition = {
   cron: string
   emits: string
   tags?: string[]
-  workflow: string
+  workflows: string[]
 }
 
 export type StateConfig = {

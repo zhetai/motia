@@ -3,7 +3,7 @@ config = {
     "subscribes": ["hybrid.enriched"],
     "emits": ["hybrid.analyzed"],
     "input": None,  # No schema validation in Python version
-    "workflow": "hybrid-example"
+    "workflows": ["hybrid-example"]
 }
 
 # Add a static counter at module level

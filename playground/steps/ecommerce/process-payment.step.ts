@@ -16,7 +16,7 @@ export const config: FlowConfig<Input> = {
     { type: 'ecommerce.cancel-order', label: 'Payment failed', conditional: true },
   ],
   input: inputSchema,
-  workflow: 'ecommerce',
+  workflows: ['ecommerce'],
 }
 
 export const executor: FlowExecutor<Input> = async (input, emit, ctx) => {
