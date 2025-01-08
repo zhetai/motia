@@ -58,7 +58,7 @@ export const createFlowHandlers = (flows: FlowStep[], eventManager: EventManager
     const { config, file, filePath } = flow
     const { subscribes } = config
 
-    globalLogger.debug(`[Flows] Establishing flow subscriptions`, { file })
+    globalLogger.debug('[Flows] Establishing flow subscriptions', { file })
 
     subscribes.forEach((subscribe) => {
       eventManager.subscribe(subscribe, file, async (event) => {

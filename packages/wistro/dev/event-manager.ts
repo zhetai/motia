@@ -22,7 +22,7 @@ export const createEventManager = (): EventManager => {
     const eventHandlers = handlers[event.type] ?? []
     const { logger, ...rest } = event
 
-    logger.info('[Flow Emit] Event emitted', { handlers: eventHandlers.length, data: rest, file })
+    logger.debug('[Flow Emit] Event emitted', { handlers: eventHandlers.length, data: rest, file })
     eventHandlers.map((handler) => handler(event))
   }
 

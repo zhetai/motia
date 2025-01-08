@@ -56,6 +56,7 @@ export class Logger extends BaseLogger {
 
   log(message: any) {
     console.log(JSON.stringify(message))
+    this.emitLog(message.level, message.msg, message)
   }
 
   info = (message: string, args?: any) => {
