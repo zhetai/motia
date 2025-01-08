@@ -38,7 +38,7 @@ Let's discover **Wistro in less than 5 minutes**.
 
 ### Running the Playground
 
-The playground allows you to test and refine workflows built using Wistro.js.
+The playground allows you to test and refine flows built using Wistro.js.
 
 ```bash
 pnpm run dev
@@ -46,6 +46,6 @@ pnpm run dev
 
 This command starts the following services:
 
-- **WistroCore**: The workflow orchestrator.
-- **WistroServer**: Provides HTTP endpoints for triggering workflows.
-- **Playground UI**: A React-based visualization tool for workflows.
+- **WistroCore**: The flow orchestrator.
+- **WistroServer**: Provides HTTP endpoints for triggering flows.
+- **Playground UI**: A React-based visualization tool for flows.

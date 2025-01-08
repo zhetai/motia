@@ -13,7 +13,7 @@ export const config: FlowConfig<Input> = {
   subscribes: ['ecommerce.confirm-order'],
   emits: [{ type: 'ecommerce.notify-user' }, { type: 'ecommerce.generate-invoice' }],
   input: inputSchema,
-  workflow: 'ecommerce',
+  flows: ['ecommerce'],
 }
 
 export const executor: FlowExecutor<Input> = async (input, emit, ctx) => {

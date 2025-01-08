@@ -1,10 +1,10 @@
-import { z } from 'zod';
-import { WorkflowStep } from "../../dev/config.types";
+import { z } from 'zod'
+import { FlowStep } from '../../dev/config.types'
 
-export const mockWorkflowSteps: WorkflowStep[] = [
+export const mockFlowSteps: FlowStep[] = [
   {
     config: {
-      workflow: 'workflow1',
+      flows: ['flow1'],
       name: 'Step 1',
       description: 'First step',
       emits: ['event1'],
@@ -16,7 +16,7 @@ export const mockWorkflowSteps: WorkflowStep[] = [
   },
   {
     config: {
-      workflow: 'workflow1',
+      flows: ['flow1'],
       name: 'Step 2',
       description: 'Second step',
       emits: ['event2'],
@@ -28,7 +28,7 @@ export const mockWorkflowSteps: WorkflowStep[] = [
   },
   {
     config: {
-      workflow: 'workflow1',
+      flows: ['flow1'],
       name: 'Step 3',
       description: 'Third step',
       emits: ['event3'],
@@ -38,4 +38,4 @@ export const mockWorkflowSteps: WorkflowStep[] = [
     file: 'path',
     filePath: 'step3/path',
   },
-];
+]

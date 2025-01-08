@@ -1,17 +1,17 @@
 port: 3000
 
-workflows:
-  # NOTE: describe your workflow here, these descriptions are used for the workflow visualizer,
-  # don't forget to tag your steps with the appropriate workflow name
+flows:
+  # NOTE: describe your flow here, these descriptions are used for the flow visualizer,
+  # don't forget to tag your steps with the appropriate flow name
   booking:
     name: Booking Example
-    description: A workflow that demonstrates the an event driven booking flow
+    description: A flow that demonstrates the an event driven booking flow
   handshake:
     name: Endpoint Server Handshake
-    description: A workflow that demonstrates the handshake between endpoint server and wistro server
+    description: A flow that demonstrates the handshake between endpoint server and wistro server
   hybrid-example:
     name: Hybrid Endpoint Example
-    description: A workflow that demonstrates the use of python and nodejs in a workflow
+    description: A flow that demonstrates the use of python and nodejs in a flow
   parallel-merge:
     name: Parallel Merge Example
     description: update my description
@@ -20,10 +20,10 @@ workflows:
     description: update my description
   openai:
     name: OpenAI Example
-    description: A workflow that demonstrates the use of OpenAI in a workflow
+    description: A flow that demonstrates the use of OpenAI in a flow
   ecommerce:
     name: Ecommerce Example
-    description: A workflow that demonstrates the use of ecommerce in a workflow
+    description: A flow that demonstrates the use of ecommerce in a flow
 
 api:
   paths:
@@ -32,49 +32,49 @@ api:
       emits: call-openai
       name: OpenAI
       description: Triggered when a message is received from chatbot
-      workflow: openai
+      flows: [openai]
     /api/hybrid-endpoint-example:
       method: POST
       emits: hybrid.received
       name: Hybrid Endpoint Example
       description: Triggered when a message is received from hybrid endpoint
-      workflow: hybrid-example
+      flows: [hybrid-example]
     /api/wistro-server-example:
       method: POST
       emits: ws-server-example.trigger
       name: Wistro Server Example
       description: Triggered when a message is received from wistro server
-      workflow: wistro-server
+      flows: [wistro-server]
     /api/endpoint-server-handshake:
       method: POST
       emits: handshake.initiate
       name: Endpoint Server Handshake
       description: Triggered when a message is received from endpoint server
-      workflow: handshake
+      flows: [handshake]
     /api/parallel-merge:
       name: Parallel Merge
       description: Triggered when a message is received from parallel merge
       method: POST
       emits: pms.initialize
-      workflow: parallel-merge
+      flows: [parallel-merge]
     /api/dbz/initialize:
       name: DBZ Initialize
       description: Triggered when a message is received from dbz
       method: POST
       emits: dbz.initialize
-      workflow: booking
+      flows: [booking]
     /api/dbz/search-upgrades:
       name: DBZ Search Upgrades
       description: Triggered when a message is received from dbz
       method: POST
       emits: dbz.evaluate-upgrades
-      workflow: booking
+      flows: [booking]
     /api/ecommerce/new-order:
       name: Ecommerce New Order
       description: Triggered when a message is received from ecommerce
       method: POST
       emits: ecommerce.new-order
-      workflow: ecommerce
+      flows: [ecommerce]
 
 cron:
   parallel-merge-cron:
@@ -82,7 +82,7 @@ cron:
     description: Triggered every 5 minutes
     cron: '0/5 * * * *'
     emits: pms.initialize
-    workflow: parallel-merge
+    flows: [parallel-merge]
 
 state:
   adapter: redis

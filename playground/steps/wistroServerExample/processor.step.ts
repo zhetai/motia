@@ -8,22 +8,20 @@ const inputSchema = z.object({
 })
 
 export const config: FlowConfig<Input> = {
-  name: "Processor",
-  subscribes: ["ws-server-example.start"],
-  emits: ["ws-server-example.processed"],
+  name: 'Processor',
+  subscribes: ['ws-server-example.start'],
+  emits: ['ws-server-example.processed'],
   input: inputSchema,
-  workflow: "wistro-server"
+  flows: ['wistro-server'],
 }
 
 export const executor: FlowExecutor<Input> = async (input, emit) => {
-  console.log("[Processor] received:", input);
+  console.log('[Processor] received:', input)
   // Just an example: reverse the message string
-  const reversed = input.message
-    ? input.message.split("").reverse().join("")
-    : "(no input.message)";
+  const reversed = input.message ? input.message.split('').reverse().join('') : '(no input.message)'
 
   await emit({
-    type: "ws-server-example.processed",
+    type: 'ws-server-example.processed',
     data: { reversed },
-  });
-};
+  })
+}

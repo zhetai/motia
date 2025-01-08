@@ -4,7 +4,7 @@ import type { EdgeData, NodeData } from '../nodes/nodes.types'
 
 type Emit = string | { type: string; label?: string; conditional?: boolean }
 
-type WorkflowStep = {
+type FlowStep = {
   id: string
   name: string
   type: 'base' | 'trigger'
@@ -16,21 +16,21 @@ type WorkflowStep = {
   cron?: string
 }
 
-export type WorkflowResponse = {
+export type FlowResponse = {
   id: string
   name: string
-  steps: WorkflowStep[]
+  steps: FlowStep[]
 }
 
-export const useGetWorkflowState = (workflow: WorkflowResponse) => {
+export const useGetFlowState = (flow: FlowResponse) => {
   const [nodes, setNodes, onNodesChange] = useNodesState<Node<NodeData>>([])
   const [edges, setEdges, onEdgesChange] = useEdgesState<Edge<EdgeData>>([])
 
   useEffect(() => {
-    if (!workflow) return
+    if (!flow) return
 
     // we need to check all subscribes and emits to connect the nodes using edges
-    const nodes: Node<NodeData>[] = workflow.steps.map((step) => ({
+    const nodes: Node<NodeData>[] = flow.steps.map((step) => ({
       id: step.id,
       type: step.type,
       position: { x: 0, y: 0 },
@@ -40,11 +40,11 @@ export const useGetWorkflowState = (workflow: WorkflowResponse) => {
     const edges: Edge<EdgeData>[] = []
 
     // For each node that emits events
-    workflow.steps.forEach((sourceNode) => {
+    flow.steps.forEach((sourceNode) => {
       const emits = sourceNode.emits || []
 
       // Check all other nodes that subscribe to those events
-      workflow.steps.forEach((targetNode) => {
+      flow.steps.forEach((targetNode) => {
         const subscribes = targetNode.subscribes || []
 
         // For each matching emit->subscribe, create an edge
@@ -71,7 +71,7 @@ export const useGetWorkflowState = (workflow: WorkflowResponse) => {
 
     setNodes(nodes)
     setEdges(edges)
-  }, [workflow])
+  }, [flow])
 
   return { nodes, edges, onNodesChange, onEdgesChange }
 }

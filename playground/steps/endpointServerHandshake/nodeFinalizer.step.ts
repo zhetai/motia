@@ -3,17 +3,17 @@ import { FlowConfig, FlowExecutor } from 'wistro'
 
 type Input = typeof inputSchema
 
-const inputSchema = z.object({});
+const inputSchema = z.object({})
 
 export const config: FlowConfig<Input> = {
-  name: "Node Finalizer",
-  subscribes: ["handshake.apiResponse"],
+  name: 'Node Finalizer',
+  subscribes: ['handshake.apiResponse'],
   emits: [],
   input: inputSchema,
-  workflow: 'handshake',
+  flows: ['handshake'],
 }
 
 export const executor: FlowExecutor<Input> = async (input) => {
-  console.log("[Node Finalizer] Received final API response:", input);
+  console.log('[Node Finalizer] Received final API response:', input)
   // This is our last step. We won't emit any more events.
-};
+}

@@ -2,10 +2,10 @@ import path from 'path'
 import fs from 'fs'
 import { parse } from 'yaml'
 import { createServer } from './server'
-import { createWorkflowHandlers } from './workflow-handlers'
+import { createFlowHandlers } from './flow-handlers'
 import { getPythonConfig } from './python/get-python-config'
 import { createEventManager } from './event-manager'
-import { Config, WorkflowStep } from './config.types'
+import { Config, FlowStep } from './config.types'
 import { FlowConfig } from '../wistro.types'
 
 require('ts-node').register({
@@ -13,52 +13,50 @@ require('ts-node').register({
   compilerOptions: { module: 'commonjs' },
 })
 
-async function parseWorkflowFolder(folderPath: string, nextWorkflows: WorkflowStep[]): Promise<WorkflowStep[]> {
-  const workflowFolderItems = fs.readdirSync(folderPath, { withFileTypes: true })
-  const workflowFiles = workflowFolderItems
+async function parseFlowFolder(folderPath: string, nextFlows: FlowStep[]): Promise<FlowStep[]> {
+  const flowFolderItems = fs.readdirSync(folderPath, { withFileTypes: true })
+  const flowFiles = flowFolderItems
     .filter(({ name }) => name.endsWith('.step.ts') || name.endsWith('.step.js') || name.endsWith('.step.py'))
     .map(({ name }) => name)
-  const workflowRootFolders = workflowFolderItems.filter((item) => item.isDirectory())
-  let workflows: WorkflowStep[] = [...nextWorkflows]
+  const flowRootFolders = flowFolderItems.filter((item) => item.isDirectory())
+  let flows: FlowStep[] = [...nextFlows]
 
-  console.log('[Workflows] Building workflows', workflowFiles)
+  console.log('[Flows] Building flows', flowFiles)
 
-  for (const file of workflowFiles) {
+  for (const file of flowFiles) {
     const isPython = file.endsWith('.py')
 
     if (isPython) {
-      console.log('[Workflows] Building Python workflow', file)
+      console.log('[Flows] Building Python flow', file)
       const config = await getPythonConfig(path.join(folderPath, file))
-      console.log('[Workflows] Python workflow config', config)
-      workflows.push({ config, file, filePath: path.join(folderPath, file) })
+      console.log('[Flows] Python flow config', config)
+      flows.push({ config, file, filePath: path.join(folderPath, file) })
     } else {
-      console.log('[Workflows] Building Node workflow', file)
+      console.log('[Flows] Building Node flow', file)
       const module = require(path.join(folderPath, file))
       if (!module.config) {
-        console.log(`[Workflows] skipping file ${file} as it does not have a valid config`)
+        console.log(`[Flows] skipping file ${file} as it does not have a valid config`)
         continue
       }
-      console.log(
-        `[Workflows] processing component ${module.config.name} for workflow ${module.config.tags?.workflow ?? file}`,
-      )
+      console.log(`[Flows] processing component ${module.config.name} for flow ${module.config.tags?.flow ?? file}`)
       const config = module.config as FlowConfig<any>
-      workflows.push({ config, file, filePath: path.join(folderPath, file) })
+      flows.push({ config, file, filePath: path.join(folderPath, file) })
     }
   }
 
-  if (workflowRootFolders.length > 0) {
-    for (const folder of workflowRootFolders) {
-      console.log('[Workflows] Building nested workflows in path', path.join(folderPath, folder.name))
-      const nestedWorkflows = await parseWorkflowFolder(path.join(folderPath, folder.name), [])
-      workflows = [...workflows, ...nestedWorkflows]
+  if (flowRootFolders.length > 0) {
+    for (const folder of flowRootFolders) {
+      console.log('[Flows] Building nested flows in path', path.join(folderPath, folder.name))
+      const nestedFlows = await parseFlowFolder(path.join(folderPath, folder.name), [])
+      flows = [...flows, ...nestedFlows]
     }
   }
 
-  return workflows
+  return flows
 }
 
-async function buildWorkflows(): Promise<WorkflowStep[]> {
-  // Read all workflow folders under /flows directory
+async function buildFlows(): Promise<FlowStep[]> {
+  // Read all flow folders under /flows directory
   const flowsDir = path.join(process.cwd(), 'steps')
 
   // Check if steps directory exists
@@ -67,18 +65,18 @@ async function buildWorkflows(): Promise<WorkflowStep[]> {
     return []
   }
 
-  // Get all workflow folders
-  return parseWorkflowFolder(flowsDir, [])
+  // Get all flow folders
+  return parseFlowFolder(flowsDir, [])
 }
 
 export const dev = async (): Promise<void> => {
   const configYaml = fs.readFileSync(path.join(process.cwd(), 'config.yml'), 'utf8')
   const config: Config = parse(configYaml)
-  const workflowSteps = await buildWorkflows()
+  const flowSteps = await buildFlows()
   const eventManager = createEventManager()
-  const { server, socketServer } = await createServer(config, workflowSteps, eventManager)
+  const { server, socketServer } = await createServer(config, flowSteps, eventManager)
 
-  createWorkflowHandlers(workflowSteps, eventManager, config.state, socketServer)
+  createFlowHandlers(flowSteps, eventManager, config.state, socketServer)
 
   // 6) Gracefully shut down on SIGTERM
   process.on('SIGTERM', async () => {

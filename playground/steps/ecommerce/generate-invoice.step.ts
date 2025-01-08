@@ -21,7 +21,7 @@ export const config: FlowConfig<Input> = {
   subscribes: ['ecommerce.generate-invoice'],
   emits: [{ type: 'ecommerce.notify-user' }, { type: 'ecommerce.update-inventory' }],
   input: inputSchema,
-  workflow: 'ecommerce',
+  flows: ['ecommerce'],
 }
 
 export const executor: FlowExecutor<Input> = async (input, emit, ctx) => {

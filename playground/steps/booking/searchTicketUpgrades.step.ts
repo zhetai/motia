@@ -11,76 +11,77 @@ const inputSchema = z.object({
 })
 
 export const config: FlowConfig<Input> = {
-  name: "Search Ticket Upgrades",
-  subscribes: ["dbz.evaluate-upgrades"],
-  emits: ["dbz.error", "dbz.send-text"],
+  name: 'Search Ticket Upgrades',
+  subscribes: ['dbz.evaluate-upgrades'],
+  emits: ['dbz.error', 'dbz.send-text'],
   input: inputSchema,
-  workflow: 'booking'
+  flows: ['booking'],
 }
 
 export const executor: FlowExecutor<Input> = async (input, emit, ctx) => {
-  const validation = inputSchema.safeParse(input);
+  const validation = inputSchema.safeParse(input)
 
   if (!validation.success) {
     await emit({
-      type: "dbz.error",
-      data: { message: "input validation error" },
-    });
-    return;
+      type: 'dbz.error',
+      data: { message: 'input validation error' },
+    })
+    return
   }
 
   try {
     const reservation = await ctx.state.get<{
-      customer: {id: string, phoneNumber: string},
-      venue: {id: string, phoneNumber: string, name: string},
-    }>(`booking_${input.customerPhoneNumber}`, 'reservation');
+      customer: { id: string; phoneNumber: string }
+      venue: { id: string; phoneNumber: string; name: string }
+    }>(`booking_${input.customerPhoneNumber}`, 'reservation')
 
     if (reservation?.customer?.phoneNumber !== input.customerPhoneNumber) {
-      throw new Error("there is no reservation for the phone number provided, please check the phone number and try again");
+      throw new Error(
+        'there is no reservation for the phone number provided, please check the phone number and try again',
+      )
     }
 
     const seatsResponse = await fetch(
-      `https://supreme-voltaic-flyaway.glitch.me/seats/upgrade?section=${input.section}&row=${input.row}&seat=${input.seat}`
-    );
+      `https://supreme-voltaic-flyaway.glitch.me/seats/upgrade?section=${input.section}&row=${input.row}&seat=${input.seat}`,
+    )
 
     if (!seatsResponse.ok) {
-      throw new Error("failed to retrieve upgrade seats");
+      throw new Error('failed to retrieve upgrade seats')
     }
 
-    const { upgradedSeats } = await seatsResponse.json();
+    const { upgradedSeats } = await seatsResponse.json()
 
     if (!upgradedSeats.length) {
       await emit({
-        type: "dbz.send-text",
+        type: 'dbz.send-text',
         data: {
-          message: "Sorry, there are no available seats for your venue",
+          message: 'Sorry, there are no available seats for your venue',
           phoneNumber: input.customerPhoneNumber,
         },
-      });
-      return;
+      })
+      return
     }
 
     const seatList = upgradedSeats
       .map(
-        (seat: {
-          section: string;
-          row: string;
-          seat: string;
-        }) => `Section: ${seat.section}, Row: ${seat.row}, Seat: ${seat.seat}`
+        (seat: { section: string; row: string; seat: string }) =>
+          `Section: ${seat.section}, Row: ${seat.row}, Seat: ${seat.seat}`,
       )
-      .join("\n");
+      .join('\n')
 
     await emit({
-      type: "dbz.send-text",
+      type: 'dbz.send-text',
       data: {
         message: `Here are your VIP upgrades:\n${seatList}`,
         phoneNumber: input.customerPhoneNumber,
       },
-    });
+    })
   } catch (error) {
     await emit({
-      type: "dbz.error",
-      data: { message: error instanceof Error ? error.message : `unknown error captured check logs traceId:${ctx.traceId}` },
-    });
+      type: 'dbz.error',
+      data: {
+        message: error instanceof Error ? error.message : `unknown error captured check logs traceId:${ctx.traceId}`,
+      },
+    })
   }
 }

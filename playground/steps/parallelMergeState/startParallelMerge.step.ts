@@ -6,16 +6,16 @@ type Input = typeof inputSchema
 const inputSchema = z.object({})
 
 export const config: FlowConfig<Input> = {
-  name: "Start Event",
-  subscribes: ["pms.initialize"],
-  emits: ["pms.start"],
+  name: 'Start Event',
+  subscribes: ['pms.initialize'],
+  emits: ['pms.start'],
   input: inputSchema,
-  workflow: "parallel-merge"
+  flows: ['parallel-merge'],
 }
 
 export const executor: FlowExecutor<Input> = async (_, emit) => {
   await emit({
-    type: "pms.start",
+    type: 'pms.start',
     data: {},
-  });
+  })
 }

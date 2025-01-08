@@ -8,19 +8,19 @@ const inputSchema = z.object({
 })
 
 export const config: FlowConfig<Input> = {
-  name: "Node Starter",
-  subscribes: ["handshake.initiate"],
-  emits: ["handshake.callApi"],
+  name: 'Node Starter',
+  subscribes: ['handshake.initiate'],
+  emits: ['handshake.callApi'],
   input: inputSchema,
-  workflow: 'handshake',
+  flows: ['handshake'],
 }
 
 export const executor: FlowExecutor<Input> = async (input, emit) => {
-  console.log("[Node Starter] Received initiate event:", input);
-  const userMessage = input.message || "Hello from Node Starter!";
+  console.log('[Node Starter] Received initiate event:', input)
+  const userMessage = input.message || 'Hello from Node Starter!'
   // Now emit an event telling the server-based component to do an API call
   await emit({
-    type: "handshake.callApi",
+    type: 'handshake.callApi',
     data: { userMessage },
-  });
-};
+  })
+}

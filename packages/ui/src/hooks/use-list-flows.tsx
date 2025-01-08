@@ -1,20 +1,20 @@
 import { useEffect, useState } from 'react'
 
-type Workflow = {
+type Flow = {
   id: string
   name: string
 }
 
-export const useListWorkflows = () => {
+export const useListFlows = () => {
   const [isLoading, setIsLoading] = useState(true)
-  const [workflows, setWorkflows] = useState<Workflow[]>([])
+  const [flows, setFlows] = useState<Flow[]>([])
 
   useEffect(() => {
-    fetch('/workflows')
+    fetch('/flows')
       .then((res) => res.json())
-      .then(setWorkflows)
+      .then(setFlows)
       .finally(() => setIsLoading(false))
   }, [])
 
-  return { workflows, isLoading }
+  return { flows, isLoading }
 }

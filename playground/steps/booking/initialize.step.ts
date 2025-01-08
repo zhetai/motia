@@ -9,29 +9,29 @@ const inputSchema = z.object({
 })
 
 export const config: FlowConfig<Input> = {
-  name: "Initialize",
-  subscribes: ["dbz.initialize"],
-  emits: ["dbz.search-customer", "dbz.error"],
+  name: 'Initialize',
+  subscribes: ['dbz.initialize'],
+  emits: ['dbz.search-customer', 'dbz.error'],
   input: inputSchema,
-  workflow: 'booking'
+  flows: ['booking'],
 }
 
 export const executor: FlowExecutor<Input> = async (input, emit, ctx) => {
-  const validation = inputSchema.safeParse(input);
+  const validation = inputSchema.safeParse(input)
 
   if (!validation.success) {
     await emit({
-      type: "dbz.error",
-      data: { message: "input validation error" },
-    });
-    return;
+      type: 'dbz.error',
+      data: { message: 'input validation error' },
+    })
+    return
   }
 
   await emit({
-    type: "dbz.search-customer",
+    type: 'dbz.search-customer',
     data: {
       venuePhoneNumber: input.venuePhoneNumber,
       customerPhoneNumber: input.customerPhoneNumber,
     },
-  });
+  })
 }

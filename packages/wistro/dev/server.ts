@@ -4,11 +4,11 @@ import bodyParser from 'body-parser'
 import { randomUUID } from 'crypto'
 import express, { Request, Response } from 'express'
 import http from 'http'
-import { Config, WorkflowStep } from './config.types'
+import { Config, FlowStep } from './config.types'
 import { Event, EventManager } from './event-manager'
-import { workflowsEndpoint } from './workflows-endpoint'
+import { flowsEndpoint } from './flows-endpoint'
 
-export const createServer = async (config: Config, workflowSteps: WorkflowStep[], eventManager: EventManager) => {
+export const createServer = async (config: Config, flowSteps: FlowStep[], eventManager: EventManager) => {
   const app = express()
   const server = http.createServer(app)
   const io = new SocketIOServer(server)
@@ -53,7 +53,7 @@ export const createServer = async (config: Config, workflowSteps: WorkflowStep[]
     }
   }
 
-  workflowsEndpoint(config, workflowSteps, app)
+  flowsEndpoint(config, flowSteps, app)
   await applyMiddleware(app)
 
   console.log('[API] Server listening on port', config.port)

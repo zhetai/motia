@@ -3,7 +3,7 @@ config = {
     "subscribes": ["hybrid.validated"],
     "emits": ["hybrid.transformed"],
     "input": None,  # No schema validation in Python version
-    "workflow": "hybrid-example"
+    "flows": ["hybrid-example"]
 }
 
 # Add a static counter at module level

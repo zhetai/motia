@@ -5,7 +5,7 @@ export type ApiPath = {
   method: string
   emits: string
   name: string
-  workflow: string
+  flows: string[]
   description?: string
   tags?: string[]
 }
@@ -16,7 +16,7 @@ export type ApiConfig = {
   paths: Record<string, ApiPath>
 }
 
-export type WorkflowDefinition = {
+export type FlowDefinition = {
   name: string
 }
 
@@ -26,7 +26,7 @@ export type CronDefinition = {
   cron: string
   emits: string
   tags?: string[]
-  workflow: string
+  flows: string[]
 }
 
 export type StateConfig = {
@@ -39,12 +39,12 @@ export type StateConfig = {
 export type Config = {
   port: number
   api: ApiConfig
-  workflows: Record<string, WorkflowDefinition>
+  flows: Record<string, FlowDefinition>
   cron: Record<string, CronDefinition>
   state: StateConfig
 }
 
-export type WorkflowStep = {
+export type FlowStep = {
   config: FlowConfig<ZodObject<any>>
   file: string
   filePath: string
