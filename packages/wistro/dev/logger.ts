@@ -38,12 +38,16 @@ export class Logger extends BaseLogger {
   constructor(
     private readonly traceId: string,
     private readonly flows: string[],
-    server: Server,
+    socketServer?: Server,
   ) {
     super({ traceId, flows })
 
     this.emitLog = (level: string, msg: string, args?: any) => {
-      server.emit('log', {
+      if (!socketServer) {
+        return
+      }
+
+      socketServer.emit('log', {
         ...(args ?? {}),
         level,
         time: Date.now(),

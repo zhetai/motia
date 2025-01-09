@@ -1,24 +1,12 @@
 import { globalLogger, Logger } from './logger'
+import { Event, EventManager, Handler } from './../wistro.types'
 
-export type Event<TData> = {
-  type: string
-  data: TData
-  traceId: string
-  flows: string[]
-  logger: Logger
-}
-
-type Handler<TData = unknown> = (event: Event<TData>) => Promise<void>
-
-export type EventManager = {
-  emit: <TData>(event: Event<TData>, file?: string) => Promise<void>
-  subscribe: <TData>(event: string, handlerName: string, handler: Handler<TData>) => void
-}
-
-export const createEventManager = (): EventManager => {
+export const createEventManager = (globalSubscriber?: (event: Event<unknown>) => void): EventManager => {
   const handlers: Record<string, Handler[]> = {}
 
   const emit = async <TData>(event: Event<TData>, file?: string) => {
+    globalSubscriber?.(event)
+
     const eventHandlers = handlers[event.type] ?? []
     const { logger, ...rest } = event
 

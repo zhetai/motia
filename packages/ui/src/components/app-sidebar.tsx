@@ -37,7 +37,7 @@ export const AppSidebar = () => {
                       to="/flow/$id"
                       params={{ id: flow.id }}
                       className="flex items-center gap-2"
-                      data-testid={flow.id}
+                      data-testid={`flow-link-${flow.id}`}
                     >
                       <Workflow />
                       <span>{flow.name}</span>

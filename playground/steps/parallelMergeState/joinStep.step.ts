@@ -17,20 +17,26 @@ export const executor: FlowExecutor<Input> = async (_, emit, ctx) => {
   const traceId = ctx.traceId
   console.log('[join-step] Checking if all partial results exist for traceId =', traceId)
 
-  const stepAData = await ctx.state.get(traceId, 'stepA')
-  const stepBData = await ctx.state.get(traceId, 'stepB')
-  const stepCData = await ctx.state.get(traceId, 'stepC')
+  const state = await ctx.state.get<
+    Partial<{
+      stepA: { msg: string; timestamp: number }
+      stepB: { msg: string; timestamp: number }
+      stepC: { msg: string; timestamp: number }
+      done: boolean
+    }>
+  >()
 
-  if (!stepAData || !stepBData || !stepCData) {
+  if (!state.done || !state.stepA || !state.stepB || !state.stepC) {
     console.log('[join-step] Not all steps done yet, ignoring for now.')
     return
   }
 
   console.log('[join-step] All steps are complete. Merging results...')
+
   const merged = {
-    stepA: stepAData,
-    stepB: stepBData,
-    stepC: stepCData,
+    stepA: state.stepA,
+    stepB: state.stepB,
+    stepC: state.stepC,
     mergedAt: new Date().toISOString(),
   }
 
@@ -39,5 +45,5 @@ export const executor: FlowExecutor<Input> = async (_, emit, ctx) => {
     data: merged,
   })
 
-  await ctx.state.clear(traceId)
+  await ctx.state.clear()
 }

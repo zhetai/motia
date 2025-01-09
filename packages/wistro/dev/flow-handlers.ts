@@ -1,8 +1,8 @@
+import { Event, EventManager } from './../wistro.types'
 import { spawn } from 'child_process'
 import path from 'path'
 import { FlowStep } from './config.types'
 import { AdapterConfig } from '../state/createStateAdapter'
-import { Event, EventManager } from './event-manager'
 import { globalLogger } from './logger'
 
 const nodeRunner = path.join(__dirname, 'node', 'node-runner.js')

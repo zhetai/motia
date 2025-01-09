@@ -18,7 +18,9 @@ export const executor: FlowExecutor<Input> = async (_, emit, ctx) => {
   console.log('[stepA] received pms.start, traceId =', traceId)
 
   const partialResultA = { msg: 'Hello from Step A', timestamp: Date.now() }
-  await ctx.state.set<{ msg: string; timestamp: number }>(traceId, 'stepA', partialResultA)
+  await ctx.state.set<{ msg: string; timestamp: number }>('stepA', partialResultA)
+
+  console.log(await ctx.state.get('stepA'))
 
   await emit({
     type: 'pms.stepA.done',

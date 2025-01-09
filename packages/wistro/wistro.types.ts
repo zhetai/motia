@@ -1,13 +1,15 @@
 import { z, ZodObject } from 'zod'
+import { Server } from 'http'
+import { Server as SocketIOServer } from 'socket.io'
 import { Logger } from './dev/logger'
 
 export type Emitter = (event: any) => Promise<void>
 export type FlowContext = {
   traceId: string
   state: {
-    get: <T>(traceId: string, key: string) => Promise<T>
-    clear: (traceId: string) => Promise<void>
-    set: <T>(traceId: string, key: string, value: T) => Promise<void>
+    get: <T>(path?: string) => Promise<T>
+    clear: () => Promise<void>
+    set: <T>(path: string, value: T) => Promise<void>
   }
   logger: Logger
 }
@@ -31,4 +33,22 @@ export type FlowConfig<TInput extends ZodObject<any>> = {
 export type Flow<TInput extends ZodObject<any>> = {
   config: FlowConfig<TInput>
   executor: FlowExecutor<TInput>
+}
+
+export type WistroServer = Server<any>
+export type WistroSockerServer = SocketIOServer
+
+export type Event<TData> = {
+  type: string
+  data: TData
+  traceId: string
+  flows: string[]
+  logger: Logger
+}
+
+export type Handler<TData = unknown> = (event: Event<TData>) => Promise<void>
+
+export type EventManager = {
+  emit: <TData>(event: Event<TData>, file?: string) => Promise<void>
+  subscribe: <TData>(event: string, handlerName: string, handler: Handler<TData>) => void
 }

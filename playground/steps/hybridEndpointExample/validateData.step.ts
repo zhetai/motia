@@ -1,11 +1,15 @@
 import { FlowConfig, FlowExecutor } from 'wistro'
-import { ItemsListSchema } from './items.schema'
 import { z } from 'zod'
 
 type Input = typeof inputSchema
 
 const inputSchema = z.object({
-  data: ItemsListSchema,
+  items: z.array(
+    z.object({
+      id: z.number(),
+      value: z.number(),
+    }),
+  ),
 })
 
 export const config: FlowConfig<Input> = {
@@ -20,7 +24,7 @@ export const executor: FlowExecutor<Input> = async (input, emit) => {
   await emit({
     type: 'hybrid.validated',
     data: {
-      items: input.data,
+      items: input.items,
       timestamp: new Date().toISOString(),
     },
   })
