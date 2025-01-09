@@ -1,23 +1,28 @@
+import { globalLogger, Logger } from './logger'
+
 export type Event<TData> = {
   type: string
   data: TData
   traceId: string
+  flows: string[]
+  logger: Logger
 }
 
 type Handler<TData = unknown> = (event: Event<TData>) => Promise<void>
 
 export type EventManager = {
-  emit: <TData>(event: Event<TData>) => Promise<void>
+  emit: <TData>(event: Event<TData>, file?: string) => Promise<void>
   subscribe: <TData>(event: string, handlerName: string, handler: Handler<TData>) => void
 }
 
 export const createEventManager = (): EventManager => {
   const handlers: Record<string, Handler[]> = {}
 
-  const emit = async <TData>(event: Event<TData>) => {
+  const emit = async <TData>(event: Event<TData>, file?: string) => {
     const eventHandlers = handlers[event.type] ?? []
+    const { logger, ...rest } = event
 
-    console.log(`[Flow Emit] ${event.type} emitted`, { handlers: eventHandlers.length })
+    logger.debug('[Flow Emit] Event emitted', { handlers: eventHandlers.length, data: rest, file })
     eventHandlers.map((handler) => handler(event))
   }
 
@@ -26,7 +31,7 @@ export const createEventManager = (): EventManager => {
       handlers[event] = []
     }
 
-    console.log(`[Flow Sub] ${handlerName} subscribing to ${event}`)
+    globalLogger.debug('[Flow Sub] Subscribing to event', { event, handlerName })
 
     handlers[event].push(handler as Handler)
   }
