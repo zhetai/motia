@@ -11,7 +11,7 @@ const inputSchema = z.object({
 export const config: FlowConfig<Input> = {
   name: 'Send SMS',
   subscribes: ['dbz.send-text'],
-  emits: ['dbz.error'],
+  emits: ['dbz.error', 'dbz.message-sent'],
   input: inputSchema,
   flows: ['booking'],
 }

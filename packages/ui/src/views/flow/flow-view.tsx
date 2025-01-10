@@ -1,22 +1,13 @@
 import { Background, BackgroundVariant, ReactFlow } from '@xyflow/react'
 import '@xyflow/react/dist/style.css'
-import { BaseNode } from './nodes/base-node'
-import { TriggerNode } from './nodes/trigger-node'
 import { BaseEdge } from './base-edge'
 import { ArrowHead } from './arrow-head'
 import { useGetFlowState, FlowResponse } from './hooks/use-get-flow-state'
 import { useCallback, useEffect, useState } from 'react'
 import { NodeOrganizer } from './node-organizer'
 import { FlowLoader } from './flow-loader'
-import { NoopNode } from './nodes/noop-node'
 import { useLogListener } from '@/hooks/use-log-listener'
 import { LogConsole } from '@/components/log-console'
-
-const nodeTypes = {
-  base: BaseNode,
-  trigger: TriggerNode,
-  noop: NoopNode,
-}
 
 const edgeTypes = {
   base: BaseEdge,
@@ -27,7 +18,7 @@ type Props = {
 }
 
 export const FlowView: React.FC<Props> = ({ flow }) => {
-  const { nodes, edges, onNodesChange, onEdgesChange } = useGetFlowState(flow)
+  const { nodes, edges, onNodesChange, onEdgesChange, nodeTypes } = useGetFlowState(flow)
   const [initialized, setInitialized] = useState(false)
   useLogListener()
 
@@ -36,6 +27,10 @@ export const FlowView: React.FC<Props> = ({ flow }) => {
   const onInitialized = useCallback(() => {
     setTimeout(() => setInitialized(true), 10)
   }, [])
+
+  if (!nodeTypes) {
+    return null
+  }
 
   return (
     <div className="w-full h-full relative">

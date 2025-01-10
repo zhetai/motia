@@ -7,10 +7,17 @@ import { createServer as createViteServer } from 'vite'
 import tailwindcssConfig from './tailwind.config'
 
 export const applyMiddleware = async (app: Express) => {
+  console.log(path.resolve(process.cwd(), './steps'))
   const vite = await createViteServer({
     appType: 'spa',
     root: __dirname,
-    server: { middlewareMode: true },
+
+    server: {
+      middlewareMode: true,
+      fs: {
+        allow: [__dirname, path.join(process.cwd(), './steps')],
+      },
+    },
     resolve: {
       alias: { '@': path.resolve(__dirname, './src') },
     },
