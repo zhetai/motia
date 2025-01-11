@@ -20,7 +20,7 @@ type FlowStepResponse = {
   webhookUrl?: string
   inputSchema?: any
   cron?: string
-  uiOverridePath?: string
+  nodeComponentPath?: string
 }
 
 type FlowResponse = FlowListResponse & {
@@ -111,7 +111,7 @@ export const generateFlowsList = (config: Config, flowSteps: FlowStep[]): FlowRe
     })
 
     flowStepsMap[flowId].forEach((flow) => {
-      const uiOverridePath = fs.existsSync(flow.filePath + 'x') ? flow.filePath + 'x' : undefined
+      const nodeComponentPath = fs.existsSync(flow.filePath + 'x') ? flow.filePath + 'x' : undefined
 
       steps.push({
         id: randomUUID(),
@@ -120,7 +120,7 @@ export const generateFlowsList = (config: Config, flowSteps: FlowStep[]): FlowRe
         description: flow.config.description,
         emits: flow.config.emits,
         subscribes: flow.config.subscribes,
-        uiOverridePath,
+        nodeComponentPath,
       })
     })
 

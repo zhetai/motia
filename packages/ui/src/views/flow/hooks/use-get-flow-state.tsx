@@ -17,7 +17,7 @@ type FlowStep = {
   action?: 'webhook' | 'cron'
   webhookUrl?: string
   cron?: string
-  uiOverridePath?: string
+  nodeComponentPath?: string
 }
 
 export type FlowResponse = {
@@ -40,9 +40,9 @@ async function importFlow(flow: FlowResponse): Promise<FlowState> {
   }
 
   for (const step of flow.steps) {
-    if (step.uiOverridePath) {
-      const module = await import(step.uiOverridePath)
-      nodeTypes[step.uiOverridePath] = module.default
+    if (step.nodeComponentPath) {
+      const module = await import(step.nodeComponentPath)
+      nodeTypes[step.nodeComponentPath] = module.default
     }
   }
 
@@ -51,7 +51,7 @@ async function importFlow(flow: FlowResponse): Promise<FlowState> {
   // we need to check all subscribes and emits to connect the nodes using edges
   const nodes: Node<NodeData>[] = flow.steps.map((step) => ({
     id: step.id,
-    type: step.uiOverridePath ? step.uiOverridePath : step.type,
+    type: step.nodeComponentPath ? step.nodeComponentPath : step.type,
     position: { x: 0, y: 0 },
     data: step,
   }))

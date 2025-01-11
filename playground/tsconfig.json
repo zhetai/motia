@@ -13,6 +13,6 @@
     "rootDir": ".",
     "baseUrl": "."
   },
-  "include": ["**/*.ts", "wistro.mts", "steps/booking/noop/userSendsMessage.noop.tsx"],
+  "include": ["**/*.ts", "wistro.mts", "**/*.tsx"],
   "exclude": ["node_modules", "dist", "tests"]
 }

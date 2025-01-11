@@ -7,7 +7,6 @@ import { createServer as createViteServer } from 'vite'
 import tailwindcssConfig from './tailwind.config'
 
 export const applyMiddleware = async (app: Express) => {
-  console.log(path.resolve(process.cwd(), './steps'))
   const vite = await createViteServer({
     appType: 'spa',
     root: __dirname,
