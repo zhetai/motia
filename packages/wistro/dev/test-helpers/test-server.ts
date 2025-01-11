@@ -1,12 +1,10 @@
-import path from 'path'
-import fs from 'fs'
-import { parse } from 'yaml'
 import { Config } from './../config.types'
 import { buildFlows } from './../flow-builder'
 import { createEventManager } from './../event-manager'
 import { createServer } from './../server'
 import { WistroServer, EventManager, Event } from './../../wistro.types'
 import { createFlowHandlers } from './../flow-handlers'
+import { loadLockFile } from '../load-lock-file'
 
 type Response = Promise<{
   eventManager: EventManager
@@ -16,17 +14,16 @@ type Response = Promise<{
 export const createTestServer = async <EData>(
   configPath: string,
   eventSubscriber?: (event: Event<EData>) => void,
-  configOverrides?: Config,
+  configOverrides?: Partial<{ port: number }>,
 ): Response => {
-  const configYaml = fs.readFileSync(path.join(configPath, 'config.yml'), 'utf8')
-  const config: Config = parse(configYaml)
-  const workflowSteps = await buildFlows()
+  const lockData = loadLockFile()
+  const flowSteps = await buildFlows(lockData)
   const eventManager = createEventManager(eventSubscriber as (event: Event<unknown>) => void)
-  const { server } = await createServer({ ...config, ...(configOverrides ?? {}) }, workflowSteps, eventManager, {
+  const { server } = await createServer({ ...lockData, ...(configOverrides ?? {}) }, flowSteps, eventManager, {
     skipSocketServer: true,
   })
 
-  createFlowHandlers(workflowSteps, eventManager, config.state)
+  createFlowHandlers(flowSteps, eventManager, lockData.state)
 
   return { server, eventManager }
 }

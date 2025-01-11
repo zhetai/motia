@@ -52,3 +52,46 @@ export type EventManager = {
   emit: <TData>(event: Event<TData>, file?: string) => Promise<void>
   subscribe: <TData>(event: string, handlerName: string, handler: Handler<TData>) => void
 }
+
+export type LockFlow = {
+  name: string
+  description: string
+  steps: { filePath: string; version: string }[]
+  version: string
+}
+
+export type LockFile = {
+  baseDir: string
+  version: string
+  port?: number
+  flows: Record<string, LockFlow>
+  state: {
+    adapter: string
+    host: string
+    port: number
+  }
+  triggers: {
+    api: {
+      paths: Record<
+        string,
+        {
+          method: string
+          emits: string
+          name: string
+          description: string
+          flows: string[]
+        }
+      >
+    }
+    cron: Record<
+      string,
+      {
+        name: string
+        description: string
+        cron: string
+        emits: string
+        flows: string[]
+      }
+    >
+  }
+}

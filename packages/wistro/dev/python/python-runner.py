@@ -32,6 +32,7 @@ class Context:
         self.trace_id = args.traceId
         self.flows = args.flows
         self.file_name = file_name
+        # TODO: check that state config is defined, otherwise default to in-memory state management
         self.state = StateAdapter(self.trace_id, args.stateConfig)
         self.logger = Logger(self.trace_id, self.flows, self.file_name)
 

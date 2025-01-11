@@ -47,7 +47,6 @@ test.describe('Flow Selector & Visual Tests', () => {
     await page.goto(wistroWorkbenchUrl)
 
     // Wait for the flow selector to appear
-    const flowSelect = page.locator('select')
     await expect(page.locator('text=Endpoint Server Handshake')).toBeVisible()
 
     // For each flow definition, select it and check a unique node
@@ -64,7 +63,6 @@ test.describe('Flow Selector & Visual Tests', () => {
     await page.locator('text=Endpoint Server Handshake').waitFor()
 
     // 2) For each flow, select it, wait for the node, then take a screenshot
-    const flowSelect = page.locator('select')
     for (const flow of FLOWS) {
       // Switch flow
       await page.getByTestId(`flow-link-${flow.name}`).click()

@@ -1,8 +1,7 @@
 import path from 'path'
-import fs from 'fs'
 import { getPythonConfig } from './python/get-python-config'
 import { FlowStep } from './config.types'
-import { FlowConfig } from '../wistro.types'
+import { LockFile } from '../wistro.types'
 import { globalLogger } from './logger'
 
 require('ts-node').register({
@@ -10,58 +9,38 @@ require('ts-node').register({
   compilerOptions: { module: 'commonjs' },
 })
 
-export const parseFlowFolder = async (folderPath: string, nextFlows: FlowStep[]): Promise<FlowStep[]> => {
-  const flowFolderItems = fs.readdirSync(folderPath, { withFileTypes: true })
-  const flowFiles = flowFolderItems
-    .filter(({ name }) => name.endsWith('.step.ts') || name.endsWith('.step.js') || name.endsWith('.step.py'))
-    .map(({ name }) => name)
-  const flowRootFolders = flowFolderItems.filter((item) => item.isDirectory())
+export const buildLockDataFlows = async (lockData: LockFile, nextFlows: FlowStep[]): Promise<FlowStep[]> => {
+  const flowsFromLock = lockData.flows || {}
   let flows: FlowStep[] = [...nextFlows]
 
-  globalLogger.debug('[Flows] Building flows', { flowFiles, flowRootFolders })
+  globalLogger.debug('[Flows] Building flows from lock file', { version: lockData.version })
 
-  for (const file of flowFiles) {
-    const isPython = file.endsWith('.py')
+  for (const [_, flowData] of Object.entries(flowsFromLock)) {
+    for (const { filePath: stepPath } of flowData.steps) {
+      const stepFilePath = path.join(lockData.baseDir, stepPath)
+      const isPython = stepFilePath.endsWith('.py')
 
-    if (isPython) {
-      globalLogger.debug('[Flows] Building Python flow', { file })
-      const config = await getPythonConfig(path.join(folderPath, file))
-      globalLogger.debug('[Flows] Python flow config', { config })
-      flows.push({ config, file, filePath: path.join(folderPath, file) })
-    } else {
-      globalLogger.debug('[Flows] Building Node flow', { file })
-      const module = require(path.join(folderPath, file))
-      if (!module.config) {
-        globalLogger.debug(`[Flows] skipping file ${file} as it does not have a valid config`)
-        continue
+      if (isPython) {
+        globalLogger.debug('[Flows] Building Python flow from lock', { stepPath: stepFilePath })
+        const config = await getPythonConfig(stepFilePath)
+        flows.push({ config, file: path.basename(stepFilePath), filePath: stepFilePath })
+      } else {
+        globalLogger.debug('[Flows] Building Node flow from lock', { stepPath: stepFilePath })
+        const module = require(stepFilePath)
+        if (!module.config) {
+          globalLogger.debug(`[Flows] Skipping step ${stepFilePath} as it does not have a valid config`)
+          continue
+        }
+        const config = module.config
+        flows.push({ config, file: path.basename(stepFilePath), filePath: stepFilePath })
       }
-      globalLogger.debug('[Flows] processing component', { config: module.config })
-      const config = module.config as FlowConfig<any>
-      flows.push({ config, file, filePath: path.join(folderPath, file) })
-    }
-  }
-
-  if (flowRootFolders.length > 0) {
-    for (const folder of flowRootFolders) {
-      globalLogger.debug('[Flows] Building nested flows in path', { path: path.join(folderPath, folder.name) })
-      const nestedFlows = await parseFlowFolder(path.join(folderPath, folder.name), [])
-      flows = [...flows, ...nestedFlows]
     }
   }
 
   return flows
 }
 
-export const buildFlows = async (): Promise<FlowStep[]> => {
-  // Read all flow folders under /flows directory
-  const flowsDir = path.join(process.cwd(), 'steps')
-
-  // Check if steps directory exists
-  if (!fs.existsSync(flowsDir)) {
-    globalLogger.error('No /steps directory found')
-    return []
-  }
-
-  // Get all flow folders
-  return parseFlowFolder(flowsDir, [])
+// Updated buildFlows to use lock file
+export const buildFlows = async (lockData: LockFile): Promise<FlowStep[]> => {
+  return buildLockDataFlows(lockData, [])
 }

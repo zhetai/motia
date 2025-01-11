@@ -1,0 +1,281 @@
+{
+  "version": "dc318765-7f0d-48fc-a760-1ca0d9da565d:1736559581",
+  "port": 3000,
+  "state": {
+    "adapter": "redis",
+    "host": "localhost",
+    "port": 6379
+  },
+  "triggers": {
+    "api": {
+      "paths": {
+        "/api/openai": {
+          "method": "POST",
+          "emits": "call-openai",
+          "name": "OpenAI",
+          "description": "Triggered when a message is received from chatbot",
+          "flows": [
+            "openai"
+          ]
+        },
+        "/api/hybrid-endpoint-example": {
+          "method": "POST",
+          "emits": "hybrid.received",
+          "name": "Hybrid Endpoint Example",
+          "description": "Triggered when a message is received from hybrid endpoint",
+          "flows": [
+            "hybrid-example"
+          ]
+        },
+        "/api/wistro-server-example": {
+          "method": "POST",
+          "emits": "ws-server-example.trigger",
+          "name": "Wistro Server Example",
+          "description": "Triggered when a message is received from wistro server",
+          "flows": [
+            "wistro-server"
+          ]
+        },
+        "/api/endpoint-server-handshake": {
+          "method": "POST",
+          "emits": "handshake.initiate",
+          "name": "Endpoint Server Handshake",
+          "description": "Triggered when a message is received from endpoint server",
+          "flows": [
+            "handshake"
+          ]
+        },
+        "/api/parallel-merge": {
+          "name": "Parallel Merge",
+          "description": "Triggered when a message is received from parallel merge",
+          "method": "POST",
+          "emits": "pms.initialize",
+          "flows": [
+            "parallel-merge"
+          ]
+        },
+        "/api/dbz/initialize": {
+          "name": "DBZ Initialize",
+          "description": "Triggered when a message is received from dbz",
+          "method": "POST",
+          "emits": "dbz.initialize",
+          "flows": [
+            "booking"
+          ]
+        },
+        "/api/dbz/search-upgrades": {
+          "name": "DBZ Search Upgrades",
+          "description": "Triggered when a message is received from dbz",
+          "method": "POST",
+          "emits": "dbz.evaluate-upgrades",
+          "flows": [
+            "booking"
+          ]
+        },
+        "/api/ecommerce/new-order": {
+          "name": "Ecommerce New Order",
+          "description": "Triggered when a message is received from ecommerce",
+          "method": "POST",
+          "emits": "ecommerce.new-order",
+          "flows": [
+            "ecommerce"
+          ]
+        }
+      }
+    },
+    "cron": {
+      "parallel-merge-cron": {
+        "name": "Parallel Merge",
+        "description": "Triggered every 5 minutes",
+        "cron": "0/5 * * * *",
+        "emits": "pms.initialize",
+        "flows": [
+          "parallel-merge"
+        ]
+      }
+    }
+  },
+  "flows": {
+    "booking": {
+      "name": "Booking Example",
+      "description": "A flow that demonstrates the an event driven booking flow",
+      "steps": [
+        {
+          "filePath": "./steps/booking/initialize.step.ts",
+          "version": "dc318765-7f0d-48fc-a760-1ca0d9da565d:1736559581"
+        },
+        {
+          "filePath": "./steps/booking/searchCustomer.step.ts",
+          "version": "dc318765-7f0d-48fc-a760-1ca0d9da565d:1736559581"
+        },
+        {
+          "filePath": "./steps/booking/searchTicketUpgrades.step.ts",
+          "version": "dc318765-7f0d-48fc-a760-1ca0d9da565d:1736559581"
+        },
+        {
+          "filePath": "./steps/booking/sendText.step.ts",
+          "version": "dc318765-7f0d-48fc-a760-1ca0d9da565d:1736559581"
+        }
+      ],
+      "version": "dc318765-7f0d-48fc-a760-1ca0d9da565d:1736559581"
+    },
+    "openai": {
+      "name": "OpenAI Example",
+      "description": "A flow that demonstrates the use of OpenAI in a flow",
+      "steps": [
+        {
+          "filePath": "./steps/callOpenAi.step.ts",
+          "version": "dc318765-7f0d-48fc-a760-1ca0d9da565d:1736559581"
+        },
+        {
+          "filePath": "./steps/call_ai.step.py",
+          "version": "dc318765-7f0d-48fc-a760-1ca0d9da565d:1736559581"
+        },
+        {
+          "filePath": "./steps/openAiResponse.step.ts",
+          "version": "dc318765-7f0d-48fc-a760-1ca0d9da565d:1736559581"
+        }
+      ],
+      "version": "dc318765-7f0d-48fc-a760-1ca0d9da565d:1736559581"
+    },
+    "ecommerce": {
+      "name": "Ecommerce Example",
+      "description": "A flow that demonstrates the use of ecommerce in a flow",
+      "steps": [
+        {
+          "filePath": "./steps/ecommerce/cancel-order.step.ts",
+          "version": "dc318765-7f0d-48fc-a760-1ca0d9da565d:1736559581"
+        },
+        {
+          "filePath": "./steps/ecommerce/check-inventory.step.ts",
+          "version": "dc318765-7f0d-48fc-a760-1ca0d9da565d:1736559581"
+        },
+        {
+          "filePath": "./steps/ecommerce/confirm-order.step.ts",
+          "version": "dc318765-7f0d-48fc-a760-1ca0d9da565d:1736559581"
+        },
+        {
+          "filePath": "./steps/ecommerce/generate-invoice.step.ts",
+          "version": "dc318765-7f0d-48fc-a760-1ca0d9da565d:1736559581"
+        },
+        {
+          "filePath": "./steps/ecommerce/new-order.step.ts",
+          "version": "dc318765-7f0d-48fc-a760-1ca0d9da565d:1736559581"
+        },
+        {
+          "filePath": "./steps/ecommerce/notify-user.step.ts",
+          "version": "dc318765-7f0d-48fc-a760-1ca0d9da565d:1736559581"
+        },
+        {
+          "filePath": "./steps/ecommerce/process-payment.step.ts",
+          "version": "dc318765-7f0d-48fc-a760-1ca0d9da565d:1736559581"
+        },
+        {
+          "filePath": "./steps/ecommerce/release-stock.step.ts",
+          "version": "dc318765-7f0d-48fc-a760-1ca0d9da565d:1736559581"
+        },
+        {
+          "filePath": "./steps/ecommerce/reserve-stock.step.ts",
+          "version": "dc318765-7f0d-48fc-a760-1ca0d9da565d:1736559581"
+        },
+        {
+          "filePath": "./steps/ecommerce/update-inventory.step.ts",
+          "version": "dc318765-7f0d-48fc-a760-1ca0d9da565d:1736559581"
+        }
+      ],
+      "version": "dc318765-7f0d-48fc-a760-1ca0d9da565d:1736559581"
+    },
+    "handshake": {
+      "name": "Endpoint Server Handshake",
+      "description": "A flow that demonstrates the handshake between endpoint server and wistro server",
+      "steps": [
+        {
+          "filePath": "./steps/endpointServerHandshake/apiCaller.step.ts",
+          "version": "dc318765-7f0d-48fc-a760-1ca0d9da565d:1736559581"
+        },
+        {
+          "filePath": "./steps/endpointServerHandshake/nodeFinalizer.step.ts",
+          "version": "dc318765-7f0d-48fc-a760-1ca0d9da565d:1736559581"
+        },
+        {
+          "filePath": "./steps/endpointServerHandshake/nodeStarter.step.ts",
+          "version": "dc318765-7f0d-48fc-a760-1ca0d9da565d:1736559581"
+        }
+      ],
+      "version": "dc318765-7f0d-48fc-a760-1ca0d9da565d:1736559581"
+    },
+    "hybrid-example": {
+      "name": "Hybrid Endpoint Example",
+      "description": "A flow that demonstrates the use of python and nodejs in a flow",
+      "steps": [
+        {
+          "filePath": "./steps/hybridEndpointExample/analyzeData.step.py",
+          "version": "dc318765-7f0d-48fc-a760-1ca0d9da565d:1736559581"
+        },
+        {
+          "filePath": "./steps/hybridEndpointExample/enrichData.step.ts",
+          "version": "dc318765-7f0d-48fc-a760-1ca0d9da565d:1736559581"
+        },
+        {
+          "filePath": "./steps/hybridEndpointExample/finalizeData.step.ts",
+          "version": "dc318765-7f0d-48fc-a760-1ca0d9da565d:1736559581"
+        },
+        {
+          "filePath": "./steps/hybridEndpointExample/transformData.step.py",
+          "version": "dc318765-7f0d-48fc-a760-1ca0d9da565d:1736559581"
+        },
+        {
+          "filePath": "./steps/hybridEndpointExample/validateData.step.ts",
+          "version": "dc318765-7f0d-48fc-a760-1ca0d9da565d:1736559581"
+        }
+      ],
+      "version": "dc318765-7f0d-48fc-a760-1ca0d9da565d:1736559581"
+    },
+    "parallel-merge": {
+      "name": "Parallel Merge Example",
+      "description": "update my description",
+      "steps": [
+        {
+          "filePath": "./steps/parallelMergeState/joinStep.step.ts",
+          "version": "dc318765-7f0d-48fc-a760-1ca0d9da565d:1736559581"
+        },
+        {
+          "filePath": "./steps/parallelMergeState/setpB.step.ts",
+          "version": "dc318765-7f0d-48fc-a760-1ca0d9da565d:1736559581"
+        },
+        {
+          "filePath": "./steps/parallelMergeState/startParallelMerge.step.ts",
+          "version": "dc318765-7f0d-48fc-a760-1ca0d9da565d:1736559581"
+        },
+        {
+          "filePath": "./steps/parallelMergeState/stepA.step.ts",
+          "version": "dc318765-7f0d-48fc-a760-1ca0d9da565d:1736559581"
+        },
+        {
+          "filePath": "./steps/parallelMergeState/stepC.step.ts",
+          "version": "dc318765-7f0d-48fc-a760-1ca0d9da565d:1736559581"
+        }
+      ],
+      "version": "dc318765-7f0d-48fc-a760-1ca0d9da565d:1736559581"
+    },
+    "wistro-server": {
+      "name": "Wistro Server Example",
+      "description": "update my description",
+      "steps": [
+        {
+          "filePath": "./steps/wistroServerExample/finalizer.step.ts",
+          "version": "dc318765-7f0d-48fc-a760-1ca0d9da565d:1736559581"
+        },
+        {
+          "filePath": "./steps/wistroServerExample/processor.step.ts",
+          "version": "dc318765-7f0d-48fc-a760-1ca0d9da565d:1736559581"
+        },
+        {
+          "filePath": "./steps/wistroServerExample/startServerExample.step.ts",
+          "version": "dc318765-7f0d-48fc-a760-1ca0d9da565d:1736559581"
+        }
+      ],
+      "version": "dc318765-7f0d-48fc-a760-1ca0d9da565d:1736559581"
+    }
+  }
+}

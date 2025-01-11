@@ -31,6 +31,7 @@ async function runTypescriptModule(filePath, args) {
     const { stateConfig, ...event } = args
     const { traceId, flows } = event
     const logger = new Logger(traceId, flows, filePath.split('/').pop())
+    // TODO: check that state config is defined, otherwise default to in-memory state management
     const state = new StateAdapter(traceId, stateConfig)
     const context = { traceId, flows, logger, state }
     const emit = async (data) => {

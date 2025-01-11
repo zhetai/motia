@@ -1,21 +1,31 @@
-import { Config } from '../../dev/config.types'
+import { LockFile } from '../../wistro.types'
 
-export const mockValidConfig: Config = {
+export const mockValidConfig: LockFile = {
+  baseDir: './',
+  version: '1.0.0',
   flows: {
-    flow1: { name: 'Flow 1' },
-  },
-  api: {
-    paths: {
-      '/path1': { name: 'Path 1', emits: 'event1', flows: ['flow1'], method: 'GET' },
-      '/path2': { name: 'Path 2', emits: 'event2', flows: ['flow1'], method: 'POST' },
+    flow1: {
+      name: 'Flow 1',
+      description: 'Flow 1 description',
+      steps: [{ filePath: 'step1/path', version: '1.0.0' }],
+      version: '1.0.0',
     },
   },
-  cron: {
-    cron1: {
-      name: 'Cron Job 1',
-      emits: 'event1',
-      flows: ['flow1'],
-      cron: '* * * * *',
+  triggers: {
+    api: {
+      paths: {
+        '/path1': { name: 'Path 1', emits: 'event1', flows: ['flow1'], method: 'GET', description: 'test' },
+        '/path2': { name: 'Path 2', emits: 'event2', flows: ['flow1'], method: 'POST', description: 'test' },
+      },
+    },
+    cron: {
+      cron1: {
+        name: 'Cron Job 1',
+        emits: 'event1',
+        flows: ['flow1'],
+        cron: '* * * * *',
+        description: 'test',
+      },
     },
   },
   state: {
@@ -26,12 +36,21 @@ export const mockValidConfig: Config = {
   port: 3000,
 }
 
-export const mockConfigWithoutTriggers: Config = {
+export const mockConfigWithoutTriggers: LockFile = {
+  baseDir: './',
+  version: '1.0.0',
   flows: {
-    flow1: { name: 'Flow 1' },
+    flow1: {
+      name: 'Flow 1',
+      description: 'Flow 1 description',
+      steps: [{ filePath: 'step1/path', version: '1.0.0' }],
+      version: '1.0.0',
+    },
   },
-  api: { paths: {} },
-  cron: {},
+  triggers: {
+    api: { paths: {} },
+    cron: {},
+  },
   state: {
     adapter: 'redis',
     host: 'localhost',

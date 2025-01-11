@@ -1,7 +1,7 @@
 import { Express } from 'express'
 import { ApiRoute, Config, FlowStep } from './config.types'
 import { randomUUID } from 'crypto'
-import { Emit } from '..'
+import { Emit, LockFile } from '..'
 import zodToJsonSchema from 'zod-to-json-schema'
 
 type FlowListResponse = {
@@ -26,9 +26,9 @@ type FlowResponse = FlowListResponse & {
   steps: FlowStepResponse[]
 }
 
-export const generateFlowsList = (config: Config, flowSteps: FlowStep[]): FlowResponse[] => {
+export const generateFlowsList = (lockData: LockFile, flowSteps: FlowStep[]): FlowResponse[] => {
   const list: FlowResponse[] = []
-  const configuredFlowIdentifiers = Object.keys(config.flows)
+  const configuredFlowIdentifiers = Object.keys(lockData.flows)
   const flowStepsMap = flowSteps.reduce(
     (mappedSteps, flowStep) => {
       const flowNames = flowStep.config.flows // Now an array
@@ -63,9 +63,11 @@ export const generateFlowsList = (config: Config, flowSteps: FlowStep[]): FlowRe
     return flowStepsMap[flowId].find((step) => step.config.subscribes.includes(emits))
   }
 
-  const triggerMappingByFlowId = Object.keys(config.api.paths).reduce(
+  const { cron, api } = lockData.triggers
+
+  const triggerMappingByFlowId = Object.keys(api.paths).reduce(
     (mapping, path) => {
-      const route = config.api.paths[path]
+      const route = api.paths[path]
       const flows = route.flows
       const nextRoute = { ...route, path }
 
@@ -82,9 +84,9 @@ export const generateFlowsList = (config: Config, flowSteps: FlowStep[]): FlowRe
     {} as Record<string, ApiRoute[]>,
   )
 
-  Object.keys(config.flows).forEach((flowId) => {
+  Object.keys(lockData.flows).forEach((flowId) => {
     const steps: FlowStepResponse[] = []
-    const flowDetails = config.flows[flowId]
+    const flowDetails = lockData.flows[flowId]
 
     if (!(flowId in flowStepsMap)) {
       throw Error(`No flow steps found for flow with id ${flowId}`)
@@ -120,19 +122,19 @@ export const generateFlowsList = (config: Config, flowSteps: FlowStep[]): FlowRe
       })
     })
 
-    Object.keys(config.cron).forEach((cronId) => {
-      const cron = config.cron[cronId]
+    Object.keys(cron).forEach((cronId) => {
+      const cronDetails = cron[cronId]
 
-      if (!cron.flows.includes(flowId)) return
+      if (!cronDetails.flows.includes(flowId)) return
 
       steps.push({
         id: randomUUID(),
         type: 'trigger',
-        name: cron.name,
-        description: cron.description,
-        emits: [cron.emits],
+        name: cronDetails.name,
+        description: cronDetails.description,
+        emits: [cronDetails.emits],
         action: 'cron',
-        cron: cron.cron,
+        cron: cronDetails.cron,
       })
     })
 
@@ -142,8 +144,8 @@ export const generateFlowsList = (config: Config, flowSteps: FlowStep[]): FlowRe
   return list
 }
 
-export const flowsEndpoint = (config: Config, flowSteps: FlowStep[], app: Express) => {
-  const list = generateFlowsList(config, flowSteps)
+export const flowsEndpoint = (lockData: LockFile, flowSteps: FlowStep[], app: Express) => {
+  const list = generateFlowsList(lockData, flowSteps)
 
   app.get('/flows', async (_, res) => {
     res.status(200).send(list.map(({ id, name }) => ({ id, name })))

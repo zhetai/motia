@@ -46,7 +46,7 @@ export const executor: FlowExecutor<Input> = async (input, emit, ctx) => {
 
     const customer = await customerResponse.json()
 
-    ctx.state.set(`booking_${customerPhoneNumber}`, 'reservation', {
+    ctx.state.set(`booking_${customerPhoneNumber}.reservation`, {
       venue,
       customer,
     })

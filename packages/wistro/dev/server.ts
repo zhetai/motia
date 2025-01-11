@@ -6,11 +6,11 @@ import express, { Request, Response } from 'express'
 import http from 'http'
 import { Config, FlowStep } from './config.types'
 import { flowsEndpoint } from './flows-endpoint'
-import { Event, EventManager, WistroServer, WistroSockerServer } from './../wistro.types'
+import { Event, EventManager, LockFile, WistroServer, WistroSockerServer } from './../wistro.types'
 import { globalLogger, Logger } from './logger'
 
 export const createServer = async (
-  config: Config,
+  lockData: LockFile,
   flowSteps: FlowStep[],
   eventManager: EventManager,
   options?: {
@@ -22,10 +22,13 @@ export const createServer = async (
   let io: SocketIOServer | undefined
 
   if (!options?.skipSocketServer) {
+    globalLogger.debug('[API] Creating socket server')
     io = new SocketIOServer(server)
   }
 
-  globalLogger.debug('[API] Registering routes', { paths: config.api.paths })
+  const { api } = lockData.triggers
+
+  globalLogger.debug('[API] Registering routes', { paths: api.paths })
 
   const asyncHandler = (emits: string, flows: string[]) => {
     return async (req: Request, res: Response) => {
@@ -53,8 +56,8 @@ export const createServer = async (
   app.use(bodyParser.json())
   app.use(bodyParser.urlencoded({ extended: true }))
 
-  for (const path in config.api.paths) {
-    const { method, emits, flows } = config.api.paths[path]
+  for (const path in api.paths) {
+    const { method, emits, flows } = api.paths[path]
 
     globalLogger.debug('[API] Registering route', { method, path, emits })
 
@@ -67,12 +70,12 @@ export const createServer = async (
     }
   }
 
-  flowsEndpoint(config, flowSteps, app)
+  flowsEndpoint(lockData, flowSteps, app)
   await applyMiddleware(app)
 
-  globalLogger.debug('[API] Server listening on port', config.port)
+  globalLogger.debug('[API] Server listening on port', lockData.port)
 
-  server.listen(config.port)
+  server.listen(lockData.port)
 
   return { server, socketServer: io }
 }

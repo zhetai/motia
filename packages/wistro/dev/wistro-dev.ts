@@ -1,12 +1,9 @@
-import path from 'path'
-import fs from 'fs'
-import { parse } from 'yaml'
 import { createServer } from './server'
 import { createFlowHandlers } from './flow-handlers'
 import { createEventManager } from './event-manager'
-import { Config } from './config.types'
 import { buildFlows } from './flow-builder'
 import { globalLogger } from './logger'
+import { loadLockFile } from './load-lock-file'
 
 require('ts-node').register({
   transpileOnly: true,
@@ -14,15 +11,14 @@ require('ts-node').register({
 })
 
 export const dev = async (): Promise<void> => {
-  const configYaml = fs.readFileSync(path.join(process.cwd(), 'config.yml'), 'utf8')
-  const config: Config = parse(configYaml)
-  const flowSteps = await buildFlows()
+  const lockData = loadLockFile()
+  const flowSteps = await buildFlows(lockData)
   const eventManager = createEventManager()
-  const { server } = await createServer(config, flowSteps, eventManager)
+  const { server } = await createServer(lockData, flowSteps, eventManager)
 
-  createFlowHandlers(flowSteps, eventManager, config.state)
+  createFlowHandlers(flowSteps, eventManager, lockData.state)
 
-  console.log('🚀 Server ready and listening on port', config.port)
+  console.log('🚀 Server ready and listening on port', lockData.port)
 
   // 6) Gracefully shut down on SIGTERM
   process.on('SIGTERM', async () => {
