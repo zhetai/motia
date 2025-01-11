@@ -41,12 +41,10 @@ async function importFlow(flow: FlowResponse): Promise<FlowState> {
 
   for (const step of flow.steps) {
     if (step.nodeComponentPath) {
-      const module = await import(step.nodeComponentPath)
+      const module = await import(/* @vite-ignore */ step.nodeComponentPath)
       nodeTypes[step.nodeComponentPath] = module.default
     }
   }
-
-  console.log(nodeTypes)
 
   // we need to check all subscribes and emits to connect the nodes using edges
   const nodes: Node<NodeData>[] = flow.steps.map((step) => ({

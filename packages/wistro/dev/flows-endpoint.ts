@@ -111,7 +111,9 @@ export const generateFlowsList = (config: Config, flowSteps: FlowStep[]): FlowRe
     })
 
     flowStepsMap[flowId].forEach((flow) => {
-      const nodeComponentPath = fs.existsSync(flow.filePath + 'x') ? flow.filePath + 'x' : undefined
+      const filePathWithoutExtension = flow.filePath.replace(/\.[^/.]+$/, '')
+      const tsxPath = filePathWithoutExtension + '.tsx'
+      const nodeComponentPath = fs.existsSync(tsxPath) ? tsxPath : undefined
 
       steps.push({
         id: randomUUID(),

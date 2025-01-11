@@ -1,6 +1,6 @@
 import { BaseNode } from '../../../publicComponents/base-node'
-import { BaseNodeData } from './nodes.types'
+import { BaseNodeProps } from '../../../publicComponents/base-node-props'
 
-export const BaseFlowNode = ({ data }: { data: BaseNodeData }) => {
+export const BaseFlowNode = ({ data }: BaseNodeProps) => {
   return <BaseNode data={data} />
 }

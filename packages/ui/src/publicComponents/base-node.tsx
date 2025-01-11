@@ -1,6 +1,6 @@
 import { Position } from '@xyflow/react'
-import { BaseHandle } from '../views/flow/base-handle'
-import { BaseNodeData } from '../views/flow/nodes/nodes.types'
+import { BaseHandle } from './base-handle'
+import { BaseNodeProps } from './base-node-props'
 import { Emits } from './emits'
 import { Subscribe } from './subscribe'
 import { cva, type VariantProps } from 'class-variance-authority'
@@ -26,13 +26,14 @@ const baseNodeVariants = cva('p-2 px-3 flex flex-col max-w-[300px]', {
   },
 })
 
-type Props = PropsWithChildren<{
-  data: BaseNodeData
-  variant?: VariantProps<typeof baseNodeVariants>['variant']
-  shape?: VariantProps<typeof baseNodeVariants>['shape']
-  excludePubsub?: boolean
-  className?: string
-}>
+type Props = PropsWithChildren<
+  BaseNodeProps & {
+    variant?: VariantProps<typeof baseNodeVariants>['variant']
+    shape?: VariantProps<typeof baseNodeVariants>['shape']
+    excludePubsub?: boolean
+    className?: string
+  }
+>
 
 export const BaseNode = (props: Props) => {
   const { data, variant, shape, excludePubsub, className } = props
