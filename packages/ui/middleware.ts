@@ -10,7 +10,13 @@ export const applyMiddleware = async (app: Express) => {
   const vite = await createViteServer({
     appType: 'spa',
     root: __dirname,
-    server: { middlewareMode: true },
+
+    server: {
+      middlewareMode: true,
+      fs: {
+        allow: [__dirname, path.join(process.cwd(), './steps')],
+      },
+    },
     resolve: {
       alias: { '@': path.resolve(__dirname, './src') },
     },

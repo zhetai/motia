@@ -1,6 +1,6 @@
 import { Position } from '@xyflow/react'
 import { NoopNodeData } from './nodes.types'
-import { BaseHandle } from '../base-handle'
+import { BaseHandle } from '../../../publicComponents/base-handle'
 
 export const NoopNode = ({ data }: { data: NoopNodeData }) => {
   return (

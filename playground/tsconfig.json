@@ -11,8 +11,9 @@
     "allowJs": true,
     "outDir": "dist",
     "rootDir": ".",
-    "baseUrl": "."
+    "baseUrl": ".",
+    "jsx": "react-jsx"
   },
-  "include": ["**/*.ts", "wistro.mts"],
+  "include": ["**/*.ts", "wistro.mts", "**/*.tsx"],
   "exclude": ["node_modules", "dist", "tests"]
 }

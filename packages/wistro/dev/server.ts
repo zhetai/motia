@@ -1,4 +1,4 @@
-import { applyMiddleware } from '@wistro/ui'
+import { applyMiddleware } from '@wistro/ui/middleware'
 import { Server as SocketIOServer } from 'socket.io'
 import bodyParser from 'body-parser'
 import { randomUUID } from 'crypto'

@@ -30,6 +30,16 @@ export type FlowConfig<TInput extends ZodObject<any>> = {
   flows: string[]
 }
 
+export type NoopEmit = { POST: string } | { GET: string } | string
+
+export type NoopConfig = {
+  name: string
+  description?: string
+  emits: NoopEmit
+  subscribes: string[]
+  flows: string[]
+}
+
 export type Flow<TInput extends ZodObject<any>> = {
   config: FlowConfig<TInput>
   executor: FlowExecutor<TInput>

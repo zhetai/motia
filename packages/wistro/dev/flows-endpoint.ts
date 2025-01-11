@@ -3,7 +3,7 @@ import { ApiRoute, Config, FlowStep } from './config.types'
 import { randomUUID } from 'crypto'
 import { Emit, LockFile } from '..'
 import zodToJsonSchema from 'zod-to-json-schema'
-
+import fs from 'fs'
 type FlowListResponse = {
   id: string
   name: string
@@ -20,6 +20,7 @@ type FlowStepResponse = {
   webhookUrl?: string
   inputSchema?: any
   cron?: string
+  nodeComponentPath?: string
 }
 
 type FlowResponse = FlowListResponse & {
@@ -112,6 +113,10 @@ export const generateFlowsList = (lockData: LockFile, flowSteps: FlowStep[]): Fl
     })
 
     flowStepsMap[flowId].forEach((flow) => {
+      const filePathWithoutExtension = flow.filePath.replace(/\.[^/.]+$/, '')
+      const tsxPath = filePathWithoutExtension + '.tsx'
+      const nodeComponentPath = fs.existsSync(tsxPath) ? tsxPath : undefined
+
       steps.push({
         id: randomUUID(),
         type: 'base',
@@ -119,6 +124,7 @@ export const generateFlowsList = (lockData: LockFile, flowSteps: FlowStep[]): Fl
         description: flow.config.description,
         emits: flow.config.emits,
         subscribes: flow.config.subscribes,
+        nodeComponentPath,
       })
     })
 

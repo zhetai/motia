@@ -14,8 +14,10 @@
     "baseUrl": "."
   },
   "include": [
-    "**/*.ts"
+    "**/*.ts", 
+    "ui.tsx"
   ],
+  "jsx": "react-jsx",
   "exclude": [
     "node_modules",
     "dist"

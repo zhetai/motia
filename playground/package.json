@@ -11,11 +11,14 @@
     "test": "concurrently \"pnpm run test:unit\" \"pnpm run test:e2e\""
   },
   "dependencies": {
+    "@wistro/ui": "workspace:*",
     "wistro": "workspace:*",
     "zod": "^3.24.1"
   },
   "devDependencies": {
     "@playwright/test": "^1.49.1",
+    "@types/react": "^18.3.18",
+    "react": "^19.0.0",
     "ts-node": "^10.9.2",
     "typescript": "^5.7.2"
   }

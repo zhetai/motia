@@ -3,7 +3,11 @@ import path from 'path'
 
 const config: Config = {
   darkMode: ['class'],
-  content: [path.resolve(__dirname, './index.html'), path.resolve(__dirname, './src/**/*.{ts,tsx,js,jsx}')],
+  content: [
+    path.resolve(__dirname, './index.html'),
+    path.resolve(__dirname, './src/**/*.{ts,tsx,js,jsx}'),
+    path.resolve(process.cwd(), './steps/**/*.tsx'),
+  ],
   theme: {
     extend: {
       borderRadius: {

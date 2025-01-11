@@ -1,6 +1,6 @@
 import { Position } from '@xyflow/react'
 import { Clock, Speech, Webhook } from 'lucide-react'
-import { BaseHandle } from '../base-handle'
+import { BaseHandle } from '../../../publicComponents/base-handle'
 import { TriggerNodeData } from './nodes.types'
 import { TriggerForm } from './trigger-form'
 
