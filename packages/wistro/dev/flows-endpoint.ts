@@ -1,9 +1,12 @@
-import { Express } from 'express'
-import { ApiRoute, Config, FlowStep } from './config.types'
 import { randomUUID } from 'crypto'
-import { Emit, LockFile } from '..'
-import zodToJsonSchema from 'zod-to-json-schema'
+import { Express } from 'express'
 import fs from 'fs'
+import zodToJsonSchema from 'zod-to-json-schema'
+import { Emit } from '..'
+import { Step } from './config.types'
+import { isApiStep, isEventStep, isNoopStep } from './guards'
+import { getStepLanguage } from './get-step-language'
+
 type FlowListResponse = {
   id: string
   name: string
@@ -12,13 +15,13 @@ type FlowListResponse = {
 type FlowStepResponse = {
   id: string
   name: string
-  type: 'base' | 'trigger'
+  type: 'base' | 'trigger' | 'noop'
   description?: string
   subscribes?: string[]
   emits: Emit[]
   action?: 'webhook' | 'cron'
   webhookUrl?: string
-  inputSchema?: any
+  bodySchema?: any
   cron?: string
   language?: string
   nodeComponentPath?: string
@@ -28,162 +31,96 @@ type FlowResponse = FlowListResponse & {
   steps: FlowStepResponse[]
 }
 
-const getStepLanguage = (fileExtension?: string): string | undefined => {
-  if (!fileExtension) return
-
-  if (fileExtension.match(/js/)) {
-    return 'javascript'
-  }
-
-  if (fileExtension.match(/ts/)) {
-    return 'typescript'
-  }
-
-  if (fileExtension.match(/py/)) {
-    return 'python'
-  }
-
-  if (fileExtension.match(/go/)) {
-    return 'go'
-  }
-
-  if (fileExtension.match(/rb/)) {
-    return 'ruby'
-  }
-
-  if (fileExtension.match(/php/)) {
-    return 'php'
-  }
-
-  return
-}
-
-export const generateFlowsList = (lockData: LockFile, flowSteps: FlowStep[]): FlowResponse[] => {
+export const generateFlowsList = (steps: Step[]): FlowResponse[] => {
   const list: FlowResponse[] = []
-  const configuredFlowIdentifiers = Object.keys(lockData.flows)
-  const flowStepsMap = flowSteps.reduce(
-    (mappedSteps, flowStep) => {
-      const flowNames = flowStep.config.flows // Now an array
-      if (!flowNames || flowNames.length === 0) {
-        throw Error(`Invalid step config in ${flowStep.filePath}, at least one flow name is required`)
-      }
+  const flowStepsMap = steps.reduce(
+    (mappedSteps, step) => {
+      const flowNames = step.config.flows // Now an array
 
-      // Validate each flow name
-      flowNames.forEach((flowName: string) => {
-        if (!configuredFlowIdentifiers.includes(flowName)) {
-          throw Error(
-            `Unknown flow name ${flowName} in ${flowStep.filePath}, all flows should be defined in the config.yml`,
-          )
-        }
-      })
+      if (!flowNames || flowNames.length === 0) {
+        throw Error(`Invalid step config in ${step.filePath}, at least one flow name is required`)
+      }
 
       // Add step to each flow it belongs to
       flowNames.forEach((flowName: string) => {
         if (flowName in mappedSteps) {
-          mappedSteps[flowName].push(flowStep)
+          mappedSteps[flowName].push(step)
         } else {
-          mappedSteps[flowName] = [flowStep]
+          mappedSteps[flowName] = [step]
         }
       })
 
       return mappedSteps
     },
-    {} as Record<string, FlowStep[]>,
+    {} as Record<string, Step[]>,
   )
 
-  const findStepBySubscribes = (flowId: string, emits: string) => {
-    return flowStepsMap[flowId].find((step) => step.config.subscribes.includes(emits))
-  }
-
-  const { cron, api } = lockData.triggers
-
-  const triggerMappingByFlowId = Object.keys(api.paths).reduce(
-    (mapping, path) => {
-      const route = api.paths[path]
-      const flows = route.flows
-      const nextRoute = { ...route, path }
-
-      flows.forEach((flow) => {
-        if (flow in mapping) {
-          mapping[flow].push(nextRoute)
-        } else {
-          mapping[flow] = [nextRoute]
-        }
-      })
-
-      return mapping // Return the original mapping that we modified
-    },
-    {} as Record<string, ApiRoute[]>,
-  )
-
-  Object.keys(lockData.flows).forEach((flowId) => {
+  Object.keys(flowStepsMap).forEach((flowId) => {
     const steps: FlowStepResponse[] = []
-    const flowDetails = lockData.flows[flowId]
+    const flowSteps = flowStepsMap[flowId]
 
-    if (!(flowId in flowStepsMap)) {
-      throw Error(`No flow steps found for flow with id ${flowId}`)
-    }
+    flowSteps.forEach((step) => {
+      if (isApiStep(step)) {
+        steps.push({
+          id: randomUUID(),
+          type: 'trigger',
+          name: step.config.name,
+          description: step.config.description,
+          emits: [...step.config.emits, ...(step.config.virtualEmits ?? [])],
+          subscribes: step.config.virtualSubscribes ?? undefined,
+          action: 'webhook',
+          language: getStepLanguage(step.filePath),
+          webhookUrl: `${step.config.method} ${step.config.path}`,
+          bodySchema: step?.config.bodySchema ? zodToJsonSchema(step.config.bodySchema) : undefined,
+        })
+        // } else if (isCronStep(step)) {
+        //   steps.push({
+        //     id: randomUUID(),
+        //     type: 'trigger',
+        //     name: step.config.name,
+        //     description: step.config.description,
+        //     emits: step.config.emits,
+        //     action: 'cron',
+        //     cron: step.config.cron,
+        //   })
+      } else if (isEventStep(step) || isNoopStep(step)) {
+        const filePathWithoutExtension = step.filePath.replace(/\.[^/.]+$/, '')
+        const tsxPath = filePathWithoutExtension + '.tsx'
+        const nodeComponentPath = fs.existsSync(tsxPath) ? tsxPath : undefined
 
-    if (!(flowId in triggerMappingByFlowId)) {
-      throw Error(`No triggers (api or cron) found for flow with id ${flowId}`)
-    }
-
-    triggerMappingByFlowId[flowId].forEach((route) => {
-      const step = findStepBySubscribes(flowId, route.emits)
-
-      steps.push({
-        id: randomUUID(),
-        type: 'trigger',
-        name: route.name,
-        description: route.description,
-        emits: [route.emits],
-        action: 'webhook',
-        webhookUrl: `${route.method} ${route.path}`,
-        inputSchema: step?.config.input ? zodToJsonSchema(step.config.input) : undefined,
-      })
+        if (isEventStep(step)) {
+          steps.push({
+            id: randomUUID(),
+            type: 'base',
+            name: step.config.name,
+            description: step.config.description,
+            emits: [...step.config.emits, ...(step.config.virtualEmits ?? [])],
+            subscribes: step.config.subscribes,
+            language: getStepLanguage(step.filePath),
+            nodeComponentPath,
+          })
+        } else {
+          steps.push({
+            id: randomUUID(),
+            type: 'noop',
+            name: step.config.name,
+            description: step.config.description,
+            emits: step.config.virtualEmits,
+            subscribes: step.config.virtualSubscribes,
+            nodeComponentPath,
+          })
+        }
+      }
     })
 
-    flowStepsMap[flowId].forEach((step) => {
-      const filePathWithoutExtension = step.filePath.replace(/\.[^/.]+$/, '')
-      const tsxPath = filePathWithoutExtension + '.tsx'
-      const nodeComponentPath = fs.existsSync(tsxPath) ? tsxPath : undefined
-
-      steps.push({
-        id: randomUUID(),
-        type: 'base',
-        name: step.config.name,
-        description: step.config.description,
-        emits: step.config.emits,
-        subscribes: step.config.subscribes,
-        nodeComponentPath,
-        language: getStepLanguage(step.filePath.split('.').pop()),
-      })
-    })
-
-    Object.keys(cron).forEach((cronId) => {
-      const cronDetails = cron[cronId]
-
-      if (!cronDetails.flows.includes(flowId)) return
-
-      steps.push({
-        id: randomUUID(),
-        type: 'trigger',
-        name: cronDetails.name,
-        description: cronDetails.description,
-        emits: [cronDetails.emits],
-        action: 'cron',
-        cron: cronDetails.cron,
-      })
-    })
-
-    list.push({ id: flowId, name: flowDetails.name, steps })
+    list.push({ id: flowId, name: flowId, steps })
   })
 
   return list
 }
 
-export const flowsEndpoint = (lockData: LockFile, flowSteps: FlowStep[], app: Express) => {
-  const list = generateFlowsList(lockData, flowSteps)
+export const flowsEndpoint = (steps: Step[], app: Express) => {
+  const list = generateFlowsList(steps)
 
   app.get('/flows', async (_, res) => {
     res.status(200).send(list.map(({ id, name }) => ({ id, name })))

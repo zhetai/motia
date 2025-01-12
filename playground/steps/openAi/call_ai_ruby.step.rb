@@ -1,7 +1,8 @@
 class Config
-  attr_reader :name, :subscribes, :emits, :input, :flows
+  attr_reader :type, :name, :subscribes, :emits, :input, :flows
 
   def initialize
+    @type = "event"
     @name = "Call OpenAI"
     @subscribes = ["call-openai"]
     @emits = ["openai-response"]
@@ -12,7 +13,7 @@ end
 
 config = Config.new
 
-def executor(args, emit, ctx)
+def executor(args, ctx)
   ctx.logger.info('[Call Ruby OpenAI] Received call_ai event', args)
 
   message = args["message"]
@@ -21,7 +22,7 @@ def executor(args, emit, ctx)
     return
   end
 
-  emit.call({
+  ctx.emit({
     "type" => "openai-response",
     "data" => { "message" => message }
   })

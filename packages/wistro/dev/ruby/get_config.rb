@@ -34,6 +34,7 @@ def extract_config(file_path)
     
     # Convert config instance to hash with symbol keys
     {
+      type: config.type,
       name: config.name,
       subscribes: config.subscribes,
       emits: config.emits,

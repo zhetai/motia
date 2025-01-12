@@ -22,8 +22,8 @@ async function runTypescriptModule(filePath, args) {
     const module = require(path.resolve(filePath))
 
     // Check if the specified function exists in the module
-    if (typeof module.executor !== 'function') {
-      throw new Error(`Function executor not found in module ${filePath}`)
+    if (typeof module.handler !== 'function') {
+      throw new Error(`Function handler not found in module ${filePath}`)
     } else if (!args?.stateConfig) {
       throw new Error('State adapter config is required')
     }
@@ -33,13 +33,11 @@ async function runTypescriptModule(filePath, args) {
     const logger = new Logger(traceId, flows, filePath.split('/').pop())
     // TODO: check that state config is defined, otherwise default to in-memory state management
     const state = new StateAdapter(traceId, stateConfig)
-    const context = { traceId, flows, logger, state }
-    const emit = async (data) => {
-      process.send?.(data)
-    }
+    const emit = async (data) => process.send?.(data)
+    const context = { traceId, flows, logger, state, emit }
 
     // Call the function with provided arguments
-    await module.executor(event.data, emit, context)
+    await module.handler(event.data, context)
   } catch (error) {
     console.error('Error running TypeScript module:', error)
     process.exit(1)
