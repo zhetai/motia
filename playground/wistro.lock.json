@@ -1,5 +1,5 @@
 {
-  "version": "0d46412e-a3d6-4d43-8c94-c11ce35bb53f:1736654818",
+  "version": "2f522c7c-6705-42cc-ab2f-d98997fc7973:1736690037",
   "port": 3000,
   "state": {
     "adapter": "redis",
@@ -102,92 +102,26 @@
       "steps": [
         {
           "filePath": "./steps/booking/initialize.step.ts",
-          "version": "0d46412e-a3d6-4d43-8c94-c11ce35bb53f:1736654818"
+          "version": "2f522c7c-6705-42cc-ab2f-d98997fc7973:1736690037"
+        },
+        {
+          "filePath": "./steps/booking/noop/userSendsMessage.step.ts",
+          "version": "2f522c7c-6705-42cc-ab2f-d98997fc7973:1736690037"
         },
         {
           "filePath": "./steps/booking/searchCustomer.step.ts",
-          "version": "0d46412e-a3d6-4d43-8c94-c11ce35bb53f:1736654818"
+          "version": "2f522c7c-6705-42cc-ab2f-d98997fc7973:1736690037"
         },
         {
           "filePath": "./steps/booking/searchTicketUpgrades.step.ts",
-          "version": "0d46412e-a3d6-4d43-8c94-c11ce35bb53f:1736654818"
+          "version": "2f522c7c-6705-42cc-ab2f-d98997fc7973:1736690037"
         },
         {
           "filePath": "./steps/booking/sendText.step.ts",
-          "version": "0d46412e-a3d6-4d43-8c94-c11ce35bb53f:1736654818"
+          "version": "2f522c7c-6705-42cc-ab2f-d98997fc7973:1736690037"
         }
       ],
-      "version": "0d46412e-a3d6-4d43-8c94-c11ce35bb53f:1736654818"
-    },
-    "openai": {
-      "name": "OpenAI Example",
-      "description": "A flow that demonstrates the use of OpenAI in a flow",
-      "steps": [
-        {
-          "filePath": "./steps/callOpenAi.step.ts",
-          "version": "0d46412e-a3d6-4d43-8c94-c11ce35bb53f:1736654818"
-        },
-        {
-          "filePath": "./steps/call_ai.rb",
-          "version": "0d46412e-a3d6-4d43-8c94-c11ce35bb53f:1736654818"
-        },
-        {
-          "filePath": "./steps/call_ai.step.py",
-          "version": "0d46412e-a3d6-4d43-8c94-c11ce35bb53f:1736654818"
-        },
-        {
-          "filePath": "./steps/openAiResponse.step.ts",
-          "version": "0d46412e-a3d6-4d43-8c94-c11ce35bb53f:1736654818"
-        }
-      ],
-      "version": "0d46412e-a3d6-4d43-8c94-c11ce35bb53f:1736654818"
-    },
-    "ecommerce": {
-      "name": "Ecommerce Example",
-      "description": "A flow that demonstrates the use of ecommerce in a flow",
-      "steps": [
-        {
-          "filePath": "./steps/ecommerce/cancel-order.step.ts",
-          "version": "0d46412e-a3d6-4d43-8c94-c11ce35bb53f:1736654818"
-        },
-        {
-          "filePath": "./steps/ecommerce/check-inventory.step.ts",
-          "version": "0d46412e-a3d6-4d43-8c94-c11ce35bb53f:1736654818"
-        },
-        {
-          "filePath": "./steps/ecommerce/confirm-order.step.ts",
-          "version": "0d46412e-a3d6-4d43-8c94-c11ce35bb53f:1736654818"
-        },
-        {
-          "filePath": "./steps/ecommerce/generate-invoice.step.ts",
-          "version": "0d46412e-a3d6-4d43-8c94-c11ce35bb53f:1736654818"
-        },
-        {
-          "filePath": "./steps/ecommerce/new-order.step.ts",
-          "version": "0d46412e-a3d6-4d43-8c94-c11ce35bb53f:1736654818"
-        },
-        {
-          "filePath": "./steps/ecommerce/notify-user.step.ts",
-          "version": "0d46412e-a3d6-4d43-8c94-c11ce35bb53f:1736654818"
-        },
-        {
-          "filePath": "./steps/ecommerce/process-payment.step.ts",
-          "version": "0d46412e-a3d6-4d43-8c94-c11ce35bb53f:1736654818"
-        },
-        {
-          "filePath": "./steps/ecommerce/release-stock.step.ts",
-          "version": "0d46412e-a3d6-4d43-8c94-c11ce35bb53f:1736654818"
-        },
-        {
-          "filePath": "./steps/ecommerce/reserve-stock.step.ts",
-          "version": "0d46412e-a3d6-4d43-8c94-c11ce35bb53f:1736654818"
-        },
-        {
-          "filePath": "./steps/ecommerce/update-inventory.step.ts",
-          "version": "0d46412e-a3d6-4d43-8c94-c11ce35bb53f:1736654818"
-        }
-      ],
-      "version": "0d46412e-a3d6-4d43-8c94-c11ce35bb53f:1736654818"
+      "version": "2f522c7c-6705-42cc-ab2f-d98997fc7973:1736690037"
     },
     "handshake": {
       "name": "Endpoint Server Handshake",
@@ -195,18 +129,18 @@
       "steps": [
         {
           "filePath": "./steps/endpointServerHandshake/apiCaller.step.ts",
-          "version": "0d46412e-a3d6-4d43-8c94-c11ce35bb53f:1736654818"
+          "version": "2f522c7c-6705-42cc-ab2f-d98997fc7973:1736690037"
         },
         {
           "filePath": "./steps/endpointServerHandshake/nodeFinalizer.step.ts",
-          "version": "0d46412e-a3d6-4d43-8c94-c11ce35bb53f:1736654818"
+          "version": "2f522c7c-6705-42cc-ab2f-d98997fc7973:1736690037"
         },
         {
           "filePath": "./steps/endpointServerHandshake/nodeStarter.step.ts",
-          "version": "0d46412e-a3d6-4d43-8c94-c11ce35bb53f:1736654818"
+          "version": "2f522c7c-6705-42cc-ab2f-d98997fc7973:1736690037"
         }
       ],
-      "version": "0d46412e-a3d6-4d43-8c94-c11ce35bb53f:1736654818"
+      "version": "2f522c7c-6705-42cc-ab2f-d98997fc7973:1736690037"
     },
     "hybrid-example": {
       "name": "Hybrid Endpoint Example",
@@ -214,53 +148,84 @@
       "steps": [
         {
           "filePath": "./steps/hybridEndpointExample/analyzeData.step.py",
-          "version": "0d46412e-a3d6-4d43-8c94-c11ce35bb53f:1736654818"
+          "version": "2f522c7c-6705-42cc-ab2f-d98997fc7973:1736690037"
         },
         {
           "filePath": "./steps/hybridEndpointExample/enrichData.step.ts",
-          "version": "0d46412e-a3d6-4d43-8c94-c11ce35bb53f:1736654818"
+          "version": "2f522c7c-6705-42cc-ab2f-d98997fc7973:1736690037"
         },
         {
           "filePath": "./steps/hybridEndpointExample/finalizeData.step.ts",
-          "version": "0d46412e-a3d6-4d43-8c94-c11ce35bb53f:1736654818"
+          "version": "2f522c7c-6705-42cc-ab2f-d98997fc7973:1736690037"
         },
         {
           "filePath": "./steps/hybridEndpointExample/transformData.step.py",
-          "version": "0d46412e-a3d6-4d43-8c94-c11ce35bb53f:1736654818"
+          "version": "2f522c7c-6705-42cc-ab2f-d98997fc7973:1736690037"
         },
         {
           "filePath": "./steps/hybridEndpointExample/validateData.step.ts",
-          "version": "0d46412e-a3d6-4d43-8c94-c11ce35bb53f:1736654818"
+          "version": "2f522c7c-6705-42cc-ab2f-d98997fc7973:1736690037"
         }
       ],
-      "version": "0d46412e-a3d6-4d43-8c94-c11ce35bb53f:1736654818"
+      "version": "2f522c7c-6705-42cc-ab2f-d98997fc7973:1736690037"
+    },
+    "openai": {
+      "name": "OpenAI Example",
+      "description": "A flow that demonstrates the use of OpenAI in a flow",
+      "steps": [
+        {
+          "filePath": "./steps/openAi/callOpenAi.step.ts",
+          "version": "2f522c7c-6705-42cc-ab2f-d98997fc7973:1736690037"
+        },
+        {
+          "filePath": "./steps/openAi/callOpenAiApi.step.ts",
+          "version": "2f522c7c-6705-42cc-ab2f-d98997fc7973:1736690037"
+        },
+        {
+          "filePath": "./steps/openAi/call_ai.step.py",
+          "version": "2f522c7c-6705-42cc-ab2f-d98997fc7973:1736690037"
+        },
+        {
+          "filePath": "./steps/openAi/call_ai_ruby.step.rb",
+          "version": "2f522c7c-6705-42cc-ab2f-d98997fc7973:1736690037"
+        },
+        {
+          "filePath": "./steps/openAi/openAiResponse.step.ts",
+          "version": "2f522c7c-6705-42cc-ab2f-d98997fc7973:1736690037"
+        }
+      ],
+      "version": "2f522c7c-6705-42cc-ab2f-d98997fc7973:1736690037"
     },
     "parallel-merge": {
       "name": "Parallel Merge Example",
       "description": "update my description",
       "steps": [
         {
+          "filePath": "./steps/parallelMergeState/joinComplete.step.ts",
+          "version": "2f522c7c-6705-42cc-ab2f-d98997fc7973:1736690037"
+        },
+        {
           "filePath": "./steps/parallelMergeState/joinStep.step.ts",
-          "version": "0d46412e-a3d6-4d43-8c94-c11ce35bb53f:1736654818"
+          "version": "2f522c7c-6705-42cc-ab2f-d98997fc7973:1736690037"
         },
         {
           "filePath": "./steps/parallelMergeState/setpB.step.ts",
-          "version": "0d46412e-a3d6-4d43-8c94-c11ce35bb53f:1736654818"
+          "version": "2f522c7c-6705-42cc-ab2f-d98997fc7973:1736690037"
         },
         {
           "filePath": "./steps/parallelMergeState/startParallelMerge.step.ts",
-          "version": "0d46412e-a3d6-4d43-8c94-c11ce35bb53f:1736654818"
+          "version": "2f522c7c-6705-42cc-ab2f-d98997fc7973:1736690037"
         },
         {
           "filePath": "./steps/parallelMergeState/stepA.step.ts",
-          "version": "0d46412e-a3d6-4d43-8c94-c11ce35bb53f:1736654818"
+          "version": "2f522c7c-6705-42cc-ab2f-d98997fc7973:1736690037"
         },
         {
           "filePath": "./steps/parallelMergeState/stepC.step.ts",
-          "version": "0d46412e-a3d6-4d43-8c94-c11ce35bb53f:1736654818"
+          "version": "2f522c7c-6705-42cc-ab2f-d98997fc7973:1736690037"
         }
       ],
-      "version": "0d46412e-a3d6-4d43-8c94-c11ce35bb53f:1736654818"
+      "version": "2f522c7c-6705-42cc-ab2f-d98997fc7973:1736690037"
     },
     "wistro-server": {
       "name": "Wistro Server Example",
@@ -268,18 +233,18 @@
       "steps": [
         {
           "filePath": "./steps/wistroServerExample/finalizer.step.ts",
-          "version": "0d46412e-a3d6-4d43-8c94-c11ce35bb53f:1736654818"
+          "version": "2f522c7c-6705-42cc-ab2f-d98997fc7973:1736690037"
         },
         {
           "filePath": "./steps/wistroServerExample/processor.step.ts",
-          "version": "0d46412e-a3d6-4d43-8c94-c11ce35bb53f:1736654818"
+          "version": "2f522c7c-6705-42cc-ab2f-d98997fc7973:1736690037"
         },
         {
           "filePath": "./steps/wistroServerExample/startServerExample.step.ts",
-          "version": "0d46412e-a3d6-4d43-8c94-c11ce35bb53f:1736654818"
+          "version": "2f522c7c-6705-42cc-ab2f-d98997fc7973:1736690037"
         }
       ],
-      "version": "0d46412e-a3d6-4d43-8c94-c11ce35bb53f:1736654818"
+      "version": "2f522c7c-6705-42cc-ab2f-d98997fc7973:1736690037"
     }
   }
 }

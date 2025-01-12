@@ -18,15 +18,15 @@ end
 # Get the file descriptor from ENV
 NODE_CHANNEL_FD = ENV['NODE_CHANNEL_FD'].to_i
 
-# Emit a message to the parent process via Node IPC
-def emit(text)
-  message = (JSON.dump(text) + "\n").encode('utf-8')
-  IO.new(NODE_CHANNEL_FD, 'w').write(message)
-end
-
 # Context class for managing the execution environment
 class Context
   attr_reader :trace_id, :flows, :file_name, :state, :logger
+
+  # Emit a message to the parent process via Node IPC
+  def emit(text)
+    message = (JSON.dump(text) + "\n").encode('utf-8')
+    IO.new(NODE_CHANNEL_FD, 'w').write(message)
+  end
 
   def initialize(args, file_name)
     @trace_id = args.traceId
@@ -52,7 +52,7 @@ def run_ruby_module(file_path, args)
 
   context = Context.new(args, file_path)
 
-  executor(args.data, method(:emit), context)
+  executor(args.data, context)
 rescue => e
   $stderr.puts "Error running Ruby module: #{e.message}"
   $stderr.puts e.backtrace

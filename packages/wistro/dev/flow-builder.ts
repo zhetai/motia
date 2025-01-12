@@ -1,6 +1,6 @@
 import path from 'path'
 import { getPythonConfig } from './python/get-python-config'
-import { FlowStep } from './config.types'
+import { Step } from './config.types'
 import { LockFile } from '../wistro.types'
 import { globalLogger } from './logger'
 import { getRubyConfig } from './ruby/get-ruby-config'
@@ -10,9 +10,9 @@ require('ts-node').register({
   compilerOptions: { module: 'commonjs' },
 })
 
-export const buildLockDataFlows = async (lockData: LockFile, nextFlows: FlowStep[]): Promise<FlowStep[]> => {
+export const buildLockDataFlows = async (lockData: LockFile, nextFlows: Step[]): Promise<Step[]> => {
   const flowsFromLock = lockData.flows || {}
-  let flows: FlowStep[] = [...nextFlows]
+  let flows: Step[] = [...nextFlows]
 
   globalLogger.debug('[Flows] Building flows from lock file', { version: lockData.version })
 
@@ -50,6 +50,6 @@ export const buildLockDataFlows = async (lockData: LockFile, nextFlows: FlowStep
 }
 
 // Updated buildFlows to use lock file
-export const buildFlows = async (lockData: LockFile): Promise<FlowStep[]> => {
+export const buildFlows = async (lockData: LockFile): Promise<Step[]> => {
   return buildLockDataFlows(lockData, [])
 }

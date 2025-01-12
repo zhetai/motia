@@ -1,13 +1,13 @@
 import { spawn } from 'child_process'
 import path from 'path'
-import { FlowConfig } from '../../wistro.types'
+import { StepConfig } from '../../wistro.types'
 import { globalLogger } from '../logger'
 
-export const getRubyConfig = (file: string): Promise<FlowConfig<any>> => {
+export const getRubyConfig = (file: string): Promise<StepConfig> => {
   const getConfig = path.join(__dirname, 'get_config.rb')
 
   return new Promise((resolve, reject) => {
-    let config: FlowConfig<any> | null = null
+    let config: StepConfig | null = null
 
     const child = spawn('ruby', [getConfig, file], {
       stdio: ['inherit', 'inherit', 'inherit', 'ipc'],
@@ -15,7 +15,7 @@ export const getRubyConfig = (file: string): Promise<FlowConfig<any>> => {
 
     child.on('message', (message) => {
       globalLogger.debug('[Ruby Config] Read config', { config: message })
-      config = message as FlowConfig<any>
+      config = message as StepConfig
     })
 
     child.on('close', (code) => {

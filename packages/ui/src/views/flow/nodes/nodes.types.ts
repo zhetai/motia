@@ -17,10 +17,11 @@ export type TriggerNodeData = {
   name: string
   description?: string
   emits: string[]
+  subscribes?: string[]
   action: 'webhook' | 'cron'
   cron?: string
   webhookUrl?: string
-  inputSchema?: JSONSchema7
+  bodySchema?: JSONSchema7
 }
 
 export type NodeData = BaseNodeData | TriggerNodeData | NoopNodeData

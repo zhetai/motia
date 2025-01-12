@@ -3,6 +3,7 @@ import { createFlowHandlers } from './flow-handlers'
 import { createEventManager } from './event-manager'
 import { buildFlows } from './flow-builder'
 import { globalLogger } from './logger'
+import { createStateAdapter } from '../state/createStateAdapter'
 import { loadLockFile } from './load-lock-file'
 
 require('ts-node').register({
@@ -12,11 +13,12 @@ require('ts-node').register({
 
 export const dev = async (): Promise<void> => {
   const lockData = loadLockFile()
-  const flowSteps = await buildFlows(lockData)
+  const steps = await buildFlows(lockData)
   const eventManager = createEventManager()
-  const { server } = await createServer(lockData, flowSteps, eventManager)
+  const state = createStateAdapter(lockData.state)
+  const { server } = await createServer(lockData, steps, state, eventManager)
 
-  createFlowHandlers(flowSteps, eventManager, lockData.state)
+  createFlowHandlers(steps, eventManager, lockData.state)
 
   console.log('🚀 Server ready and listening on port', lockData.port)
 
