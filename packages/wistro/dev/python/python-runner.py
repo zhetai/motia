@@ -38,8 +38,8 @@ class Context:
 
 async def run_python_module(file_path: str, args: Any) -> None:
     try:
-        # Construct path relative to flows directory
-        flows_dir = os.path.join(os.getcwd(), 'flows')
+        # Construct path relative to steps directory
+        flows_dir = os.path.join(os.getcwd(), 'steps')
         module_path = os.path.join(flows_dir, file_path)
 
         # Load the module dynamically

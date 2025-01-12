@@ -5,6 +5,7 @@ export type BaseNodeData = {
   description?: string
   subscribes: string[]
   emits: Array<string | { type: string; label?: string; conditional?: boolean }>
+  language?: string
 }
 
 export type NoopNodeData = {

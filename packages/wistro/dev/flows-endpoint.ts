@@ -20,11 +20,42 @@ type FlowStepResponse = {
   webhookUrl?: string
   inputSchema?: any
   cron?: string
+  language?: string
   nodeComponentPath?: string
 }
 
 type FlowResponse = FlowListResponse & {
   steps: FlowStepResponse[]
+}
+
+const getStepLanguage = (fileExtension?: string): string | undefined => {
+  if (!fileExtension) return
+
+  if (fileExtension.match(/js/)) {
+    return 'javascript'
+  }
+
+  if (fileExtension.match(/ts/)) {
+    return 'typescript'
+  }
+
+  if (fileExtension.match(/py/)) {
+    return 'python'
+  }
+
+  if (fileExtension.match(/go/)) {
+    return 'go'
+  }
+
+  if (fileExtension.match(/rb/)) {
+    return 'ruby'
+  }
+
+  if (fileExtension.match(/php/)) {
+    return 'php'
+  }
+
+  return
 }
 
 export const generateFlowsList = (lockData: LockFile, flowSteps: FlowStep[]): FlowResponse[] => {
@@ -112,19 +143,20 @@ export const generateFlowsList = (lockData: LockFile, flowSteps: FlowStep[]): Fl
       })
     })
 
-    flowStepsMap[flowId].forEach((flow) => {
-      const filePathWithoutExtension = flow.filePath.replace(/\.[^/.]+$/, '')
+    flowStepsMap[flowId].forEach((step) => {
+      const filePathWithoutExtension = step.filePath.replace(/\.[^/.]+$/, '')
       const tsxPath = filePathWithoutExtension + '.tsx'
       const nodeComponentPath = fs.existsSync(tsxPath) ? tsxPath : undefined
 
       steps.push({
         id: randomUUID(),
         type: 'base',
-        name: flow.config.name,
-        description: flow.config.description,
-        emits: flow.config.emits,
-        subscribes: flow.config.subscribes,
+        name: step.config.name,
+        description: step.config.description,
+        emits: step.config.emits,
+        subscribes: step.config.subscribes,
         nodeComponentPath,
+        language: getStepLanguage(step.filePath.split('.').pop()),
       })
     })
 

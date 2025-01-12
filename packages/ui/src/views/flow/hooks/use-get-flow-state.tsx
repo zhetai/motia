@@ -17,6 +17,7 @@ type FlowStep = {
   action?: 'webhook' | 'cron'
   webhookUrl?: string
   cron?: string
+  language?: string
   nodeComponentPath?: string
 }
 
@@ -52,6 +53,7 @@ async function importFlow(flow: FlowResponse): Promise<FlowState> {
     type: step.nodeComponentPath ? step.nodeComponentPath : step.type,
     position: { x: 0, y: 0 },
     data: step,
+    language: step.language,
   }))
 
   const edges: Edge<EdgeData>[] = []

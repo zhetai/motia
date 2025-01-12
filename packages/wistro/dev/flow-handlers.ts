@@ -7,6 +7,41 @@ import { globalLogger } from './logger'
 
 const nodeRunner = path.join(__dirname, 'node', 'node-runner.js')
 const pythonRunner = path.join(__dirname, 'python', 'python-runner.py')
+const rubyRunner = path.join(__dirname, 'ruby', 'ruby_runner.rb')
+
+const getLanguageBasedRunner = (
+  flowPath = '',
+): {
+  command: string
+  runner: string
+} => {
+  const isPython = flowPath.endsWith('.py')
+  const isRuby = flowPath.endsWith('.rb')
+  const isNode = flowPath.endsWith('.js') || flowPath.endsWith('.ts')
+
+  if (isPython) {
+    return {
+      runner: pythonRunner,
+      command: 'python',
+    }
+  }
+
+  if (isRuby) {
+    return {
+      runner: rubyRunner,
+      command: 'ruby',
+    }
+  }
+
+  if (isNode) {
+    return {
+      runner: nodeRunner,
+      command: 'node',
+    }
+  }
+
+  throw Error(`Unsupported file extension ${flowPath}`)
+}
 
 const callFlowFile = <TData>(
   flowPath: string,
@@ -15,12 +50,9 @@ const callFlowFile = <TData>(
   stateConfig: AdapterConfig,
   eventManager: EventManager,
 ): Promise<void> => {
-  const isPython = flowPath.endsWith('.py')
-
   return new Promise((resolve, reject) => {
     const jsonData = JSON.stringify({ ...event, stateConfig })
-    const runner = isPython ? pythonRunner : nodeRunner
-    const command = isPython ? 'python' : 'node'
+    const { runner, command } = getLanguageBasedRunner(flowPath)
 
     const child = spawn(command, [runner, flowPath, jsonData], {
       stdio: [undefined, undefined, undefined, 'ipc'],

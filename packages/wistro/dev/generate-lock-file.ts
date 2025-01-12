@@ -4,6 +4,7 @@ import path from 'path'
 import yaml from 'yaml'
 
 const version = `${randomUUID()}:${Math.floor(Date.now() / 1000)}`
+const baseFlowRegex = new RegExp(/flows\"?\s?.*\s*\[([^\]]+)\]/)
 
 // Helper function to read config.yml
 const readConfig = (configPath: string): any => {
@@ -23,9 +24,9 @@ const collectFlows = (folderPath: string, flows: Record<string, any>, baseDir: s
 
     if (item.isDirectory()) {
       collectFlows(itemPath, flows, baseDir)
-    } else if (item.name.endsWith('.step.ts') || item.name.endsWith('.step.js') || item.name.endsWith('.step.py')) {
+    } else if (!!item.name.match(/.step.(ts)|(js)|(py$)|(rb)/)) {
       const fileContent = fs.readFileSync(itemPath, 'utf-8')
-      const flowMatch = fileContent.match(/flows\"?:\s*\[([^\]]+)\]/)
+      const flowMatch = fileContent.match(baseFlowRegex)
 
       if (flowMatch) {
         const flowNames = flowMatch[1].split(',').map((f) => f.trim().replace(/['"`]/g, ''))
