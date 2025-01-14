@@ -1,5 +1,5 @@
 import { BaseNode } from '../../../publicComponents/base-node'
-import { BaseNodeProps } from '../../../publicComponents/base-node-props'
+import { BaseNodeProps } from '../../../publicComponents/node-props'
 import { LanguageIndicator } from './language-indicator'
 
 export const BaseFlowNode = ({ data }: BaseNodeProps) => {

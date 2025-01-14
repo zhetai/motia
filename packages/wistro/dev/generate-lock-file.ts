@@ -72,11 +72,9 @@ export const generateLockFile = async (projectDir: string) => {
     // Prepare the lock file data
     const lockData = {
       version,
-      port: config?.port,
       state: config?.state || {},
       triggers: {
         api: config?.api || { paths: {} },
-        cron: config?.cron || {},
       },
       flows,
     }

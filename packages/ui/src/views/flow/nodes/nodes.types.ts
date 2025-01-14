@@ -18,8 +18,7 @@ export type TriggerNodeData = {
   description?: string
   emits: string[]
   subscribes?: string[]
-  action: 'webhook' | 'cron'
-  cron?: string
+  action: 'webhook'
   webhookUrl?: string
   bodySchema?: JSONSchema7
 }

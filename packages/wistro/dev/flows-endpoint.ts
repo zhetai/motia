@@ -19,10 +19,9 @@ type FlowStepResponse = {
   description?: string
   subscribes?: string[]
   emits: Emit[]
-  action?: 'webhook' | 'cron'
+  action?: 'webhook'
   webhookUrl?: string
   bodySchema?: any
-  cron?: string
   language?: string
   nodeComponentPath?: string
 }
@@ -73,16 +72,6 @@ export const generateFlowsList = (steps: Step[]): FlowResponse[] => {
           webhookUrl: `${step.config.method} ${step.config.path}`,
           bodySchema: step?.config.bodySchema ? zodToJsonSchema(step.config.bodySchema) : undefined,
         })
-        // } else if (isCronStep(step)) {
-        //   steps.push({
-        //     id: randomUUID(),
-        //     type: 'trigger',
-        //     name: step.config.name,
-        //     description: step.config.description,
-        //     emits: step.config.emits,
-        //     action: 'cron',
-        //     cron: step.config.cron,
-        //   })
       } else if (isEventStep(step) || isNoopStep(step)) {
         const filePathWithoutExtension = step.filePath.replace(/\.[^/.]+$/, '')
         const tsxPath = filePathWithoutExtension + '.tsx'

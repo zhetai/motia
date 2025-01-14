@@ -1,6 +1,6 @@
 import { Position } from '@xyflow/react'
 import { BaseHandle } from './base-handle'
-import { BaseNodeProps } from './base-node-props'
+import { BaseNodeProps } from './node-props'
 import { Emits } from './emits'
 import { Subscribe } from './subscribe'
 import { cva, type VariantProps } from 'class-variance-authority'
@@ -48,7 +48,7 @@ export const BaseNode = (props: Props) => {
       {!excludePubsub && (
         <div className="flex flex-col mt-2">
           <Subscribe data={data} />
-          <Emits data={data} />
+          <Emits emits={data.emits} />
         </div>
       )}
       <BaseHandle type="target" position={Position.Top} />
