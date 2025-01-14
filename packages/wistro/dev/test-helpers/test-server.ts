@@ -17,18 +17,18 @@ export const createTestServer = async <EData>(
   configOverrides?: Partial<{ port: number }>,
 ): Response => {
   const lockData = loadLockFile()
-  const flowSteps = await buildFlows(lockData)
+  const steps = await buildFlows(lockData)
   const eventManager = createEventManager(eventSubscriber as (event: Event<unknown>) => void)
-  const stateAdapter = createStateAdapter(lockData)
-  const { server } = await createServer(
-    { ...lockData, ...(configOverrides ?? {}) },
-    flowSteps,
-    stateAdapter,
+  const state = createStateAdapter(lockData)
+  const { server } = await createServer({
+    steps,
+    state,
     eventManager,
-    { skipSocketServer: true },
-  )
+    skipSocketServer: true,
+    port: 3000,
+  })
 
-  createFlowHandlers(flowSteps, eventManager, lockData.state)
+  createFlowHandlers(steps, eventManager, lockData.state)
 
   return { server, eventManager }
 }

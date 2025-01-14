@@ -19,20 +19,23 @@ import { flowsEndpoint } from './flows-endpoint'
 import { isApiStep } from './guards'
 import { globalLogger, Logger } from './logger'
 
+type ServerOptions = {
+  steps: Step[]
+  state: StateAdapter
+  eventManager: EventManager
+  port: number
+  skipSocketServer?: boolean
+}
+
 export const createServer = async (
-  lockData: LockFile,
-  steps: Step[],
-  state: StateAdapter,
-  eventManager: EventManager,
-  options?: {
-    skipSocketServer?: boolean
-  },
+  options: ServerOptions,
 ): Promise<{ server: WistroServer; socketServer?: WistroSockerServer }> => {
+  const { steps, state, eventManager, port, skipSocketServer } = options
   const app = express()
   const server = http.createServer(app)
   let io: SocketIOServer | undefined
 
-  if (!options?.skipSocketServer) {
+  if (!skipSocketServer) {
     globalLogger.debug('[API] Creating socket server')
     io = new SocketIOServer(server)
   }
@@ -101,9 +104,7 @@ export const createServer = async (
   flowsEndpoint(steps, app)
   await applyMiddleware(app)
 
-  globalLogger.debug('[API] Server listening on port', lockData.port)
-
-  server.listen(lockData.port)
+  server.listen(port)
 
   return { server, socketServer: io }
 }

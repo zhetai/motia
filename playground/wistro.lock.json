@@ -1,6 +1,5 @@
 {
-  "version": "2f522c7c-6705-42cc-ab2f-d98997fc7973:1736690037",
-  "port": 3000,
+  "version": "1293a6d6-5553-40e6-ae74-99a4d5aad1ed:1736812802",
   "state": {
     "adapter": "redis",
     "host": "localhost",
@@ -8,243 +7,155 @@
   },
   "triggers": {
     "api": {
-      "paths": {
-        "/api/openai": {
-          "method": "POST",
-          "emits": "call-openai",
-          "name": "OpenAI",
-          "description": "Triggered when a message is received from chatbot",
-          "flows": [
-            "openai"
-          ]
-        },
-        "/api/hybrid-endpoint-example": {
-          "method": "POST",
-          "emits": "hybrid.received",
-          "name": "Hybrid Endpoint Example",
-          "description": "Triggered when a message is received from hybrid endpoint",
-          "flows": [
-            "hybrid-example"
-          ]
-        },
-        "/api/wistro-server-example": {
-          "method": "POST",
-          "emits": "ws-server-example.trigger",
-          "name": "Wistro Server Example",
-          "description": "Triggered when a message is received from wistro server",
-          "flows": [
-            "wistro-server"
-          ]
-        },
-        "/api/endpoint-server-handshake": {
-          "method": "POST",
-          "emits": "handshake.initiate",
-          "name": "Endpoint Server Handshake",
-          "description": "Triggered when a message is received from endpoint server",
-          "flows": [
-            "handshake"
-          ]
-        },
-        "/api/parallel-merge": {
-          "name": "Parallel Merge",
-          "description": "Triggered when a message is received from parallel merge",
-          "method": "POST",
-          "emits": "pms.initialize",
-          "flows": [
-            "parallel-merge"
-          ]
-        },
-        "/api/dbz/initialize": {
-          "name": "DBZ Initialize",
-          "description": "Triggered when a message is received from dbz",
-          "method": "POST",
-          "emits": "dbz.initialize",
-          "flows": [
-            "booking"
-          ]
-        },
-        "/api/dbz/search-upgrades": {
-          "name": "DBZ Search Upgrades",
-          "description": "Triggered when a message is received from dbz",
-          "method": "POST",
-          "emits": "dbz.evaluate-upgrades",
-          "flows": [
-            "booking"
-          ]
-        },
-        "/api/ecommerce/new-order": {
-          "name": "Ecommerce New Order",
-          "description": "Triggered when a message is received from ecommerce",
-          "method": "POST",
-          "emits": "ecommerce.new-order",
-          "flows": [
-            "ecommerce"
-          ]
-        }
-      }
-    },
-    "cron": {
-      "parallel-merge-cron": {
-        "name": "Parallel Merge",
-        "description": "Triggered every 5 minutes",
-        "cron": "0/5 * * * *",
-        "emits": "pms.initialize",
-        "flows": [
-          "parallel-merge"
-        ]
-      }
+      "paths": {}
     }
   },
   "flows": {
     "booking": {
-      "name": "Booking Example",
-      "description": "A flow that demonstrates the an event driven booking flow",
       "steps": [
         {
-          "filePath": "./steps/booking/initialize.step.ts",
-          "version": "2f522c7c-6705-42cc-ab2f-d98997fc7973:1736690037"
+          "filePath": "./steps/booking/initializeApi.step.ts",
+          "version": "1293a6d6-5553-40e6-ae74-99a4d5aad1ed:1736812802"
         },
         {
           "filePath": "./steps/booking/noop/userSendsMessage.step.ts",
-          "version": "2f522c7c-6705-42cc-ab2f-d98997fc7973:1736690037"
+          "version": "1293a6d6-5553-40e6-ae74-99a4d5aad1ed:1736812802"
         },
         {
           "filePath": "./steps/booking/searchCustomer.step.ts",
-          "version": "2f522c7c-6705-42cc-ab2f-d98997fc7973:1736690037"
+          "version": "1293a6d6-5553-40e6-ae74-99a4d5aad1ed:1736812802"
         },
         {
           "filePath": "./steps/booking/searchTicketUpgrades.step.ts",
-          "version": "2f522c7c-6705-42cc-ab2f-d98997fc7973:1736690037"
+          "version": "1293a6d6-5553-40e6-ae74-99a4d5aad1ed:1736812802"
+        },
+        {
+          "filePath": "./steps/booking/searchUpgradesApi.step.ts",
+          "version": "1293a6d6-5553-40e6-ae74-99a4d5aad1ed:1736812802"
         },
         {
           "filePath": "./steps/booking/sendText.step.ts",
-          "version": "2f522c7c-6705-42cc-ab2f-d98997fc7973:1736690037"
+          "version": "1293a6d6-5553-40e6-ae74-99a4d5aad1ed:1736812802"
         }
       ],
-      "version": "2f522c7c-6705-42cc-ab2f-d98997fc7973:1736690037"
+      "version": "1293a6d6-5553-40e6-ae74-99a4d5aad1ed:1736812802"
     },
     "handshake": {
-      "name": "Endpoint Server Handshake",
-      "description": "A flow that demonstrates the handshake between endpoint server and wistro server",
       "steps": [
         {
           "filePath": "./steps/endpointServerHandshake/apiCaller.step.ts",
-          "version": "2f522c7c-6705-42cc-ab2f-d98997fc7973:1736690037"
+          "version": "1293a6d6-5553-40e6-ae74-99a4d5aad1ed:1736812802"
+        },
+        {
+          "filePath": "./steps/endpointServerHandshake/handshakeApi.step.ts",
+          "version": "1293a6d6-5553-40e6-ae74-99a4d5aad1ed:1736812802"
         },
         {
           "filePath": "./steps/endpointServerHandshake/nodeFinalizer.step.ts",
-          "version": "2f522c7c-6705-42cc-ab2f-d98997fc7973:1736690037"
+          "version": "1293a6d6-5553-40e6-ae74-99a4d5aad1ed:1736812802"
         },
         {
           "filePath": "./steps/endpointServerHandshake/nodeStarter.step.ts",
-          "version": "2f522c7c-6705-42cc-ab2f-d98997fc7973:1736690037"
+          "version": "1293a6d6-5553-40e6-ae74-99a4d5aad1ed:1736812802"
         }
       ],
-      "version": "2f522c7c-6705-42cc-ab2f-d98997fc7973:1736690037"
+      "version": "1293a6d6-5553-40e6-ae74-99a4d5aad1ed:1736812802"
     },
     "hybrid-example": {
-      "name": "Hybrid Endpoint Example",
-      "description": "A flow that demonstrates the use of python and nodejs in a flow",
       "steps": [
         {
           "filePath": "./steps/hybridEndpointExample/analyzeData.step.py",
-          "version": "2f522c7c-6705-42cc-ab2f-d98997fc7973:1736690037"
+          "version": "1293a6d6-5553-40e6-ae74-99a4d5aad1ed:1736812802"
         },
         {
           "filePath": "./steps/hybridEndpointExample/enrichData.step.ts",
-          "version": "2f522c7c-6705-42cc-ab2f-d98997fc7973:1736690037"
+          "version": "1293a6d6-5553-40e6-ae74-99a4d5aad1ed:1736812802"
         },
         {
           "filePath": "./steps/hybridEndpointExample/finalizeData.step.ts",
-          "version": "2f522c7c-6705-42cc-ab2f-d98997fc7973:1736690037"
+          "version": "1293a6d6-5553-40e6-ae74-99a4d5aad1ed:1736812802"
+        },
+        {
+          "filePath": "./steps/hybridEndpointExample/hybridApi.step.ts",
+          "version": "1293a6d6-5553-40e6-ae74-99a4d5aad1ed:1736812802"
         },
         {
           "filePath": "./steps/hybridEndpointExample/transformData.step.py",
-          "version": "2f522c7c-6705-42cc-ab2f-d98997fc7973:1736690037"
-        },
-        {
-          "filePath": "./steps/hybridEndpointExample/validateData.step.ts",
-          "version": "2f522c7c-6705-42cc-ab2f-d98997fc7973:1736690037"
+          "version": "1293a6d6-5553-40e6-ae74-99a4d5aad1ed:1736812802"
         }
       ],
-      "version": "2f522c7c-6705-42cc-ab2f-d98997fc7973:1736690037"
+      "version": "1293a6d6-5553-40e6-ae74-99a4d5aad1ed:1736812802"
     },
     "openai": {
-      "name": "OpenAI Example",
-      "description": "A flow that demonstrates the use of OpenAI in a flow",
       "steps": [
         {
           "filePath": "./steps/openAi/callOpenAi.step.ts",
-          "version": "2f522c7c-6705-42cc-ab2f-d98997fc7973:1736690037"
+          "version": "1293a6d6-5553-40e6-ae74-99a4d5aad1ed:1736812802"
         },
         {
           "filePath": "./steps/openAi/callOpenAiApi.step.ts",
-          "version": "2f522c7c-6705-42cc-ab2f-d98997fc7973:1736690037"
+          "version": "1293a6d6-5553-40e6-ae74-99a4d5aad1ed:1736812802"
         },
         {
           "filePath": "./steps/openAi/call_ai.step.py",
-          "version": "2f522c7c-6705-42cc-ab2f-d98997fc7973:1736690037"
+          "version": "1293a6d6-5553-40e6-ae74-99a4d5aad1ed:1736812802"
         },
         {
           "filePath": "./steps/openAi/call_ai_ruby.step.rb",
-          "version": "2f522c7c-6705-42cc-ab2f-d98997fc7973:1736690037"
+          "version": "1293a6d6-5553-40e6-ae74-99a4d5aad1ed:1736812802"
         },
         {
           "filePath": "./steps/openAi/openAiResponse.step.ts",
-          "version": "2f522c7c-6705-42cc-ab2f-d98997fc7973:1736690037"
+          "version": "1293a6d6-5553-40e6-ae74-99a4d5aad1ed:1736812802"
         }
       ],
-      "version": "2f522c7c-6705-42cc-ab2f-d98997fc7973:1736690037"
+      "version": "1293a6d6-5553-40e6-ae74-99a4d5aad1ed:1736812802"
     },
     "parallel-merge": {
-      "name": "Parallel Merge Example",
-      "description": "update my description",
       "steps": [
         {
           "filePath": "./steps/parallelMergeState/joinComplete.step.ts",
-          "version": "2f522c7c-6705-42cc-ab2f-d98997fc7973:1736690037"
+          "version": "1293a6d6-5553-40e6-ae74-99a4d5aad1ed:1736812802"
         },
         {
           "filePath": "./steps/parallelMergeState/joinStep.step.ts",
-          "version": "2f522c7c-6705-42cc-ab2f-d98997fc7973:1736690037"
+          "version": "1293a6d6-5553-40e6-ae74-99a4d5aad1ed:1736812802"
         },
         {
           "filePath": "./steps/parallelMergeState/setpB.step.ts",
-          "version": "2f522c7c-6705-42cc-ab2f-d98997fc7973:1736690037"
+          "version": "1293a6d6-5553-40e6-ae74-99a4d5aad1ed:1736812802"
         },
         {
           "filePath": "./steps/parallelMergeState/startParallelMerge.step.ts",
-          "version": "2f522c7c-6705-42cc-ab2f-d98997fc7973:1736690037"
+          "version": "1293a6d6-5553-40e6-ae74-99a4d5aad1ed:1736812802"
         },
         {
           "filePath": "./steps/parallelMergeState/stepA.step.ts",
-          "version": "2f522c7c-6705-42cc-ab2f-d98997fc7973:1736690037"
+          "version": "1293a6d6-5553-40e6-ae74-99a4d5aad1ed:1736812802"
         },
         {
           "filePath": "./steps/parallelMergeState/stepC.step.ts",
-          "version": "2f522c7c-6705-42cc-ab2f-d98997fc7973:1736690037"
+          "version": "1293a6d6-5553-40e6-ae74-99a4d5aad1ed:1736812802"
         }
       ],
-      "version": "2f522c7c-6705-42cc-ab2f-d98997fc7973:1736690037"
+      "version": "1293a6d6-5553-40e6-ae74-99a4d5aad1ed:1736812802"
     },
     "wistro-server": {
-      "name": "Wistro Server Example",
-      "description": "update my description",
       "steps": [
         {
           "filePath": "./steps/wistroServerExample/finalizer.step.ts",
-          "version": "2f522c7c-6705-42cc-ab2f-d98997fc7973:1736690037"
+          "version": "1293a6d6-5553-40e6-ae74-99a4d5aad1ed:1736812802"
         },
         {
           "filePath": "./steps/wistroServerExample/processor.step.ts",
-          "version": "2f522c7c-6705-42cc-ab2f-d98997fc7973:1736690037"
+          "version": "1293a6d6-5553-40e6-ae74-99a4d5aad1ed:1736812802"
         },
         {
           "filePath": "./steps/wistroServerExample/startServerExample.step.ts",
-          "version": "2f522c7c-6705-42cc-ab2f-d98997fc7973:1736690037"
+          "version": "1293a6d6-5553-40e6-ae74-99a4d5aad1ed:1736812802"
         }
       ],
-      "version": "2f522c7c-6705-42cc-ab2f-d98997fc7973:1736690037"
+      "version": "1293a6d6-5553-40e6-ae74-99a4d5aad1ed:1736812802"
     }
   }
 }

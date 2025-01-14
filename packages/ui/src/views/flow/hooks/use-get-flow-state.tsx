@@ -1,7 +1,7 @@
 import { Edge, Node, useEdgesState, useNodesState } from '@xyflow/react'
 import { useEffect, useState } from 'react'
 import type { EdgeData, NodeData } from '../nodes/nodes.types'
-import { TriggerNode } from '../nodes/trigger-node'
+import { TriggerFlowNode } from '../nodes/trigger-flow-node'
 import { NoopNode } from '../nodes/noop-node'
 import { BaseFlowNode } from '../nodes/base-flow-node'
 
@@ -14,9 +14,8 @@ type FlowStep = {
   description?: string
   subscribes?: string[]
   emits: Emit[]
-  action?: 'webhook' | 'cron'
+  action?: 'webhook'
   webhookUrl?: string
-  cron?: string
   language?: string
   nodeComponentPath?: string
 }
@@ -36,7 +35,7 @@ type FlowState = {
 async function importFlow(flow: FlowResponse): Promise<FlowState> {
   const nodeTypes: Record<string, React.ComponentType<any>> = {
     base: BaseFlowNode,
-    trigger: TriggerNode,
+    trigger: TriggerFlowNode,
     noop: NoopNode,
   }
 

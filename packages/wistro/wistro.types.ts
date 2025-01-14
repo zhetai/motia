@@ -97,7 +97,6 @@ export type LockFlow = {
 export type LockFile = {
   baseDir: string
   version: string
-  port?: number
   flows: Record<string, LockFlow>
   state: {
     adapter: string
@@ -117,16 +116,6 @@ export type LockFile = {
         }
       >
     }
-    cron: Record<
-      string,
-      {
-        name: string
-        description: string
-        cron: string
-        emits: string
-        flows: string[]
-      }
-    >
   }
 }
 

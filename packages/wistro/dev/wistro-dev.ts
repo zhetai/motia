@@ -11,16 +11,16 @@ require('ts-node').register({
   compilerOptions: { module: 'commonjs' },
 })
 
-export const dev = async (): Promise<void> => {
+export const dev = async (port: number): Promise<void> => {
   const lockData = loadLockFile()
   const steps = await buildFlows(lockData)
   const eventManager = createEventManager()
   const state = createStateAdapter(lockData.state)
-  const { server } = await createServer(lockData, steps, state, eventManager)
+  const { server } = await createServer({ steps, state, eventManager, port })
 
   createFlowHandlers(steps, eventManager, lockData.state)
 
-  console.log('🚀 Server ready and listening on port', lockData.port)
+  console.log('🚀 Server ready and listening on port', port)
 
   // 6) Gracefully shut down on SIGTERM
   process.on('SIGTERM', async () => {
