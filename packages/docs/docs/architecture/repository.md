@@ -4,12 +4,12 @@ sidebar_position: 3
 
 # Repository Structure
 
-The wistro repo is structured in the following way
+The motia repo is structured in the following way
 
 ```
 .
 ├── packages/                   # Core framework and supporting tools
-│   ├── wistro/                  # The Wistro.js framework
+│   ├── motia/                  # The Motia.js framework
 │   │   ├── src/                # Source code
 │   │   ├── dist/               # Compiled output
 │   │   ├── package.json        # Package metadata

@@ -19,7 +19,7 @@ function HomepageHeader() {
         <p className="hero__subtitle">{siteConfig.tagline}</p>
         <div className={styles.buttons}>
           <Link className="button button--secondary button--lg" to="/docs/intro">
-            Wistro Tutorial - 5min ⏱️
+            Motia Tutorial - 5min ⏱️
           </Link>
         </div>
       </div>

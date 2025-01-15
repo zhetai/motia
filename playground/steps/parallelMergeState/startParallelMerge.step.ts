@@ -1,4 +1,4 @@
-import { ApiRouteConfig, StepHandler } from 'wistro'
+import { ApiRouteConfig, StepHandler } from '@motia/core'
 
 export const config: ApiRouteConfig = {
   type: 'api',

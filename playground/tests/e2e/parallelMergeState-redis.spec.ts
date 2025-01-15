@@ -1,6 +1,7 @@
 import { test, expect } from '@playwright/test'
 import path from 'path'
-import { createTestServer, Event, WistroServer } from 'wistro'
+import { createTestServer } from '../utils/createTestServer'
+import { Event, MotiaServer } from '@motia/core'
 
 type EventDataType = {
   stepA: Record<string, unknown>
@@ -14,7 +15,7 @@ test.describe('Parallel Merge State Workflow + Redis E2E', () => {
   let eventSubscriber = (event: Event<EventDataType>) => {
     collectedEvents.push(event)
   }
-  let server: WistroServer
+  let server: MotiaServer
 
   test.beforeAll(async () => {
     const result = await createTestServer(path.join(__dirname, '../../'), eventSubscriber)

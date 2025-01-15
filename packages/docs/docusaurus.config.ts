@@ -5,20 +5,20 @@ import type * as Preset from '@docusaurus/preset-classic'
 // This runs in Node.js - Don't use client-side code here (browser APIs, JSX...)
 
 const config: Config = {
-  title: 'Wistro',
+  title: 'Motia',
   tagline: 'Developer-first, event-driven framework that scales with your needs.',
   favicon: 'img/favicon.ico',
 
   // Set the production url of your site here
-  url: 'https://docs.wistro.dev',
+  url: 'https://docs.motia.dev',
   // Set the /<baseUrl>/ pathname under which your site is served
   // For GitHub pages deployment, it is often '/<projectName>/'
   baseUrl: '/',
 
   // GitHub pages deployment config.
   // If you aren't using GitHub pages, you don't need these.
-  organizationName: 'WistroDev', // Usually your GitHub org/user name.
-  projectName: 'wistro', // Usually your repo name.
+  organizationName: 'MotiaDev', // Usually your GitHub org/user name.
+  projectName: 'motia', // Usually your repo name.
 
   onBrokenLinks: 'throw',
   onBrokenMarkdownLinks: 'warn',
@@ -39,7 +39,7 @@ const config: Config = {
           sidebarPath: './sidebars.ts',
           // Please change this to your repo.
           // Remove this to remove the "edit this page" links.
-          editUrl: 'https://github.com/WistroDev/wistro/tree/main/packages/docs/templates/shared/',
+          editUrl: 'https://github.com/MotiaDev/motia/tree/main/packages/docs/templates/shared/',
         },
         blog: {
           showReadingTime: true,
@@ -49,7 +49,7 @@ const config: Config = {
           },
           // Please change this to your repo.
           // Remove this to remove the "edit this page" links.
-          editUrl: 'https://github.com/WistroDev/wistro/tree/main/packages/docs/templates/shared/',
+          editUrl: 'https://github.com/MotiaDev/motia/tree/main/packages/docs/templates/shared/',
           // Useful options to enforce blogging best practices
           onInlineTags: 'warn',
           onInlineAuthors: 'warn',
@@ -66,9 +66,9 @@ const config: Config = {
     // Replace with your project's social card
     image: 'img/docusaurus-social-card.jpg',
     navbar: {
-      title: 'Wistro',
+      title: 'Motia',
       logo: {
-        alt: 'Wistro Logo',
+        alt: 'Motia Logo',
         src: 'img/logo.svg',
       },
       items: [
@@ -80,7 +80,7 @@ const config: Config = {
         },
         { to: '/blog', label: 'Blog', position: 'left' },
         {
-          href: 'https://github.com/WistroDev/wistro',
+          href: 'https://github.com/MotiaDev/motia',
           label: 'GitHub',
           position: 'right',
         },
@@ -103,15 +103,15 @@ const config: Config = {
           items: [
             {
               label: 'Stack Overflow',
-              href: 'https://stackoverflow.com/questions/tagged/wistrodev',
+              href: 'https://stackoverflow.com/questions/tagged/MotiaDev',
             },
             {
               label: 'Discord',
-              href: 'https://discordapp.com/invite/wistrodev',
+              href: 'https://discordapp.com/invite/MotiaDev',
             },
             {
               label: 'X',
-              href: 'https://x.com/wistrodev',
+              href: 'https://x.com/MotiaDev',
             },
           ],
         },
@@ -124,12 +124,12 @@ const config: Config = {
             },
             {
               label: 'GitHub',
-              href: 'https://github.com/WistroDev/wistro',
+              href: 'https://github.com/MotiaDev/motia',
             },
           ],
         },
       ],
-      copyright: `Copyright © ${new Date().getFullYear()} Wistro, Inc. Built with Docusaurus.`,
+      copyright: `Copyright © ${new Date().getFullYear()} Motia, Inc. Built with Docusaurus.`,
     },
     prism: {
       theme: prismThemes.github,

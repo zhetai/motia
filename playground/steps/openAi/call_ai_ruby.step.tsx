@@ -1,5 +1,5 @@
 import React from 'react'
-import { BaseHandle, BaseNodeProps, Position } from '@wistro/ui'
+import { BaseHandle, BaseNodeProps, Position } from '@motia/workbench'
 
 export default (_: BaseNodeProps) => {
   return (

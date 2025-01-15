@@ -1,5 +1,5 @@
 import { z } from 'zod'
-import { EventConfig, StepHandler } from 'wistro'
+import { EventConfig, StepHandler } from '@motia/core'
 
 type Input = typeof inputSchema
 
@@ -13,7 +13,7 @@ export const config: EventConfig<Input> = {
   subscribes: ['ws-server-example.start'],
   emits: ['ws-server-example.processed'],
   input: inputSchema,
-  flows: ['wistro-server'],
+  flows: ['motia-server'],
 }
 
 export const handler: StepHandler<typeof config> = async (input, { emit, logger }) => {

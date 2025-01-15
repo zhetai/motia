@@ -1,6 +1,7 @@
 import { test, expect } from '@playwright/test'
 import path from 'path'
-import { createTestServer, Event, WistroServer } from 'wistro'
+import { createTestServer } from '../utils/createTestServer'
+import { Event, MotiaServer } from '@motia/core'
 
 type HybridWorkflowEventData = {
   items: Array<{
@@ -16,7 +17,7 @@ type HybridWorkflowEventData = {
 
 test.describe('Hybrid Workflow E2E', () => {
   let collectedEvents: Array<Event<HybridWorkflowEventData>> = []
-  let server: WistroServer
+  let server: MotiaServer
   let eventSubscriber = (event: Event<HybridWorkflowEventData>) => {
     collectedEvents.push(event)
   }

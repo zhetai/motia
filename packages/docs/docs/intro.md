@@ -4,7 +4,7 @@ sidebar_position: 1
 
 # Intro
 
-Let's discover **Wistro in less than 5 minutes**.
+Let's discover **Motia in less than 5 minutes**.
 
 ## Getting Started
 
@@ -20,7 +20,7 @@ Let's discover **Wistro in less than 5 minutes**.
 
    ```bash
    git clone <repository_url>
-   cd wistro-monorepo
+   cd motia-monorepo
    ```
 
 2. Install dependencies:
@@ -38,7 +38,7 @@ Let's discover **Wistro in less than 5 minutes**.
 
 ### Running the Playground
 
-The playground allows you to test and refine flows built using Wistro.js.
+The playground allows you to test and refine flows built using Motia.js.
 
 ```bash
 pnpm run dev
@@ -46,6 +46,6 @@ pnpm run dev
 
 This command starts the following services:
 
-- **WistroCore**: The flow orchestrator.
-- **WistroServer**: Provides HTTP endpoints for triggering flows.
+- **MotiaCore**: The flow orchestrator.
+- **MotiaServer**: Provides HTTP endpoints for triggering flows.
 - **Playground UI**: A React-based visualization tool for flows.

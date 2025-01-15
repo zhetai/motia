@@ -1,12 +1,12 @@
-# Wistro Documentation: MVP Overview
+# Motia Documentation: MVP Overview
 
-This document describes the **Wistro** platform at an MVP level—spanning describing the **Open Source** core (with the Workbench). It clarifies the foundational terminology, how local vs. production step registries work, and what features to expect from each offering.
+This document describes the **Motia** platform at an MVP level—spanning describing the **Open Source** core (with the Workbench). It clarifies the foundational terminology, how local vs. production step registries work, and what features to expect from each offering.
 
 ---
 
 ## **1. Introduction**
 
-**Wistro** is an event-driven workflow framework that allows you to build, test, and run “Steps” (logic units) connected by **Events** (messages). You can start with the **Open Source** version, which includes the **Core** engine and a local **Workbench** UI for development and debugging. For production scenarios at scale, **WistroHub** provides a commercial solution with, versioning, deployment, enhanced security, observability, and collaboration features.
+**Motia** is an event-driven workflow framework that allows you to build, test, and run “Steps” (logic units) connected by **Events** (messages). You can start with the **Open Source** version, which includes the **Core** engine and a local **Workbench** UI for development and debugging. For production scenarios at scale, **MotiaHub** provides a commercial solution with, versioning, deployment, enhanced security, observability, and collaboration features.
 
 ---
 
@@ -18,19 +18,19 @@ This document describes the **Wistro** platform at an MVP level—spanning descr
 - **Topics**: Identifiers for events. Each topic has an associated schema (or type) for its payload.
 - **Messages**: The actual payload data within an event. Validated at compile time and/or runtime for type safety.
 - **Triggers**: Configuration that start workflows (e.g., REST endpoints, cron schedules).
-- **Core**: The Wistro engine that orchestrates events, manages steps, and logs activity in either dev or prod.
+- **Core**: The Motia engine that orchestrates events, manages steps, and logs activity in either dev or prod.
 - **Workbench**: **Local development** UI (open source). It visualizes flows, runs tests, and shows logs for debugging.
 - **Step Registry**: An **in-memory** set of steps currently active in a given environment (local dev, production, etc.). Each environment (or instance) loads and maintains its own registry.
 
 ---
 
-## **3. Wistro Core (Open Source)**
+## **3. Motia Core (Open Source)**
 
 ### 3.1 Features of the Core
 
 1. **Quick Setup**
    - Minimal config for local or production usage.
-   - Single commands to install dependencies, run dev mode (`wistro` or `pnpm run dev`), and see immediate results.
+   - Single commands to install dependencies, run dev mode (`motia` or `pnpm run dev`), and see immediate results.
 2. **Folder Structure**
    - Default `/src` folder (configurable).
    - Any file matching `*.step.*` automatically registers as a step in the Step Registry.
@@ -38,8 +38,8 @@ This document describes the **Wistro** platform at an MVP level—spanning descr
    - Steps can be implemented in JavaScript, TypeScript, Python, or Go.
    - The engine loads them, so they can subscribe to and emit events in the environment.
 4. **Configuration**
-   - `wistro.yml.lock` for deterministic builds.
-   - Optional `wistro.yml` or `wistro.json` to define endpoints, cron jobs, state adapters, flow metadata.
+   - `motia.yml.lock` for deterministic builds.
+   - Optional `motia.yml` or `motia.json` to define endpoints, cron jobs, state adapters, flow metadata.
    - Defaults to a local file-based state adapter for small projects or quick dev use.
 5. **Flow Management**
    - Flows give developers a clear, UI-friendly way to see groupings of steps.
@@ -53,7 +53,7 @@ This document describes the **Wistro** platform at an MVP level—spanning descr
   - When developing locally, the engine scans all `*.step.*` files, creating an in-memory list of active steps.
   - The **Workbench** can then display these steps, allowing you to run or debug them.
 - **Production Registry**
-  - In a production environment (Lambda, Docker, Kubernetes, not yet decided), Wistro again scans and loads the steps.
+  - In a production environment (Lambda, Docker, Kubernetes, not yet decided), Motia again scans and loads the steps.
   - Large organizations may have hundreds or thousands of steps in a single environment. Each environment has its own registry, isolating step sets.
 
 ---
@@ -84,7 +84,7 @@ This document describes the **Wistro** platform at an MVP level—spanning descr
    - **Testing & Debugging**: Launch tests and debug failing runs directly in the UI, with step-by-step insights.
 3. **Scope**
    - Workbench is primarily for **local development** and small-scale usage.
-   - For large-scale, multi-environment, multi-user scenarios, see **WistroHub** below.
+   - For large-scale, multi-environment, multi-user scenarios, see **MotiaHub** below.
 
 ---
 

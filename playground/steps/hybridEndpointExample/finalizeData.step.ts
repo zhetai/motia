@@ -1,4 +1,4 @@
-import { EventConfig, StepHandler } from 'wistro'
+import { EventConfig, StepHandler } from '@motia/core'
 import { SharedFlowInputSchema } from './items.schema'
 
 type Input = typeof inputSchema

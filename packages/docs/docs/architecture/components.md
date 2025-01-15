@@ -4,7 +4,7 @@ sidebar_position: 2
 
 # Components
 
-Description of the architectural components for Wistro
+Description of the architectural components for Motia
 
 | **Component** | **Description**                                                                                                  |
 | ------------- | ---------------------------------------------------------------------------------------------------------------- |

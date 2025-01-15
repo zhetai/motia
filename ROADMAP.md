@@ -1,7 +1,7 @@
-# Wistro Dev Central Development Checklist
+# Motia Dev Central Development Checklist
 
-- ⬜ [MonoRepo][Refactor] Rename monorepo to Wistro Dev Central and endpoints to endpoints
-- ⬜ [WistroServer][Architecture] Centralize all inbound/outbound traffic through WistroServer
+- ⬜ [MonoRepo][Refactor] Rename monorepo to Motia Dev Central and endpoints to endpoints
+- ⬜ [MotiaServer][Architecture] Centralize all inbound/outbound traffic through MotiaServer
 - ✅ [Testing][Architecture] Restructure tests to run e2e at top level by default
 - ⬜ [MonoRepo][Infra] Harden monorepo to be more rigorous
 - ⬜ [Core][Feature] Add component hot-reload capabilities
@@ -23,7 +23,7 @@
   - ⬜ [Examples][Feature] Create data ETL pipeline flow example?
 - ⬜ [Testing][Feature] Move e2e to playground to emulate end user experience
 - ⬜ [Events][Architecture] Implement event schema validation system (ZOD)
-- ⬜ [Events][Architecture] Refactor Wistro Core, Server EventManager etc to remove duplication and have consitent roles
+- ⬜ [Events][Architecture] Refactor Motia Core, Server EventManager etc to remove duplication and have consitent roles
 - ⬜ [CLI][Feature] Create project scaffolding commands
 - ⬜ [Docs][Content] Create getting started guide
 - ⬜ [UI][Feature] Create stunning flow visualization examples
@@ -35,8 +35,8 @@
 - ⬜ [Core][TypeScript] Convert core framework to TypeScript with strict typing
 - ⬜ [DevOps][Feature] Create Docker deployment configuration
 - ⬜ [Storage][Feature] Implement flow state persistence
-- ⬜ [Wistro][Package] Create a wistro npm package
-- ⬜ [Wistro][Package] Split WistroUI to it's own package
+- ⬜ [Motia][Package] Create a motia npm package
+- ⬜ [Motia][Package] Split WistroUI to it's own package
 - ⬜ [UI][Feature] Create NoOp components that represent work outside of the system
 - ⬜ [Monitoring][Feature] Add performance monitoring capabilities
 

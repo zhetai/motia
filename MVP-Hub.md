@@ -2,7 +2,7 @@
 
 ## **Description**
 
-WistroHub is the GitHub for Wistro workflows. It provides a centralized platform for hosting, monitoring, deploying, and scaling workflows with advanced observability and security features.
+MotiaHub is the GitHub for Motia workflows. It provides a centralized platform for hosting, monitoring, deploying, and scaling workflows with advanced observability and security features.
 
 ---
 

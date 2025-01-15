@@ -1,18 +1,19 @@
 {
-  "name": "wistro-playground",
+  "name": "playground",
   "private": true,
   "scripts": {
-    "dev": "wistro dev",
-    "dev:debug": "wistro dev --debug",
-    "build": "wistro build",
+    "dev": "motia dev",
+    "dev:debug": "motia dev --debug",
+    "get-config": "motia get-config --output ./",
     "test:tsc-check": "tsc -p ./tests/tsconfig.test.json --noEmit",
     "test:e2e": "pnpm run test:tsc-check && pnpm playwright test --workers=1",
     "test:unit": "pnpm vitest",
     "test": "concurrently \"pnpm run test:unit\" \"pnpm run test:e2e\""
   },
   "dependencies": {
-    "@wistro/ui": "workspace:*",
-    "wistro": "workspace:*",
+    "@motia/workbench": "workspace:*",
+    "@motia/snap": "workspace:*",
+    "@motia/core": "workspace:*",
     "zod": "^3.24.1"
   },
   "devDependencies": {

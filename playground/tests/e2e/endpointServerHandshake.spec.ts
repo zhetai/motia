@@ -1,10 +1,11 @@
 import { test, expect } from '@playwright/test'
 import path from 'path'
-import { createTestServer, WistroServer, Event } from 'wistro'
+import { createTestServer } from '../utils/createTestServer'
+import { Event, MotiaServer } from '@motia/core'
 
 test.describe('endpointServerHandshake + Redis E2E', () => {
   let collectedEvents: Array<Event<unknown>> = []
-  let server: WistroServer
+  let server: MotiaServer
   let eventSubscriber = (event: Event<unknown>) => {
     collectedEvents.push(event)
   }

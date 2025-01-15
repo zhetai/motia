@@ -1,5 +1,5 @@
 import { z } from 'zod'
-import { EventConfig, StepHandler } from 'wistro'
+import { EventConfig, StepHandler } from '@motia/core'
 
 type Input = typeof inputSchema
 

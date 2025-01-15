@@ -4,7 +4,7 @@ sidebar_position: 1
 
 # Vision
 
-Wistro.js aims to simplify the creation and scaling of event-driven flows by:
+Motia.js aims to simplify the creation and scaling of event-driven flows by:
 
 - Providing a **core framework** for defining flows as collections of testable components.
 - Supporting **real-time event handling** with loose coupling between components.
@@ -13,7 +13,7 @@ Wistro.js aims to simplify the creation and scaling of event-driven flows by:
 
 ## Aspirational Vision
 
-Wistro.js strives to be:
+Motia.js strives to be:
 
 - **Developer-Friendly**: Easy to adopt and extend.
 - **Production-Ready**: Scales gracefully from prototypes to enterprise-grade flows.

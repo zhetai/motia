@@ -1,4 +1,4 @@
-import { BaseNode, BaseNodeProps } from '@wistro/ui'
+import { BaseNode, BaseNodeProps } from '@motia/workbench'
 import React from 'react'
 
 export default ({ data }: BaseNodeProps) => {
