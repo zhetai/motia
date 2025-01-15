@@ -7,52 +7,68 @@ import { cva, type VariantProps } from 'class-variance-authority'
 import { cn } from '@/lib/utils'
 import { PropsWithChildren } from 'react'
 
-const baseNodeVariants = cva('p-2 px-3 flex flex-col max-w-[300px]', {
-  variants: {
-    variant: {
-      ghost: '',
-      white: 'bg-white text-black',
-      noop: 'bg-lime-500 border-lime-950 border-solid border text-black p-2 px-4 text-black ',
+const baseNodeVariants = cva(
+  'relative flex flex-col min-w-[300px] bg-[#1A1A1A] rounded-md overflow-hidden font-mono',
+  {
+    variants: {
+      variant: {
+        default: 'bg-zinc-950/40',  // Event nodes (was previously just using the base bg)
+        trigger: 'bg-blue-950/40',   // API nodes (was using sky)
+        noop: 'bg-teal-950/40',  
+      },
     },
-    shape: {
-      noop: 'rounded-[20px]',
-      rounded: 'rounded-md',
-      square: 'rounded-none',
+    defaultVariants: {
+      variant: 'default',
     },
   },
-  defaultVariants: {
-    variant: 'white',
-    shape: 'rounded',
-  },
-})
+)
 
 type Props = PropsWithChildren<
   BaseNodeProps & {
     variant?: VariantProps<typeof baseNodeVariants>['variant']
-    shape?: VariantProps<typeof baseNodeVariants>['shape']
     excludePubsub?: boolean
     className?: string
   }
 >
 
+const HeaderBar = ({ text }: { text: string }) => (
+  <div className="px-3 py-1 border-b border-white/20 bg-black/30 text-xs text-white/70 flex justify-between items-center">
+    <span>{text}</span>
+  </div>
+)
+
 export const BaseNode = (props: Props) => {
-  const { data, variant, shape, excludePubsub, className } = props
+  const { data, variant, excludePubsub, className, children } = props
 
   return (
-    <div className={cn(baseNodeVariants({ variant, shape }), className)}>
-      <div className="flex flex-col gap-1">
-        <div className="text-sm font-semibold">{data.name}</div>
-        {data.description && <div className="text-xs">{data.description}</div>}
-      </div>
-      {props.children}
-      {!excludePubsub && (
-        <div className="flex flex-col mt-2">
-          <Subscribe data={data} />
-          <Emits emits={data.emits} />
+    <div className="group relative">
+      {/* Border container */}
+      <div className="absolute -inset-[1px] rounded-md bg-gradient-to-r from-white/20 to-white/10" />
+      
+      {/* Main node content */}
+      <div className={cn(baseNodeVariants({ variant }), className)}>
+        <HeaderBar text={data.name} />
+        
+        <div className="p-4 space-y-3">
+          {data.description && (
+            <div className="text-sm text-white/60">{data.description}</div>
+          )}
+          {children}
+          {!excludePubsub && (
+            <div className="space-y-2 pt-2 border-t border-white/10">
+              <Subscribe data={data} />
+              <Emits emits={data.emits} />
+            </div>
+          )}
         </div>
-      )}
+      </div>
+
+      {/* Connection points */}
       <BaseHandle type="target" position={Position.Top} />
       {data.emits.length > 0 && <BaseHandle type="source" position={Position.Bottom} />}
+
+      {/* Stacked card effect */}
+      <div className="absolute inset-0 -z-10 translate-y-1 translate-x-1 bg-black/20 rounded-md border border-white/5" />
     </div>
   )
 }

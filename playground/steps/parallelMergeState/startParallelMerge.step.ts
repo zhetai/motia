@@ -6,6 +6,7 @@ export const config: ApiRouteConfig = {
   description: 'Triggered when a message is received from parallel merge',
   path: '/api/parallel-merge',
   method: 'POST',
+  virtualSubscribes: ['/api/parallel-merge'],
   emits: ['pms.start'],
   flows: ['parallel-merge'],
 }

@@ -9,6 +9,7 @@ const inputSchema = z.object({ msg: z.string(), timestamp: z.number() })
 export const config: EventConfig<Input> = {
   type: 'event',
   name: 'join-step',
+  description: 'Merges the results of parallel steps',
   subscribes: ['pms.stepA.done', 'pms.stepB.done', 'pms.stepC.done'],
   emits: ['pms.join.complete'],
   input: inputSchema,

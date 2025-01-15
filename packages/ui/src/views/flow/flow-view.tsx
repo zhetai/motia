@@ -33,7 +33,7 @@ export const FlowView: React.FC<Props> = ({ flow }) => {
   }
 
   return (
-    <div className="w-full h-full relative">
+    <div className="w-full h-full relative bg-black">
       {!initialized && <FlowLoader />}
       <ReactFlow
         nodes={nodes}

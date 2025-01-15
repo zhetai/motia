@@ -11,6 +11,8 @@ export type BaseNodeData = {
 export type NoopNodeData = {
   name: string
   description?: string
+  virtualEmits: string[]
+  virtualSubscribes: string[]
 }
 
 export type TriggerNodeData = {
