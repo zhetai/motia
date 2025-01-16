@@ -12,10 +12,11 @@ export const dev = async (port: number): Promise<void> => {
   const steps = [...lockedData.steps.active, ...lockedData.steps.dev]
   const eventManager = createEventManager()
   const state = createStateAdapter(lockedData.state)
-  const { server } = await createServer({ port, steps, flows: lockedData.flows, state, eventManager })
+  const { server } = await createServer({ steps, flows: lockedData.flows, state, eventManager })
 
   createStepHandlers(steps, eventManager, lockedData.state)
 
+  server.listen(port)
   console.log('🚀 Server ready and listening on port', port)
 
   // 6) Gracefully shut down on SIGTERM

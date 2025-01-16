@@ -13,6 +13,13 @@
     "rootDir": ".",
     "baseUrl": "."
   },
-  "include": ["e2e/**/*.ts"],
-  "exclude": ["node_modules", "dist"]
+  "include": [
+    "**/*.ts", 
+    "ui.tsx"
+  ],
+  "jsx": "react-jsx",
+  "exclude": [
+    "node_modules",
+    "dist"
+  ]
 }
