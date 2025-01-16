@@ -100,7 +100,7 @@ export const generateLockedData = async (projectDir: string): Promise<LockedData
               name: flowName,
               // TODO: how are we going to extract descriptions?
               description: '',
-              steps: [step],
+              steps: [],
             }
           }
 
