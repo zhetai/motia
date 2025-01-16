@@ -2,7 +2,7 @@ import { randomUUID } from 'crypto'
 import fs from 'fs'
 import path from 'path'
 import yaml from 'yaml'
-import { Step, Flow, LockedData, getRubyConfig, getPythonConfig } from '@motia/core'
+import { LockedData, Step, getPythonConfig, getRubyConfig } from '@motia/core'
 
 const version = `${randomUUID()}:${Math.floor(Date.now() / 1000)}`
 const baseFlowRegex = new RegExp(/flows\"?\s?.*\s*\[([^\]]+)\]/)

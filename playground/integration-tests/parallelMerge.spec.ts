@@ -1,11 +1,11 @@
-import { createWistroTester } from '@wistro/test'
+import { createMotiaTester } from '@motia/test'
 
 const ISO_DATE_REGEX = /^\d{4}-\d{2}-\d{2}T\d{2}:\d{2}:\d{2}.\d{3}Z$/
 
 describe('parallelMerge', () => {
-  let server: ReturnType<typeof createWistroTester>
+  let server: ReturnType<typeof createMotiaTester>
 
-  beforeEach(async () => (server = createWistroTester()))
+  beforeEach(async () => (server = createMotiaTester()))
   afterEach(async () => server.close())
 
   it('should run steps concurrently', async () => {

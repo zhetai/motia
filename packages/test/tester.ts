@@ -1,11 +1,9 @@
 import request, { Response } from 'supertest'
-import { createServer, Event } from 'wistro'
-import { buildFlows } from 'wistro/dev/flow-builder'
-import { createFlowHandlers } from 'wistro/dev/flow-handlers'
-import { loadLockFile } from 'wistro/dev/load-lock-file'
-import { createStateAdapter } from 'wistro/state/createStateAdapter'
+import { createServer, createStateAdapter, createStepHandlers, Event } from '@motia/core'
+import { generateLockedData } from '@motia/snap/src/generate/locked-data'
 import { createEventManager } from './event-manager'
 import { CapturedEvent, RequestOptions } from './types'
+import path from 'path'
 
 type Watcher<TData = unknown> = {
   getCapturedEvents(): CapturedEvent<TData>[]
@@ -13,7 +11,7 @@ type Watcher<TData = unknown> = {
   getCapturedEvent(index: number): CapturedEvent<TData> | undefined
 }
 
-interface WistroTester {
+interface MotiaTester {
   post(path: string, options: RequestOptions): Promise<Response>
   get(path: string, options: RequestOptions): Promise<Response>
   emit(event: Event<any>): Promise<void>
@@ -23,15 +21,21 @@ interface WistroTester {
   waitEvents(): Promise<void>
 }
 
-export const createWistroTester = (): WistroTester => {
+export const createMotiaTester = (): MotiaTester => {
   const eventManager = createEventManager()
   const promise = (async () => {
-    const lockData = loadLockFile()
-    const steps = await buildFlows(lockData)
-    const state = createStateAdapter(lockData.state)
-    const { server, socketServer } = await createServer({ steps, state, eventManager, disableUi: true })
+    const lockedData = await generateLockedData(path.join(process.cwd()))
+    const steps = [...lockedData.steps.active, ...lockedData.steps.dev]
+    const state = createStateAdapter(lockedData.state)
+    const { server, socketServer } = await createServer({
+      steps,
+      flows: lockedData.flows,
+      state,
+      eventManager,
+      disableUi: true,
+    })
 
-    createFlowHandlers(steps, eventManager, lockData.state)
+    createStepHandlers(steps, eventManager, lockedData.state)
 
     return { server, socketServer, eventManager, state }
   })()

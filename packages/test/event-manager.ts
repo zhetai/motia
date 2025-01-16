@@ -1,4 +1,4 @@
-import { Event, EventManager, Handler } from 'wistro'
+import { Event, EventManager, Handler } from '@motia/core'
 
 interface TestEventManager extends EventManager {
   waitEvents(): Promise<void>

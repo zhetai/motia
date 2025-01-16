@@ -1,2 +1,2 @@
-export { createWistroTester } from './tester'
+export { createMotiaTester } from './tester'
 export { CapturedEvent } from './types'

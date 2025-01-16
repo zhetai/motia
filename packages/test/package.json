@@ -1,10 +1,11 @@
 {
-  "name": "@wistro/test",
+  "name": "@motia/test",
   "private": true,
   "scripts": {},
   "dependencies": {
     "supertest": "^7.0.0",
-    "wistro": "workspace:*"
+    "@motia/core": "workspace:*",
+    "@motia/snap": "workspace:*"
   },
   "devDependencies": {
     "@types/jest": "^29.5.14",
