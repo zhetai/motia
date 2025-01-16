@@ -10,6 +10,7 @@ describe('parallelMerge', () => {
 
   it('should run steps concurrently', async () => {
     const timestamp = expect.any(Number)
+    // Creating a watcher for the event we want to test
     const joinComplete = await server.watch('pms.join.complete')
 
     const response = await server.post('/api/parallel-merge', {
@@ -21,7 +22,10 @@ describe('parallelMerge', () => {
     // This is important to ensure all events are handled in this test
     await server.waitEvents()
 
+    // Checking all captured events
     expect(joinComplete.getCapturedEvents()).toHaveLength(1)
+
+    // Checking the last captured event
     expect(joinComplete.getLastCapturedEvent()).toEqual({
       traceId: expect.any(String),
       type: 'pms.join.complete',
