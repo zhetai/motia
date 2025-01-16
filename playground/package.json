@@ -11,15 +11,9 @@
     "test": "concurrently \"pnpm run test:unit\" \"pnpm run test:e2e\""
   },
   "dependencies": {
-<<<<<<< HEAD
     "@motia/workbench": "workspace:*",
     "@motia/snap": "workspace:*",
     "@motia/core": "workspace:*",
-=======
-    "@wistro/ui": "workspace:*",
-    "openai": "^4.78.1",
-    "wistro": "workspace:*",
->>>>>>> 3ae8fd3 (wip)
     "zod": "^3.24.1"
   },
   "devDependencies": {
