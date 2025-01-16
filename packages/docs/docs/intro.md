@@ -9,14 +9,13 @@ Let's discover **Motia in less than 5 minutes**. Welcome to **Motia**, an **even
 
 ## What Is Motia?
 
-Motia is a developer-first framework where you define **Steps** in JavaScript, TypeScript, Python, Ruby, (more supported languages on the roadmap). Each **Step** subscribes to and/or emits **Events**, enabling loosely coupled logic. You can also group Steps into **Flows**—this organization helps you visualize your application and track logs in the Motia Workbench UI.
+Motia is a developer-first framework where you define **Steps** in JavaScript, TypeScript, Python, Ruby, (more supported languages on the roadmap). Each **Step** subscribes to and/or emits **Topics**, which trigger an **Event**, enabling loosely coupled logic. You can also group Steps into **Flows**—this organization helps you visualize your application and track logs in the Motia Workbench.
 
 Under the hood, Motia automates much of the infrastructure:
 
-- **Event Management**: Steps broadcast and listen to events, so your entire system stays decoupled but still coordinated.
-- **Automatic Routes**: If a Step is of type **API** (i.e., “api route” step), Motia automatically creates an HTTP route for it.
-- **Scheduling**: If a Step is of type **Cron**, Motia schedules it (no need for external cron or separate processes).
-- **UI & Logging**: An optional local UI displays flows, logs, event traces, etc., all out of the box.
+- **Event Management**: This layer is in charge of piping incoming event topics to step handlers, by executing the step handlers with the event payload (if present).
+- **Routing & Scheduling**: Out of the box routing, through api steps, which are exposed through a public epi endpoint. Along with support for scheduled steps, all you have to do is defined the schedule configuration and Motia will take care of the rest.
+- **Workbench & Logging**: Out of the box visualization of your flows with base monitoring features such as logs and tracing, all of this through Motia Workbench.
 
 Whether you're a solo dev scripting internal tasks or part of a large team building a production system, Motia can simplify your event-driven workflows.
 
@@ -26,7 +25,8 @@ Whether you're a solo dev scripting internal tasks or part of a large team build
 | ------------------ | ------------------------------------------------------------------------------------------------------------------------- |
 | **Steps**          | Fundamental logic units. Each step has a config (type: `event`, `api`, or `cron`) plus a code handler.                    |
 | **Flows**          | Logical groupings of steps for organization, visual exploration, and logging. Often used to separate domain areas.        |
-| **Events**         | Simple messages that tie your entire workflow together. Steps may subscribe to or emit these events.                      |
+| **Events**         | Events are the result of emitting a topic with a message as payload from a step.events.                                   |
+| **Topics**         | Identifiers for events. Each topic has an associated schema (or type) for its payload.                                    |
 | **API Steps**      | A specialized step type that automatically creates an HTTP route when Motia starts (no manual server needed).             |
 | **Cron Steps**     | Another specialized step type that automatically schedules itself based on cron expressions.                              |
 | **Observability**  | Real-time logs, optional UI to visualize flows & steps, see event traces, and debug messages.                             |
