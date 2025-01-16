@@ -1,13 +1,11 @@
-import { BaseNode, BaseNodeProps } from '@motia/workbench'
 import React from 'react'
+import { BaseHandle, BaseNodeProps, Position } from '@motia/workbench'
 
-export default ({ data }: BaseNodeProps) => {
+export default (_: BaseNodeProps) => {
   return (
-    <BaseNode
-      data={data}
-      variant="ghost"
-      excludePubsub
-      className="py-4 px-8 flex flex-col max-w-[300px] bg-black border-white rounded-full text-white border border-solid text-center text-sm"
-    />
+    <div className="p-3 px-6 flex flex-col max-w-[300px] bg-black border-white rounded-full text-white border border-solid text-center text-sm">
+      <div>Join Complete</div>
+      <BaseHandle type="target" position={Position.Top} />
+    </div>
   )
 }

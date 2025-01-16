@@ -70,9 +70,5 @@ export const LanguageIndicator: FC<Props> = ({ language }) => {
 
     return
   }
-  return (
-    <div className="absolute top-0 right-0 p-1 text-xs font-mono text-muted-foreground w-5 h-5">
-      {renderIcon(language)}
-    </div>
-  )
+  return <div className="text-xs font-mono text-muted-foreground w-3 h-3">{renderIcon(language)}</div>
 }

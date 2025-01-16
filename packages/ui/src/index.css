@@ -177,3 +177,14 @@ body, #root {
     @apply bg-background text-foreground;
   }
 }
+
+@keyframes flowDash {
+  0%   { stroke-dashoffset: 0; }
+  100% { stroke-dashoffset: -20; }
+}
+
+.edge-animated {
+  stroke-dasharray: 5;      /* length of dash pattern */
+  stroke-linecap: round;    /* round the dash ends */
+  animation: flowDash 1s linear infinite;
+}

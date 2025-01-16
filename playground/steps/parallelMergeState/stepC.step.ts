@@ -9,6 +9,7 @@ const inputSchema = z.object({})
 export const config: EventConfig<Input> = {
   type: 'event',
   name: 'stepC',
+  description: 'Hello from Step C',
   subscribes: ['pms.start'],
   emits: ['pms.stepC.done'],
   input: inputSchema,
