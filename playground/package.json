@@ -6,9 +6,7 @@
     "dev:debug": "motia dev --debug",
     "get-config": "motia get-config --output ./",
     "test:tsc-check": "tsc -p ./tests/tsconfig.test.json --noEmit",
-    "test:e2e": "pnpm run test:tsc-check && pnpm playwright test --workers=1",
-    "test:unit": "pnpm vitest",
-    "test": "concurrently \"pnpm run test:unit\" \"pnpm run test:e2e\""
+    "test": "jest --silent"
   },
   "dependencies": {
     "@motia/core": "workspace:*",
@@ -18,8 +16,11 @@
     "zod": "^3.24.1"
   },
   "devDependencies": {
-    "@playwright/test": "^1.49.1",
+    "@types/jest": "^29.5.14",
     "@types/react": "^18.3.18",
+    "@motia/test": "workspace:*",
+    "jest": "^29.7.0",
+    "jest-junit": "^16.0.0",
     "react": "^19.0.0",
     "ts-node": "^10.9.2",
     "typescript": "^5.7.2"

@@ -1,4 +1,3 @@
-import { applyMiddleware } from '@motia/workbench/middleware'
 import bodyParser from 'body-parser'
 import { randomUUID } from 'crypto'
 import express, { Request, Response } from 'express'
@@ -24,22 +23,16 @@ type ServerOptions = {
   flows: LockedData['flows']
   state: StateAdapter
   eventManager: EventManager
-  port: number
-  skipSocketServer?: boolean
+  disableUi?: boolean
 }
 
 export const createServer = async (
   options: ServerOptions,
-): Promise<{ server: MotiaServer; socketServer?: MotiaSocketServer }> => {
-  const { steps, state, eventManager, port, skipSocketServer } = options
+): Promise<{ server: MotiaServer; socketServer: MotiaSocketServer }> => {
+  const { flows, steps, state, eventManager } = options
   const app = express()
   const server = http.createServer(app)
-  let io: SocketIOServer | undefined
-
-  if (!skipSocketServer) {
-    globalLogger.debug('[API] Creating socket server')
-    io = new SocketIOServer(server)
-  }
+  const io = new SocketIOServer(server)
 
   const asyncHandler = (step: Step, flows: string[]) => {
     return async (req: Request, res: Response) => {
@@ -105,10 +98,16 @@ export const createServer = async (
     }
   }
 
-  flowsEndpoint(options.flows, app)
-  await applyMiddleware(app)
+  flowsEndpoint(flows, app)
 
-  server.listen(port)
+  if (!options.disableUi) {
+    const { applyMiddleware } = require('@motia/workbench/middleware')
+    await applyMiddleware(app)
+  }
+
+  server.on('error', (error) => {
+    console.error('Server error:', error)
+  })
 
   return { server, socketServer: io }
 }
