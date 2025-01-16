@@ -1,6 +1,4 @@
-// steps/handlePositive.step.ts
-// Handles "openai.positiveSentiment"
-import { EventConfig, StepHandler } from 'wistro'
+import { EventConfig, StepHandler } from '@motia/core'
 import { z } from 'zod'
 
 const positiveSchema = z.object({

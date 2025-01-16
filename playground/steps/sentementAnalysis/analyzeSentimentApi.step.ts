@@ -1,6 +1,4 @@
-// steps/analyzeSentimentApi.step.ts
-// Receives user text, emits "openai.analyzeSentimentRequest".
-import { ApiRouteConfig, StepHandler } from 'wistro'
+import { ApiRouteConfig, StepHandler } from '@motia/core'
 import { z } from 'zod'
 
 export const config: ApiRouteConfig = {

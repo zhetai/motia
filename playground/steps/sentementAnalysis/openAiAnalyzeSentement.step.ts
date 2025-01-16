@@ -1,5 +1,5 @@
-import { EventConfig, StepHandler } from 'wistro'
 import { z } from 'zod'
+import { EventConfig, StepHandler } from '@motia/core'
 import { OpenAI } from 'openai'
 
 // 1) Create an OpenAI client (newer syntax)

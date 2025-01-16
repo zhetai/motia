@@ -11,9 +11,10 @@
     "test": "concurrently \"pnpm run test:unit\" \"pnpm run test:e2e\""
   },
   "dependencies": {
-    "@motia/workbench": "workspace:*",
-    "@motia/snap": "workspace:*",
     "@motia/core": "workspace:*",
+    "@motia/snap": "workspace:*",
+    "@motia/workbench": "workspace:*",
+    "openai": "^4.78.1",
     "zod": "^3.24.1"
   },
   "devDependencies": {

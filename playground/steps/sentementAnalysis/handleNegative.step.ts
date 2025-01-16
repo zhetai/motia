@@ -1,6 +1,4 @@
-// steps/handleNegative.step.ts
-// Handles "openai.negativeSentiment"
-import { EventConfig, StepHandler } from 'wistro'
+import { EventConfig, StepHandler } from '@motia/core'
 import { z } from 'zod'
 
 const negativeSchema = z.object({
