@@ -1,3 +1,8 @@
+---
+sidebar_position: 6
+title: State Management
+---
+
 # State Management in Motia
 
 ## Overview
