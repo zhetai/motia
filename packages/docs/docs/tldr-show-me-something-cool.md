@@ -1,3 +1,8 @@
+---
+sidebar_position: 10
+title: Show Me Something Cool
+---
+
 # Skip the Boring Stuff
 
 ## A Real-World Multi-Step OpenAI “Sentiment Analysis” Example
