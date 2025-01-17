@@ -1,4 +1,4 @@
-const Legend = ({ onHover }: { onHover: (type: string | null) => void }) => {
+export const Legend = ({ onHover }: { onHover: (type: string | null) => void }) => {
   const legendItems = [
     {
       label: 'Event (Core)',
@@ -57,5 +57,3 @@ const Legend = ({ onHover }: { onHover: (type: string | null) => void }) => {
     </div>
   )
 }
-
-export default Legend

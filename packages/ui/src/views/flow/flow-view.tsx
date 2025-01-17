@@ -8,7 +8,7 @@ import { NodeOrganizer } from './node-organizer'
 import { FlowLoader } from './flow-loader'
 import { useLogListener } from '@/hooks/use-log-listener'
 import { LogConsole } from '@/components/log-console'
-import Legend from './legend'
+import { Legend } from './legend'
 
 const edgeTypes = {
   base: BaseEdge,
