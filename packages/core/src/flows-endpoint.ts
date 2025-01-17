@@ -37,6 +37,10 @@ export const generateFlowsList = (flows: LockedData['flows']): FlowResponse[] =>
     const flowSteps = flows[flowId].steps
 
     flowSteps.forEach((step) => {
+      const filePathWithoutExtension = step.filePath.replace(/\.[^/.]+$/, '')
+      const tsxPath = filePathWithoutExtension + '.tsx'
+      const nodeComponentPath = fs.existsSync(tsxPath) ? tsxPath : undefined
+
       if (isApiStep(step)) {
         steps.push({
           id: randomUUID(),
@@ -49,34 +53,29 @@ export const generateFlowsList = (flows: LockedData['flows']): FlowResponse[] =>
           language: getStepLanguage(step.filePath),
           webhookUrl: `${step.config.method} ${step.config.path}`,
           bodySchema: step?.config.bodySchema ? zodToJsonSchema(step.config.bodySchema) : undefined,
+          nodeComponentPath,
         })
-      } else if (isEventStep(step) || isNoopStep(step)) {
-        const filePathWithoutExtension = step.filePath.replace(/\.[^/.]+$/, '')
-        const tsxPath = filePathWithoutExtension + '.tsx'
-        const nodeComponentPath = fs.existsSync(tsxPath) ? tsxPath : undefined
-
-        if (isEventStep(step)) {
-          steps.push({
-            id: randomUUID(),
-            type: 'base',
-            name: step.config.name,
-            description: step.config.description,
-            emits: [...step.config.emits, ...(step.config.virtualEmits ?? [])],
-            subscribes: step.config.subscribes,
-            language: getStepLanguage(step.filePath),
-            nodeComponentPath,
-          })
-        } else {
-          steps.push({
-            id: randomUUID(),
-            type: 'noop',
-            name: step.config.name,
-            description: step.config.description,
-            emits: step.config.virtualEmits,
-            subscribes: step.config.virtualSubscribes,
-            nodeComponentPath,
-          })
-        }
+      } else if (isEventStep(step)) {
+        steps.push({
+          id: randomUUID(),
+          type: 'base',
+          name: step.config.name,
+          description: step.config.description,
+          emits: [...step.config.emits, ...(step.config.virtualEmits ?? [])],
+          subscribes: step.config.subscribes,
+          language: getStepLanguage(step.filePath),
+          nodeComponentPath,
+        })
+      } else if (isNoopStep(step)) {
+        steps.push({
+          id: randomUUID(),
+          type: 'noop',
+          name: step.config.name,
+          description: step.config.description,
+          emits: step.config.virtualEmits,
+          subscribes: step.config.virtualSubscribes,
+          nodeComponentPath,
+        })
       }
     })
 

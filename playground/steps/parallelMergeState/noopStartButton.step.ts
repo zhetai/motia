@@ -1,4 +1,4 @@
-import { NoopConfig } from 'wistro'
+import { NoopConfig } from '@motia/core'
 
 export const config: NoopConfig = {
   type: 'noop',

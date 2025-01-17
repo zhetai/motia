@@ -4,12 +4,13 @@ import { PropsWithChildren } from 'react'
 import { BaseHandle } from './base-handle'
 import { Emits } from './emits'
 import { TriggerNodeProps } from './node-props'
+import { cn } from '../lib/utils'
 
-type Props = PropsWithChildren<TriggerNodeProps & { excludePubsub?: boolean }>
+type Props = PropsWithChildren<TriggerNodeProps & { excludePubsub?: boolean; className?: string }>
 
-export const TriggerNode = ({ data, children, excludePubsub }: Props) => {
+export const TriggerNode = ({ data, children, excludePubsub, className }: Props) => {
   return (
-    <div className="group relative">
+    <div className={cn('group relative', className)}>
       {/* Border container */}
       <div className="absolute -inset-[1px] rounded-md bg-gradient-to-r from-blue-500/20 to-blue-400/10" />
 
