@@ -1,24 +1,22 @@
-import React from 'react'
-
 const Legend = ({ onHover }: { onHover: (type: string | null) => void }) => {
   const legendItems = [
-    { 
-      label: 'Event (Core)', 
-      type: 'base', 
+    {
+      label: 'Event (Core)',
+      type: 'base',
       bgColor: 'bg-green-950/40',
-      description: 'Core logic components that process events'
+      description: 'Core logic components that process events',
     },
-    { 
-      label: 'Trigger (API)', 
-      type: 'trigger', 
+    {
+      label: 'Trigger (API)',
+      type: 'trigger',
       bgColor: 'bg-blue-950/40',
-      description: 'HTTP endpoints that trigger flows'
+      description: 'HTTP endpoints that trigger flows',
     },
-    { 
-      label: 'Noop (Non-Operation)', 
-      type: 'noop', 
+    {
+      label: 'Noop (Non-Operation)',
+      type: 'noop',
       bgColor: 'bg-zinc-950/40',
-      description: 'Placeholder nodes for external processes'
+      description: 'Placeholder nodes for external processes',
     },
   ]
 
@@ -26,10 +24,10 @@ const Legend = ({ onHover }: { onHover: (type: string | null) => void }) => {
     <div className="relative group">
       {/* Border gradient container */}
       <div className="absolute -inset-[1px] rounded bg-gradient-to-r from-white/20 to-white/10" />
-      
+
       {/* Main swatch */}
       <div className={`relative ${bgColor} w-8 h-8 rounded border border-white/10`} />
-      
+
       {/* Stacked effect */}
       <div className="absolute inset-0 -z-10 translate-y-0.5 translate-x-0.5 bg-black/20 rounded border border-white/5" />
     </div>
