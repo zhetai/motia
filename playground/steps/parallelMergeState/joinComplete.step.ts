@@ -14,6 +14,7 @@ const inputSchema = z.object({
 export const config: EventConfig<Input> = {
   type: 'event',
   name: 'Join Complete',
+  description: 'Logs the merge',
   subscribes: ['pms.join.complete'],
   emits: [],
   input: inputSchema,
