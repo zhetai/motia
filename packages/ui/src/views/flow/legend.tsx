@@ -2,7 +2,7 @@ export const Legend = ({ onHover }: { onHover: (type: string | null) => void }) 
   const legendItems = [
     {
       label: 'Event (Core)',
-      type: 'base',
+      type: 'event',
       bgColor: 'bg-green-950/40',
       description: 'Core logic components that process events',
     },

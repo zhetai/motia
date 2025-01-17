@@ -1,10 +1,10 @@
 import { Send } from 'lucide-react'
-import { BaseNodeData } from '../views/flow/nodes/nodes.types'
+import { EventNodeData } from '../views/flow/nodes/nodes.types'
 
 const toType = (emit: string | { type: string; label?: string; conditional?: boolean }) =>
   typeof emit === 'string' ? emit : emit.type
 
-export const Emits: React.FC<{ emits: BaseNodeData['emits'] }> = ({ emits }) => {
+export const Emits: React.FC<{ emits: EventNodeData['emits'] }> = ({ emits }) => {
   return (
     <>
       {emits.map((emit) => (

@@ -1,12 +1,8 @@
-import { Position } from '@xyflow/react'
-import { BaseHandle } from './base-handle'
-import { BaseNodeProps } from './node-props'
-import { Emits } from './emits'
-import { Subscribe } from './subscribe'
-import { cva, type VariantProps } from 'class-variance-authority'
 import { cn } from '@/lib/utils'
+import { Position } from '@xyflow/react'
+import { cva, type VariantProps } from 'class-variance-authority'
 import { PropsWithChildren } from 'react'
-import { LanguageIndicator } from '../views/flow/nodes/language-indicator'
+import { BaseHandle } from './base-handle'
 
 const baseNodeVariants = cva('relative flex flex-col min-w-[300px] bg-[#1A1A1A] rounded-md overflow-hidden font-mono', {
   variants: {
@@ -21,23 +17,24 @@ const baseNodeVariants = cva('relative flex flex-col min-w-[300px] bg-[#1A1A1A] 
   },
 })
 
-type Props = PropsWithChildren<
-  BaseNodeProps & {
-    variant?: VariantProps<typeof baseNodeVariants>['variant']
-    excludePubsub?: boolean
-    className?: string
-  }
->
+type Props = PropsWithChildren<{
+  variant?: VariantProps<typeof baseNodeVariants>['variant']
+  title: string
+  headerChildren?: React.ReactNode
+  className?: string
+  disableSourceHandle?: boolean
+  disableTargetHandle?: boolean
+}>
 
-const HeaderBar = ({ text, language }: { text: string; language: string | undefined }) => (
+const HeaderBar = ({ text, children }: { text: string; children?: React.ReactNode }) => (
   <div className="px-3 py-1 border-b border-white/20 bg-black/30 text-xs text-white/70 flex justify-between items-center">
     <span>{text}</span>
-    {language && <LanguageIndicator language={language} />}
+    {children}
   </div>
 )
 
 export const BaseNode = (props: Props) => {
-  const { data, variant, excludePubsub, className, children } = props
+  const { title, variant, className, children, disableSourceHandle, disableTargetHandle, headerChildren } = props
 
   return (
     <div className="group relative">
@@ -46,23 +43,14 @@ export const BaseNode = (props: Props) => {
 
       {/* Main node content */}
       <div className={cn(baseNodeVariants({ variant }), className)}>
-        <HeaderBar text={data.name} language={data.language} />
+        <HeaderBar text={title} children={headerChildren} />
 
-        <div className="p-4 space-y-3">
-          {data.description && <div className="text-sm text-white/60">{data.description}</div>}
-          {children}
-          {!excludePubsub && (
-            <div className="space-y-2 pt-2 border-t border-white/10">
-              <Subscribe data={data} />
-              <Emits emits={data.emits} />
-            </div>
-          )}
-        </div>
+        <div className="p-4 space-y-3">{children}</div>
       </div>
 
       {/* Connection points */}
-      <BaseHandle type="target" position={Position.Top} />
-      {data.emits.length > 0 && <BaseHandle type="source" position={Position.Bottom} />}
+      {!disableTargetHandle && <BaseHandle type="target" position={Position.Top} />}
+      {!disableSourceHandle && <BaseHandle type="source" position={Position.Bottom} />}
 
       {/* Stacked card effect */}
       <div className="absolute inset-0 -z-10 translate-y-1 translate-x-1 bg-black/20 rounded-md border border-white/5" />

@@ -2,19 +2,19 @@ import { Edge, Node, useEdgesState, useNodesState } from '@xyflow/react'
 import { useEffect, useState } from 'react'
 import type { EdgeData, NodeData } from '../nodes/nodes.types'
 import { TriggerFlowNode } from '../nodes/trigger-flow-node'
-import { NoopNode } from '../nodes/noop-node'
-import { BaseFlowNode } from '../nodes/base-flow-node'
+import { NoopFlowNode } from '../nodes/noop-flow-node'
+import { EventFlowNode } from '../nodes/event-flow-node'
 
 type Emit = string | { type: string; label?: string; conditional?: boolean }
 
 type FlowStep = {
   id: string
   name: string
-  type: 'base' | 'trigger' | 'noop'
+  type: 'event' | 'trigger' | 'noop'
   description?: string
   subscribes?: string[]
   emits: Emit[]
-  action?: 'webhook'
+  action: 'webhook'
   webhookUrl?: string
   language?: string
   nodeComponentPath?: string
@@ -34,9 +34,9 @@ type FlowState = {
 
 async function importFlow(flow: FlowResponse): Promise<FlowState> {
   const nodeTypes: Record<string, React.ComponentType<any>> = {
-    base: BaseFlowNode,
+    event: EventFlowNode,
     trigger: TriggerFlowNode,
-    noop: NoopNode,
+    noop: NoopFlowNode,
   }
 
   for (const step of flow.steps) {
@@ -54,6 +54,8 @@ async function importFlow(flow: FlowResponse): Promise<FlowState> {
     data: step,
     language: step.language,
   }))
+
+  console.log('nodes', nodes)
 
   const edges: Edge<EdgeData>[] = []
 
