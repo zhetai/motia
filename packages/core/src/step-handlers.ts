@@ -1,7 +1,6 @@
 import { Event, EventManager, Step } from './types'
 import { spawn } from 'child_process'
 import path from 'path'
-import { AdapterConfig } from './state/createStateAdapter'
 import { globalLogger } from './logger'
 import { isEventStep } from './guards'
 
@@ -47,11 +46,10 @@ const callStepFile = <TData>(
   stepPath: string,
   step: string,
   event: Event<TData>,
-  stateConfig: AdapterConfig,
   eventManager: EventManager,
 ): Promise<void> => {
   return new Promise((resolve, reject) => {
-    const jsonData = JSON.stringify({ ...event, stateConfig })
+    const jsonData = JSON.stringify(event)
     const { runner, command } = getLanguageBasedRunner(stepPath)
 
     const child = spawn(command, [runner, stepPath, jsonData], {
@@ -83,7 +81,7 @@ const callStepFile = <TData>(
   })
 }
 
-export const createStepHandlers = (steps: Step[], eventManager: EventManager, stateConfig: AdapterConfig) => {
+export const createStepHandlers = (steps: Step[], eventManager: EventManager) => {
   globalLogger.debug(`[step handler] creating step handlers for ${steps.length} steps`)
 
   steps.filter(isEventStep).forEach((step) => {
@@ -98,7 +96,7 @@ export const createStepHandlers = (steps: Step[], eventManager: EventManager, st
         globalLogger.debug('[step handler] received event', { event: rest, step: step.config.name })
 
         try {
-          await callStepFile(filePath, step.config.name, event, stateConfig, eventManager)
+          await callStepFile(filePath, step.config.name, event, eventManager)
         } catch (error: any) {
           globalLogger.error(`[step handler] error calling steo`, {
             error: error.message,
