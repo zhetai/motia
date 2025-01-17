@@ -11,9 +11,9 @@ import { LanguageIndicator } from '../views/flow/nodes/language-indicator'
 const baseNodeVariants = cva('relative flex flex-col min-w-[300px] bg-[#1A1A1A] rounded-md overflow-hidden font-mono', {
   variants: {
     variant: {
-      default: 'bg-zinc-950/40', // Event nodes (was previously just using the base bg)
+      default: 'bg-green-950/40', // Event nodes (was previously just using the base bg)
       trigger: 'bg-blue-950/40', // API nodes (was using sky)
-      noop: 'bg-teal-950/40',
+      noop: 'bg-zinc-9850/40',
     },
   },
   defaultVariants: {

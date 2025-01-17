@@ -1,6 +1,7 @@
 import { JSONSchema7 } from 'json-schema'
 
 export type BaseNodeData = {
+  type: string
   name: string
   description?: string
   subscribes: string[]
@@ -9,6 +10,7 @@ export type BaseNodeData = {
 }
 
 export type NoopNodeData = {
+  type: string
   name: string
   description?: string
   virtualEmits: string[]
@@ -16,6 +18,7 @@ export type NoopNodeData = {
 }
 
 export type TriggerNodeData = {
+  type: string
   name: string
   description?: string
   emits: string[]
