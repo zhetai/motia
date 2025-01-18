@@ -46,7 +46,7 @@ export const declareInternalStateManagerEndpoints = ({ app, rootDir }: Input) =>
       await stateAdapter.set(traceId, key, value)
       res.status(200).json({})
     } catch (error: unknown) {
-      console.error('[state manager] failed to set state', error)
+      console.error('[state manager] failed to set state', { error: JSON.stringify(error, null, 2) })
 
       res.status(400).json({ error: error instanceof Error ? error?.message : 'unkown error occurred' })
     }

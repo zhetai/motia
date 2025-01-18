@@ -32,8 +32,8 @@ class Context
     @trace_id = args.traceId
     @flows = args.flows
     @file_name = file_name
-    @state = StateAdapter.new(@trace_id, args.stateConfig || {})
-    @logger = Logger.new(@trace_id, @flows, @file_name)
+    @state = create_internal_state_manager(state_manager_url: args[:stateConfig]&.dig(:stateManagerUrl))
+    @logger = CustomLogger.new(@trace_id, @flows, @file_name)
   end
 end
 

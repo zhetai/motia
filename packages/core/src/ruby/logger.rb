@@ -1,7 +1,7 @@
 require 'json'
 require 'time'
 
-class Logger
+class CustomLogger
   def initialize(trace_id, flows, file_path)
     @trace_id = trace_id
     @flows = flows
@@ -9,15 +9,21 @@ class Logger
   end
 
   def log(level, message, args = nil)
+    # Ensure message is not nested JSON or a stringified JSON object
+    if message.is_a?(String) && message.strip.start_with?('{', '[')
+      begin
+        message = JSON.parse(message) # Parse if valid JSON
+      rescue JSON::ParserError
+        # Leave message as is if it's not valid JSON
+      end
+    end
+
+    # Construct the base log entry
     log_entry = {
-      level: level,
-      time: (Time.now.to_f * 1000).to_i, # Milliseconds since epoch
-      traceId: @trace_id,
-      flows: @flows,
-      file: @file_name,
       msg: message
     }
 
+    # Merge additional arguments if provided
     if args
       args = case args
              when OpenStruct then args.to_h
@@ -27,7 +33,8 @@ class Logger
       log_entry.merge!(args)
     end
 
-    puts JSON.generate(log_entry)
+    # Generate JSON output
+    puts JSON.dump(log_entry)
   end
 
   def info(message, args = nil)

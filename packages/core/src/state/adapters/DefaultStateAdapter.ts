@@ -11,22 +11,21 @@ export class FileStateAdapter extends StateAdapter {
 
   constructor(config: FileAdapterConfig) {
     super()
-    this.filePath = config.filePath
+    this.filePath = path.join(config.filePath, 'motia-state.json')
   }
 
   async init() {
+    const dir = this.filePath.replace('motia-state.json', '')
     try {
-      await fs.realpath(this.filePath)
+      await fs.realpath(dir)
     } catch (err) {
-      await fs.mkdir(this.filePath, { recursive: true })
+      await fs.mkdir(dir, { recursive: true })
     }
 
-    const fullFilePath = path.join(this.filePath, 'motia-state.json')
-
     try {
-      await fs.readFile(fullFilePath, 'utf-8')
+      await fs.readFile(this.filePath, 'utf-8')
     } catch (err) {
-      fs.writeFile(fullFilePath, JSON.stringify({}), 'utf-8')
+      fs.writeFile(this.filePath, JSON.stringify({}), 'utf-8')
     }
   }
 
@@ -70,6 +69,7 @@ export class FileStateAdapter extends StateAdapter {
   }
 
   private async _readFile() {
+    console.log('Reading file', this.filePath)
     const content = await fs.readFile(this.filePath, 'utf-8')
     return JSON.parse(content)
   }
