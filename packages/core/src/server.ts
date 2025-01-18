@@ -3,7 +3,6 @@ import { randomUUID } from 'crypto'
 import express, { Request, Response } from 'express'
 import http from 'http'
 import { Server as SocketIOServer } from 'socket.io'
-import { StateAdapter } from './state/StateAdapter'
 import {
   ApiRequest,
   ApiRouteHandler,
@@ -13,23 +12,26 @@ import {
   Step,
   MotiaServer,
   MotiaSocketServer,
+  InternalStateManager,
 } from './types'
 import { flowsEndpoint } from './flows-endpoint'
 import { isApiStep } from './guards'
 import { globalLogger, Logger } from './logger'
+import { declareInternalStateManagerEndpoints } from './state/internalStateManagerEndpoints'
 
 type ServerOptions = {
   steps: Step[]
   flows: LockedData['flows']
-  state: StateAdapter
   eventManager: EventManager
   disableUi?: boolean
+  state: InternalStateManager
+  rootDir: string
 }
 
 export const createServer = async (
   options: ServerOptions,
 ): Promise<{ server: MotiaServer; socketServer: MotiaSocketServer }> => {
-  const { flows, steps, state, eventManager } = options
+  const { flows, steps, eventManager, state } = options
   const app = express()
   const server = http.createServer(app)
   const io = new SocketIOServer(server)
@@ -99,6 +101,8 @@ export const createServer = async (
   }
 
   flowsEndpoint(flows, app)
+
+  declareInternalStateManagerEndpoints({ app, rootDir: options.rootDir })
 
   if (!options.disableUi) {
     const { applyMiddleware } = require('@motia/workbench/middleware')

@@ -1,50 +1,41 @@
-const Redis = require('ioredis')
+const getStateManagerHandler = (stateManagerUrl) => async (action, payload) => {
+  try {
+    const response = await fetch(`${stateManagerUrl}/${action}`, {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+        'x-trace-id': payload.traceId,
+        // TODO: add internal auth token for security
+      },
+      // TODO: encrypt the payload for security
+      body: JSON.stringify(payload),
+    })
 
-class StateAdapter {
-  constructor(stateConfig) {
-    this.client = new Redis(stateConfig)
-    this.prefix = 'motia:state'
-
-    if (stateConfig.ttl) {
-      this.ttl = stateConfig.ttl
+    if (!response.ok) {
+      console.error('[internal state manager] failed posting state change, response ok status is false')
+      throw Error('Failed posting state change, response ok status is false')
     }
-  }
 
-  async get(traceId, key) {
-    const fullKey = this._makeKey(traceId, key)
-    const value = await this.client.get(fullKey)
-    return value ? JSON.parse(value) : null
-  }
-
-  async set(traceId, key, value) {
-    const fullKey = this._makeKey(traceId, key)
-    if (this.ttl) {
-      await this.client.set(fullKey, JSON.stringify(value), 'EX', this.ttl)
-    } else {
-      await this.client.set(fullKey, JSON.stringify(value))
+    if (action === 'get') {
+      const result = await response.json()
+      return result.data
     }
-  }
-
-  async delete(traceId, key) {
-    const fullKey = this._makeKey(traceId, key)
-    await this.client.del(fullKey)
-  }
-
-  async clear(traceId) {
-    const pattern = this._makeKey(traceId, '*')
-    const keys = await this.client.keys(pattern)
-    if (keys.length > 0) {
-      await this.client.del(keys)
-    }
-  }
-
-  async cleanup() {
-    await this.client.quit()
-  }
-
-  _makeKey(traceId, key) {
-    return `${this.prefix}:${traceId}:${key}`
+  } catch (error) {
+    console.error('[internal state manager] failed posting state change', error)
+    throw Error('Failed posting state change')
   }
 }
 
-module.exports = { StateAdapter }
+const createInternalStateManager = ({ stateManagerUrl }) => {
+  const handler = getStateManagerHandler(stateManagerUrl)
+
+  return {
+    get: (traceId, key) => handler('get', { traceId, key }).then((result) => ({ data: result })),
+    set: (traceId, key, value) => handler('set', { traceId, key, value }),
+    delete: (traceId, key) => handler('delete', { traceId, key }),
+  }
+}
+
+module.exports = {
+  createInternalStateManager,
+}

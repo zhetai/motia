@@ -1,4 +1,10 @@
-import { createServer, createStepHandlers, createEventManager, globalLogger, createStateAdapter } from '@motia/core'
+import {
+  createServer,
+  createStepHandlers,
+  createEventManager,
+  globalLogger,
+  createInternalStateManager,
+} from '@motia/core'
 import path from 'path'
 import { generateLockedData } from './generate/locked-data'
 
@@ -8,13 +14,18 @@ require('ts-node').register({
 })
 
 export const dev = async (port: number): Promise<void> => {
-  const lockedData = await generateLockedData(path.join(process.cwd()))
+  const rootDir = path.join(process.cwd())
+  const lockedData = await generateLockedData(rootDir)
   const steps = [...lockedData.steps.active, ...lockedData.steps.dev]
   const eventManager = createEventManager()
-  const state = createStateAdapter(lockedData.state)
-  const { server } = await createServer({ steps, flows: lockedData.flows, state, eventManager })
+  const stateManagerConfig = {
+    // TODO: allow for host configuration
+    stateManagerUrl: `http://localhost:${port}/state-manager`,
+  }
+  const state = createInternalStateManager(stateManagerConfig)
+  const { server } = await createServer({ steps, rootDir, state, flows: lockedData.flows, eventManager })
 
-  createStepHandlers(steps, eventManager, lockedData.state)
+  createStepHandlers(steps, eventManager, stateManagerConfig)
 
   server.listen(port)
   console.log('🚀 Server ready and listening on port', port)

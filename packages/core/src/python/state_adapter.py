@@ -1,34 +1,94 @@
-import json
-from typing import Any
+from typing import TypeVar, Dict, Any, Optional, Protocol, Callable, Generic
+import requests
+from dataclasses import dataclass
+import logging
 
-class StateAdapter:
-    def __init__(self, trace_id: str, state_config: Any):
-        self.trace_id = trace_id
-        self.store = {}
-        self.prefix = 'motia:state:'
-        self.ttl = getattr(state_config, 'ttl', None)
+T = TypeVar('T')
 
-    def _make_key(self, key: str) -> str:
-        return f"{self.prefix}{self.trace_id}:{key}"
+# Configure logging
+logging.basicConfig(level=logging.INFO)
+logger = logging.getLogger(__name__)
 
-    async def get(self, key: str) -> Any:
-        full_key = self._make_key(key)
-        value = self.store.get(full_key)
-        return json.loads(value) if value else None
+class InternalStateManager(Protocol):
+    def get(self, trace_id: str, key: str) -> Optional[T]:
+        ...
 
-    async def set(self, key: str, value: Any) -> None:
-        full_key = self._make_key(key)
-        self.store[full_key] = json.dumps(value)
+    def set(self, trace_id: str, key: str, value: Any) -> None:
+        ...
 
-    async def delete(self, key: str) -> None:
-        full_key = self._make_key(key)
-        if full_key in self.store:
-            del self.store[full_key]
+    def delete(self, trace_id: str, key: str) -> None:
+        ...
 
-    async def clear(self) -> None:
-        keys_to_delete = [k for k in self.store.keys() if k.startswith(self._make_key(''))]
-        for key in keys_to_delete:
-            del self.store[key]
+@dataclass
+class StateManagerConfig:
+    state_manager_url: str
 
-    async def cleanup(self) -> None:
-        self.store.clear()
+class StateManagerError(Exception):
+    pass
+
+def get_state_manager_handler(
+    state_manager_url: str, 
+    action: str, 
+    payload: Dict[str, Any]
+) -> Optional[Dict[str, Any]]:
+    """
+    Handler for state manager HTTP requests.
+    """
+    try:
+        headers = {
+            'Content-Type': 'application/json',
+            'x-trace-id': payload['traceId'],
+            # TODO: Add authentication token
+        }
+        
+        logger.debug(f"Sending {action} request to {state_manager_url} with payload: {payload}")
+        
+        response = requests.post(
+            f"{state_manager_url}/{action}",
+            json=payload,
+            headers=headers,
+            timeout=10  # Add a timeout for requests
+        )
+
+        if not response.ok:
+            logger.error(
+                f"StateManager request failed with status {response.status_code}: {response.text}"
+            )
+            raise StateManagerError(
+                f"Request failed: {response.status_code} - {response.reason}"
+            )
+
+        if action == 'get':
+            result = response.json()
+            return result.get('data')
+
+    except requests.RequestException as req_err:
+        logger.exception("HTTP request failed")
+        raise StateManagerError("Failed to perform HTTP request") from req_err
+    except Exception as error:
+        logger.exception("Unexpected error in state manager handler")
+        raise StateManagerError("Unexpected error in state manager handler") from error
+
+class InternalStateManagerImpl(Generic[T]):
+    def __init__(self, config: StateManagerConfig):
+        self.handler: Callable = lambda action, payload: get_state_manager_handler(
+            config.state_manager_url, 
+            action, 
+            payload
+        )
+
+    def get(self, trace_id: str, key: str) -> Optional[T]:
+        result = self.handler('get', {'traceId': trace_id, 'key': key})
+        return result
+
+    def set(self, trace_id: str, key: str, value: Any) -> None:
+        self.handler('set', {'traceId': trace_id, 'key': key, 'value': value})
+
+    def delete(self, trace_id: str, key: str) -> None:
+        self.handler('delete', {'traceId': trace_id, 'key': key})
+
+def create_internal_state_manager(config: StateManagerConfig) -> InternalStateManager:
+    """
+    Creates an instance of the internal state manager.
+    """
+    return InternalStateManagerImpl(config)

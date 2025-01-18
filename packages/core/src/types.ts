@@ -2,14 +2,19 @@ import { z, ZodObject } from 'zod'
 import { Server } from 'http'
 import { Server as SocketIOServer } from 'socket.io'
 import { Logger } from './logger'
-import { StateAdapter } from './state/StateAdapter'
+
+export type InternalStateManager = {
+  get: (traceId: string, key: string) => Promise<{ data: unknown }>
+  set: (traceId: string, key: string, value: unknown) => Promise<void>
+  delete: (traceId: string, key: string) => Promise<void>
+}
 
 export type EmitData = { type: string; data: Record<string, unknown> }
 export type Emitter = (event: EmitData) => Promise<void>
 export type FlowContext = {
   emit: Emitter
   traceId: string
-  state: StateAdapter
+  state: InternalStateManager
   logger: Logger
 }
 export type EventHandler<TInput extends ZodObject<any>> = (input: z.infer<TInput>, ctx: FlowContext) => Promise<void>

@@ -5,8 +5,9 @@ import traceback
 import inspect
 import os
 from logger import Logger
-from state_adapter import StateAdapter
-from typing import Any, Callable
+from state_adapter import StateManagerConfig, create_internal_state_manager, StateManagerError
+
+from typing import Any
 
 def parse_args(arg: str) -> Any:
     from types import SimpleNamespace
@@ -32,8 +33,8 @@ class Context:
         self.trace_id = args.traceId
         self.flows = args.flows
         self.file_name = file_name
-        # TODO: check that state config is defined, otherwise default to in-memory state management
-        self.state = StateAdapter(self.trace_id, args.stateConfig)
+        config = StateManagerConfig(state_manager_url=args.stateConfig.stateManagerUrl)
+        self.state = create_internal_state_manager(config)
         self.logger = Logger(self.trace_id, self.flows, self.file_name)
         self.emit = emit
 
@@ -62,7 +63,7 @@ async def run_python_module(file_path: str, args: Any) -> None:
         sig = inspect.signature(module.handler)
         param_count = len(sig.parameters)
     
-        result = await module.handler(args.data, context)
+        await module.handler(args.data, context)
     except Exception as error:
         print('Error running Python module:', file=sys.stderr)
 
