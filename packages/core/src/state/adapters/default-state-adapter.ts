@@ -31,31 +31,38 @@ export class FileStateAdapter implements StateAdapter {
   async get(traceId: string, key: string) {
     const data = await this._readFile()
     const fullKey = this._makeKey(traceId, key)
+
     return data[fullKey] ? JSON.parse(data[fullKey]) : null
   }
 
   async set(traceId: string, key: string, value: any) {
     const data = await this._readFile()
     const fullKey = this._makeKey(traceId, key)
+
     data[fullKey] = JSON.stringify(value)
+
     await this._writeFile(data)
   }
 
   async delete(traceId: string, key: string) {
     const data = await this._readFile()
     const fullKey = this._makeKey(traceId, key)
+
     delete data[fullKey]
+
     await this._writeFile(data)
   }
 
   async clear(traceId: string) {
     const data = await this._readFile()
-    const pattern = this._makeKey(traceId, '*')
+    const pattern = this._makeKey(traceId, '')
+
     for (const key in data) {
       if (key.startsWith(pattern)) {
         delete data[key]
       }
     }
+
     await this._writeFile(data)
   }
 
@@ -63,7 +70,7 @@ export class FileStateAdapter implements StateAdapter {
     // No cleanup needed for file system
   }
 
-  _makeKey(traceId: string, key: string) {
+  private _makeKey(traceId: string, key: string) {
     return `${traceId}:${key}`
   }
 

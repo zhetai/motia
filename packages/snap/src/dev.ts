@@ -15,8 +15,7 @@ require('ts-node').register({
 })
 
 export const dev = async (port: number): Promise<void> => {
-  const rootDir = path.join(process.cwd())
-  const lockedData = await generateLockedData(rootDir)
+  const lockedData = await generateLockedData(process.cwd())
   const steps = [...lockedData.steps.active, ...lockedData.steps.dev]
   const eventManager = createEventManager()
   const stateManagerConfig = {
@@ -24,7 +23,7 @@ export const dev = async (port: number): Promise<void> => {
     stateManagerUrl: `http://localhost:${port}/state-manager`,
   }
   const state = createInternalStateManager(stateManagerConfig)
-  const { app, server } = await createServer({ steps, rootDir, state, flows: lockedData.flows, eventManager })
+  const { app, server } = await createServer({ steps, state, flows: lockedData.flows, eventManager })
 
   createStepHandlers(steps, eventManager, stateManagerConfig)
 

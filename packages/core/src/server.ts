@@ -14,7 +14,6 @@ type ServerOptions = {
   flows: LockedData['flows']
   eventManager: EventManager
   state: InternalStateManager
-  rootDir: string
 }
 
 type ServerOutput = {
@@ -85,7 +84,7 @@ export const createServer = async (options: ServerOptions): Promise<ServerOutput
   }
 
   flowsEndpoint(flows, app)
-  declareInternalStateManagerEndpoints({ app, rootDir: options.rootDir })
+  declareInternalStateManagerEndpoints(app)
 
   server.on('error', (error) => {
     console.error('Server error:', error)

@@ -1,6 +1,6 @@
-const path = require('path')
-const { createInternalStateManager } = require('./state-adapter')
-const { Logger } = require('./logger')
+import path from 'path'
+import { createInternalStateManager } from '../state/create-internal-state-manager'
+import { Logger } from './logger'
 
 // Add ts-node registration before dynamic imports
 require('ts-node').register({
@@ -8,7 +8,7 @@ require('ts-node').register({
   compilerOptions: { module: 'commonjs' },
 })
 
-function parseArgs(arg) {
+function parseArgs(arg: string) {
   try {
     return JSON.parse(arg)
   } catch {
@@ -16,7 +16,7 @@ function parseArgs(arg) {
   }
 }
 
-async function runTypescriptModule(filePath, args) {
+async function runTypescriptModule(filePath: string, args: Record<string, unknown>) {
   try {
     // Remove pathToFileURL since we'll use require
     const module = require(path.resolve(filePath))
@@ -30,11 +30,12 @@ async function runTypescriptModule(filePath, args) {
 
     const { stateConfig, ...event } = args
     const { traceId, flows } = event
-    const logger = new Logger(traceId, flows, filePath.split('/').pop())
+    const logger = new Logger(traceId as string, flows as string[], filePath.split('/').pop())
     // TODO: check that state config is defined, otherwise default to in-memory state management
-    const state = createInternalStateManager({ stateManagerUrl: stateConfig.stateManagerUrl })
+    const stateManagerUrl = (stateConfig as { stateManagerUrl: string }).stateManagerUrl
+    const state = createInternalStateManager({ stateManagerUrl })
 
-    const emit = async (data) => process.send?.(data)
+    const emit = async (data: unknown) => process.send?.(data)
     const context = { traceId, flows, logger, state, emit }
 
     // Call the function with provided arguments

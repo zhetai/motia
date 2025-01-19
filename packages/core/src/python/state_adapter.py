@@ -87,6 +87,9 @@ class InternalStateManagerImpl(Generic[T]):
     def delete(self, trace_id: str, key: str) -> None:
         self.handler('delete', {'traceId': trace_id, 'key': key})
 
+    def clear(self, trace_id: str) -> None:
+        self.handler('clear', {'traceId': trace_id})
+
 def create_internal_state_manager(config: StateManagerConfig) -> InternalStateManager:
     """
     Creates an instance of the internal state manager.
