@@ -1,5 +1,5 @@
 import { StateAdapter } from '../state-adapter'
-import { promises as fs } from 'fs'
+import fs from 'fs'
 import * as path from 'path'
 
 export type FileAdapterConfig = {
@@ -16,15 +16,15 @@ export class FileStateAdapter implements StateAdapter {
   async init() {
     const dir = this.filePath.replace('motia-state.json', '')
     try {
-      await fs.realpath(dir)
+      fs.realpathSync(dir)
     } catch (err) {
-      await fs.mkdir(dir, { recursive: true })
+      fs.mkdirSync(dir, { recursive: true })
     }
 
     try {
-      await fs.readFile(this.filePath, 'utf-8')
+      fs.readFileSync(this.filePath, 'utf-8')
     } catch (err) {
-      fs.writeFile(this.filePath, JSON.stringify({}), 'utf-8')
+      fs.writeFileSync(this.filePath, JSON.stringify({}), 'utf-8')
     }
   }
 
@@ -75,12 +75,11 @@ export class FileStateAdapter implements StateAdapter {
   }
 
   private async _readFile() {
-    console.log('Reading file', this.filePath)
-    const content = await fs.readFile(this.filePath, 'utf-8')
+    const content = fs.readFileSync(this.filePath, 'utf-8')
     return JSON.parse(content)
   }
 
   private async _writeFile(data: any) {
-    await fs.writeFile(this.filePath, JSON.stringify(data, null, 2), 'utf-8')
+    fs.writeFileSync(this.filePath, JSON.stringify(data, null, 2), 'utf-8')
   }
 }

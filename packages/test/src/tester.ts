@@ -26,7 +26,10 @@ export const createMotiaTester = (): MotiaTester => {
   const promise = (async () => {
     const lockedData = await generateLockedData(path.join(process.cwd()))
     const steps = [...lockedData.steps.active, ...lockedData.steps.dev]
-    const state = createStateAdapter(lockedData.state)
+    const state = createStateAdapter({
+      adapter: 'default',
+      filePath: path.join(process.cwd(), '.motia'),
+    })
     const { server, socketServer } = await createServer({
       steps,
       flows: lockedData.flows,
@@ -34,7 +37,7 @@ export const createMotiaTester = (): MotiaTester => {
       eventManager,
     })
 
-    createStepHandlers(steps, eventManager, lockedData.state)
+    createStepHandlers(steps, eventManager, state)
 
     return { server, socketServer, eventManager, state }
   })()

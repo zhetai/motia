@@ -3,17 +3,17 @@ import { randomUUID } from 'crypto'
 import express, { Express, Request, Response } from 'express'
 import http from 'http'
 import { Server as SocketIOServer } from 'socket.io'
-import { ApiRequest, ApiRouteHandler, EmitData, EventManager, LockedData, Step, InternalStateManager } from './types'
 import { flowsEndpoint } from './flows-endpoint'
 import { isApiStep } from './guards'
 import { globalLogger, Logger } from './logger'
-import { declareInternalStateManagerEndpoints } from './state/internal-state-manager-endpoints'
+import { StateAdapter } from './state/state-adapter'
+import { ApiRequest, ApiRouteHandler, EmitData, EventManager, LockedData, Step } from './types'
 
 type ServerOptions = {
   steps: Step[]
   flows: LockedData['flows']
   eventManager: EventManager
-  state: InternalStateManager
+  state: StateAdapter
 }
 
 type ServerOutput = {
@@ -84,7 +84,6 @@ export const createServer = async (options: ServerOptions): Promise<ServerOutput
   }
 
   flowsEndpoint(flows, app)
-  declareInternalStateManagerEndpoints(app)
 
   server.on('error', (error) => {
     console.error('Server error:', error)
