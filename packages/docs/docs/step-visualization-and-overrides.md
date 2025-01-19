@@ -30,7 +30,7 @@ steps/
 ```typescript
 // myStep.step.tsx
 import React from 'react'
-import { EventNode, EventNodeProps } from '@motia/workbench'
+import { EventNode, EventNodeProps } from '@motiadev/workbench'
 
 export default ({ data }: EventNodeProps) => {
   return (
@@ -52,7 +52,7 @@ Motia provides several base components for building step visualizations:
 For general purpose steps:
 
 ```typescript
-import { EventNode, EventNodeProps } from '@motia/workbench'
+import { EventNode, EventNodeProps } from '@motiadev/workbench'
 
 export default ({ data }: EventNodeProps) => {
   return (
@@ -73,7 +73,7 @@ export default ({ data }: EventNodeProps) => {
 For API and trigger steps:
 
 ```typescript
-import { TriggerNode, TriggerNodeProps } from '@motia/workbench'
+import { TriggerNode, TriggerNodeProps } from '@motiadev/workbench'
 
 export default ({ data }: TriggerNodeProps) => {
   return (
@@ -92,7 +92,7 @@ export default ({ data }: TriggerNodeProps) => {
 For custom node connections:
 
 ```typescript
-import { BaseHandle, Position } from '@motia/workbench'
+import { BaseHandle, Position } from '@motiadev/workbench'
 
 export default () => {
   return (
@@ -124,7 +124,7 @@ export default () => {
 
 ```typescript
 import React from 'react'
-import { EventNode, EventNodeProps } from '@motia/workbench'
+import { EventNode, EventNodeProps } from '@motiadev/workbench'
 
 export default ({ data }: EventNodeProps) => {
   return (
@@ -146,7 +146,7 @@ export default ({ data }: EventNodeProps) => {
 
 ```typescript
 import React from 'react'
-import { TriggerNode, TriggerNodeProps } from '@motia/workbench'
+import { TriggerNode, TriggerNodeProps } from '@motiadev/workbench'
 import { Globe } from 'lucide-react'
 
 export default ({ data }: TriggerNodeProps) => {
@@ -168,7 +168,7 @@ export default ({ data }: TriggerNodeProps) => {
 
 ```typescript
 import React from 'react'
-import { BaseHandle, Position, EventNodeProps } from '@motia/workbench'
+import { BaseHandle, Position, EventNodeProps } from '@motiadev/workbench'
 
 export default ({ data }: EventNodeProps) => {
   return (

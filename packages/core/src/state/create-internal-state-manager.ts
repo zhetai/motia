@@ -1,4 +1,4 @@
-import { InternalStateManager } from '../types'
+import type { InternalStateManager } from '../types'
 
 type Input = {
   stateManagerUrl: string
@@ -7,7 +7,7 @@ type Input = {
 const getStateManagerHandler =
   (stateManagerUrl: string) =>
   async (
-    action: 'set' | 'get' | 'delete',
+    action: 'set' | 'get' | 'delete' | 'clear',
     payload: { traceId: string; key?: string; value?: unknown },
   ): Promise<{ data: unknown } | void> => {
     try {
@@ -16,9 +16,7 @@ const getStateManagerHandler =
         headers: {
           'Content-Type': 'application/json',
           'x-trace-id': payload.traceId,
-          // TODO: add internal auth token for security
         },
-        // TODO: encrypt the payload for security
         body: JSON.stringify(payload),
       })
 
@@ -43,8 +41,21 @@ export const createInternalStateManager = ({ stateManagerUrl }: Input): Internal
   const handler = getStateManagerHandler(stateManagerUrl)
 
   return {
-    get: <T>(traceId: string, key: string) => handler('get', { traceId, key }) as Promise<{ data: T }>,
-    set: (traceId: string, key: string, value: unknown) => handler('set', { traceId, key, value }) as Promise<void>,
-    delete: async (traceId: string, key: string) => handler('set', { traceId, key }) as Promise<void>,
+    get: async <T>(traceId: string, key: string) => {
+      const result = await handler('get', { traceId, key })
+
+      console.log('result', result)
+
+      return result as T
+    },
+    set: async (traceId: string, key: string, value: unknown) => {
+      await handler('set', { traceId, key, value })
+    },
+    delete: async (traceId: string, key: string) => {
+      await handler('delete', { traceId, key })
+    },
+    clear: async (traceId: string) => {
+      await handler('clear', { traceId })
+    },
   }
 }

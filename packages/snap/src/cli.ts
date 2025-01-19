@@ -1,6 +1,6 @@
 #!/usr/bin/env node
-const { program } = require('commander')
-const path = require('path')
+import { program } from 'commander'
+import path from 'path'
 
 const defaultPort = 3000
 
@@ -13,7 +13,7 @@ require('ts-node').register({
 program
   .command('dev')
   .description('Start the development server')
-  .option('-p, --port <port>', 'The port to run the server on', defaultPort)
+  .option('-p, --port <port>', 'The port to run the server on', `${defaultPort}`)
   .option('-d, --debug', 'Enable debug logging')
   .action(async (arg) => {
     if (arg.debug) {
@@ -22,7 +22,7 @@ program
     }
 
     const port = arg.port ? parseInt(arg.port) : defaultPort
-    const { dev } = require('./src/dev')
+    const { dev } = require('./dev')
     await dev(port)
   })
 

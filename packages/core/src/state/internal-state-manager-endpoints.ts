@@ -1,13 +1,8 @@
 import { Express } from 'express'
-import { createStateAdapter } from './createStateAdapter'
-import { FileStateAdapter } from './adapters/DefaultStateAdapter'
+import { createStateAdapter } from './create-state-adapter'
+import { FileStateAdapter } from './adapters/default-state-adapter'
 import path from 'path'
 import z from 'zod'
-
-type Input = {
-  rootDir: string
-  app: Express
-}
 
 const basePayloadSchema = z.object({
   key: z.string(),
@@ -15,15 +10,13 @@ const basePayloadSchema = z.object({
   value: z.optional(z.unknown()),
 })
 
-const deletePayloadSchema = z.object({
-  key: z.string(),
-  traceId: z.string(),
-})
+const deletePayloadSchema = z.object({ key: z.string(), traceId: z.string() })
+const clearPayloadSchema = z.object({ traceId: z.string() })
 
-export const declareInternalStateManagerEndpoints = ({ app, rootDir }: Input) => {
+export const declareInternalStateManagerEndpoints = (app: Express) => {
   const stateAdapter = createStateAdapter({
     adapter: 'default',
-    filePath: path.join(rootDir, '.motia'),
+    filePath: path.join(process.cwd(), '.motia'),
   }) as FileStateAdapter
 
   stateAdapter.init()
@@ -59,6 +52,18 @@ export const declareInternalStateManagerEndpoints = ({ app, rootDir }: Input) =>
       res.status(200).json({})
     } catch (error: unknown) {
       console.error('[state manager] failed to delete from state', error)
+
+      res.status(400).json({ error: error instanceof Error ? error?.message : 'unkown error occurred' })
+    }
+  })
+
+  app.post('/state-manager/clear', async (req, res) => {
+    try {
+      const { traceId } = clearPayloadSchema.parse(req.body)
+      await stateAdapter.clear(traceId)
+      res.status(200).json({})
+    } catch (error: unknown) {
+      console.error('[state manager] failed to clear state', error)
 
       res.status(400).json({ error: error instanceof Error ? error?.message : 'unkown error occurred' })
     }

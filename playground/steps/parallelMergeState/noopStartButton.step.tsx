@@ -1,4 +1,4 @@
-import { BaseNode, Button, NoopNodeProps } from '@motia/workbench'
+import { BaseNode, Button, NoopNodeProps } from '@motiadev/workbench'
 import React from 'react'
 
 export default (data: NoopNodeProps) => {

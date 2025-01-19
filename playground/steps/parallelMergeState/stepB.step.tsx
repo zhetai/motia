@@ -1,5 +1,5 @@
 import React from 'react'
-import { EventNode, EventNodeProps, Button } from '@motia/workbench'
+import { EventNode, EventNodeProps, Button } from '@motiadev/workbench'
 
 export default (data: EventNodeProps) => {
   const [count, setCount] = React.useState(0)
