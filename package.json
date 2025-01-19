@@ -1,7 +1,13 @@
 {
   "name": "motia-monorepo",
   "private": true,
-  "version": "0.0.1-alpha.1",
+  "version": "0.0.1",
+  "workspaces": [
+    "packages/core",
+    "packages/workbench",
+    "packages/snap",
+    "packages/test"
+  ],
   "scripts": {
     "dev:docs": "pnpm -r --filter=docs start",
     "dev": "pnpm run build && pnpm run -r --parallel dev",
