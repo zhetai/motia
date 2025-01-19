@@ -78,7 +78,7 @@ export type StepHandler<T> =
 export type MotiaServer = Server<any>
 export type MotiaSocketServer = SocketIOServer
 
-export type Event<TData> = {
+export type Event<TData = unknown> = {
   type: string
   data: TData
   traceId: string

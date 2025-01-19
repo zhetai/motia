@@ -19,10 +19,11 @@ export const config: EventConfig<Input> = {
 export const handler: StepHandler<typeof config> = async (_, { emit, traceId, state, logger }) => {
   logger.info('[stepB] received pms.start')
 
+  await new Promise((resolve) => setTimeout(resolve, 100))
+
   const partialResultB: ParallelMergeStep = { msg: 'Hello from Step B', timestamp: Date.now() }
   await state.set<ParallelMergeStep>(traceId, 'stepB', partialResultB)
 
-  await new Promise((resolve) => setTimeout(resolve, 100))
   await emit({
     type: 'pms.stepB.done',
     data: partialResultB,
