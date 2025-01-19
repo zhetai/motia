@@ -1,6 +1,5 @@
 {
   "name": "@motiadev/core",
-  "private": true,
   "main": "dist/index.js",
   "scripts": {
     "move:python": "cp src/python/*.py dist/src/python",

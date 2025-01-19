@@ -1,6 +1,5 @@
 {
   "name": "@motiadev/test",
-  "private": true,
   "scripts": {
     "build": "tsc"
   },

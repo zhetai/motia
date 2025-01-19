@@ -1,6 +1,5 @@
 {
   "name": "@motiadev/workbench",
-  "private": true,
   "scripts": {
     "lint": "eslint ."
   },

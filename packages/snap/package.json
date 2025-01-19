@@ -1,6 +1,5 @@
 {
   "name": "@motiadev/snap",
-  "private": true,
   "bin": {
     "motia": "cli.js"
   },
