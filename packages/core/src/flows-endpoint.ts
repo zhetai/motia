@@ -14,7 +14,7 @@ type FlowListResponse = {
 type FlowStepResponse = {
   id: string
   name: string
-  type: 'base' | 'trigger' | 'noop'
+  type: 'event' | 'trigger' | 'noop'
   description?: string
   subscribes?: string[]
   emits: Emit[]
@@ -58,7 +58,7 @@ export const generateFlowsList = (flows: LockedData['flows']): FlowResponse[] =>
       } else if (isEventStep(step)) {
         steps.push({
           id: randomUUID(),
-          type: 'base',
+          type: 'event',
           name: step.config.name,
           description: step.config.description,
           emits: [...step.config.emits, ...(step.config.virtualEmits ?? [])],

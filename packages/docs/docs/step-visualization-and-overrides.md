@@ -30,11 +30,11 @@ steps/
 ```typescript
 // myStep.step.tsx
 import React from 'react'
-import { BaseNode, BaseNodeProps } from '@motia/workbench'
+import { EventNode, EventNodeProps } from '@motia/workbench'
 
-export default ({ data }: BaseNodeProps) => {
+export default ({ data }: EventNodeProps) => {
   return (
-    <BaseNode
+    <EventNode
       data={data}
       variant="white"
       className="py-2 px-4"
@@ -47,23 +47,23 @@ export default ({ data }: BaseNodeProps) => {
 
 Motia provides several base components for building step visualizations:
 
-### 1. BaseNode
+### 1. EventNode
 
 For general purpose steps:
 
 ```typescript
-import { BaseNode, BaseNodeProps } from '@motia/workbench'
+import { EventNode, EventNodeProps } from '@motia/workbench'
 
-export default ({ data }: BaseNodeProps) => {
+export default ({ data }: EventNodeProps) => {
   return (
-    <BaseNode
+    <EventNode
       data={data}
       variant="white" // 'white' | 'ghost' | 'noop'
       shape="rounded" // 'rounded' | 'square' | 'noop'
       className="custom-styles"
     >
       <div>Custom content here</div>
-    </BaseNode>
+    </EventNode>
   )
 }
 ```
@@ -124,11 +124,11 @@ export default () => {
 
 ```typescript
 import React from 'react'
-import { BaseNode, BaseNodeProps } from '@motia/workbench'
+import { EventNode, EventNodeProps } from '@motia/workbench'
 
-export default ({ data }: BaseNodeProps) => {
+export default ({ data }: EventNodeProps) => {
   return (
-    <BaseNode
+    <EventNode
       data={data}
       variant="ghost"
       className="bg-blue-500 text-white rounded-full px-6 py-3"
@@ -137,7 +137,7 @@ export default ({ data }: BaseNodeProps) => {
         <ProcessingIcon className="w-4 h-4" />
         <span>Processing Data</span>
       </div>
-    </BaseNode>
+    </EventNode>
   )
 }
 ```
@@ -168,9 +168,9 @@ export default ({ data }: TriggerNodeProps) => {
 
 ```typescript
 import React from 'react'
-import { BaseHandle, Position, BaseNodeProps } from '@motia/workbench'
+import { BaseHandle, Position, EventNodeProps } from '@motia/workbench'
 
-export default ({ data }: BaseNodeProps) => {
+export default ({ data }: EventNodeProps) => {
   return (
     <div className="bg-green-500 text-white rounded-full p-4 text-center">
       <BaseHandle type="target" position={Position.Top} />
@@ -187,9 +187,9 @@ export default ({ data }: BaseNodeProps) => {
 ### 1. State Indication
 
 ```typescript
-export default ({ data }: BaseNodeProps) => {
+export default ({ data }: EventNodeProps) => {
   return (
-    <BaseNode
+    <EventNode
       data={data}
       variant={isActive ? "white" : "ghost"}
       className={cn(
@@ -205,16 +205,16 @@ export default ({ data }: BaseNodeProps) => {
 ### 2. Progress Visualization
 
 ```typescript
-export default ({ data }: BaseNodeProps) => {
+export default ({ data }: EventNodeProps) => {
   return (
-    <BaseNode data={data}>
+    <EventNode data={data}>
       <div className="relative w-full h-2 bg-gray-200 rounded">
         <div
           className="absolute h-2 bg-blue-500 rounded"
           style={{ width: `${progress}%` }}
         />
       </div>
-    </BaseNode>
+    </EventNode>
   )
 }
 ```
@@ -222,16 +222,16 @@ export default ({ data }: BaseNodeProps) => {
 ### 3. Interactive Elements
 
 ```typescript
-export default ({ data }: BaseNodeProps) => {
+export default ({ data }: EventNodeProps) => {
   return (
-    <BaseNode data={data}>
+    <EventNode data={data}>
       <button
         className="px-2 py-1 bg-blue-500 text-white rounded"
         onClick={() => console.log('Clicked')}
       >
         Trigger
       </button>
-    </BaseNode>
+    </EventNode>
   )
 }
 ```

@@ -1,7 +1,7 @@
 import { Eye } from 'lucide-react'
-import { BaseNodeData } from '../views/flow/nodes/nodes.types'
+import { EventNodeData } from '../views/flow/nodes/nodes.types'
 
-export const Subscribe: React.FC<{ data: BaseNodeData }> = ({ data }) => {
+export const Subscribe: React.FC<{ data: EventNodeData }> = ({ data }) => {
   return (
     <>
       {data.subscribes.map((subscribe) => (

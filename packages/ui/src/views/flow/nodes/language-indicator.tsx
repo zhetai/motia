@@ -1,7 +1,7 @@
 import { FC } from 'react'
-import { BaseNodeData } from './nodes.types'
+import { EventNodeData } from './nodes.types'
 
-type Props = { language: BaseNodeData['language'] }
+type Props = { language: EventNodeData['language'] }
 
 export const LanguageIndicator: FC<Props> = ({ language }) => {
   const renderIcon = (language?: string) => {

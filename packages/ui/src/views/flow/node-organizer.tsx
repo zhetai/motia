@@ -1,12 +1,12 @@
 import { Edge, Node, useNodesInitialized, useReactFlow } from '@xyflow/react'
 import dagre from 'dagre'
 import { useEffect } from 'react'
-import { BaseNodeData, EdgeData, TriggerNodeData } from './nodes/nodes.types'
+import { EventNodeData, EdgeData, TriggerNodeData } from './nodes/nodes.types'
 
 const organizeNodes = (
-  nodes: Node<BaseNodeData | TriggerNodeData>[],
+  nodes: Node<EventNodeData | TriggerNodeData>[],
   edges: Edge<EdgeData>[],
-): Node<BaseNodeData | TriggerNodeData>[] => {
+): Node<EventNodeData | TriggerNodeData>[] => {
   const dagreGraph = new dagre.graphlib.Graph({ compound: true })
   dagreGraph.setDefaultEdgeLabel(() => ({}))
 
@@ -53,7 +53,7 @@ export const NodeOrganizer: React.FC<Props> = ({ onInitialized }) => {
 
   useEffect(() => {
     if (nodesInitialized) {
-      const nodes = getNodes() as Node<BaseNodeData | TriggerNodeData>[]
+      const nodes = getNodes() as Node<EventNodeData | TriggerNodeData>[]
       const edges = getEdges() as Edge<EdgeData>[]
       const organizedNodes = organizeNodes(nodes, edges)
 
