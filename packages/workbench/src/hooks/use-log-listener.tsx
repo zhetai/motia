@@ -1,4 +1,4 @@
-import { Log, useTriggerLogs } from '@/stores/triggerLogs'
+import { Log, useLogs } from '@/stores/use-logs'
 import { useState, useEffect } from 'react'
 import { io } from 'socket.io-client'
 
@@ -10,7 +10,7 @@ const socket = io('/')
 
 export const useLogListener = (): UseWebSocketReturn => {
   const [isConnected, setIsConnected] = useState(socket.connected)
-  const addLog = useTriggerLogs((state) => state.addLog)
+  const addLog = useLogs((state) => state.addLog)
 
   useEffect(() => {
     const onConnect = () => setIsConnected(true)

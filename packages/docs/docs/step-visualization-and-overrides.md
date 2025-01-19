@@ -68,21 +68,21 @@ export default ({ data }: EventNodeProps) => {
 }
 ```
 
-### 2. TriggerNode
+### 2. ApiNode
 
-For API and trigger steps:
+For API and api steps:
 
 ```typescript
-import { TriggerNode, TriggerNodeProps } from '@motiadev/workbench'
+import { ApiNode, ApiNodeProps } from '@motiadev/workbench'
 
-export default ({ data }: TriggerNodeProps) => {
+export default ({ data }: ApiNodeProps) => {
   return (
-    <TriggerNode
+    <ApiNode
       data={data}
       className="custom-styles"
     >
-      <div>Custom trigger content</div>
-    </TriggerNode>
+      <div>Custom api content</div>
+    </ApiNode>
   )
 }
 ```
@@ -146,12 +146,12 @@ export default ({ data }: EventNodeProps) => {
 
 ```typescript
 import React from 'react'
-import { TriggerNode, TriggerNodeProps } from '@motiadev/workbench'
+import { ApiNode, ApiNodeProps } from '@motiadev/workbench'
 import { Globe } from 'lucide-react'
 
-export default ({ data }: TriggerNodeProps) => {
+export default ({ data }: ApiNodeProps) => {
   return (
-    <TriggerNode
+    <ApiNode
       data={data}
       className="border-sky-500"
     >
@@ -159,7 +159,7 @@ export default ({ data }: TriggerNodeProps) => {
         <Globe className="w-4 h-4" />
         <span>{data.name}</span>
       </div>
-    </TriggerNode>
+    </ApiNode>
   )
 }
 ```

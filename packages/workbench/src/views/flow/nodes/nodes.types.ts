@@ -13,11 +13,11 @@ export type NoopNodeData = {
   type: string
   name: string
   description?: string
-  virtualEmits: string[]
-  virtualSubscribes: string[]
+  emits: string[]
+  subscribes: string[]
 }
 
-export type TriggerNodeData = {
+export type ApiNodeData = {
   type: string
   name: string
   description?: string
@@ -28,7 +28,7 @@ export type TriggerNodeData = {
   bodySchema?: JSONSchema7
 }
 
-export type NodeData = EventNodeData | TriggerNodeData | NoopNodeData
+export type NodeData = EventNodeData | ApiNodeData | NoopNodeData
 
 export type EdgeData = {
   label?: string

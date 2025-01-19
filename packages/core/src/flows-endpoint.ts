@@ -14,7 +14,7 @@ type FlowListResponse = {
 type FlowStepResponse = {
   id: string
   name: string
-  type: 'event' | 'trigger' | 'noop'
+  type: 'event' | 'api' | 'noop'
   description?: string
   subscribes?: string[]
   emits: Emit[]
@@ -44,7 +44,7 @@ export const generateFlowsList = (flows: LockedData['flows']): FlowResponse[] =>
       if (isApiStep(step)) {
         steps.push({
           id: randomUUID(),
-          type: 'trigger',
+          type: 'api',
           name: step.config.name,
           description: step.config.description,
           emits: [...step.config.emits, ...(step.config.virtualEmits ?? [])],
