@@ -1,8 +1,10 @@
 {
   "name": "@motiadev/workbench",
+  "version": "0.0.2",
   "main": "index.tsx",
   "scripts": {
-    "lint": "eslint ."
+    "lint": "eslint .",
+    "build": "rm -rf dist && vite build"
   },
   "dependencies": {
     "@radix-ui/react-collapsible": "^1.1.2",
