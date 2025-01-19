@@ -19,8 +19,10 @@ export class RpcProcessor {
     return handler(input)
   }
 
-  private response(id: string, result: any, error: any) {
-    this.child.send?.({ type: 'rpc_response', id, result, error })
+  private response(id: string | undefined, result: any, error: any) {
+    if (id) {
+      this.child.send?.({ type: 'rpc_response', id, result, error })
+    }
   }
 
   async init() {

@@ -10,7 +10,7 @@ export default ({ data }: ApiNodeProps) => {
   }
 
   return (
-    <ApiNode data={{ ...data, description: undefined }} className="max-w-xs">
+    <ApiNode data={{ ...data, description: undefined }}>
       <div className="flex flex-row gap-4">
         <div className="flex flex-col items-center text-sm">{data.description}</div>
         <div className="flex flex-col items-end text-sm">

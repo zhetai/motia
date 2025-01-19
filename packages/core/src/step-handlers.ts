@@ -52,6 +52,9 @@ const callStepFile = <TData>(
 
     const rpcProcessor = new RpcProcessor(child)
 
+    rpcProcessor.handler<StateGetInput>('log', async (input: any) => {
+      event.logger.log(input)
+    })
     rpcProcessor.handler<StateGetInput>('state.get', (input) => state.get(input.traceId, input.key))
     rpcProcessor.handler<StateSetInput>('state.set', (input) => state.set(input.traceId, input.key, input.value))
     rpcProcessor.handler<StateDeleteInput>('state.delete', (input) => state.delete(input.traceId, input.key))
