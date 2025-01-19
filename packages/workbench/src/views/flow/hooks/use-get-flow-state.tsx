@@ -55,8 +55,6 @@ async function importFlow(flow: FlowResponse): Promise<FlowState> {
     language: step.language,
   }))
 
-  console.log('nodes', nodes)
-
   const edges: Edge<EdgeData>[] = []
 
   // For each node that emits events
