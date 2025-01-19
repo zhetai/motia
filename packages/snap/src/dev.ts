@@ -4,9 +4,10 @@ import {
   createEventManager,
   globalLogger,
   createInternalStateManager,
-} from '@motia/core'
+} from '@motiadev/core'
+import { applyMiddleware } from '@motiadev/workbench/middleware'
 import path from 'path'
-import { generateLockedData } from './generate/locked-data'
+import { generateLockedData } from './generate-locked-data'
 
 require('ts-node').register({
   transpileOnly: true,
@@ -23,12 +24,14 @@ export const dev = async (port: number): Promise<void> => {
     stateManagerUrl: `http://localhost:${port}/state-manager`,
   }
   const state = createInternalStateManager(stateManagerConfig)
-  const { server } = await createServer({ steps, rootDir, state, flows: lockedData.flows, eventManager })
+  const { app, server } = await createServer({ steps, rootDir, state, flows: lockedData.flows, eventManager })
 
   createStepHandlers(steps, eventManager, stateManagerConfig)
 
   server.listen(port)
   console.log('🚀 Server ready and listening on port', port)
+
+  await applyMiddleware(app)
 
   // 6) Gracefully shut down on SIGTERM
   process.on('SIGTERM', async () => {

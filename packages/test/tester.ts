@@ -1,6 +1,6 @@
 import request, { Response } from 'supertest'
-import { createServer, createStateAdapter, createStepHandlers, Event } from '@motia/core'
-import { generateLockedData } from '@motia/snap/src/generate/locked-data'
+import { createServer, createStateAdapter, createStepHandlers, Event } from '@motiadev/core'
+import { generateLockedData } from '@motiadev/snap/src/generate-locked-data'
 import { createEventManager } from './event-manager'
 import { CapturedEvent, RequestOptions } from './types'
 import path from 'path'
@@ -32,7 +32,6 @@ export const createMotiaTester = (): MotiaTester => {
       flows: lockedData.flows,
       state,
       eventManager,
-      disableUi: true,
     })
 
     createStepHandlers(steps, eventManager, lockedData.state)

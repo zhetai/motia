@@ -1,5 +1,5 @@
 {
-  "name": "@motia/core",
+  "name": "@motiadev/core",
   "private": true,
   "main": "dist/index.js",
   "scripts": {
@@ -10,7 +10,6 @@
     "test": "jest"
   },
   "dependencies": {
-    "@motia/workbench": "workspace:*",
     "body-parser": "^1.20.3",
     "express": "^4.21.2",
     "ioredis": "^5.4.2",

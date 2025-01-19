@@ -84,7 +84,7 @@ You can enhance your NoOp steps with custom React components for better visualiz
 ```typescript
 // customNode.step.tsx
 import React from 'react'
-import { BaseHandle, EventNodeProps, Position } from '@motia/workbench'
+import { BaseHandle, EventNodeProps, Position } from '@motiadev/workbench'
 
 export default (_: EventNodeProps) => {
   return (
@@ -115,7 +115,7 @@ NoOp steps are particularly useful for testing flows in development. Here's a co
 ```typescript
 // startTest.step.tsx
 import React from 'react'
-import { BaseHandle, EventNodeProps, Position } from '@motia/workbench'
+import { BaseHandle, EventNodeProps, Position } from '@motiadev/workbench'
 
 export default (_: EventNodeProps) => {
   return (
@@ -141,7 +141,7 @@ export const config: NoopConfig = {
 ```typescript
 // monitor.step.tsx
 import React from 'react'
-import { BaseHandle, EventNodeProps, Position } from '@motia/workbench'
+import { BaseHandle, EventNodeProps, Position } from '@motiadev/workbench'
 
 export default (_: EventNodeProps) => {
   return (
@@ -168,7 +168,7 @@ export const config: NoopConfig = {
 ```typescript
 // endTest.step.tsx
 import React from 'react'
-import { BaseHandle, EventNodeProps, Position } from '@motia/workbench'
+import { BaseHandle, EventNodeProps, Position } from '@motiadev/workbench'
 
 export default (_: EventNodeProps) => {
   return (
@@ -216,7 +216,7 @@ export const config: NoopConfig = {
 1. **Core Imports**
 
    ```typescript
-   import { BaseHandle, EventNodeProps, Position } from '@motia/workbench'
+   import { BaseHandle, EventNodeProps, Position } from '@motiadev/workbench'
    ```
 
 2. **Handle Placement**

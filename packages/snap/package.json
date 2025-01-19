@@ -1,5 +1,5 @@
 {
-  "name": "@motia/snap",
+  "name": "@motiadev/snap",
   "private": true,
   "bin": {
     "motia": "cli.js"
@@ -10,7 +10,8 @@
     "test": "jest"
   },
   "dependencies": {
-    "@motia/core": "workspace:*",
+    "@motiadev/core": "workspace:*",
+    "@motiadev/workbench": "workspace:*",
     "commander": "^13.0.0",
     "ts-node": "^10.9.2",
     "yaml": "^2.7.0"

@@ -1,5 +1,5 @@
 import React from 'react'
-import { BaseHandle, EventNodeProps, Position } from '@motia/workbench'
+import { BaseHandle, EventNodeProps, Position } from '@motiadev/workbench'
 
 export default (_: EventNodeProps) => {
   return (

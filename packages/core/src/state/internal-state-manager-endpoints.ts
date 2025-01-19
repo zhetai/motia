@@ -1,6 +1,6 @@
 import { Express } from 'express'
-import { createStateAdapter } from './createStateAdapter'
-import { FileStateAdapter } from './adapters/DefaultStateAdapter'
+import { createStateAdapter } from './create-state-adapter'
+import { FileStateAdapter } from './adapters/default-state-adapter'
 import path from 'path'
 import z from 'zod'
 

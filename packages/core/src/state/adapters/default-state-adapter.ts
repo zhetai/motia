@@ -1,4 +1,4 @@
-import { StateAdapter } from '../StateAdapter'
+import { StateAdapter } from '../state-adapter'
 import { promises as fs } from 'fs'
 import * as path from 'path'
 
@@ -6,11 +6,10 @@ export type FileAdapterConfig = {
   filePath: string
 }
 
-export class FileStateAdapter extends StateAdapter {
+export class FileStateAdapter implements StateAdapter {
   private filePath: string
 
   constructor(config: FileAdapterConfig) {
-    super()
     this.filePath = path.join(config.filePath, 'motia-state.json')
   }
 

@@ -1,11 +1,13 @@
 {
-  "name": "@motia/test",
+  "name": "@motiadev/test",
   "private": true,
-  "scripts": {},
+  "scripts": {
+    "build": "tsc"
+  },
   "dependencies": {
     "supertest": "^7.0.0",
-    "@motia/core": "workspace:*",
-    "@motia/snap": "workspace:*"
+    "@motiadev/core": "workspace:*",
+    "@motiadev/snap": "workspace:*"
   },
   "devDependencies": {
     "@types/jest": "^29.5.14",

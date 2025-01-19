@@ -1,5 +1,5 @@
-import { FileAdapterConfig, FileStateAdapter } from './adapters/DefaultStateAdapter'
-import { RedisAdapterConfig, RedisStateAdapter } from './adapters/RedisStateAdapter'
+import { FileAdapterConfig, FileStateAdapter } from './adapters/default-state-adapter'
+import { RedisAdapterConfig, RedisStateAdapter } from './adapters/redis-state-adapter'
 
 type BaseConfig = {
   // NOTE: add more adapters here

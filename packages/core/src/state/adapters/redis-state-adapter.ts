@@ -1,4 +1,4 @@
-import { StateAdapter } from '../StateAdapter'
+import { StateAdapter } from '../state-adapter'
 import Redis from 'ioredis'
 
 export type RedisAdapterConfig = {
@@ -8,13 +8,12 @@ export type RedisAdapterConfig = {
   ttl?: number
 }
 
-export class RedisStateAdapter extends StateAdapter {
+export class RedisStateAdapter implements StateAdapter {
   private client: Redis
   private prefix: string
   private ttl = 3600
 
   constructor(config: RedisAdapterConfig) {
-    super()
     this.client = new Redis(config)
     this.prefix = 'motia:state'
     if (config.ttl) {

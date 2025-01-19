@@ -1,36 +1,29 @@
 import bodyParser from 'body-parser'
 import { randomUUID } from 'crypto'
-import express, { Request, Response } from 'express'
+import express, { Express, Request, Response } from 'express'
 import http from 'http'
 import { Server as SocketIOServer } from 'socket.io'
-import {
-  ApiRequest,
-  ApiRouteHandler,
-  EmitData,
-  EventManager,
-  LockedData,
-  Step,
-  MotiaServer,
-  MotiaSocketServer,
-  InternalStateManager,
-} from './types'
+import { ApiRequest, ApiRouteHandler, EmitData, EventManager, LockedData, Step, InternalStateManager } from './types'
 import { flowsEndpoint } from './flows-endpoint'
 import { isApiStep } from './guards'
 import { globalLogger, Logger } from './logger'
-import { declareInternalStateManagerEndpoints } from './state/internalStateManagerEndpoints'
+import { declareInternalStateManagerEndpoints } from './state/internal-state-manager-endpoints'
 
 type ServerOptions = {
   steps: Step[]
   flows: LockedData['flows']
   eventManager: EventManager
-  disableUi?: boolean
   state: InternalStateManager
   rootDir: string
 }
 
-export const createServer = async (
-  options: ServerOptions,
-): Promise<{ server: MotiaServer; socketServer: MotiaSocketServer }> => {
+type ServerOutput = {
+  app: Express
+  server: http.Server
+  socketServer: SocketIOServer
+}
+
+export const createServer = async (options: ServerOptions): Promise<ServerOutput> => {
   const { flows, steps, eventManager, state } = options
   const app = express()
   const server = http.createServer(app)
@@ -51,17 +44,8 @@ export const createServer = async (
         pathParams: req.params,
         queryParams: req.query as Record<string, string | string[]>,
       }
-      const emit = async (event: EmitData) => {
-        await eventManager.emit(
-          {
-            data: event.data,
-            type: event.type,
-            traceId,
-            flows,
-            logger,
-          },
-          step.filePath,
-        )
+      const emit = async ({ data, type }: EmitData) => {
+        await eventManager.emit({ data, type, traceId, flows, logger }, step.filePath)
       }
 
       try {
@@ -101,17 +85,11 @@ export const createServer = async (
   }
 
   flowsEndpoint(flows, app)
-
   declareInternalStateManagerEndpoints({ app, rootDir: options.rootDir })
-
-  if (!options.disableUi) {
-    const { applyMiddleware } = require('@motia/workbench/middleware')
-    await applyMiddleware(app)
-  }
 
   server.on('error', (error) => {
     console.error('Server error:', error)
   })
 
-  return { server, socketServer: io }
+  return { app, server, socketServer: io }
 }

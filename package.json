@@ -1,6 +1,7 @@
 {
   "name": "motia-monorepo",
   "private": true,
+  "version": "0.0.1-alpha.1",
   "scripts": {
     "dev:docs": "pnpm -r --filter=docs start",
     "dev": "pnpm run build && pnpm run -r --parallel dev",

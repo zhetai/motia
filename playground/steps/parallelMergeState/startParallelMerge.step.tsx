@@ -1,5 +1,5 @@
 import React from 'react'
-import { Button, TriggerNode, TriggerNodeProps } from '@motia/workbench'
+import { Button, TriggerNode, TriggerNodeProps } from '@motiadev/workbench'
 
 export default ({ data }: TriggerNodeProps) => {
   const onClick = () => {
