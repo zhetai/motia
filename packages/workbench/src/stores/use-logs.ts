@@ -9,13 +9,13 @@ export type Log = {
   [key: string]: any
 }
 
-export type TriggerLogsState = {
+export type LogsState = {
   logs: Log[]
   addLog: (log: Log) => void
   resetLogs: () => void
 }
 
-export const useTriggerLogs = create<TriggerLogsState>()((set) => ({
+export const useLogs = create<LogsState>()((set) => ({
   logs: [],
   addLog: (log) => set((state) => ({ ...state, logs: [...state.logs, log] })),
   resetLogs: () => set({ logs: [] }),

@@ -4,21 +4,20 @@ import { cva, type VariantProps } from 'class-variance-authority'
 import { PropsWithChildren } from 'react'
 import { BaseHandle } from './base-handle'
 
-const baseNodeVariants = cva('relative flex flex-col min-w-[300px] bg-[#1A1A1A] rounded-md overflow-hidden font-mono', {
+const baseNodeVariants = cva('relative flex flex-col min-w-[300px] rounded-md overflow-hidden font-mono')
+
+const baseBackgroundVariants = cva('absolute -inset-[1px] rounded-md bg-gradient-to-r', {
   variants: {
     variant: {
-      default: 'bg-green-950/40', // Event nodes (was previously just using the base bg)
-      trigger: 'bg-blue-950/40', // API nodes (was using sky)
-      noop: 'bg-zinc-9850/40',
+      event: 'from-teal-500/20 to-teal-400/10',
+      api: 'from-blue-500/20 to-blue-400/10',
+      noop: 'from-white/20 to-white/10',
     },
-  },
-  defaultVariants: {
-    variant: 'default',
   },
 })
 
 type Props = PropsWithChildren<{
-  variant?: VariantProps<typeof baseNodeVariants>['variant']
+  variant?: VariantProps<typeof baseBackgroundVariants>['variant']
   title: string
   headerChildren?: React.ReactNode
   className?: string
@@ -39,12 +38,11 @@ export const BaseNode = (props: Props) => {
   return (
     <div className="group relative">
       {/* Border container */}
-      <div className="absolute -inset-[1px] rounded-md bg-gradient-to-r from-white/20 to-white/10" />
+      <div className={cn(baseBackgroundVariants({ variant }))} />
 
       {/* Main node content */}
-      <div className={cn(baseNodeVariants({ variant }), className)}>
+      <div className={cn(baseNodeVariants(), className)}>
         <HeaderBar text={title} children={headerChildren} />
-
         <div className="p-4 space-y-3">{children}</div>
       </div>
 

@@ -1,6 +1,6 @@
 import { Collapsible, CollapsibleContent } from '@/components/ui/collapsible'
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '@/components/ui/table'
-import { useTriggerLogs } from '@/stores/triggerLogs'
+import { useLogs } from '@/stores/use-logs'
 import { motion } from 'framer-motion'
 import { ChevronDown, ChevronUp, Trash2 } from 'lucide-react'
 import { useState } from 'react'
@@ -14,8 +14,8 @@ const timestamp = (time: number) => {
 
 export const LogConsole = () => {
   const [isExpanded, setIsExpanded] = useState(false)
-  const logs = useTriggerLogs((state) => state.logs)
-  const resetLogs = useTriggerLogs((state) => state.resetLogs)
+  const logs = useLogs((state) => state.logs)
+  const resetLogs = useLogs((state) => state.resetLogs)
   const toggleExpand = () => setIsExpanded((prev) => !prev)
 
   return (

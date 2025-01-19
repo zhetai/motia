@@ -7,8 +7,8 @@ export const Legend = ({ onHover }: { onHover: (type: string | null) => void }) 
       description: 'Core logic components that process events',
     },
     {
-      label: 'Trigger (API)',
-      type: 'trigger',
+      label: 'API',
+      type: 'api',
       bgColor: 'bg-blue-950/40',
       description: 'HTTP endpoints that trigger flows',
     },

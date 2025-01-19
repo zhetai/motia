@@ -1,7 +1,7 @@
 import { Edge, Node, useEdgesState, useNodesState } from '@xyflow/react'
 import { useEffect, useState } from 'react'
 import type { EdgeData, NodeData } from '../nodes/nodes.types'
-import { TriggerFlowNode } from '../nodes/trigger-flow-node'
+import { ApiFlowNode } from '../nodes/api-flow-node'
 import { NoopFlowNode } from '../nodes/noop-flow-node'
 import { EventFlowNode } from '../nodes/event-flow-node'
 
@@ -10,7 +10,7 @@ type Emit = string | { type: string; label?: string; conditional?: boolean }
 type FlowStep = {
   id: string
   name: string
-  type: 'event' | 'trigger' | 'noop'
+  type: 'event' | 'api' | 'noop'
   description?: string
   subscribes?: string[]
   emits: Emit[]
@@ -35,7 +35,7 @@ type FlowState = {
 async function importFlow(flow: FlowResponse): Promise<FlowState> {
   const nodeTypes: Record<string, React.ComponentType<any>> = {
     event: EventFlowNode,
-    trigger: TriggerFlowNode,
+    api: ApiFlowNode,
     noop: NoopFlowNode,
   }
 
