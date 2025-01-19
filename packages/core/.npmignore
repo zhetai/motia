@@ -2,6 +2,5 @@ test/
 src/
 dist/**/__tests__/
 dist/test/
-*.ts
-**/*.ts
+index.ts
 jest.config.js

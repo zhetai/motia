@@ -1,12 +1,11 @@
 {
   "name": "@motiadev/snap",
+  "version": "0.0.1-alpha.2",
   "bin": {
-    "motia": "cli.js"
+    "motia": "dist/src/cli.js"
   },
   "scripts": {
-    "build": "tsc",
-    "watch": "tsc --watch",
-    "test": "jest"
+    "build": "rm -rf dist && tsc"
   },
   "dependencies": {
     "@motiadev/core": "workspace:*",

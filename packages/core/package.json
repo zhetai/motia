@@ -1,10 +1,11 @@
 {
   "name": "@motiadev/core",
+  "version": "0.0.1-alpha.2",
   "main": "dist/index.js",
   "scripts": {
     "move:python": "cp src/python/*.py dist/src/python",
     "move:rb": "cp src/ruby/*.rb dist/src/ruby",
-    "build": "tsc && npm run move:python && npm run move:rb",
+    "build": "rm -rf dist && tsc && npm run move:python && npm run move:rb",
     "watch": "tsc --watch",
     "test": "jest"
   },

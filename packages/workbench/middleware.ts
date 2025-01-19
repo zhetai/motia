@@ -1,5 +1,5 @@
 import autoprefixer from 'autoprefixer'
-import { Express, NextFunction, Request, Response } from 'express'
+import type { Express, NextFunction, Request, Response } from 'express'
 import fs from 'fs'
 import path from 'path'
 import tailwindcss from 'tailwindcss'
