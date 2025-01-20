@@ -12,6 +12,7 @@ type FlowListResponse = { id: string; name: string }
 export type EdgeData = {
   label?: string
   variant: 'event' | 'virtual'
+  emitType: string
 }
 
 type FlowEdge = {
@@ -81,7 +82,7 @@ const createEdge = (
   id: `${sourceId}-${targetId}`,
   source: sourceId,
   target: targetId,
-  data: { variant, label },
+  data: { variant, label, emitType },
 })
 
 const processEmit = (emit: Emit): { type: string; label?: string } => {
@@ -113,7 +114,10 @@ const createEdgesForEmits = (
   return edges
 }
 
-const createBaseStepResponse = (step: Step, id: string): Partial<FlowStepResponse> => ({
+const createBaseStepResponse = (
+  step: Step,
+  id: string,
+): Pick<FlowStepResponse, 'name' | 'description' | 'nodeComponentPath' | 'language' | 'id'> => ({
   id,
   name: step.config.name,
   description: step.config.description,
@@ -135,7 +139,7 @@ const createApiStepResponse = (step: Step, id: string): FlowStepResponse => {
     action: 'webhook',
     webhookUrl: `${step.config.method} ${step.config.path}`,
     bodySchema: step.config.bodySchema ? zodToJsonSchema(step.config.bodySchema) : undefined,
-  } as FlowStepResponse
+  }
 }
 
 const createEventStepResponse = (step: Step, id: string): FlowStepResponse => {
@@ -149,7 +153,7 @@ const createEventStepResponse = (step: Step, id: string): FlowStepResponse => {
     emits: step.config.emits,
     virtualEmits: step.config.virtualEmits ?? [],
     subscribes: step.config.subscribes,
-  } as FlowStepResponse
+  }
 }
 
 const createNoopStepResponse = (step: Step, id: string): FlowStepResponse => {
@@ -163,7 +167,7 @@ const createNoopStepResponse = (step: Step, id: string): FlowStepResponse => {
     emits: [],
     virtualEmits: step.config.virtualEmits,
     subscribes: step.config.virtualSubscribes,
-  } as FlowStepResponse
+  }
 }
 
 const createStepResponse = (step: Step): FlowStepResponse => {
