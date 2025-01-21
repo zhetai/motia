@@ -1,4 +1,12 @@
-export const Legend = ({ onHover }: { onHover: (type: string | null) => void }) => {
+import { FC, useState } from 'react'
+import { motion, AnimatePresence } from 'framer-motion'
+import { ChevronDown, ChevronUp } from 'lucide-react'
+import { Button } from '@/components/ui/button'
+import { cn } from '@/lib/utils'
+
+export const Legend: FC<{ onHover: (type: string | null) => void }> = ({ onHover }) => {
+  const [isExpanded, setIsExpanded] = useState(false)
+
   const legendItems = [
     {
       label: 'Event (Core)',
@@ -23,13 +31,13 @@ export const Legend = ({ onHover }: { onHover: (type: string | null) => void }) 
   const edgeLegendItems = [
     {
       label: 'Event Edge',
-      color: 'rgb(133, 176, 132)', // Solid green line
+      color: 'rgb(133, 176, 132)',
       description: 'Represents an event emitted and subscribed by steps.',
       dashed: true,
     },
     {
       label: 'Virtual Edge',
-      color: 'rgb(147, 169, 197)', // Dotted blue line
+      color: 'rgb(147, 169, 197)',
       description: 'Represents virtual connections.',
       dashed: true,
     },
@@ -52,44 +60,72 @@ export const Legend = ({ onHover }: { onHover: (type: string | null) => void }) 
         y2="5"
         stroke={color}
         strokeWidth=".8"
-        strokeDasharray={dashed ? '4 3' : 'none'} // Match the dashed or solid style
-        strokeLinecap="round" // Rounded edges
+        strokeDasharray={dashed ? '4 3' : 'none'}
+        strokeLinecap="round"
       />
     </svg>
   )
 
   return (
-    <div className="absolute right-4 top-4 font-mono rounded-lg border border-white/20 p-4 z-10 shadow-xl">
-      <div className="text-sm text-white mb-3 font-semibold">Flow Legend</div>
-      <div className="flex flex-col gap-3">
-        {legendItems.map((item) => (
-          <div
-            key={item.type}
-            onMouseEnter={() => onHover(item.type)}
-            onMouseLeave={() => onHover(null)}
-            className="group cursor-pointer transition-all hover:bg-white/5 rounded p-1 -mx-1"
+    <div className="absolute right-4 top-4 z-10">
+      <div className={cn('rounded-lg border border-zinc-700 bg-zinc-900/90', !isExpanded && 'rounded-b-lg')}>
+        <div className="flex items-center justify-between p-4">
+          <div className="text-sm text-white font-semibold">Flow Legend</div>
+          <Button
+            variant="ghost"
+            size="sm"
+            onClick={() => setIsExpanded(!isExpanded)}
+            className="ml-4 p-1 hover:bg-white/10"
           >
-            <div className="flex items-start gap-3">
-              {renderSwatch(item.bgColor)}
-              <div className="flex-1">
-                <div className="text-white text-xs font-medium">{item.label}</div>
-                <div className="text-white/60 text-xs mt-0.5">{item.description}</div>
+            {isExpanded ? <ChevronUp size={16} /> : <ChevronDown size={16} />}
+          </Button>
+        </div>
+
+        <AnimatePresence>
+          {isExpanded && (
+            <motion.div
+              initial={{ height: 0, opacity: 0 }}
+              animate={{ height: 'auto', opacity: 1 }}
+              exit={{ height: 0, opacity: 0 }}
+              transition={{ duration: 0.2 }}
+              className="overflow-hidden"
+            >
+              <div className="p-4 pt-0">
+                <div className="flex flex-col gap-3">
+                  {legendItems.map((item) => (
+                    <div
+                      key={item.type}
+                      onMouseEnter={() => onHover(item.type)}
+                      onMouseLeave={() => onHover(null)}
+                      className="group cursor-pointer transition-all hover:bg-white/5 rounded p-1 -mx-1"
+                    >
+                      <div className="flex items-start gap-3">
+                        {renderSwatch(item.bgColor)}
+                        <div className="flex-1">
+                          <div className="text-white text-xs font-medium">{item.label}</div>
+                          <div className="text-white/60 text-xs mt-0.5">{item.description}</div>
+                        </div>
+                      </div>
+                    </div>
+                  ))}
+                </div>
+
+                <div className="text-sm text-white mt-4 mb-3 font-semibold">Edge Legend</div>
+                <div className="flex flex-col gap-3">
+                  {edgeLegendItems.map((item) => (
+                    <div key={item.label} className="flex items-start gap-3">
+                      {renderEdgeSwatch(item.color, item.dashed)}
+                      <div className="flex-1">
+                        <div className="text-white text-xs font-medium">{item.label}</div>
+                        <div className="text-white/60 text-xs mt-0.5">{item.description}</div>
+                      </div>
+                    </div>
+                  ))}
+                </div>
               </div>
-            </div>
-          </div>
-        ))}
-      </div>
-      <div className="text-sm text-white mt-4 mb-3 font-semibold">Edge Legend</div>
-      <div className="flex flex-col gap-3">
-        {edgeLegendItems.map((item) => (
-          <div key={item.label} className="flex items-start gap-3">
-            {renderEdgeSwatch(item.color, item.dashed)}
-            <div className="flex-1">
-              <div className="text-white text-xs font-medium">{item.label}</div>
-              <div className="text-white/60 text-xs mt-0.5">{item.description}</div>
-            </div>
-          </div>
-        ))}
+            </motion.div>
+          )}
+        </AnimatePresence>
       </div>
     </div>
   )

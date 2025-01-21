@@ -30,16 +30,27 @@ export const FlowView: React.FC<Props> = ({ flow }) => {
     setTimeout(() => setInitialized(true), 10)
   }, [])
 
-  const highlightClass = (nodeType?: string) => {
+  const getClassName = (nodeType?: string) => {
     if (!hoveredType) return ''
-    return nodeType === hoveredType
-      ? 'shadow-[0_0_15px_rgba(255,255,255,0.15)] border border-white/30 scale-[1.02] transition-all duration-300'
-      : 'opacity-30 transition-all duration-300'
+
+    if (nodeType) {
+      return nodeType === hoveredType
+        ? 'shadow-[0_0_15px_rgba(255,255,255,0.15)] border border-white/30 scale-[1.02] transition-all duration-300'
+        : 'opacity-30 transition-all duration-300'
+    }
+
+    // If no nodeType is provided, this is an edge
+    return 'opacity-30 transition-all duration-300'
   }
 
   const nodesWithHighlights = nodes.map((node) => ({
     ...node,
-    className: highlightClass(node.data.type), // Access type from `data.type`
+    className: getClassName(node.data.type),
+  }))
+
+  const edgesWithHighlights = edges.map((edge) => ({
+    ...edge,
+    className: getClassName(), // No argument means it's an edge
   }))
 
   if (!nodeTypes) {
@@ -52,7 +63,7 @@ export const FlowView: React.FC<Props> = ({ flow }) => {
       <Legend onHover={setHoveredType} />
       <ReactFlow
         nodes={nodesWithHighlights}
-        edges={edges}
+        edges={edgesWithHighlights}
         nodeTypes={nodeTypes}
         edgeTypes={edgeTypes}
         onNodesChange={onNodesChange}
