@@ -1,6 +1,7 @@
 import { createServer, createStepHandlers, createEventManager, globalLogger, createStateAdapter } from '@motiadev/core'
 import { generateLockedData } from './generate-locked-data'
 import path from 'path'
+import { FileStateAdapter } from '@motiadev/core/dist/src/state/adapters/default-state-adapter'
 
 require('ts-node').register({
   transpileOnly: true,
@@ -15,6 +16,7 @@ export const dev = async (port: number): Promise<void> => {
     adapter: 'default',
     filePath: path.join(process.cwd(), '.motia'),
   })
+  await (state as FileStateAdapter).init();
   const { app, server } = await createServer({ steps, state, flows: lockedData.flows, eventManager })
 
   createStepHandlers(steps, eventManager, state)
