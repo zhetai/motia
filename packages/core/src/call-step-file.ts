@@ -3,7 +3,6 @@ import { Event, EventManager, InternalStateManager } from './types'
 import { spawn } from 'child_process'
 import path from 'path'
 
-
 type StateGetInput = { traceId: string; key: string }
 type StateSetInput = { traceId: string; key: string; value: any }
 type StateDeleteInput = { traceId: string; key: string }

@@ -12,7 +12,7 @@ const readConfig = (configPath: string): any => {
   if (!fs.existsSync(configPath)) {
     console.warn(`Config file not found at ${configPath}`)
 
-    return {};
+    return {}
   }
   const configContent = fs.readFileSync(configPath, 'utf-8')
   return yaml.parse(configContent)
@@ -136,7 +136,7 @@ export const generateLockedData = async (projectDir: string): Promise<LockedData
     // TODO: for now this will return the locked data as an object, in the future we will write it to a lock file
     return lockedData
   } catch (error) {
-    console.error('Error generating locked data:', error)
+    console.error(error)
     throw Error('Failed to parse the project, generating locked data step failed')
   }
 }

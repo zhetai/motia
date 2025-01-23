@@ -22,8 +22,15 @@ export class RpcSender {
       if (msg.type === 'rpc_response') {
         const { id, result, error } = msg
         const callbacks = this.pendingRequests[id]
-        const callback = error ? callbacks.reject : callbacks.resolve
-        callback(result)
+
+        if (!callbacks) {
+          return
+        } else if (error) {
+          callbacks.reject(error)
+        } else {
+          callbacks.resolve(result)
+        }
+
         delete this.pendingRequests[id]
       }
     })

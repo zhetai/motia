@@ -1,0 +1,30 @@
+name: 'Setup'
+
+runs:
+  using: 'composite'
+  steps:
+    - uses: actions/setup-python@v5
+      with:
+        python-version: '3.11.10'
+    - uses: ruby/setup-ruby@v1
+      with:
+        ruby-version: '3.3.6'
+
+    - uses: pnpm/action-setup@v4
+    - uses: actions/setup-node@v3
+      with:
+        node-version: '20.11.1'
+        cache: 'pnpm'
+
+    - name: Install dependencies
+      shell: bash
+      run: pnpm install
+
+    - name: Build packages
+      shell: bash
+      run: pnpm build
+
+    # We need to run install again to set bin (from build)
+    - name: Install dependencies
+      shell: bash
+      run: pnpm install 

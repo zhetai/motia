@@ -3,7 +3,6 @@ import { globalLogger } from './logger'
 import { isEventStep } from './guards'
 import { callStepFile } from './call-step-file'
 
-
 export const createStepHandlers = (steps: Step[], eventManager: EventManager, state: InternalStateManager) => {
   globalLogger.debug(`[step handler] creating step handlers for ${steps.length} steps`)
 

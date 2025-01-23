@@ -4,3 +4,4 @@ dist/**/__tests__/
 dist/test/
 index.ts
 jest.config.js
+tsconfig.json

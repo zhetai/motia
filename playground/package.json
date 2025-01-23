@@ -6,7 +6,8 @@
     "dev:debug": "motia dev --debug",
     "get-config": "motia get-config --output ./",
     "test:tsc-check": "tsc -p ./tests/tsconfig.test.json --noEmit",
-    "test": "jest --silent"
+    "test": "jest",
+    "test:silent": "jest --silent"
   },
   "dependencies": {
     "@motiadev/core": "workspace:*",
