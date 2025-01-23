@@ -1,6 +1,7 @@
 {
-  "name": "@motiadev/snap",
-  "version": "0.0.10",
+  "name": "motia",
+  "version": "0.0.3",
+  "license": "MIT",
   "bin": {
     "motia": "dist/src/cli.js"
   },
