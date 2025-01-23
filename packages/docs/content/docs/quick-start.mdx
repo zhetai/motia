@@ -1,0 +1,109 @@
+---
+title: Quick Start
+---
+
+This guide shows how to define a **minimal [step](/docs/core/defining-steps)** and run the **Motia** dev server—using **pnpm** for package management.
+
+## 1. Install Motia
+
+Use **npx**:
+
+```bash
+npx motia init
+```
+
+or pnpm, npm, yarn, etc.
+
+```bash
+pnpm init #Only execute this if you are starting a new project
+pnpm add motia
+```
+
+> follow these steps if you didn't use the npx command
+
+Add a script to your **package.json** ():
+
+```json
+{
+  "scripts": {
+    "dev": "motia dev"
+  }
+}
+```
+
+Add the following dependencies to your project:
+
+```bash
+pnpm add @motiadev/core @motiadev/workbench zod
+```
+
+> If you want to use typescript add the following dependencies
+
+```bash
+pnpm add -D ts-node typescript
+```
+
+Create the steps folder
+
+```bash
+mkdir steps
+```
+
+## 2. Minimal Step Example
+
+Create a file named **addNumbers.step.js** in your project, **store it inside the steps folder**:
+
+```js
+// file: steps/addNumbers.step.js
+
+exports.config = {
+  type: 'event', // "event", "api", or "cron"
+  name: 'AddNumbers',
+  subscribes: ['add-numbers'],
+  emits: ['numbers-added'],
+  flows: ['numbers']
+}
+
+exports.handler = async (input, { emit }) => {
+  const sum = (input.a || 0) + (input.b || 0)
+  await emit({
+    type: 'numbers-added',
+    data: { result: sum },
+  })
+}
+```
+
+This Step **listens** for the event `"add-numbers"` and **emits** `"numbers-added"`.
+It’s the simplest possible example with **no** extra dependencies or logs.
+
+## 3. Start Motia
+
+From your project root, run:
+
+```bash
+pnpm run dev
+```
+
+Motia will:
+
+1. Scan for `.step.<py, ts, js, rb>` files inside the **steps** folder
+2. Register your Steps
+3. Launch a dev server (port 3000 by default)
+
+## 4. Test your step
+
+You can test your step without an api step by using the **motia** cli
+
+```bash
+npx motia emit --topic=add-numbers --message='{"a": 1, "b": 5}'
+```
+
+Motia will:
+
+1. Emit a new event with the provided topic and message
+2. The event manager will detect the new event and match it against your registered step
+3. It will log the journey of the raised event
+
+
+
+Need help? See our [Community Resources](./community.md) for questions, examples, and discussions.
