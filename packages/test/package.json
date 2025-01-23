@@ -8,7 +8,7 @@
   },
   "peerDependencies": {
     "@motiadev/core": "workspace:*",
-    "@motiadev/snap": "workspace:*"
+    "motia": "workspace:*"
   },
   "dependencies": {
     "supertest": "^7.0.0"

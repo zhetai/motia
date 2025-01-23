@@ -1,6 +1,6 @@
 import request, { Response } from 'supertest'
 import { createServer, createStateAdapter, createStepHandlers, Event } from '@motiadev/core'
-import { generateLockedData } from '@motiadev/snap/src/generate-locked-data'
+import { generateLockedData } from 'motia/src/generate-locked-data'
 import { createEventManager } from './event-manager'
 import { CapturedEvent, RequestOptions } from './types'
 import path from 'path'

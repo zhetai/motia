@@ -10,7 +10,7 @@
   },
   "dependencies": {
     "@motiadev/core": "workspace:*",
-    "@motiadev/snap": "workspace:*",
+    "motia": "workspace:*",
     "@motiadev/workbench": "workspace:*",
     "deep-equal": "^2.2.3",
     "openai": "^4.78.1",
