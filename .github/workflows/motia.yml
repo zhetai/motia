@@ -51,13 +51,15 @@ jobs:
         run: |
           pnpm publish -r --filter @motiadev/core --no-git-checks --access restricted
           pnpm publish -r --filter @motiadev/workbench --no-git-checks --access restricted
-          pnpm publish -r --filter @motiadev/snap --no-git-checks --access restricted
+          pnpm publish -r --filter motia --no-git-checks --access restricted
           pnpm publish -r --filter @motiadev/test --no-git-checks --access restricted
 
       - name: Commit and push the changes
         run: |
           git config user.name "GitHub Actions"
           git config user.email "actions@github.com"
+          git fetch origin main:main
+          git checkout main
           git add .
           git commit -m "chore: publish packages for version $VERSION"
           git push origin main
