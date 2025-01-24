@@ -1,6 +1,6 @@
-import { EventNodeData, ApiNodeData, NoopNodeData } from '../views/flow/nodes/nodes.types'
+import { EventNodeData, ApiNodeData, NoopNodeData, CronNodeData } from '../views/flow/nodes/nodes.types'
 
-export type BaseNodeProps = EventNodeProps | NoopNodeProps | ApiNodeProps
+export type BaseNodeProps = EventNodeProps | NoopNodeProps | ApiNodeProps | CronNodeProps
 
 export type EventNodeProps = {
   data: EventNodeData
@@ -12,4 +12,8 @@ export type NoopNodeProps = {
 
 export type ApiNodeProps = {
   data: ApiNodeData
+}
+
+export type CronNodeProps = {
+  data: CronNodeData
 }

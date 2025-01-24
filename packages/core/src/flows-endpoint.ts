@@ -3,7 +3,7 @@ import { Express } from 'express'
 import fs from 'fs'
 import zodToJsonSchema from 'zod-to-json-schema'
 import { Emit, LockedData, Step } from './types'
-import { isApiStep, isEventStep, isNoopStep } from './guards'
+import { isApiStep, isEventStep, isNoopStep, isCronStep } from './guards'
 import { getStepLanguage } from './get-step-language'
 
 // Types
@@ -25,7 +25,7 @@ type FlowEdge = {
 type FlowStepResponse = {
   id: string
   name: string
-  type: 'event' | 'api' | 'noop'
+  type: 'event' | 'api' | 'noop' | 'cron'
   description?: string
   subscribes?: string[]
   emits: Emit[]
@@ -35,6 +35,7 @@ type FlowStepResponse = {
   bodySchema?: any
   language?: string
   nodeComponentPath?: string
+  cronExpression?: string
 }
 
 type FlowResponse = FlowListResponse & {
@@ -170,12 +171,26 @@ const createNoopStepResponse = (step: Step, id: string): FlowStepResponse => {
   }
 }
 
+const createCronStepResponse = (step: Step, id: string): FlowStepResponse => {
+  if (!isCronStep(step)) {
+    throw new Error('Attempted to create Cron step response with non-Cron step')
+  }
+
+  return {
+    ...createBaseStepResponse(step, id),
+    type: 'cron',
+    emits: step.config.emits,
+    cronExpression: step.config.cron
+  }
+}
+
 const createStepResponse = (step: Step): FlowStepResponse => {
   const id = randomUUID()
 
   if (isApiStep(step)) return createApiStepResponse(step, id)
   if (isEventStep(step)) return createEventStepResponse(step, id)
   if (isNoopStep(step)) return createNoopStepResponse(step, id)
+  if (isCronStep(step)) return createCronStepResponse(step, id)
 
   throw new Error(`Unknown step type for step: ${step.config.name}`)
 }

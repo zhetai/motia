@@ -4,13 +4,14 @@ import type { EdgeData, NodeData } from '../nodes/nodes.types'
 import { ApiFlowNode } from '../nodes/api-flow-node'
 import { NoopFlowNode } from '../nodes/noop-flow-node'
 import { EventFlowNode } from '../nodes/event-flow-node'
+import { CronNode } from '@/publicComponents/cron-node'
 
 type Emit = string | { type: string; label?: string }
 
 type FlowStep = {
   id: string
   name: string
-  type: 'event' | 'api' | 'noop'
+  type: 'event' | 'api' | 'noop' | 'cron'
   description?: string
   subscribes?: string[]
   emits: Emit[]
@@ -46,6 +47,7 @@ async function importFlow(flow: FlowResponse): Promise<FlowState> {
     event: EventFlowNode,
     api: ApiFlowNode,
     noop: NoopFlowNode,
+    cron: CronNode,
   }
 
   // Load custom node components if they exist

@@ -1,3 +1,4 @@
+import { setupCronHandlers } from './cron-handler'
 import bodyParser from 'body-parser'
 import { randomUUID } from 'crypto'
 import express, { Express, Request, Response } from 'express'
@@ -21,6 +22,7 @@ type ServerOutput = {
   app: Express
   server: http.Server
   socketServer: SocketIOServer
+  close: () => Promise<void>
 }
 
 export const createServer = async (options: ServerOptions): Promise<ServerOutput> => {
@@ -29,6 +31,9 @@ export const createServer = async (options: ServerOptions): Promise<ServerOutput
   const server = http.createServer(app)
   const io = new SocketIOServer(server)
 
+  // Setup cron handlers with socket server
+  const cleanupCronJobs = setupCronHandlers(steps, eventManager, io)
+
   const asyncHandler = (step: Step, flows: string[]) => {
     return async (req: Request, res: Response) => {
       const traceId = randomUUID()
@@ -36,7 +41,7 @@ export const createServer = async (options: ServerOptions): Promise<ServerOutput
 
       logger.debug('[API] Received request, processing step', { path: req.path, step })
 
-      const handler = (await getModuleExport(step.filePath, 'handler')) as ApiRouteHandler;
+      const handler = (await getModuleExport(step.filePath, 'handler')) as ApiRouteHandler
       const request: ApiRequest = {
         body: req.body,
         headers: req.headers as Record<string, string | string[]>,
@@ -87,7 +92,14 @@ export const createServer = async (options: ServerOptions): Promise<ServerOutput
 
   server.on('error', (error) => {
     console.error('Server error:', error)
+    cleanupCronJobs()
   })
 
-  return { app, server, socketServer: io }
+  const close = async (): Promise<void> => {
+    cleanupCronJobs()
+    await io.close()
+    server.close()
+  }
+
+  return { app, server, socketServer: io, close }
 }

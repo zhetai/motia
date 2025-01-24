@@ -12,6 +12,7 @@ const baseBackgroundVariants = cva('absolute -inset-[1px] rounded-md bg-gradient
       event: 'from-teal-500/20 to-teal-400/10',
       api: 'from-blue-500/20 to-blue-400/10',
       noop: 'from-white/20 to-white/10',
+      cron: 'from-purple-500/20 to-purple-400/10',
     },
   },
 })

@@ -72,8 +72,21 @@ export type ApiResponse = {
 
 export type ApiRouteHandler = (req: ApiRequest, ctx: FlowContext) => Promise<ApiResponse>
 
+export type CronConfig = {
+  type: 'cron'
+  name: string
+  description?: string
+  cron: string
+  virtualEmits?: Emit[]
+  emits: string[]
+  flows: string[]
+}
+
 export type StepHandler<T> =
-  T extends EventConfig<any> ? EventHandler<T['input']> : T extends ApiRouteConfig ? ApiRouteHandler : never
+  T extends EventConfig<any> ? EventHandler<T['input']> :
+  T extends ApiRouteConfig ? ApiRouteHandler :
+  T extends CronConfig ? never :
+  never
 
 export type MotiaServer = Server<any>
 export type MotiaSocketServer = SocketIOServer
@@ -93,7 +106,7 @@ export type EventManager = {
   subscribe: <TData>(event: string, handlerName: string, handler: Handler<TData>) => void
 }
 
-export type StepConfig = EventConfig<ZodObject<any>> | NoopConfig | ApiRouteConfig
+export type StepConfig = EventConfig<ZodObject<any>> | NoopConfig | ApiRouteConfig | CronConfig
 
 export type Step<TConfig extends StepConfig = StepConfig> = { filePath: string; version: string; config: TConfig }
 

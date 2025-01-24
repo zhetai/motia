@@ -26,6 +26,12 @@ export const Legend: FC<{ onHover: (type: string | null) => void }> = ({ onHover
       bgColor: 'bg-zinc-950/40',
       description: 'Placeholder nodes for external processes.',
     },
+    {
+      label: 'Cron',
+      type: 'cron',
+      bgColor: 'bg-purple-950/40',
+      description: 'Scheduled tasks that run at specified intervals.',
+    },
   ]
 
   const edgeLegendItems = [
