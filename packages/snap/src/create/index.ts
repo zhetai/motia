@@ -147,6 +147,24 @@ export const create = async ({ projectName, template }: Args): Promise<void> => 
 
     fs.writeFileSync(path.join(rootDir, 'package.json'), JSON.stringify(packageJsonContent, null, 2))
     console.log('✅ package.json created')
+  } else {
+    const packageJsonPath = path.join(rootDir, 'package.json')
+    const packageJson = JSON.parse(fs.readFileSync(packageJsonPath, 'utf-8'))
+
+    if (!packageJson.scripts) {
+      packageJson.scripts = {}
+    }
+
+    if (!packageJson.scripts.dev) {
+      packageJson.scripts.dev = 'motia dev'
+    } else {
+      packageJson.scripts.olddev = packageJson.scripts.dev
+      packageJson.scripts.dev = 'motia dev'
+      console.log('📁 dev command already exists in package.json')
+    }
+
+    fs.writeFileSync(packageJsonPath, JSON.stringify(packageJson, null, 2))
+    console.log('✅ Updated dev command to package.json')
   }
 
   if (!checkIfFileExists(rootDir, 'tsconfig.json')) {

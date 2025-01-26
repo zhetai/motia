@@ -34,7 +34,7 @@ program
   .description('Prints the list of available templates')
   .action(async () => {
     // eslint-disable-next-line @typescript-eslint/no-require-imports
-    const { templates } = require('./src/create/templates')
+    const { templates } = require('./create/templates')
     console.log(`📝 Available templates: \n\n ${Object.keys(templates).join('\n')}`)
   })
 
