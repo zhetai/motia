@@ -73,4 +73,36 @@ program
     console.log(JSON.stringify(lockedData, null, 2))
   })
 
+program
+  .command('emit')
+  .description('Emit an event to the Motia server')
+  .requiredOption('--topic <topic>', 'Event topic/type to emit')
+  .requiredOption('--message <message>', 'Event payload as JSON string')
+  .option('-p, --port <number>', 'Port number (default: 3000)')
+  .action(async (options) => {
+    const port = options.port || 3000
+    const url = `http://localhost:${port}/emit`
+
+    try {
+      const response = await fetch(url, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          type: options.topic,
+          data: JSON.parse(options.message),
+        }),
+      })
+
+      if (!response.ok) {
+        throw new Error(`HTTP error! status: ${response.status}`)
+      }
+
+      const result = await response.json()
+      console.log('Event emitted successfully:', result)
+    } catch (error) {
+      console.error('Error:', error instanceof Error ? error.message : 'Unknown error')
+      process.exit(1)
+    }
+  })
+
 program.parse(process.argv)

@@ -10,6 +10,7 @@ import { globalLogger, Logger } from './logger'
 import { StateAdapter } from './state/state-adapter'
 import { ApiRequest, ApiRouteHandler, EmitData, EventManager, LockedData, Step } from './types'
 import { getModuleExport } from './node/get-module-export'
+import { systemSteps } from './steps'
 
 type ServerOptions = {
   steps: Step[]
@@ -31,8 +32,9 @@ export const createServer = async (options: ServerOptions): Promise<ServerOutput
   const server = http.createServer(app)
   const io = new SocketIOServer(server)
 
-  // Setup cron handlers with socket server
-  const cleanupCronJobs = setupCronHandlers(steps, eventManager, io)
+  const allSteps = [...systemSteps, ...steps]
+
+  const cleanupCronJobs = setupCronHandlers(allSteps, eventManager, io)
 
   const asyncHandler = (step: Step, flows: string[]) => {
     return async (req: Request, res: Response) => {
@@ -72,11 +74,10 @@ export const createServer = async (options: ServerOptions): Promise<ServerOutput
   app.use(bodyParser.json())
   app.use(bodyParser.urlencoded({ extended: true }))
 
-  const apiSteps = steps.filter(isApiStep)
+  const apiSteps = allSteps.filter(isApiStep)
 
   for (const step of apiSteps) {
     const { method, flows, path } = step.config
-
     globalLogger.debug('[API] Registering route', step.config)
 
     if (method === 'POST') {
