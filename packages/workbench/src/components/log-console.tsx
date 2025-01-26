@@ -2,7 +2,7 @@ import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '@
 import { useLogs } from '@/stores/use-logs'
 import { motion, AnimatePresence } from 'framer-motion'
 import { ChevronDown, ChevronUp, Trash2 } from 'lucide-react'
-import { useState, useCallback, useRef, useEffect } from 'react'
+import React, { useState, useCallback, useRef, useEffect } from 'react'
 import { LogLevelBadge } from './log-level-badge'
 import { Button } from './ui/button'
 import { cn } from '@/lib/utils'

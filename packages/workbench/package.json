@@ -3,7 +3,9 @@
   "version": "0.0.16",
   "main": "dist/index.js",
   "scripts": {
-    "lint": "eslint .",
+    "lint": "pnpm run lint:ts && pnpm run lint:tsx",
+    "lint:ts": "eslint",
+    "lint:tsx": "eslint --config ../../eslint.config.tsx.js",
     "build": "rm -rf dist && tsc --build && sh post-build.sh"
   },
   "dependencies": {
@@ -42,17 +44,12 @@
     "zustand": "^5.0.2"
   },
   "devDependencies": {
-    "@eslint/js": "^9.17.0",
     "@tanstack/router-devtools": "^1.95.0",
     "@types/dagre": "^0.7.52",
     "@types/express": "^5.0.0",
     "@types/json-schema": "^7.0.15",
     "@types/node": "^22.10.2",
     "@types/react": "^18.3.18",
-    "@types/react-dom": "^18.3.5",
-    "eslint": "^9.17.0",
-    "eslint-plugin-react-hooks": "^5.0.0",
-    "eslint-plugin-react-refresh": "^0.4.16",
-    "globals": "^15.14.0"
+    "@types/react-dom": "^18.3.5"
   }
 }

@@ -1,8 +1,8 @@
 import { BaseNode, Button, NoopNodeProps } from '@motiadev/workbench'
 import React from 'react'
 
-export default (data: NoopNodeProps) => {
-  function start() {
+export const Node: React.FC<NoopNodeProps> = (data) => {
+  const start = () => {
     fetch('/api/parallel-merge', { method: 'POST' })
   }
 

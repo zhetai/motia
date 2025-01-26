@@ -1,7 +1,7 @@
 import React from 'react'
 import { Button, ApiNode, ApiNodeProps } from '@motiadev/workbench'
 
-export default ({ data }: ApiNodeProps) => {
+export const Node: React.FC<ApiNodeProps> = ({ data }) => {
   const onClick = () => {
     fetch('/api/parallel-merge', {
       method: 'POST',

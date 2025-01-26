@@ -1,3 +1,4 @@
+import React from 'react'
 import { Badge, BadgeProps } from './ui/badge'
 
 export const LogLevelBadge: React.FC<{ level: string }> = (props) => {

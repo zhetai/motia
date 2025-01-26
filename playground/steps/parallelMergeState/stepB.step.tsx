@@ -1,7 +1,7 @@
 import React from 'react'
 import { EventNode, EventNodeProps, Button } from '@motiadev/workbench'
 
-export default (data: EventNodeProps) => {
+export const Node: React.FC<EventNodeProps> = (data) => {
   const [count, setCount] = React.useState(0)
 
   return (

@@ -1,3 +1,4 @@
+import React from 'react'
 import { Eye } from 'lucide-react'
 import { EventNodeData } from '../views/flow/nodes/nodes.types'
 

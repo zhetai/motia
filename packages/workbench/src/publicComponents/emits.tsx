@@ -1,5 +1,6 @@
 import { Send } from 'lucide-react'
 import { EventNodeData } from '../views/flow/nodes/nodes.types'
+import React from 'react'
 
 const toType = (emit: string | { type: string; label?: string; conditional?: boolean }) =>
   typeof emit === 'string' ? emit : emit.type

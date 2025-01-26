@@ -1,25 +1,22 @@
-const js = require('@eslint/js')
-const globals = require('globals')
-const reactHooks = require('eslint-plugin-react-hooks')
-const reactRefresh = require('eslint-plugin-react-refresh')
-const tseslint = require('typescript-eslint')
+const config = require('../../eslint.config.js')
 
-module.exports = tseslint.config(
-  { ignores: ['dist'] },
-  {
-    extends: [js.configs.recommended, ...tseslint.configs.recommended],
-    files: ['src/**/*.{ts,tsx}', 'index.tsx'],
-    languageOptions: {
-      ecmaVersion: 2020,
-      globals: globals.browser,
-    },
-    plugins: {
-      'react-hooks': reactHooks,
-      'react-refresh': reactRefresh,
-    },
-    rules: {
-      ...reactHooks.configs.recommended.rules,
-      'react-refresh/only-export-components': ['warn', { allowConstantExport: true }],
-    },
-  },
-)
+module.exports = [
+  // ignore src files
+  { ignores: ['**/src/**/*'] },
+  ...config.map((cfg) => {
+    if (!cfg.files) {
+      return cfg
+    }
+
+    return {
+      ...cfg,
+      languageOptions: {
+        ...cfg.languageOptions,
+        parserOptions: {
+          project: null,
+        },
+      },
+      files: ['middleware.ts', 'tailwind.config.ts', 'vite.config.ts'],
+    }
+  }),
+]

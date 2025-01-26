@@ -1,6 +1,6 @@
 import { Edge, Node, useNodesInitialized, useReactFlow } from '@xyflow/react'
 import dagre from 'dagre'
-import { useEffect } from 'react'
+import React, { useEffect } from 'react'
 import { EventNodeData, EdgeData, ApiNodeData } from './nodes/nodes.types'
 
 const organizeNodes = (

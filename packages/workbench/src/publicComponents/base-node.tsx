@@ -1,7 +1,7 @@
 import { cn } from '@/lib/utils'
 import { Position } from '@xyflow/react'
 import { cva, type VariantProps } from 'class-variance-authority'
-import { PropsWithChildren } from 'react'
+import React, { PropsWithChildren } from 'react'
 import { BaseHandle } from './base-handle'
 
 const baseNodeVariants = cva('relative flex flex-col min-w-[300px] rounded-md overflow-hidden font-mono')

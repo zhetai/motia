@@ -8,9 +8,9 @@ config = {
 }
 
 async def handler(args, ctx):
-    ctx.logger.info('[Call Python OpenAI] Received call_ai event', args);
+    ctx.logger.info('[Call Python OpenAI] Received call_ai event', args)
 
     await ctx.emit({
         "type": "openai-response",
         "data": { "message": args.message },
-    });
+    })

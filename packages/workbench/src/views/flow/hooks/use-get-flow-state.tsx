@@ -1,5 +1,5 @@
 import { Edge, Node, useEdgesState, useNodesState } from '@xyflow/react'
-import { useEffect, useState } from 'react'
+import React, { useEffect, useState } from 'react'
 import type { EdgeData, NodeData } from '../nodes/nodes.types'
 import { ApiFlowNode } from '../nodes/api-flow-node'
 import { NoopFlowNode } from '../nodes/noop-flow-node'
@@ -56,7 +56,7 @@ async function importFlow(flow: FlowResponse): Promise<FlowState> {
   for (const step of flow.steps) {
     if (step.nodeComponentPath) {
       const module = await import(/* @vite-ignore */ step.nodeComponentPath)
-      nodeTypes[step.nodeComponentPath] = module.default
+      nodeTypes[step.nodeComponentPath] = module.Node ?? module.default
     }
   }
 
