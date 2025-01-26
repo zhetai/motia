@@ -8,6 +8,9 @@ import {
 import { notFound } from 'next/navigation';
 import defaultMdxComponents from 'fumadocs-ui/mdx';
 import { CodeBlock, Pre } from 'fumadocs-ui/components/codeblock';
+import { Callout } from 'fumadocs-ui/components/callout';
+import { Tab, Tabs } from 'fumadocs-ui/components/tabs';
+import { Banner } from 'fumadocs-ui/components/banner';
 
 
 export default async function Page(props: {
@@ -30,8 +33,12 @@ export default async function Page(props: {
             <CodeBlock {...props}>
               <Pre>{props.children}</Pre>
             </CodeBlock>
-          )
+          ),
+          Callout,
+          Tab,
+          Tabs
         }} />
+        <Banner>Need help? See our&nbsp;<a href="/community">Community Resources</a>&nbsp;for questions, examples, and discussions.</Banner>
       </DocsBody>
     </DocsPage>
   );

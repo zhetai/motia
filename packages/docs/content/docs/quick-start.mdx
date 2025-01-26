@@ -2,54 +2,73 @@
 title: Quick Start
 ---
 
+import { Tab, Tabs } from 'fumadocs-ui/components/tabs';
+import { Step, Steps } from 'fumadocs-ui/components/steps';
+
 This guide shows how to define a **minimal [step](/docs/core/defining-steps)** and run the **Motia** dev server—using **pnpm** for package management.
 
-## 1. Install Motia
+<Steps>
+<Step>
+### Setup your project
 
-Use **npx**:
+<Tabs items={['Automated', 'Manual']}>
+  <Tab value="Automated">
+    Use **npx**, this will create a new project in your current directory:
 
-```bash
-npx motia init
-```
+    ```bash
+    npx motia create -t default
+    ```
 
-or pnpm, npm, yarn, etc.
+    If you wish to initialize the project in a separate folder add `-n <fodler name>`
 
-```bash
-pnpm init #Only execute this if you are starting a new project
-pnpm add motia
-```
+    <Callout>
+      if you don't want to use the default template you can remove the `-t default` portion, or see the list of available templates by executing the command `npx motia templates`
+    </Callout>
+  </Tab>
+  <Tab value="Manual">
+    <Callout>For these instructions we recommend using `pnpm` but you can use your preferred package manager (yarn, npm, etc...)</Callout>
 
-> follow these steps if you didn't use the npx command
+    ```package-install
+    motia
+    ```
 
-Add a script to your **package.json** ():
+    Add the following script to your **package.json** in order to initialize the development server and workbench:
 
-```json
-{
-  "scripts": {
-    "dev": "motia dev"
-  }
-}
-```
+    ```json
+    {
+      "scripts": {
+        "dev": "motia dev"
+      }
+    }
+    ```
 
-Add the following dependencies to your project:
+    Add the following dependencies to your project:
 
-```bash
-pnpm add @motiadev/core @motiadev/workbench zod
-```
+    ```package-install
+    @motiadev/core @motiadev/workbench zod
+    ```
 
-> If you want to use typescript add the following dependencies
+    <Callout>If your steps are going to be developed using **typescript** or **vanilla.js** you will need zod in order to define your step input schema</Callout>
 
-```bash
-pnpm add -D ts-node typescript
-```
+    If you want to use **typescript** add the following dependencies
 
-Create the steps folder
+    ```package-install
+    ts-node typescript -D
+    ```
 
-```bash
-mkdir steps
-```
+    Create the steps folder
 
-## 2. Minimal Step Example
+    ```bash
+    mkdir steps
+    ```
+  </Tab>
+</Tabs>
+
+</Step>
+<Step>
+### Minimal Step Example
+
+<Callout>**Skip this step** if you used the automated project setup with a template</Callout>
 
 Create a file named **addNumbers.step.js** in your project, **store it inside the steps folder**:
 
@@ -73,10 +92,12 @@ exports.handler = async (input, { emit }) => {
 }
 ```
 
-This Step **listens** for the event `"add-numbers"` and **emits** `"numbers-added"`.
+This step **listens** for the event `"add-numbers"` and **emits** `"numbers-added"`.
 It’s the simplest possible example with **no** extra dependencies or logs.
 
-## 3. Start Motia
+</Step>
+<Step>
+### Start Motia
 
 From your project root, run:
 
@@ -88,7 +109,7 @@ Motia will:
 
 1. Scan for `.step.<py, ts, js, rb>` files inside the **steps** folder
 2. Register your Steps
-3. Launch a dev server (port 3000 by default)
+3. Launch a dev server (port **3000** by default)
 
 ## 4. Test your step
 
@@ -103,7 +124,5 @@ Motia will:
 1. Emit a new event with the provided topic and message
 2. The event manager will detect the new event and match it against your registered step
 3. It will log the journey of the raised event
-
-
-
-Need help? See our [Community Resources](./community.md) for questions, examples, and discussions.
+</Step>
+</Steps>
