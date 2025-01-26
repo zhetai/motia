@@ -22,6 +22,7 @@ export const config: EventConfig<Input> = {
 export const handler: StepHandler<typeof config> = async (input, { traceId, logger, state }) => {
   logger.info('[Test motia state with TS] received check-state-change event', input)
 
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
   const value = await state.get<any>(traceId, input.key)
 
   if (!equal(value.data, input.expected, { strict: true })) {

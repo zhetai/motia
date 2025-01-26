@@ -4,7 +4,7 @@ import { spawn } from 'child_process'
 import path from 'path'
 
 type StateGetInput = { traceId: string; key: string }
-type StateSetInput = { traceId: string; key: string; value: any }
+type StateSetInput = { traceId: string; key: string; value: unknown }
 type StateDeleteInput = { traceId: string; key: string }
 type StateClearInput = { traceId: string }
 
@@ -50,7 +50,7 @@ export const callStepFile = <TData>(
 
     const rpcProcessor = new RpcProcessor(child)
 
-    rpcProcessor.handler<StateGetInput>('log', async (input: any) => {
+    rpcProcessor.handler<StateGetInput>('log', async (input: unknown) => {
       event.logger.log(input)
     })
     rpcProcessor.handler<StateGetInput>('state.get', (input) => state.get(input.traceId, input.key))
@@ -75,7 +75,7 @@ export const callStepFile = <TData>(
       try {
         const message = JSON.parse(data.toString())
         event.logger.log(message)
-      } catch (error) {
+      } catch {
         event.logger.info(Buffer.from(data).toString(), { step })
       }
     })

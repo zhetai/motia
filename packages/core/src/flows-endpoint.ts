@@ -32,7 +32,7 @@ type FlowStepResponse = {
   virtualEmits?: Emit[]
   action?: 'webhook'
   webhookUrl?: string
-  bodySchema?: any
+  bodySchema?: unknown
   language?: string
   nodeComponentPath?: string
   cronExpression?: string
@@ -180,7 +180,7 @@ const createCronStepResponse = (step: Step, id: string): FlowStepResponse => {
     ...createBaseStepResponse(step, id),
     type: 'cron',
     emits: step.config.emits,
-    cronExpression: step.config.cron
+    cronExpression: step.config.cron,
   }
 }
 

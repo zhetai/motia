@@ -18,10 +18,13 @@ export type FlowContext = {
   state: InternalStateManager
   logger: Logger
 }
+
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
 export type EventHandler<TInput extends ZodObject<any>> = (input: z.infer<TInput>, ctx: FlowContext) => Promise<void>
 
 export type Emit = string | { type: string; label?: string; conditional?: boolean }
 
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
 export type EventConfig<TInput extends ZodObject<any>> = {
   type: 'event'
   name: string
@@ -54,12 +57,14 @@ export type ApiRouteConfig = {
   virtualEmits?: Emit[]
   virtualSubscribes?: string[]
   flows: string[]
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
   bodySchema?: ZodObject<any>
 }
 
 export type ApiRequest = {
   pathParams: Record<string, string>
   queryParams: Record<string, string | string[]>
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
   body: Record<string, any>
   headers: Record<string, string | string[]>
 }
@@ -67,6 +72,7 @@ export type ApiRequest = {
 export type ApiResponse = {
   status: number
   headers?: Record<string, string>
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
   body: string | Buffer | Record<string, any>
 }
 
@@ -83,12 +89,16 @@ export type CronConfig = {
 }
 
 export type StepHandler<T> =
-  T extends EventConfig<any> ? EventHandler<T['input']> :
-  T extends ApiRouteConfig ? ApiRouteHandler :
-  T extends CronConfig ? never :
-  never
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  T extends EventConfig<any>
+    ? EventHandler<T['input']>
+    : T extends ApiRouteConfig
+      ? ApiRouteHandler
+      : T extends CronConfig
+        ? never
+        : never
 
-export type MotiaServer = Server<any>
+export type MotiaServer = Server
 export type MotiaSocketServer = SocketIOServer
 
 export type Event<TData = unknown> = {
@@ -106,6 +116,7 @@ export type EventManager = {
   subscribe: <TData>(event: string, handlerName: string, handler: Handler<TData>) => void
 }
 
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
 export type StepConfig = EventConfig<ZodObject<any>> | NoopConfig | ApiRouteConfig | CronConfig
 
 export type Step<TConfig extends StepConfig = StepConfig> = { filePath: string; version: string; config: TConfig }

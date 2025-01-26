@@ -5,9 +5,10 @@ import yaml from 'yaml'
 import { LockedData, Step, getNodeFileConfig, getPythonConfig, getRubyConfig } from '@motiadev/core'
 
 const version = `${randomUUID()}:${Math.floor(Date.now() / 1000)}`
-const baseFlowRegex = new RegExp(/flows\"?\s?.*\s*\[([^\]]+)\]/)
+const baseFlowRegex = new RegExp(/flows"?\s?.*\s*\[([^\]]+)\]/)
 
 // Helper function to read config.yml
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
 const readConfig = (configPath: string): any => {
   if (!fs.existsSync(configPath)) {
     console.warn(`Config file not found at ${configPath}`)
@@ -46,7 +47,7 @@ const collectFlows = async (baseDir: string): Promise<Step[]> => {
 
     if (item.isDirectory()) {
       steps = steps.concat(await collectFlows(itemPath))
-    } else if (!!item.name.match(/\.step\.(ts|js|py|rb)$/)) {
+    } else if (item.name.match(/\.step\.(ts|js|py|rb)$/)) {
       const fileContent = fs.readFileSync(itemPath, 'utf-8')
       const flowMatch = fileContent.match(baseFlowRegex)
 

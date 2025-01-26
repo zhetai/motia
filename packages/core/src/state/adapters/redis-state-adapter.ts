@@ -27,7 +27,7 @@ export class RedisStateAdapter implements StateAdapter {
     return value ? JSON.parse(value) : null
   }
 
-  async set(traceId: string, key: string, value: any) {
+  async set<T>(traceId: string, key: string, value: T) {
     const fullKey = this._makeKey(traceId, key)
     await this.client.set(fullKey, JSON.stringify(value), 'EX', this.ttl)
   }

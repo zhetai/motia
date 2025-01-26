@@ -39,10 +39,12 @@ type FlowEdge = {
 type FlowState = {
   nodes: Node<NodeData>[]
   edges: Edge<EdgeData>[]
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
   nodeTypes: Record<string, React.ComponentType<any>>
 }
 
 async function importFlow(flow: FlowResponse): Promise<FlowState> {
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
   const nodeTypes: Record<string, React.ComponentType<any>> = {
     event: EventFlowNode,
     api: ApiFlowNode,
@@ -77,6 +79,7 @@ async function importFlow(flow: FlowResponse): Promise<FlowState> {
 }
 
 export const useGetFlowState = (flow: FlowResponse) => {
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
   const [nodeTypes, setNodeTypes] = useState<Record<string, React.ComponentType<any>>>()
   const [nodes, setNodes, onNodesChange] = useNodesState<Node<NodeData>>([])
   const [edges, setEdges, onEdgesChange] = useEdgesState<Edge<EdgeData>>([])
@@ -89,7 +92,7 @@ export const useGetFlowState = (flow: FlowResponse) => {
       setEdges(edges)
       setNodeTypes(nodeTypes)
     })
-  }, [flow])
+  }, [flow, setNodes, setEdges, setNodeTypes])
 
   return { nodes, edges, onNodesChange, onEdgesChange, nodeTypes }
 }

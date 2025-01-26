@@ -4,6 +4,7 @@ import { RpcStateManager } from './rpc-state-manager'
 import { RpcSender } from './rpc'
 
 // Add ts-node registration before dynamic imports
+// eslint-disable-next-line @typescript-eslint/no-require-imports
 require('ts-node').register({
   transpileOnly: true,
   compilerOptions: { module: 'commonjs' },
@@ -19,7 +20,7 @@ function parseArgs(arg: string) {
 
 async function runTypescriptModule(filePath: string, args: Record<string, unknown>) {
   try {
-    // Remove pathToFileURL since we'll use require
+    // eslint-disable-next-line @typescript-eslint/no-require-imports
     const module = require(path.resolve(filePath))
 
     // Check if the specified function exists in the module
@@ -27,6 +28,7 @@ async function runTypescriptModule(filePath: string, args: Record<string, unknow
       throw new Error(`Function handler not found in module ${filePath}`)
     }
 
+    // eslint-disable-next-line @typescript-eslint/no-unused-vars
     const { stateConfig, ...event } = args
     const { traceId, flows } = event
     const logger = new Logger(traceId as string, flows as string[], filePath.split('/').pop())

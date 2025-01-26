@@ -21,6 +21,9 @@ jobs:
       - name: Setup
         uses: ./.github/actions/setup
 
+      - name: Run linter
+        run: pnpm lint
+
       - name: Run quality gates
         # TODO remove filter
         run: pnpm -r --filter @motiadev/core run test

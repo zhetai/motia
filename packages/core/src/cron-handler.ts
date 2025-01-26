@@ -1,4 +1,4 @@
-import { EventManager, Step, CronConfig, FlowContext } from './types'
+import { EventManager, Step, FlowContext } from './types'
 import { globalLogger, Logger } from './logger'
 import * as cron from 'node-cron'
 import { Server } from 'socket.io'
@@ -15,7 +15,7 @@ export const setupCronHandlers = (steps: Step[], eventManager: EventManager, soc
     if (!cron.validate(cronExpression)) {
       globalLogger.error('[cron handler] invalid cron expression', {
         expression: cronExpression,
-        step: step.config.name
+        step: step.config.name,
       })
       return
     }
@@ -23,7 +23,7 @@ export const setupCronHandlers = (steps: Step[], eventManager: EventManager, soc
     globalLogger.debug('[cron handler] setting up cron job', {
       filePath,
       step: step.config.name,
-      cron: cronExpression
+      cron: cronExpression,
     })
 
     const task = cron.schedule(cronExpression, async () => {
@@ -32,13 +32,16 @@ export const setupCronHandlers = (steps: Step[], eventManager: EventManager, soc
 
       try {
         const handler = await getModuleExport(filePath, 'handler')
-        const emit = async (event: { type: string; data: any }) => {
-          await eventManager.emit({
-            ...event,
-            traceId,
-            flows: config.flows,
-            logger
-          }, filePath)
+        const emit = async (event: { type: string; data: unknown }) => {
+          await eventManager.emit(
+            {
+              ...event,
+              traceId,
+              flows: config.flows,
+              logger,
+            },
+            filePath,
+          )
         }
 
         if (handler) {
@@ -46,13 +49,14 @@ export const setupCronHandlers = (steps: Step[], eventManager: EventManager, soc
         } else {
           await emit({
             type: config.emits[0],
-            data: { timestamp: Date.now() }
+            data: { timestamp: Date.now() },
           })
         }
+        // eslint-disable-next-line @typescript-eslint/no-explicit-any
       } catch (error: any) {
         logger.error('[cron handler] error executing cron job', {
           error: error.message,
-          step: step.config.name
+          step: step.config.name,
         })
       }
     })

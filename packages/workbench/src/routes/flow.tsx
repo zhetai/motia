@@ -1,7 +1,7 @@
 import { FlowView } from '@/views/flow/flow-view'
 import { FlowResponse } from '@/views/flow/hooks/use-get-flow-state'
 import { useEffect, useState } from 'react'
-import { useParams } from 'react-router-dom'
+import { useParams } from 'react-router'
 
 export const Flow = () => {
   const { id } = useParams()

@@ -6,7 +6,8 @@
     "motia": "dist/src/cli.js"
   },
   "scripts": {
-    "build": "rm -rf dist && tsc"
+    "build": "rm -rf dist && tsc",
+    "lint": "eslint --config ../../eslint.config.js"
   },
   "dependencies": {
     "@motiadev/core": "workspace:*",

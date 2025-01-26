@@ -3,6 +3,7 @@ import { generateLockedData } from './generate-locked-data'
 import path from 'path'
 import { FileStateAdapter } from '@motiadev/core/dist/src/state/adapters/default-state-adapter'
 
+// eslint-disable-next-line @typescript-eslint/no-require-imports
 require('ts-node').register({
   transpileOnly: true,
   compilerOptions: { module: 'commonjs' },
@@ -16,7 +17,7 @@ export const dev = async (port: number): Promise<void> => {
     adapter: 'default',
     filePath: path.join(process.cwd(), '.motia'),
   })
-  await (state as FileStateAdapter).init();
+  await (state as FileStateAdapter).init()
   const { app, server } = await createServer({ steps, state, flows: lockedData.flows, eventManager })
 
   createStepHandlers(steps, eventManager, state)
@@ -25,6 +26,7 @@ export const dev = async (port: number): Promise<void> => {
   console.log('🚀 Server ready and listening on port', port)
   console.log(`🔗 Open http://localhost:${port}/ to open workbench 🛠️`)
 
+  // eslint-disable-next-line @typescript-eslint/no-require-imports
   const { applyMiddleware } = require('@motiadev/workbench/dist/middleware')
   await applyMiddleware(app)
 

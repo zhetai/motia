@@ -1,6 +1,6 @@
 import { useListFlows } from '@/hooks/use-list-flows'
 import { Workflow } from 'lucide-react'
-import { Link } from 'react-router-dom'
+import { Link, useLocation } from 'react-router'
 import {
   Sidebar,
   SidebarContent,
@@ -16,10 +16,8 @@ import {
 
 export const AppSidebar = () => {
   const { flows } = useListFlows()
-
-  const isActive = (_flowId: string) => {
-    return false // TODO: Implement this
-  }
+  const { pathname } = useLocation()
+  const isActive = (flowId: string) => pathname.includes(`/flow/${flowId}`)
 
   return (
     <Sidebar>

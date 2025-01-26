@@ -14,7 +14,7 @@ type Watcher<TData = unknown> = {
 interface MotiaTester {
   post(path: string, options: RequestOptions): Promise<Response>
   get(path: string, options: RequestOptions): Promise<Response>
-  emit(event: Event<any>): Promise<void>
+  emit(event: Event): Promise<void>
   watch<TData>(event: string): Promise<Watcher<TData>>
   sleep(ms: number): Promise<void>
   close(): Promise<void>
@@ -59,6 +59,7 @@ export const createMotiaTester = (): MotiaTester => {
       const events: CapturedEvent<TData>[] = []
 
       eventManager.subscribe(event, '$watcher', async (event: Event<TData>) => {
+        // eslint-disable-next-line @typescript-eslint/no-unused-vars
         const { logger, ...rest } = event
         events.push(rest)
       })

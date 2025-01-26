@@ -17,13 +17,13 @@ export class FileStateAdapter implements StateAdapter {
     const dir = this.filePath.replace('motia-state.json', '')
     try {
       fs.realpathSync(dir)
-    } catch (err) {
+    } catch {
       fs.mkdirSync(dir, { recursive: true })
     }
 
     try {
       fs.readFileSync(this.filePath, 'utf-8')
-    } catch (err) {
+    } catch {
       fs.writeFileSync(this.filePath, JSON.stringify({}), 'utf-8')
     }
   }
@@ -35,7 +35,7 @@ export class FileStateAdapter implements StateAdapter {
     return data[fullKey] ? JSON.parse(data[fullKey]) : null
   }
 
-  async set(traceId: string, key: string, value: any) {
+  async set<T>(traceId: string, key: string, value: T) {
     const data = await this._readFile()
     const fullKey = this._makeKey(traceId, key)
 
@@ -79,7 +79,7 @@ export class FileStateAdapter implements StateAdapter {
     return JSON.parse(content)
   }
 
-  private async _writeFile(data: any) {
+  private async _writeFile(data: unknown) {
     fs.writeFileSync(this.filePath, JSON.stringify(data, null, 2), 'utf-8')
   }
 }

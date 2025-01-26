@@ -14,11 +14,13 @@ export const createStepHandlers = (steps: Step[], eventManager: EventManager, st
 
     subscribes.forEach((subscribe) => {
       eventManager.subscribe(subscribe, step.config.name, async (event) => {
+        // eslint-disable-next-line @typescript-eslint/no-unused-vars
         const { logger, ...rest } = event
         globalLogger.debug('[step handler] received event', { event: rest, step: step.config.name })
 
         try {
           await callStepFile(filePath, step.config.name, event, eventManager, state)
+          // eslint-disable-next-line @typescript-eslint/no-explicit-any
         } catch (error: any) {
           globalLogger.error(`[step handler] error calling step`, {
             error: error.message,

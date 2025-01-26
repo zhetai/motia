@@ -64,7 +64,7 @@ export const NodeOrganizer: React.FC<Props> = ({ onInitialized }) => {
         await fitView()
       }, 1)
     }
-  }, [nodesInitialized, onInitialized])
+  }, [nodesInitialized, onInitialized, setNodes, getNodes, getEdges, fitView])
 
   return null
 }

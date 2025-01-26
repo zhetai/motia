@@ -6,5 +6,11 @@ export { BaseHandle } from './src/publicComponents/base-handle'
 
 export { Position } from '@xyflow/react'
 export type { EventNodeData, ApiNodeData } from './src/views/flow/nodes/nodes.types'
-export * from './src/publicComponents/node-props'
+export type {
+  ApiNodeProps,
+  BaseNodeProps,
+  CronNodeProps,
+  EventNodeProps,
+  NoopNodeProps,
+} from './src/publicComponents/node-props'
 export { Button } from './src/components/ui/button'
