@@ -5,7 +5,8 @@
   "scripts": {
     "move:python": "cp src/python/*.py dist/src/python",
     "move:rb": "cp src/ruby/*.rb dist/src/ruby",
-    "build": "rm -rf dist && tsc && npm run move:python && npm run move:rb",
+    "move:steps": "cp src/steps/*.ts dist/src/steps",
+    "build": "rm -rf dist && tsc && npm run move:python && npm run move:rb && npm run move:steps",
     "lint": "eslint --config ../../eslint.config.js",
     "watch": "tsc --watch",
     "test": "jest"
