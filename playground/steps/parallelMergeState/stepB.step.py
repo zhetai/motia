@@ -1,4 +1,3 @@
-import asyncio
 import time
 from typing import Dict, Any
 
@@ -17,8 +16,6 @@ config: Dict[str, Any] = {
 async def handler(_, context):
     context.logger.info("[stepB] received pms.start")
 
-    #await asyncio.sleep(0.1)  # 100ms delay
-
     partial_result_b = {
         "msg": "Hello from Step B",
         "timestamp": int(time.time() * 1000)  # Current timestamp in ms
@@ -32,3 +29,5 @@ async def handler(_, context):
         "type": "pms.stepB.done",
         "data": partial_result_b
     })
+
+    context.logger.info("[stepB] done")

@@ -1,20 +1,40 @@
-import pino from 'pino'
+import { RpcSender } from './rpc'
 
 export class Logger {
-  private logger: pino.Logger
+  constructor(
+    private readonly traceId: string,
+    private readonly flows: string[],
+    private readonly fileName: string,
+    private readonly sender: RpcSender,
+  ) {}
 
-  constructor(traceId: string, flows: string[], file?: string) {
-    this.logger = pino({
-      level: 'info',
-      formatters: { level: (level) => ({ level }) },
-      errorKey: 'error',
-      base: null,
-      mixin: () => ({ traceId, flows, file }),
-    })
+  private _log(level: string, message: string, args?: Record<string, unknown>): void {
+    const logEntry = {
+      ...(args || {}),
+      level,
+      time: Date.now(),
+      traceId: this.traceId,
+      flows: this.flows,
+      file: this.fileName,
+      msg: message,
+    }
+
+    this.sender.sendNoWait('log', logEntry)
   }
 
-  info = (message: string, args: Record<string, unknown>) => this.logger.info(args, message)
-  error = (message: string, args: Record<string, unknown>) => this.logger.error(args, message)
-  debug = (message: string, args: Record<string, unknown>) => this.logger.debug(args, message)
-  warn = (message: string, args: Record<string, unknown>) => this.logger.warn(args, message)
+  info(message: string, args?: Record<string, unknown>): void {
+    this._log('info', message, args)
+  }
+
+  error(message: string, args?: Record<string, unknown>): void {
+    this._log('error', message, args)
+  }
+
+  debug(message: string, args?: Record<string, unknown>): void {
+    this._log('debug', message, args)
+  }
+
+  warn(message: string, args?: Record<string, unknown>): void {
+    this._log('warn', message, args)
+  }
 }

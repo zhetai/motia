@@ -50,9 +50,8 @@ export const callStepFile = <TData>(
 
     const rpcProcessor = new RpcProcessor(child)
 
-    rpcProcessor.handler<StateGetInput>('log', async (input: unknown) => {
-      event.logger.log(input)
-    })
+    rpcProcessor.handler<StateGetInput>('close', async () => child.kill())
+    rpcProcessor.handler<StateGetInput>('log', async (input: unknown) => event.logger.log(input))
     rpcProcessor.handler<StateGetInput>('state.get', (input) => state.get(input.traceId, input.key))
     rpcProcessor.handler<StateSetInput>('state.set', (input) => state.set(input.traceId, input.key, input.value))
     rpcProcessor.handler<StateDeleteInput>('state.delete', (input) => state.delete(input.traceId, input.key))
@@ -83,7 +82,7 @@ export const callStepFile = <TData>(
     child.stderr?.on('data', (data) => event.logger.error(Buffer.from(data).toString(), { step }))
 
     child.on('close', (code) => {
-      if (code !== 0) {
+      if (code !== 0 && code !== null) {
         reject(new Error(`Process exited with code ${code}`))
       } else {
         resolve()

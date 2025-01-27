@@ -17,13 +17,26 @@ export class RpcSender {
 
   constructor(private readonly process: NodeJS.Process) {}
 
+  async close(): Promise<void> {
+    const outstandingRequests = Object.values(this.pendingRequests)
+
+    if (outstandingRequests.length > 0) {
+      console.error('Process ended while there are some promises outstanding')
+      this.process.exit(1)
+    }
+  }
+
   send<T>(method: string, args: unknown): Promise<T> {
     return new Promise((resolve, reject) => {
       const id = crypto.randomUUID()
       this.pendingRequests[id] = { resolve, reject, method, args }
 
-      process.send?.({ type: 'rpc_request', id, method, args })
+      this.process.send?.({ type: 'rpc_request', id, method, args })
     })
+  }
+
+  sendNoWait(method: string, args: unknown) {
+    this.process.send?.({ type: 'rpc_request', method, args })
   }
 
   init() {

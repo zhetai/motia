@@ -11,6 +11,7 @@ export type RpcMessage = {
 export class RpcProcessor {
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
   private handlers: Record<string, RpcHandler<any, any>> = {}
+  private isClosed = false
 
   constructor(private child: ChildProcess) {}
 
@@ -27,7 +28,7 @@ export class RpcProcessor {
   }
 
   private response(id: string | undefined, result: unknown, error: unknown) {
-    if (id) {
+    if (id && !this.isClosed && this.child.connected && !this.child.killed) {
       this.child.send?.({ type: 'rpc_response', id, result, error })
     }
   }
@@ -40,6 +41,15 @@ export class RpcProcessor {
           .then((result) => this.response(id, result, null))
           .catch((error) => this.response(id, null, error))
       }
+    })
+    this.child.on('exit', () => {
+      this.isClosed = true
+    })
+    this.child.on('close', () => {
+      this.isClosed = true
+    })
+    this.child.on('disconnect', () => {
+      this.isClosed = true
     })
   }
 }

@@ -2,6 +2,7 @@ import sys
 import json
 import importlib.util
 import traceback
+import asyncio
 import os
 from logger import Logger
 from rpc import RpcSender
@@ -19,18 +20,18 @@ def parse_args(arg: str) -> Any:
         return arg
 
 class Context:
-    def __init__(self, args: Any, file_name: str):
+    def __init__(self, args: Any, rpc: RpcSender, file_name: str):
         self.trace_id = args.traceId
         self.flows = args.flows
         self.file_name = file_name
-        self.sender = RpcSender()
-        self.state = RpcStateManager(self.sender)
-        self.logger = Logger(self.trace_id, self.flows, self.file_name, self.sender)
+        self.rpc = rpc
+        self.state = RpcStateManager(rpc)
+        self.logger = Logger(self.trace_id, self.flows, self.file_name, rpc)
 
     async def emit(self, event: Any):
-        await self.sender.send('emit', event)
+        return await self.rpc.send('emit', event)
 
-async def run_python_module(file_path: str, args: Any) -> None:
+async def run_python_module(file_path: str, rpc: RpcSender, args: Any) -> None:
     try:
         # Construct path relative to steps directory
         flows_dir = os.path.join(os.getcwd(), 'steps')
@@ -48,16 +49,16 @@ async def run_python_module(file_path: str, args: Any) -> None:
         if not hasattr(module, 'handler'):
             raise AttributeError(f"Function 'handler' not found in module {module_path}")
 
-        context = Context(args, file_path)
-        context.sender.init()
-        
-        await module.handler(args.data, context)
-        
-        # exit with 0 to indicate success
-        sys.exit(0)
-    except Exception as error:
-        print('Error running Python module:', file=sys.stderr)
+        context = Context(args, rpc, file_path)
 
+        await module.handler(args.data, context)
+
+        rpc.close()
+
+        # We need this to close the process
+        rpc.send_no_wait('close', None)
+    except Exception as error:
+        print(f'Error running Python module: {error}', file=sys.stderr)
         traceback.print_exc(file=sys.stderr)
         sys.exit(1)
 
@@ -69,5 +70,9 @@ if __name__ == "__main__":
     file_path = sys.argv[1]
     arg = sys.argv[2] if len(sys.argv) > 2 else None
 
-    import asyncio
-    asyncio.run(run_python_module(file_path, parse_args(arg)))
+    rpc = RpcSender()
+    loop = asyncio.get_event_loop()
+    # Create and gather tasks
+    tasks = asyncio.gather(rpc.init(), run_python_module(file_path, rpc, parse_args(arg)))
+    # Run until tasks complete
+    loop.run_until_complete(tasks)
