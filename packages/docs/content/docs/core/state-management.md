@@ -3,8 +3,6 @@ sidebar_position: 6
 title: State Management
 ---
 
-# State Management in Motia
-
 ## Overview
 
 Motia provides a robust state management system for maintaining workflow state across steps. The system:
@@ -90,7 +88,7 @@ async def handler(input, ctx):
 ### Ruby
 
 ```ruby
-def executor(input, ctx)
+def handler(input, ctx)
   # Store state
   ctx.state.set('booking', {
     customer: input.customer,

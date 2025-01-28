@@ -1,0 +1,290 @@
+---
+sidebar_position: 3
+title: Defining Steps
+---
+
+The anatomy of a **Steps**, steps are broken down into the following components:
+
+## Config
+
+An exported **config** object describing the following details
+
+<DescriptionTable
+  type={{
+    type: {
+      description: 'Defines the type of step, which can be one of the following values: `event`, `api`, or `cron`',
+      type: 'string',
+    },
+    name: {
+      description: 'Name assigned to your step, displayed in the workbench flow visualization tool',
+      type: 'string',
+    },
+    subscribes: {
+      description: 'A list of topics your step subscribes',
+      type: 'string[]',
+      default: []
+    },
+    emits: {
+      description: 'A list of topics your step emits',
+      type: 'string[]',
+    },
+    flows: {
+      description: 'A list of flows your step is associated',
+      type: 'string[]',
+    },
+    description: {
+      description: 'A small description of your step, this is not required, but it will be helpful for the workfbench flow visualization tool',
+      type: 'string',
+    }
+  }}
+/>
+
+#### The following props are specific to each step type
+
+<Callout type="warn">API steps are only supported in TS or JS</Callout>
+
+<Tabs items={['event', 'api', 'cron']}>
+  <Tab value='event'>
+    <DescriptionTable
+      type={{
+        input: {
+          description: 'This is only required for TS or JS steps that use zod for their input schema, this is used when processing the step to validate the input before executing the step handler.',
+          type: 'string[]',
+        },
+      }}
+    />
+  </Tab>
+  <Tab value='api'>
+    <DescriptionTable
+      type={{
+        path: {
+          description: 'The development server api path to expose your api step handler',
+          type: 'string',
+        },
+        method: {
+          description: 'The HTTP method to use for the development server api endpoint',
+          type: 'GET | POST',
+        },
+        bodySchema: {
+          description: 'This is only required for TS or JS steps that use zod for their http request body schema, this is used when processing the step to validate the request body before executing the step handler.',
+          type: 'string[]',
+        }
+      }} 
+    />
+  </Tab>
+  <Tab value='cron'>
+    <DescriptionTable
+      type={{
+        cron: {
+          description: 'The cron schedule expression for your step',
+          type: 'string',
+        },
+      }} 
+    />
+  </Tab>
+</Tabs>
+
+<Tabs  items={['TS', 'JS', 'Python', 'Ruby']}>
+  <Tab value="TS">
+    ```typescript
+      // Event Step
+
+      import { z } from 'zod'
+
+      type Input = typeof inputSchema
+
+      const inputSchema = z.object({})
+
+      export const config: EventConfig<Input> = {
+        type: 'event',
+        name: 'stepA',
+        description: 'Hello from Step A',
+        subscribes: ['pms.start'],
+        emits: ['pms.stepA.done'],
+        input: inputSchema,
+        flows: ['parallel-merge'],
+      }
+
+      // Api step
+
+      import { z } from 'zod'
+
+      const inputSchema = z.object({})
+
+      export const config: ApiRouteConfig = {
+        type: 'api',
+        name: 'Test state api trigger',
+        description: 'test state',
+        path: '/test-state',
+        method: 'POST',
+        emits: ['test-state'],
+        bodySchema: inputSchema,
+        flows: ['test-state'],
+      }
+
+      // Cron step
+
+      export const config = {
+        type: 'cron' as const,
+        name: 'PeriodicJob',
+        description: 'Runs every minute and emits a timestamp',
+        cron: '0 * * * *', // run every hour at minute 0
+        emits: ['cron-ticked'],
+        flows: ['cron-example'],
+      }
+    ```
+  </Tab>
+  <Tab value="JS">
+    ```javascript
+    // Event Step
+
+    const z = require('zod');
+
+    const inputSchema = z.object({});
+
+    const eventConfig = {
+      type: 'event',
+      name: 'stepA',
+      description: 'Hello from Step A',
+      subscribes: ['pms.start'],
+      emits: ['pms.stepA.done'],
+      input: inputSchema,
+      flows: ['parallel-merge'],
+    };
+
+    // Api step
+
+    const apiInputSchema = z.object({});
+
+    const apiConfig = {
+      type: 'api',
+      name: 'Test state api trigger',
+      description: 'test state',
+      path: '/test-state',
+      method: 'POST',
+      emits: ['test-state'],
+      bodySchema: apiInputSchema,
+      flows: ['test-state'],
+    };
+
+    // Cron step
+
+    const cronConfig = {
+      type: 'cron',
+      name: 'PeriodicJob',
+      description: 'Runs every minute and emits a timestamp',
+      cron: '0 * * * *', // run every hour at minute 0
+      emits: ['cron-ticked'],
+      flows: ['cron-example'],
+    };
+    ```
+  </Tab>
+  <Tab value="Python">
+  ```python
+    # Event Step
+
+    config = {
+        "type": "event",
+        "name": "Call OpenAI",
+        "subscribes": ["call-openai"], 
+        "emits": ["openai-response"],
+        "input": None,  # No schema validation in Python version
+        "flows": ["openai"]
+    }
+
+    # Cron Step
+
+    config = {
+        "type": "cron",
+        "name": "PeriodicJob",
+        "description": "Runs every minute and emits a timestamp",
+        "cron": "0 * * * *",
+        "emits": ["cron-ticked"],
+        "flows": ["cron-example"]
+    }
+  ```
+  </Tab>
+  <Tab value="Ruby">
+  ```ruby
+    # Event Step
+
+    class Config
+      attr_reader :type, :name, :subscribes, :emits, :input, :flows
+
+      def initialize
+        @type = "event"
+        @name = "Call OpenAI"
+        @subscribes = ["call-openai"]
+        @emits = ["openai-response"]
+        @input = nil # No schema validation
+        @flows = ["openai"]
+      end
+    end
+
+    config = Config.new
+
+    # Cron Step
+
+    class Config
+      attr_reader :type, :name, :subscribes, :emits, :input, :flows
+
+      def initialize
+        @type = "cron"
+        @name = "PeriodicJob"
+        @description = "Runs every minute and emits a timestamp"
+        @cron = "0 * * * *"
+        @emits = ["cron-ticked"]
+        @flows = ["cron-example"]
+      end
+    end
+
+    config = Config.new
+  ```
+  </Tab>
+</Tabs>
+
+## Handler
+
+A **handler** function that processes an optional input and can **emit** new events, handlers are executed when a topic is emitted.
+
+<Tabs  items={['TS', 'JS', 'Python', 'Ruby']}>
+  <Tab value='TS'>
+    ```typescript
+    import { FlowContext } from '@motiadev/core'
+
+    // ... step config
+
+    export const handler: StepHandler<typeof config> = async (input, { emit, traceId, state, logger }: FlowContext) => {
+      // ... do some logic here
+    }
+    ```
+  </Tab>
+  <Tab value='JS'>
+    ```javascript
+    // ... step config
+
+    const handler = async (input, { emit, traceId, state, logger }) => {
+      // ... do some logic here
+    }
+
+    module.exports = {config, handler}
+    ```
+  </Tab>
+  <Tab value='Python'>
+    ```python
+    async def handler(args, ctx):
+        # ... do some logic here
+    ```
+  </Tab>
+  <Tab value='Ruby'>
+  ```ruby
+    def handler(args, ctx)
+        # ... do some logic here
+    end
+    ```
+  </Tab>
+</Tabs>
+
+<Callout>
+Follow the **[quick start](/docs/quick-start)** guide if you haven’t set up Motia yet.
+</Callout>

@@ -11,6 +11,11 @@ import { CodeBlock, Pre } from 'fumadocs-ui/components/codeblock';
 import { Callout } from 'fumadocs-ui/components/callout';
 import { Tab, Tabs } from 'fumadocs-ui/components/tabs';
 import { Banner } from 'fumadocs-ui/components/banner';
+import {DescriptionTable} from'@/components/DescriptionTable';
+import { Step, Steps } from 'fumadocs-ui/components/steps';
+import { ImageZoom } from 'fumadocs-ui/components/image-zoom';
+import { TypeTable } from 'fumadocs-ui/components/type-table';
+import { Card, Cards } from 'fumadocs-ui/components/card';
 
 
 export default async function Page(props: {
@@ -34,9 +39,16 @@ export default async function Page(props: {
               <Pre>{props.children}</Pre>
             </CodeBlock>
           ),
+          Card, 
+          Cards,
           Callout,
           Tab,
-          Tabs
+          Tabs,
+          DescriptionTable,
+          Step,
+          Steps,
+          TypeTable,
+          img: (props) => <ImageZoom {...(props as any)} />,
         }} />
         <Banner>Need help? See our&nbsp;<a href="/community">Community Resources</a>&nbsp;for questions, examples, and discussions.</Banner>
       </DocsBody>

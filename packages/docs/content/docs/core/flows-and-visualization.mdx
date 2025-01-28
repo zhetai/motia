@@ -1,0 +1,108 @@
+---
+sidebar_position: 9
+title: Flows & Visualization
+---
+
+**Flows** let you group multiple **steps** under a single name, making it easier to visually map out how events move across **steps**. While flows are technically optional, they're very useful for:
+
+- **Clarity**: Understand how **steps** interact with each other.
+- **Visualization**: Visual explanation of how events travel across your **steps**.
+- **Observability**: Group logs and events by flow name.
+
+<Steps>
+  <Step>
+  ### Tagging Steps with a Flow
+
+  To associate Steps with a flow, add a `flows` field to your Step config. For example:
+
+  ```js
+  // addNumbers.step.js
+  exports.config = {
+    type: 'event',
+    name: 'AddNumbers',
+    subscribes: ['add-numbers'],
+    emits: ['numbers-added'],
+    flows: ['demo-flow'], // <-- Assign it to a flow
+  }
+
+  // ... handler definition
+  ```
+
+  ```js
+  // exampleApi.step.js
+  exports.config = {
+    type: 'api',
+    name: 'AddNumbersApi',
+    path: '/api/add',
+    method: 'POST',
+    emits: ['add-numbers'],
+    flows: ['demo-flow'], // <-- Same flow name
+  }
+
+  // ... handler definition
+  ```
+
+  <Callout>You can associate a **step** with multiple flows, simply provide a comma separated list of flow names, for example: `['billing-flow', 'analytics-flow']`</Callout>
+  </Step>
+  <Step>
+  ### Visualizing Your Flows
+
+  <Steps>
+    <Step>
+      Start your development server:
+
+      <Tabs items={['pnpm', 'yarn', 'npm', 'bun']}>
+        <Tab value='pnpm'>
+        ```bash
+        pnpm run dev
+        ```
+        </Tab>
+        <Tab value='yarn'>
+        ```bash
+        yarn run dev
+        ```
+        </Tab>
+        <Tab value='npm'>
+        ```bash
+        npm run dev
+        ```
+        </Tab>
+        <Tab value='bun'>
+        ```bash
+        bun run dev
+        ```
+        </Tab>
+      </Tabs>
+    </Step>
+    <Step>
+      [Open](http://localhost:3000) Motia Workbench in your browser (often `http://localhost:3000` or `http://127.0.0.1:3000`).
+    </Step>
+    <Step>
+      **Look for** your flow name on the left side bar and click it. You’ll see each **step** represented as a node, with lines showing how events connect.
+    </Step>
+    <Step>
+      **Click** on a **step** node to see its config details, e.g. the name, emits, subscribes, etc...
+    </Step>
+  </Steps>
+
+  ![Flow Visualization in Workbench](./../img/demo-workbench.png)
+  </Step>
+  <Step>
+    ### Flow Diagram Basics
+
+    Motia Workbench plots your **steps** in a node graph:
+
+    - **steps** appear as nodes that subscribe to one or more topics and possibly emit new events under a give topic.
+    - **edges** connect **steps**,
+    - in the top right corner you will see all legends, hover on one item in the legends list to highlight the step type or edge type
+  </Step>
+  <Step>
+    ### Flow-Specific Logs
+
+    In your terminal (or in the logs panel of **Motia Workbench**), all event activties performed by **steps** are logged and grouped by `traceId`. This makes it easier to debug and monitor your **steps** when events are emitted.
+  </Step>
+</Steps>
+
+<Callout>
+Follow the **[quick start](/docs/quick-start)** guide if you haven’t set up Motia yet.
+</Callout>

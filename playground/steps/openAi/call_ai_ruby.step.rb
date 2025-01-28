@@ -13,7 +13,7 @@ end
 
 config = Config.new
 
-def executor(args, ctx)
+def handler(args, ctx)
   ctx.logger.info('[Call Ruby OpenAI] Received call_ai event', args)
 
   message = args["message"]

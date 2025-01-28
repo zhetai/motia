@@ -45,7 +45,7 @@ def deep_compare(obj1, obj2)
   obj1 == obj2
 end
 
-def executor(args, ctx)
+def handler(args, ctx)
   ctx.logger.info('[Test motia state with ruby] Received call_ai event', args)
 
   value = ctx.state[:get].call(ctx.trace_id, args["key"])

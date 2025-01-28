@@ -46,13 +46,13 @@ def run_ruby_module(file_path, args)
   # Load the file dynamically
   load file_path
 
-  unless defined?(executor)
-    raise NameError, "Function 'executor' not found in module #{file_path}"
+  unless defined?(handler)
+    raise NameError, "Function 'handler' not found in module #{file_path}"
   end
 
   context = Context.new(args, file_path)
 
-  executor(args.data, context)
+  handler(args.data, context)
 rescue => e
   $stderr.puts "Error running Ruby module: #{e.message}"
   $stderr.puts e.backtrace
