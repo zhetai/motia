@@ -2,39 +2,46 @@ require 'json'
 require 'time'
 
 class CustomLogger
-  def initialize(trace_id, flows, file_path)
+  def initialize(trace_id, flows, file_path, sender)
     @trace_id = trace_id
     @flows = flows
-    @file_name = File.basename(file_path)
+    @file_name = file_path.split('/').last
+    @sender = sender
   end
 
   def log(level, message, args = nil)
-    # Ensure message is not nested JSON or a stringified JSON object
+    # Handle message formatting consistently with Python/Node
     if message.is_a?(String) && message.strip.start_with?('{', '[')
       begin
-        message = JSON.parse(message) # Parse if valid JSON
+        message = JSON.parse(message)
       rescue JSON::ParserError
-        # Leave message as is if it's not valid JSON
+        # Leave message as is if not valid JSON
       end
     end
 
-    # Construct the base log entry
+    # Construct the log entry to match Python/Node format
     log_entry = {
+      level: level,
+      time: (Time.now.to_f * 1000).to_i,  # Milliseconds since epoch to match Node
+      traceId: @trace_id,
+      flows: @flows,
+      file: @file_name,
       msg: message
     }
 
-    # Merge additional arguments if provided
+    # Handle additional args consistently with Python/Node
     if args
-      args = case args
-             when OpenStruct then args.to_h
-             when Hash then args
-             else { data: args }
-             end
-      log_entry.merge!(args)
+      case args
+      when OpenStruct
+        log_entry.merge!(args.to_h)
+      when Hash
+        log_entry.merge!(args)
+      else
+        log_entry[:data] = args
+      end
     end
 
-    # Generate JSON output
-    puts JSON.dump(log_entry)
+    @sender.send_no_wait('log', log_entry)
   end
 
   def info(message, args = nil)

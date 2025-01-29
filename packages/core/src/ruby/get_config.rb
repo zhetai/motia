@@ -19,28 +19,18 @@ end
 
 def extract_config(file_path)
   begin
-    # Remove previous Config class if it exists
-    Object.send(:remove_const, :Config) if Object.const_defined?(:Config)
-    
-    # Create a new binding for evaluation
-    evaluation_binding = binding
-    
-    # Load and evaluate the file content in our binding
-    file_content = File.read(file_path)
-    evaluation_binding.eval(file_content)
-    
-    # Get the config variable from our binding
-    config = evaluation_binding.eval('config')
-    
-    # Convert config instance to hash with symbol keys
-    {
-      type: config.type,
-      name: config.name,
-      subscribes: config.subscribes,
-      emits: config.emits,
-      input: config.input,
-      flows: config.flows
-    }
+    unless File.exist?(file_path)
+      raise LoadError, "Could not load module from #{file_path}"
+    end
+
+    # Load the file in a clean context
+    load file_path
+
+    unless defined?(config)
+      raise NameError, "Function 'config' not found in module #{file_path}"
+    end
+
+    config()
   rescue NameError => e
     raise "Error accessing config: #{e.message}"
   rescue => e

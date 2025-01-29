@@ -1,7 +1,15 @@
 require 'ostruct'
 
-class Config
-  attr_reader :type, :name, :subscribes, :emits, :input, :flows
+def config
+  {
+    type: "event",
+    name: "Test State With Ruby",
+    subscribes: ["check-state-change"],
+    emits: [],
+    input: nil,
+    flows: ["test-state"]
+  }
+end
 
   def initialize
     @type = "event"
@@ -11,9 +19,6 @@ class Config
     @input = nil # No schema validation
     @flows = ["test-state"]
   end
-end
-
-config = Config.new
 
 def deep_compare(obj1, obj2)
   # If both objects are nil, they are equal
