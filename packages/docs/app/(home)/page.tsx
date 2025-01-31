@@ -18,24 +18,25 @@ export default function HomePage() {
 
   return (
     <div className="relative flex flex-col items-center justify-center h-full px-4 bg-transparent flex-1">
-      <div className="space-y-8 text-center max-w-5xl">
-        <h1 className="text-[56px] sm:text-[72px] md:text-[86px] font-[950] leading-tight">
+      <div className="text-center max-w-5xl">
+        <h1 className="text-[56px] sm:text-[72px] md:text-[86px] font-[950] leading-[1.0]">
           <span className="bg-gradient-to-r from-blue-400 to-blue-600 bg-clip-text text-transparent">
             Code-First
-          </span> Framework
+          </span> <span>Framework</span>
         </h1>
-        <h2 className="text-[42px] sm:text-[56px] md:text-[64px] font-[800] dark:text-gray-300 text-gray-700">
+        <h2 className="text-[42px] sm:text-[56px] md:text-[64px] font-[800] dark:text-gray-300 text-gray-700 mb-6 mt-2 leading-[1.1]">
           for <span className="bg-gradient-to-r from-blue-400 to-blue-600 bg-clip-text text-transparent">
-            Intelligent Workflows
+            Intelligent<br className="sm:hidden" /> <span>Workflows</span>
           </span>
         </h2>
 
-        <p className="text-lg sm:text-xl dark:text-gray-400 text-gray-600 max-w-3xl mx-auto tracking-[-0.02em] font-light">
+        {/* Rest of the component stays the same */}
+        <p className="text-lg sm:text-xl dark:text-gray-400 text-gray-600 max-w-3xl mx-auto tracking-[-0.02em] font-light mb-8">
           <strong className="dark:text-white text-gray-900 text-xl sm:text-2xl">Write in any language. Automate anything. </strong>
           From AI agents to backend automation, Motia runs event-driven workflows with zero overhead.
         </p>
 
-        <div className="flex justify-center gap-4">
+        <div className="flex justify-center gap-4 mb-8">
           <Link
             href="/docs/quick-start"
             className="px-6 py-3 text-sm font-medium bg-white text-black rounded-lg shadow-md hover:shadow-lg 
