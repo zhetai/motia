@@ -10,9 +10,12 @@ import { ArrowRight } from 'lucide-react';
  */
 export const baseOptions: BaseLayoutProps = {
   nav: {
-    transparentMode: 'always',
-    title: <div className="inline-flex items-center gap-1"><ArrowRight className="h-5 w-5 text-blue-500" strokeWidth={2.5} /><span className="font-semibold tracking-tight text-lg">motia</span>
-    </div>
+    transparentMode: 'top',
+    title: (<div className="inline-flex items-center gap-1">
+      <ArrowRight className="h-5 w-5 text-blue-500" strokeWidth={2.5} />
+      <span className="font-semibold tracking-tight text-lg">motia</span>
+    </div>),
+
   },
   links: [
     {

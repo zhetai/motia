@@ -17,7 +17,7 @@ export default function HomePage() {
   };
 
   return (
-    <div className="relative flex flex-col items-center justify-center h-full px-4 bg-transparent mt-16">
+    <div className="relative flex flex-col items-center justify-center h-full px-4 bg-transparent flex-1">
       <div className="space-y-8 text-center max-w-5xl">
         <h1 className="text-[56px] sm:text-[72px] md:text-[86px] font-[950] leading-tight">
           <span className="bg-gradient-to-r from-blue-400 to-blue-600 bg-clip-text text-transparent">
