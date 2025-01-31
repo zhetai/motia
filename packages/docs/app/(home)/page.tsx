@@ -1,5 +1,6 @@
 'use client';
 
+import Link from 'next/link';
 import { useState } from 'react';
 
 export default function HomePage() {
@@ -16,7 +17,7 @@ export default function HomePage() {
   };
 
   return (
-    <div className="relative flex flex-col items-center justify-center min-h-[calc(100vh-4rem)] px-4 -mt-16">
+    <div className="relative flex flex-col items-center justify-center min-h-[calc(100vh-4rem)] px-4 -mt-16 bg-transparent">
       <div className="space-y-8 text-center max-w-5xl">
         <h1 className="text-[56px] sm:text-[72px] md:text-[86px] font-[950] leading-tight">
           <span className="bg-gradient-to-r from-blue-400 to-blue-600 bg-clip-text text-transparent">
@@ -35,21 +36,21 @@ export default function HomePage() {
         </p>
 
         <div className="flex justify-center gap-4">
-          <a
+          <Link
             href="/docs/quick-start"
             className="px-6 py-3 text-sm font-medium bg-white text-black rounded-lg shadow-md hover:shadow-lg 
                      hover:bg-gray-100 transition-all transform hover:scale-105 dark:bg-gray-800 dark:text-white dark:hover:bg-gray-700"
           >
             Get Started →
-          </a>
+          </Link>
 
-          <a
+          <Link
             href="/docs"
             className="px-6 py-3 text-sm font-medium text-gray-900 dark:text-white border border-gray-200 dark:border-gray-600 rounded-lg 
                      backdrop-blur-lg bg-opacity-5 hover:bg-gray-100 dark:hover:bg-gray-800 transition-all transform hover:scale-105"
           >
             Read the Docs
-          </a>
+          </Link>
         </div>
 
         <div

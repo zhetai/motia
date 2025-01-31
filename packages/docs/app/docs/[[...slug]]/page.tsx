@@ -13,7 +13,7 @@ import { Tab, Tabs } from 'fumadocs-ui/components/tabs';
 import { Banner } from 'fumadocs-ui/components/banner';
 import { DescriptionTable } from '@/components/DescriptionTable';
 import { Step, Steps } from 'fumadocs-ui/components/steps';
-import { ImageZoom } from 'fumadocs-ui/components/image-zoom';
+import { ImageZoom, ImageZoomProps } from 'fumadocs-ui/components/image-zoom';
 import { TypeTable } from 'fumadocs-ui/components/type-table';
 import { Card, Cards } from 'fumadocs-ui/components/card';
 import { File, Folder, Files } from 'fumadocs-ui/components/files';
@@ -35,6 +35,7 @@ export default async function Page(props: {
       <DocsBody>
         <MDX components={{
           ...defaultMdxComponents,
+          // eslint-disable-next-line @typescript-eslint/no-unused-vars
           pre: ({ ref: _ref, ...props }) => (
             <CodeBlock {...props}>
               <Pre>{props.children}</Pre>
@@ -52,7 +53,7 @@ export default async function Page(props: {
           Step,
           Steps,
           TypeTable,
-          img: (props) => <ImageZoom {...(props as any)} />,
+          img: (props) => <ImageZoom {...(props as ImageZoomProps)} />,
         }} />
         <Banner>Need help? See our&nbsp;<a href="/community">Community Resources</a>&nbsp;for questions, examples, and discussions.</Banner>
       </DocsBody>
