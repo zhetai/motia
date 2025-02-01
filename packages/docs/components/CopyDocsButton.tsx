@@ -1,16 +1,32 @@
 'use client';
 
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import { Copy, Check } from 'lucide-react';
 
 const CopyDocsButton = () => {
   const [copied, setCopied] = useState(false);
+  const [content, setContent] = useState('');
+
+  useEffect(() => {
+    // Prefetch the docs content once when the component mounts
+    fetch('/docs-content.json')
+      .then(response => response.json())
+      .then(data => {
+        if (data?.content) {
+          setContent(data.content);
+        }
+      })
+      .catch(error => console.error('Failed to fetch docs:', error));
+  }, []);
 
   const handleCopy = async () => {
+    if (!content) {
+      console.error('No content available to copy');
+      return;
+    }
     try {
-      const response = await fetch('/docs-content.json');
-      const data = await response.json();
-      await navigator.clipboard.writeText(data.content);
+      // Directly write text to clipboard in response to user gesture
+      await navigator.clipboard.writeText(content);
       setCopied(true);
       setTimeout(() => setCopied(false), 2000);
     } catch (error) {
