@@ -1,0 +1,68 @@
+---
+title: Api Step
+---
+
+An API step is exposed as an HTTP endpoint that acts as an entry point into your sequence of steps, or **flow**. It allows external systems or clients to trigger and interact with your flows through a REST API interface. Like any Motia Step, an API Step can be configured to emit events or wait for events to occur.
+
+## Config
+
+<Callout type="warn">Currently, API steps are only supported in TS or JS</Callout>
+
+The following properties are specific to the API Step, in addition to the [common step config](/docs/core/steps/defining-steps#config).
+
+<DescriptionTable
+  type={{
+    path: {
+      description: 'The development server api path to expose your api step handler',
+      type: 'string',
+    },
+    method: {
+      description: 'The HTTP method to use for the development server api endpoint',
+      type: 'GET | POST',
+    },
+    bodySchema: {
+      description: 'This is only required for TS or JS steps that use zod for their http request body schema, this is used when processing the step to validate the request body before executing the step handler.',
+      type: 'string[]',
+    }
+  }} 
+/>
+
+The following examples showcase how to configure an **API Step**
+
+<Tabs  items={['TS', 'JS']}>
+  <Tab value="TS">
+    ```typescript
+      import { z } from 'zod'
+      import { ApiRouteConfig } from '@motiadev/core'
+      
+      const inputSchema = z.object({})
+
+      export const config: ApiRouteConfig = {
+        type: 'api',
+        name: 'Test state api trigger',
+        description: 'test state',
+        path: '/test-state',
+        method: 'POST',
+        emits: ['test-state'],
+        bodySchema: inputSchema,
+        flows: ['test-state'],
+      }
+    ```
+  </Tab>
+  <Tab value="JS">
+    ```javascript
+    const apiInputSchema = z.object({});
+
+    const apiConfig = {
+      type: 'api',
+      name: 'Test state api trigger',
+      description: 'test state',
+      path: '/test-state',
+      method: 'POST',
+      emits: ['test-state'],
+      bodySchema: apiInputSchema,
+      flows: ['test-state'],
+    };
+    ```
+  </Tab>
+</Tabs>

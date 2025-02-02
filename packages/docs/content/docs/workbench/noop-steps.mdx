@@ -1,0 +1,237 @@
+---
+title: NOOP Steps
+---
+
+NOOP (No Operation) steps are a powerful feature in Motia that serve multiple purposes:
+
+1. Modeling external processes, webhooks and integrations
+2. Representing human-in-the-loop activities
+3. Creating custom visualizations in the workbench
+4. Testing flows during development
+
+<Callout type="warn">Currently, NOOP steps are only supported in TS or JS</Callout>
+
+## Representing External Processes
+
+NOOP steps represent parts of your workflow that happen outside your system. Common examples include:
+
+### Webhook Callbacks
+
+<Tabs  items={['TS', 'JS']}>
+  <Tab value="TS">
+    ```typescript
+    export const config: NoopConfig = {
+      type: 'noop',
+      name: 'Wait for Stripe Webhook',
+      description: 'Waits for payment confirmation',
+      virtualSubscribes: ['payment.initiated'],
+      virtualEmits: ['/api/stripe/webhook'],
+      flows: ['payment'],
+    }
+    ```
+  </Tab>
+  <Tab value="JS">
+    ```javascript
+    const config = {
+      type: 'noop',
+      name: 'Wait for Stripe Webhook',
+      description: 'Waits for payment confirmation',
+      virtualSubscribes: ['payment.initiated'],
+      virtualEmits: ['/api/stripe/webhook'],
+      flows: ['payment'],
+    }
+    ```
+  </Tab>
+</Tabs>
+
+### Human Approvals
+
+<Tabs  items={['TS', 'JS']}>
+  <Tab value="TS">
+    ```typescript
+    export const config: NoopConfig = {
+      type: 'noop',
+  name: 'Manager Review',
+  description: 'Manager reviews request',
+  virtualSubscribes: ['approval.requested'],
+      virtualEmits: ['/api/approvals/submit'],
+      flows: ['approval'],
+    }
+    ```
+  </Tab>
+  <Tab value="JS">
+    ```javascript
+    const config = {
+      type: 'noop',
+      name: 'Manager Review',
+      description: 'Manager reviews request',
+      virtualSubscribes: ['approval.requested'],
+      virtualEmits: ['/api/approvals/submit'],
+      flows: ['approval'],
+    }
+    ```
+  </Tab>
+</Tabs>
+
+### External System Integration
+
+<Tabs  items={['TS', 'JS']}>
+  <Tab value="TS">
+    ```typescript
+      export const config: NoopConfig = {
+        type: 'noop',
+        name: 'GitHub Webhook',
+        description: 'Waiting for repository events',
+        virtualSubscribes: ['repository.watched'],
+        virtualEmits: ['/api/github/webhook'],
+        flows: ['repo-automation'],
+      }
+      ```
+  </Tab>
+  <Tab value="JS">
+    ```javascript
+    const config = {
+      type: 'noop',
+      name: 'GitHub Webhook',
+      description: 'Waiting for repository events',
+      virtualSubscribes: ['repository.watched'],
+      virtualEmits: ['/api/github/webhook'],
+      flows: ['repo-automation'],
+    }
+    ```
+  </Tab>
+</Tabs>
+
+### Physical Processes
+
+<Tabs  items={['TS', 'JS']}>
+  <Tab value="TS">
+    ```typescript
+    export const config: NoopConfig = {
+      type: 'noop',
+      name: 'Order Fulfillment',
+      description: 'Warehouse processes order',
+      virtualSubscribes: ['order.placed'],
+      virtualEmits: ['/api/warehouse/status'],
+      flows: ['fulfillment'],
+    }
+    ```
+  </Tab>
+  <Tab value="JS">
+    ```javascript
+    const config = {
+      type: 'noop',
+      name: 'Order Fulfillment',
+      description: 'Warehouse processes order',
+      virtualSubscribes: ['order.placed'],
+      virtualEmits: ['/api/warehouse/status'],
+      flows: ['fulfillment'],
+    }
+    ```
+  </Tab>
+</Tabs>
+
+## Visualization in Workbench
+
+NOOP steps are visually represented in the Motia Workbench with the following characteristics:
+
+- Distinct node representation with clear input/output handles
+- Visual indicators for virtual event connections
+- Status indicators for waiting states
+- Clear visualization of external system dependencies
+
+## Custom UI
+
+You can enhance your NOOP steps with custom React components for better visualization:
+
+<Tabs  items={['TS', 'JS']}>
+  <Tab value="TS">
+    ```tsx
+    // customNode.step.tsx
+    import React from 'react'
+    import { BaseHandle, EventNodeProps, Position } from '@motiadev/workbench'
+
+    export default (_: EventNodeProps) => {
+      return (
+        <div className="p-3 px-6 flex flex-col max-w-[300px] bg-blue-500 border-white rounded-full text-white border border-solid text-center text-sm">
+          <div>Custom Processing</div>
+          <BaseHandle type="target" position={Position.Top} />
+          <BaseHandle type="source" position={Position.Bottom} />
+        </div>
+      )
+    }
+
+    // customNode.step.ts
+    export const config: NoopConfig = {
+      type: 'noop',
+      name: 'Custom Process',
+      virtualEmits: ['/api/process/complete'],
+      virtualSubscribes: ['process.start'],
+      flows: ['custom-flow']
+    }
+    ```
+  </Tab>
+  <Tab value="JS">
+    ```jsx
+    // customNode.step.jsx
+    import React from 'react'
+    import { BaseHandle, EventNodeProps, Position } from '@motiadev/workbench'
+
+    export default (_: EventNodeProps) => {
+      return (
+        <div className="p-3 px-6 flex flex-col max-w-[300px] bg-blue-500 border-white rounded-full text-white border border-solid text-center text-sm">
+          <div>Custom Processing</div>
+          <BaseHandle type="target" position={Position.Top} />
+          <BaseHandle type="source" position={Position.Bottom} />
+        </div>
+      )
+    }
+
+    // customNode.step.js
+    const config = {
+      type: 'noop',
+      name: 'Custom Process',
+      virtualEmits: ['/api/process/complete'],
+      virtualSubscribes: ['process.start'],
+      flows: ['custom-flow']
+    }
+
+    module.exports = {config};
+    ```
+  </Tab>
+</Tabs>
+
+## Best Practices
+
+| Category | Guidelines |
+|----------|------------|
+| **External Process Modeling** | • Use descriptive, action-oriented names<br/>• Document expected timeframes and SLAs<br/>• Define all possible outcomes and edge cases<br/>• Use exact API route matching |
+| **UI Components** | • Leverage Tailwind's utility classes<br/>• Keep components minimal and focused<br/>• Design clear visual connection points<br/>• Maintain consistent styling patterns |
+| **Testing** | • Create isolated test flows<br/>• Implement clear status indicators<br/>• Label test steps explicitly<br/>• Document test scenarios and procedures |
+
+## Component Reference
+
+### Core Imports
+
+| Import | Purpose |
+|--------|---------|
+| `BaseHandle` | A React component that renders connection points for nodes in the workflow. Used to define where edges (connections) can start or end on a node. |
+| `EventNodeProps` | (TypeScript only) Interface defining the properties passed to node components, including node data, selected state, and connection information. |
+| `Position` | (TypeScript only) Enum that specifies the possible positions for handles on a node (Top, Right, Bottom, Left). Used to control where connection points appear. |
+
+### Handle Placement
+
+| Handle Type | Position | 
+|------------|----------|
+| Input Handles | Position.Top |
+| Output Handles | Position.Bottom |
+| Flow Direction | Top to bottom |
+
+### Styling Guidelines
+
+| Category | Guidelines |
+|----------|------------|
+| Colors | Use semantic colors to indicate state (success, error, pending) |
+| Typography | • Ensure high contrast for readability<br/>• Use consistent font sizes (recommended: 14px-16px) |
+| States | • Implement clear visual indicators for active/inactive states<br/>• Use subtle animations for state transitions |
+| Design System | • Follow your project's design tokens<br/>• Maintain consistent spacing and padding<br/>• Use standard border radiuses |

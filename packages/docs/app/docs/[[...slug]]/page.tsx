@@ -17,7 +17,7 @@ import { ImageZoom, ImageZoomProps } from 'fumadocs-ui/components/image-zoom';
 import { TypeTable } from 'fumadocs-ui/components/type-table';
 import { Card, Cards } from 'fumadocs-ui/components/card';
 import { File, Folder, Files } from 'fumadocs-ui/components/files';
-
+import { Breadcrumb } from '@/components/Breadcrumb';
 
 export default async function Page(props: {
   params: Promise<{ slug?: string[] }>;
@@ -50,6 +50,7 @@ export default async function Page(props: {
           Tab,
           Tabs,
           DescriptionTable,
+          Breadcrumb,
           Step,
           Steps,
           TypeTable,

@@ -1,0 +1,95 @@
+---
+title: Event Step
+---
+
+The **Event Step** lets you define custom logic in response to subscribed events and at the same time trigger other steps by emitting new events. It enables communication between different parts of your flow.
+
+## Config
+
+The following properties are specific to the Event Step, in addition to the [common step config](/docs/core/steps/defining-steps#config).
+
+<DescriptionTable
+  type={{
+    input: {
+      description: 'This is only required for TS or JS steps that use zod for their input schema, this is used when processing the step to validate the input before executing the step handler.',
+      type: 'string[]',
+    },
+  }}
+/>
+
+The following examples showcase how to configure an **Event Step**
+
+<Tabs  items={['TS', 'JS', 'Python', 'Ruby']}>
+  <Tab value="TS">
+    ```typescript
+    import { EventConfig } from '@motiadev/core'
+
+      import { z } from 'zod'
+
+      type Input = typeof inputSchema
+
+      const inputSchema = z.object({})
+
+      export const config: EventConfig<Input> = {
+        type: 'event',
+        name: 'stepA',
+        description: 'Hello from Step A',
+        subscribes: ['pms.start'],
+        emits: ['pms.stepA.done'],
+        input: inputSchema,
+        flows: ['parallel-merge'],
+      }
+    ```
+  </Tab>
+  <Tab value="JS">
+    ```javascript
+    const z = require('zod');
+
+    const inputSchema = z.object({});
+
+    const eventConfig = {
+      type: 'event',
+      name: 'stepA',
+      description: 'Hello from Step A',
+      subscribes: ['pms.start'],
+      emits: ['pms.stepA.done'],
+      input: inputSchema,
+      flows: ['parallel-merge'],
+    };
+    ```
+  </Tab>
+  <Tab value="Python">
+  ```python
+    config = {
+        "type": "event",
+        "name": "Call OpenAI",
+        "subscribes": ["call-openai"], 
+        "emits": ["openai-response"],
+        "input": None,  # No schema validation in Python version
+        "flows": ["openai"]
+    }
+  ```
+  </Tab>
+  <Tab value="Ruby">
+  ```ruby
+    class Config
+      attr_reader :type, :name, :subscribes, :emits, :input, :flows
+
+      def initialize
+        @type = "event"
+        @name = "Call OpenAI"
+        @subscribes = ["call-openai"]
+        @emits = ["openai-response"]
+        @input = nil # No schema validation
+        @flows = ["openai"]
+      end
+    end
+
+    config = Config.new
+  ```
+  </Tab>
+</Tabs>
+
+## Example
+
+

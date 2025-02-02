@@ -35,7 +35,7 @@ export function DescriptionTable({ type }: { type: Record<string, ObjectType> })
                 </div>
               </td>
               <td>
-                <p className="p-1 m-0 text-fd-secondary-foreground break-words whitespace-break-spaces">{value.description ?? ''}</p>
+                <div className="p-1 m-0 text-fd-secondary-foreground break-words whitespace-break-spaces">{value.description ?? ''}</div>
               </td>
             </tr>
           ))}
