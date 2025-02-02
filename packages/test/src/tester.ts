@@ -25,16 +25,10 @@ export const createMotiaTester = (): MotiaTester => {
   const eventManager = createEventManager()
   const promise = (async () => {
     const lockedData = await generateLockedData(path.join(process.cwd()))
-    const steps = [...lockedData.steps.active, ...lockedData.steps.dev]
     const state = createStateAdapter({ adapter: 'memory' })
-    const { server, socketServer, close } = await createServer({
-      steps,
-      flows: lockedData.flows,
-      state,
-      eventManager,
-    })
+    const { server, socketServer, close } = await createServer(lockedData, eventManager, state)
 
-    createStepHandlers(steps, eventManager, state)
+    createStepHandlers(lockedData, eventManager, state)
 
     return { server, socketServer, eventManager, state, close }
   })()
@@ -58,10 +52,15 @@ export const createMotiaTester = (): MotiaTester => {
     watch: async <TData>(event: string) => {
       const events: CapturedEvent<TData>[] = []
 
-      eventManager.subscribe(event, '$watcher', async (event: Event<TData>) => {
-        // eslint-disable-next-line @typescript-eslint/no-unused-vars
-        const { logger, ...rest } = event
-        events.push(rest)
+      eventManager.subscribe({
+        event,
+        filePath: '$watcher',
+        handlerName: '$watcher',
+        handler: async (event: Event<TData>) => {
+          // eslint-disable-next-line @typescript-eslint/no-unused-vars
+          const { logger, ...rest } = event
+          events.push(rest)
+        },
       })
 
       return {

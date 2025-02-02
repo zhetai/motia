@@ -1,4 +1,4 @@
-import { setupCronHandlers } from './cron-handler'
+import { CronManager, setupCronHandlers } from './cron-handler'
 import bodyParser from 'body-parser'
 import { randomUUID } from 'crypto'
 import express, { Express, Request, Response } from 'express'
@@ -8,33 +8,32 @@ import { flowsEndpoint } from './flows-endpoint'
 import { isApiStep } from './guards'
 import { globalLogger, Logger } from './logger'
 import { StateAdapter } from './state/state-adapter'
-import { ApiRequest, ApiRouteHandler, EmitData, EventManager, LockedData, Step } from './types'
+import { ApiRequest, ApiRouteConfig, ApiRouteHandler, EmitData, EventManager, Step } from './types'
 import { getModuleExport } from './node/get-module-export'
 import { systemSteps } from './steps'
+import { LockedData } from './locked-data'
 
-type ServerOptions = {
-  steps: Step[]
-  flows: LockedData['flows']
-  eventManager: EventManager
-  state: StateAdapter
-}
-
-type ServerOutput = {
+export type MotiaServer = {
   app: Express
   server: http.Server
   socketServer: SocketIOServer
   close: () => Promise<void>
+  removeRoute: (step: Step<ApiRouteConfig>) => void
+  addRoute: (step: Step<ApiRouteConfig>) => void
+  cronManager: CronManager
 }
 
-export const createServer = async (options: ServerOptions): Promise<ServerOutput> => {
-  const { flows, steps, eventManager, state } = options
+export const createServer = async (
+  lockedData: LockedData,
+  eventManager: EventManager,
+  state: StateAdapter,
+): Promise<MotiaServer> => {
   const app = express()
   const server = http.createServer(app)
   const io = new SocketIOServer(server)
 
-  const allSteps = [...systemSteps, ...steps]
-
-  const cleanupCronJobs = setupCronHandlers(allSteps, eventManager, io)
+  const allSteps = [...systemSteps, ...lockedData.activeSteps]
+  const cronManager = setupCronHandlers(lockedData, eventManager, io)
 
   const asyncHandler = (step: Step, flows: string[]) => {
     return async (req: Request, res: Response) => {
@@ -74,33 +73,50 @@ export const createServer = async (options: ServerOptions): Promise<ServerOutput
   app.use(bodyParser.json())
   app.use(bodyParser.urlencoded({ extended: true }))
 
-  const apiSteps = allSteps.filter(isApiStep)
+  const router = express.Router()
 
-  for (const step of apiSteps) {
+  const addRoute = (step: Step<ApiRouteConfig>) => {
     const { method, flows, path } = step.config
     globalLogger.debug('[API] Registering route', step.config)
 
     if (method === 'POST') {
-      app.post(path, asyncHandler(step, flows))
+      router.post(path, asyncHandler(step, flows))
     } else if (method === 'GET') {
-      app.get(path, asyncHandler(step, flows))
+      router.get(path, asyncHandler(step, flows))
     } else {
       throw new Error(`Unsupported method: ${method}`)
     }
   }
 
-  flowsEndpoint(flows, app)
+  const removeRoute = (step: Step<ApiRouteConfig>) => {
+    const { path, method } = step.config
+    const routerStack = router.stack
+
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    const filteredStack = routerStack.filter((layer: any) => {
+      if (layer.route) {
+        const match = layer.route.path === path && layer.route.methods[method.toLowerCase()]
+        return !match
+      }
+      return true
+    })
+    router.stack = filteredStack
+  }
+
+  allSteps.filter(isApiStep).forEach(addRoute)
+  app.use(router)
+
+  flowsEndpoint(lockedData, app)
 
   server.on('error', (error) => {
     console.error('Server error:', error)
-    cleanupCronJobs()
   })
 
   const close = async (): Promise<void> => {
-    cleanupCronJobs()
+    cronManager.close()
     await io.close()
     server.close()
   }
 
-  return { app, server, socketServer: io, close }
+  return { app, server, socketServer: io, close, removeRoute, addRoute, cronManager }
 }

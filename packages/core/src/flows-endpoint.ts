@@ -2,9 +2,10 @@ import { randomUUID } from 'crypto'
 import { Express } from 'express'
 import fs from 'fs'
 import zodToJsonSchema from 'zod-to-json-schema'
-import { Emit, LockedData, Step } from './types'
+import { Emit, Step } from './types'
 import { isApiStep, isEventStep, isNoopStep, isCronStep } from './guards'
 import { getStepLanguage } from './get-step-language'
+import { LockedData } from './locked-data'
 
 // Types
 type FlowListResponse = { id: string; name: string }
@@ -43,14 +44,14 @@ type FlowResponse = FlowListResponse & {
   edges: FlowEdge[]
 }
 
-export const flowsEndpoint = (flows: LockedData['flows'], app: Express) => {
-  const list = generateFlowsList(flows)
-
+export const flowsEndpoint = (lockedData: LockedData, app: Express) => {
   app.get('/flows', async (_, res) => {
+    const list = generateFlowsList(lockedData)
     res.status(200).send(list.map(({ id, name }) => ({ id, name })))
   })
 
   app.get('/flows/:id', async (req, res) => {
+    const list = generateFlowsList(lockedData)
     const { id } = req.params as { id: string }
     const flow = list.find((flow) => flow.id === id)
 
@@ -62,8 +63,8 @@ export const flowsEndpoint = (flows: LockedData['flows'], app: Express) => {
   })
 }
 
-export const generateFlowsList = (flows: LockedData['flows']): FlowResponse[] => {
-  return Object.entries(flows).map(([flowId, flow]) => generateFlow(flowId, flow.steps))
+export const generateFlowsList = (lockedData: LockedData): FlowResponse[] => {
+  return Object.entries(lockedData.flows).map(([flowId, flow]) => generateFlow(flowId, flow.steps))
 }
 
 // Helper functions

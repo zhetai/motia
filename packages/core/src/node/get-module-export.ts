@@ -19,6 +19,11 @@ require('ts-node').register({
 export const getModuleExport = async (filePath: string, exportName: string) => {
   try {
     const resolvedFilePath = require.resolve(filePath)
+
+    if (resolvedFilePath in require.cache) {
+      delete require.cache[resolvedFilePath]
+    }
+
     // eslint-disable-next-line @typescript-eslint/no-require-imports
     const module = require(resolvedFilePath)
 
