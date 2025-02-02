@@ -11,23 +11,38 @@ const inter = Inter({
 export const metadata: Metadata = {
   title: {
     template: '%s | Motia',
-    default: 'Motia - Code-first framework for inteligent workflows',
+    default: 'Motia - Code-first framework for intelligent workflows',
   },
-  description: 'Code-first framework for inteligent workflows',
+  description: 'Write in any language. Automate anything. From AI agents to backend automation, Motia runs event-driven workflows with zero overhead.',
+  metadataBase: new URL('https://motia.dev'),
   openGraph: {
-    title: 'Motia',
-    description: 'Code-first framework for inteligent workflows',
+    type: 'website',
+    locale: 'en_US',
     url: 'https://motia.dev',
     siteName: 'Motia',
-    locale: 'en_US',
-    type: 'website',
+    title: 'Motia - Code-first framework for intelligent workflows',
+    description: 'Write in any language. Automate anything. From AI agents to backend automation, Motia runs event-driven workflows with zero overhead.',
+    images: [
+      {
+        url: '/og-image.png',  // You'll need to create this image
+        width: 1200,
+        height: 630,
+        alt: 'Motia - Code-first framework for intelligent workflows',
+      }
+    ],
   },
   twitter: {
     card: 'summary_large_image',
-    title: 'Motia',
-    description: 'Code-first framework for inteligent workflows',
+    site: '@motiadev',  // Replace with your Twitter handle
+    creator: '@motiadev',  // Replace with your Twitter handle
+    title: 'Motia - Code-first framework for intelligent workflows',
+    description: 'Write in any language. Automate anything. From AI agents to backend automation, Motia runs event-driven workflows with zero overhead.',
+    images: ['/og-image.png'],  // Same image as OG
   },
-};
+  other: {
+    'twitter:image:alt': 'Motia - Code-first framework for intelligent workflows',
+  }
+}
 
 export default function Layout({ children }: { children: ReactNode }) {
   return (
