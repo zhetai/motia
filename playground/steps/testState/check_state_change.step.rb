@@ -11,15 +11,6 @@ def config
   }
 end
 
-  def initialize
-    @type = "event"
-    @name = "Test State With Ruby"
-    @subscribes = ["check-state-change"]
-    @emits = []
-    @input = nil # No schema validation
-    @flows = ["test-state"]
-  end
-
 def deep_compare(obj1, obj2)
   # If both objects are nil, they are equal
   return true if obj1.nil? && obj2.nil?

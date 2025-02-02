@@ -51,7 +51,7 @@ export type ApiRouteConfig = {
   description?: string
   path: string
   method: ApiRouteMethod
-  emits: string[]
+  emits: Emit[]
   virtualEmits?: Emit[]
   virtualSubscribes?: string[]
   flows: string[]
@@ -82,7 +82,7 @@ export type CronConfig = {
   description?: string
   cron: string
   virtualEmits?: Emit[]
-  emits: string[]
+  emits: Emit[]
   flows: string[]
 }
 

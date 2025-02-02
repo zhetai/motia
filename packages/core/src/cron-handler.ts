@@ -47,7 +47,12 @@ export const setupCronHandlers = (lockedData: LockedData, eventManager: EventMan
           await handler({ emit, logger, traceId } as FlowContext)
         } else {
           const data = { timestamp: Date.now() }
-          await Promise.all(config.emits.map((type) => emit({ type, data })))
+          await Promise.all(
+            config.emits.map((item) => {
+              const type = typeof item === 'string' ? item : item.type
+              emit({ type, data })
+            }),
+          )
         }
         // eslint-disable-next-line @typescript-eslint/no-explicit-any
       } catch (error: any) {

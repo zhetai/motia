@@ -1,6 +1,9 @@
 import { ZodObject } from 'zod'
 import { ApiRouteConfig, CronConfig, EventConfig, Flow, Step } from './types'
 import { isApiStep, isCronStep, isEventStep } from './guards'
+import { validateStep } from './step-validator'
+import path from 'path'
+import { Printer } from './printer'
 
 type FlowEvent = 'flow-created' | 'flow-removed' | 'flow-updated'
 
@@ -12,11 +15,14 @@ export class LockedData {
   private stepsMap: Record<string, Step>
   private handlers: Record<FlowEvent, ((flowName: string) => void)[]>
 
-  constructor(public baseDir: string) {
+  private readonly printer: Printer
+
+  constructor(public readonly baseDir: string) {
     this.flows = {}
     this.activeSteps = []
     this.devSteps = []
     this.stepsMap = {}
+    this.printer = new Printer(baseDir)
 
     this.handlers = {
       'flow-created': [],
@@ -42,7 +48,13 @@ export class LockedData {
     return this.activeSteps.filter(isCronStep)
   }
 
-  updateStep(oldStep: Step, newStep: Step): void {
+  updateStep(oldStep: Step, newStep: Step): boolean {
+    if (!this.isValidStep(newStep)) {
+      this.deleteStep(oldStep)
+
+      return false
+    }
+
     if (oldStep.config.type !== newStep.config.type) {
       this.activeSteps = this.activeSteps.filter((s) => s.filePath !== oldStep.filePath)
       this.devSteps = this.devSteps.filter((s) => s.filePath !== oldStep.filePath)
@@ -83,9 +95,17 @@ export class LockedData {
     }
 
     savedStep.config = newStep.config
+
+    this.printer.printStepUpdated(newStep)
+
+    return true
   }
 
-  createStep(step: Step): void {
+  createStep(step: Step): boolean {
+    if (!this.isValidStep(step)) {
+      return false
+    }
+
     this.stepsMap[step.filePath] = step
 
     if (step.config.virtualEmits) {
@@ -103,6 +123,10 @@ export class LockedData {
         this.onFlowUpdated(flowName)
       }
     }
+
+    this.printer.printStepCreated(step)
+
+    return true
   }
 
   deleteStep(step: Step): void {
@@ -125,12 +149,15 @@ export class LockedData {
         this.onFlowUpdated(flowName)
       }
     }
+
+    this.printer.printStepRemoved(step)
   }
 
   private createFlow(flowName: string): Flow {
     const flow = { name: flowName, description: '', steps: [] }
     this.flows[flowName] = flow
     this.handlers['flow-created'].forEach((handler) => handler(flowName))
+    this.printer.printFlowCreated(flowName)
 
     return flow
   }
@@ -138,9 +165,24 @@ export class LockedData {
   private removeFlow(flowName: string): void {
     delete this.flows[flowName]
     this.handlers['flow-removed'].forEach((handler) => handler(flowName))
+    this.printer.printFlowRemoved(flowName)
   }
 
   private onFlowUpdated(flowName: string): void {
     this.handlers['flow-updated'].forEach((handler) => handler(flowName))
+  }
+
+  private isValidStep(step: Step): boolean {
+    const validationResult = validateStep(step)
+
+    if (!validationResult.success) {
+      this.printer.printValidationError(step.filePath, validationResult)
+    }
+
+    return validationResult.success
+  }
+
+  private getRelativePath(filePath: string) {
+    return path.relative(this.baseDir, filePath)
   }
 }

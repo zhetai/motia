@@ -29,8 +29,7 @@ export const getModuleExport = async (filePath: string, exportName: string) => {
 
     return module[exportName]
   } catch (error) {
-    console.error(`Failed to extract ${exportName} from ${filePath}:`, error)
-
-    throw new Error(`No ${exportName} found in step ${filePath}`)
+    console.error(`Failed to extract ${exportName} from`, error)
+    return undefined
   }
 }

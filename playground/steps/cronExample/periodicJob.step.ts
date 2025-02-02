@@ -1,7 +1,7 @@
-import { FlowContext } from '@motiadev/core'
+import { CronConfig, FlowContext } from '@motiadev/core'
 
-export const config = {
-  type: 'cron' as const,
+export const config: CronConfig = {
+  type: 'cron',
   name: 'PeriodicJob',
   description: 'Runs every minute and emits a timestamp',
   cron: '0 * * * *', // run every hour at minute 0

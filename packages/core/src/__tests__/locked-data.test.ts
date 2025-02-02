@@ -4,7 +4,7 @@ import { createApiStep, createCronStep, createEventStep, createNoopStep } from '
 describe('LockedData', () => {
   describe('step creation', () => {
     it('should add steps to activeSteps when created', () => {
-      const lockedData = new LockedData('/test/dir')
+      const lockedData = new LockedData(process.cwd())
       const step = createApiStep()
       lockedData.createStep(step)
 
@@ -13,7 +13,7 @@ describe('LockedData', () => {
     })
 
     it('should add steps to devSteps when virtualEmits is present', () => {
-      const lockedData = new LockedData('/test/dir')
+      const lockedData = new LockedData(process.cwd())
       const step = createNoopStep()
 
       lockedData.createStep(step)
@@ -24,7 +24,7 @@ describe('LockedData', () => {
     })
 
     it('should create flows when they do not exist', () => {
-      const lockedData = new LockedData('/test/dir')
+      const lockedData = new LockedData(process.cwd())
       const step = createApiStep({ name: 'Test 1', flows: ['flow1', 'flow2'] })
 
       lockedData.createStep(step)
@@ -43,7 +43,7 @@ describe('LockedData', () => {
     const cronStep = createCronStep()
 
     beforeAll(() => {
-      lockedData = new LockedData('/test/dir')
+      lockedData = new LockedData(process.cwd())
       lockedData.createStep(apiStep)
       lockedData.createStep(eventStep)
       lockedData.createStep(cronStep)
@@ -70,13 +70,13 @@ describe('LockedData', () => {
 
   describe('step changes', () => {
     it('should handle flow changes correctly', () => {
-      const lockedData = new LockedData('/test/dir')
+      const lockedData = new LockedData(process.cwd())
       const oldStep = createApiStep({ flows: ['flow-1', 'flow-2'] })
       lockedData.createStep(oldStep)
 
       expect(Object.keys(lockedData.flows)).toEqual(['flow-1', 'flow-2'])
 
-      const newStep = createApiStep({ ...oldStep, flows: ['flow-2', 'flow-3'] })
+      const newStep = createApiStep({ ...oldStep.config, flows: ['flow-2', 'flow-3'] })
       lockedData.updateStep(oldStep, newStep)
 
       expect(Object.keys(lockedData.flows)).toEqual(['flow-2', 'flow-3'])
@@ -87,7 +87,7 @@ describe('LockedData', () => {
     })
 
     it('should handle type changes correctly', () => {
-      const lockedData = new LockedData('/test/dir')
+      const lockedData = new LockedData(process.cwd())
       const oldStep = createApiStep({}, '/test/dir/steps/flow-1/step.ts')
       lockedData.createStep(oldStep)
 
@@ -101,7 +101,7 @@ describe('LockedData', () => {
 
   describe('step deletion', () => {
     it('should remove steps from activeSteps and flows', () => {
-      const lockedData = new LockedData('/test/dir')
+      const lockedData = new LockedData(process.cwd())
       const step = createApiStep({ flows: ['flow-1'] })
 
       lockedData.createStep(step)
@@ -116,7 +116,7 @@ describe('LockedData', () => {
     })
 
     it('should remove steps from devSteps', () => {
-      const lockedData = new LockedData('/test/dir')
+      const lockedData = new LockedData(process.cwd())
       const step = createNoopStep()
 
       lockedData.createStep(step)
@@ -127,7 +127,7 @@ describe('LockedData', () => {
     })
 
     it('should keep flows with remaining steps', () => {
-      const lockedData = new LockedData('/test/dir')
+      const lockedData = new LockedData(process.cwd())
 
       const step1 = createApiStep({ flows: ['flow-1'] })
       const step2 = createEventStep({ flows: ['flow-1'] })
@@ -145,7 +145,7 @@ describe('LockedData', () => {
 
   describe('flow events', () => {
     it('should call handlers when flow is created', () => {
-      const lockedData = new LockedData('/test/dir')
+      const lockedData = new LockedData(process.cwd())
       const handler = jest.fn()
 
       lockedData.on('flow-created', handler)
@@ -155,7 +155,7 @@ describe('LockedData', () => {
     })
 
     it('should call handlers when flow is removed', () => {
-      const lockedData = new LockedData('/test/dir')
+      const lockedData = new LockedData(process.cwd())
       const handler = jest.fn()
       const step = createApiStep({ flows: ['flow-1'] })
 
@@ -168,7 +168,7 @@ describe('LockedData', () => {
     })
 
     it('should call updated handlers when new step is added to flow', () => {
-      const lockedData = new LockedData('/test/dir')
+      const lockedData = new LockedData(process.cwd())
       const handler = jest.fn()
 
       lockedData.on('flow-updated', handler)
@@ -180,7 +180,7 @@ describe('LockedData', () => {
     })
 
     it('should call handlers when step is removed from flow', () => {
-      const lockedData = new LockedData('/test/dir')
+      const lockedData = new LockedData(process.cwd())
       const updateHandler = jest.fn()
       const event = createEventStep({ flows: ['flow-1'] })
 
@@ -196,7 +196,7 @@ describe('LockedData', () => {
     })
 
     it('should not call removed handlers when step is removed from flow but flow is not empty', () => {
-      const lockedData = new LockedData('/test/dir')
+      const lockedData = new LockedData(process.cwd())
       const deleteHandler = jest.fn()
       const event = createEventStep({ flows: ['flow-1'] })
 
@@ -211,7 +211,7 @@ describe('LockedData', () => {
     })
 
     it('should call handlers when step is updated inside a flow', () => {
-      const lockedData = new LockedData('/test/dir')
+      const lockedData = new LockedData(process.cwd())
       const updateHandler = jest.fn()
       const event = createEventStep({ flows: ['flow-1'] })
 

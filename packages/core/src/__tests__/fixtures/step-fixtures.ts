@@ -1,5 +1,6 @@
 import { z } from 'zod'
 import { Step, ApiRouteConfig, EventConfig, CronConfig, NoopConfig } from '../../types'
+import path from 'path'
 
 export const createApiStep = (config: Partial<ApiRouteConfig> = {}, filePath?: string): Step<ApiRouteConfig> => ({
   config: {
@@ -13,7 +14,7 @@ export const createApiStep = (config: Partial<ApiRouteConfig> = {}, filePath?: s
     ...config,
   },
   version: '1',
-  filePath: filePath || '/playground/steps/motiaServerExample/startServerExample.step.ts',
+  filePath: path.join(process.cwd(), filePath || '/playground/steps/motiaServerExample/startServerExample.step.ts'),
 })
 
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
@@ -28,7 +29,7 @@ export const createEventStep = (config: Partial<EventConfig<any>> = {}, filePath
     ...config,
   },
   version: '1',
-  filePath: filePath || '/playground/steps/motiaServerExample/processor.step.ts',
+  filePath: path.join(process.cwd(), filePath || '/playground/steps/motiaServerExample/processor.step.ts'),
 })
 
 export const createCronStep = (config: Partial<CronConfig> = {}, filePath?: string): Step<CronConfig> => ({
@@ -41,7 +42,7 @@ export const createCronStep = (config: Partial<CronConfig> = {}, filePath?: stri
     ...config,
   },
   version: '1',
-  filePath: filePath || '/playground/steps/motiaServerExample/cronJob.step.ts',
+  filePath: path.join(process.cwd(), filePath || '/playground/steps/motiaServerExample/cronJob.step.ts'),
 })
 
 export const createNoopStep = (config: Partial<NoopConfig> = {}, filePath?: string): Step<NoopConfig> => ({
@@ -54,5 +55,5 @@ export const createNoopStep = (config: Partial<NoopConfig> = {}, filePath?: stri
     ...config,
   },
   version: '1',
-  filePath: filePath || '/playground/steps/motiaServerExample/noop.step.ts',
+  filePath: path.join(process.cwd(), filePath || '/playground/steps/motiaServerExample/noop.step.ts'),
 })
