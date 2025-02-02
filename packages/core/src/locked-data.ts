@@ -2,7 +2,6 @@ import { ZodObject } from 'zod'
 import { ApiRouteConfig, CronConfig, EventConfig, Flow, Step } from './types'
 import { isApiStep, isCronStep, isEventStep } from './guards'
 import { validateStep } from './step-validator'
-import path from 'path'
 import { Printer } from './printer'
 
 type FlowEvent = 'flow-created' | 'flow-removed' | 'flow-updated'
@@ -11,11 +10,10 @@ export class LockedData {
   public flows: Record<string, Flow>
   public activeSteps: Step[]
   public devSteps: Step[]
+  public readonly printer: Printer
 
   private stepsMap: Record<string, Step>
   private handlers: Record<FlowEvent, ((flowName: string) => void)[]>
-
-  private readonly printer: Printer
 
   constructor(public readonly baseDir: string) {
     this.flows = {}
@@ -67,9 +65,9 @@ export class LockedData {
     }
 
     const savedStep = this.stepsMap[newStep.filePath]
-    const addedFlows = newStep.config.flows.filter((flowName) => !oldStep.config.flows.includes(flowName))
-    const removedFlows = oldStep.config.flows.filter((flowName) => !newStep.config.flows.includes(flowName))
-    const untouchedFlows = oldStep.config.flows.filter((flowName) => newStep.config.flows.includes(flowName))
+    const addedFlows = newStep.config.flows?.filter((flowName) => !oldStep.config.flows?.includes(flowName)) ?? []
+    const removedFlows = oldStep.config.flows?.filter((flowName) => !newStep.config.flows?.includes(flowName)) ?? []
+    const untouchedFlows = oldStep.config.flows?.filter((flowName) => newStep.config.flows?.includes(flowName)) ?? []
 
     untouchedFlows.forEach((flowName) => this.onFlowUpdated(flowName))
 
@@ -114,7 +112,7 @@ export class LockedData {
       this.activeSteps.push(step)
     }
 
-    for (const flowName of step.config.flows) {
+    for (const flowName of step.config.flows ?? []) {
       if (!this.flows[flowName]) {
         const flow = this.createFlow(flowName)
         flow.steps.push(step)
@@ -136,7 +134,7 @@ export class LockedData {
 
     delete this.stepsMap[step.filePath]
 
-    for (const flowName of step.config.flows) {
+    for (const flowName of step.config.flows ?? []) {
       const stepFlows = this.flows[flowName]?.steps
 
       if (stepFlows) {
@@ -180,9 +178,5 @@ export class LockedData {
     }
 
     return validationResult.success
-  }
-
-  private getRelativePath(filePath: string) {
-    return path.relative(this.baseDir, filePath)
   }
 }

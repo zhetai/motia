@@ -5,10 +5,8 @@ import { LockedData } from './locked-data'
 import { StateAdapter } from './state/state-adapter'
 
 export type MotiaEventManager = {
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  createHandler: (step: Step<EventConfig<any>>) => void
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  removeHandler: (step: Step<EventConfig<any>>) => void
+  createHandler: (step: Step<EventConfig>) => void
+  removeHandler: (step: Step<EventConfig>) => void
 }
 
 export const createStepHandlers = (
@@ -20,8 +18,7 @@ export const createStepHandlers = (
 
   globalLogger.debug(`[step handler] creating step handlers for ${eventSteps.length} steps`)
 
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  const createHandler = (step: Step<EventConfig<any>>) => {
+  const createHandler = (step: Step<EventConfig>) => {
     const { config, filePath } = step
     const { subscribes } = config
 
@@ -38,7 +35,7 @@ export const createStepHandlers = (
           globalLogger.debug('[step handler] received event', { event: rest, step: step.config.name })
 
           try {
-            await callStepFile(filePath, step.config.name, event, eventManager, state)
+            await callStepFile(step, lockedData, event, eventManager, state)
             // eslint-disable-next-line @typescript-eslint/no-explicit-any
           } catch (error: any) {
             globalLogger.error(`[step handler] error calling step`, {
@@ -52,8 +49,7 @@ export const createStepHandlers = (
     })
   }
 
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  const removeHandler = (step: Step<EventConfig<any>>) => {
+  const removeHandler = (step: Step<EventConfig>) => {
     const { config, filePath } = step
     const { subscribes } = config
 

@@ -37,7 +37,7 @@ export class Logger extends BaseLogger {
 
   constructor(
     private readonly traceId: string,
-    private readonly flows: string[],
+    private readonly flows: string[] | undefined,
     private readonly file: string,
     socketServer?: Server,
   ) {

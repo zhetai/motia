@@ -1,7 +1,9 @@
+import { LockedData } from './locked-data'
 import { RpcProcessor } from './step-handler-rpc-processor'
-import { Event, EventManager, InternalStateManager } from './types'
+import { Event, EventConfig, EventManager, InternalStateManager, Step } from './types'
 import { spawn } from 'child_process'
 import path from 'path'
+import { isAllowedToEmit } from './utils'
 
 type StateGetInput = { traceId: string; key: string }
 type StateSetInput = { traceId: string; key: string; value: unknown }
@@ -34,17 +36,17 @@ const getLanguageBasedRunner = (
 }
 
 export const callStepFile = <TData>(
-  stepPath: string,
-  step: string,
+  step: Step<EventConfig>,
+  lockedData: LockedData,
   event: Event<TData>,
   eventManager: EventManager,
   state: InternalStateManager,
 ): Promise<void> => {
   return new Promise((resolve, reject) => {
     const jsonData = JSON.stringify({ ...event })
-    const { runner, command } = getLanguageBasedRunner(stepPath)
+    const { runner, command } = getLanguageBasedRunner(step.filePath)
 
-    const child = spawn(command, [runner, stepPath, jsonData], {
+    const child = spawn(command, [runner, step.filePath, jsonData], {
       stdio: [undefined, undefined, undefined, 'ipc'],
     })
 
@@ -56,7 +58,13 @@ export const callStepFile = <TData>(
     rpcProcessor.handler<StateSetInput>('state.set', (input) => state.set(input.traceId, input.key, input.value))
     rpcProcessor.handler<StateDeleteInput>('state.delete', (input) => state.delete(input.traceId, input.key))
     rpcProcessor.handler<StateClearInput>('state.clear', (input) => state.clear(input.traceId))
-    rpcProcessor.handler<Event>('emit', (input) => {
+    rpcProcessor.handler<Event>('emit', async (input) => {
+      if (!isAllowedToEmit(step, input.type)) {
+        lockedData.printer.printInvalidEmit(step, input.type)
+
+        return
+      }
+
       return eventManager.emit(
         {
           ...input,
@@ -64,7 +72,7 @@ export const callStepFile = <TData>(
           flows: event.flows,
           logger: event.logger,
         },
-        stepPath,
+        step.filePath,
       )
     })
 

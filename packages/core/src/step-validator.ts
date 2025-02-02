@@ -21,7 +21,7 @@ const noopSchema = z
     description: z.string().optional(),
     virtualEmits: emits,
     virtualSubscribes: z.array(z.string()),
-    flows: z.array(z.string()),
+    flows: z.array(z.string()).optional(),
   })
   .strict()
 
@@ -34,7 +34,7 @@ const eventSchema = z
     emits: emits,
     virtualEmits: emits.optional(),
     input: z.any(),
-    flows: z.array(z.string()),
+    flows: z.array(z.string()).optional(),
   })
   .strict()
 
@@ -48,7 +48,7 @@ const apiSchema = z
     emits: emits,
     virtualEmits: emits.optional(),
     virtualSubscribes: z.array(z.string()).optional(),
-    flows: z.array(z.string()),
+    flows: z.array(z.string()).optional(),
     bodySchema: z.instanceof(z.ZodObject).optional(),
   })
   .strict()
@@ -61,7 +61,7 @@ const cronSchema = z
     cron: z.string(),
     virtualEmits: emits.optional(),
     emits: emits,
-    flows: z.array(z.string()),
+    flows: z.array(z.string()).optional(),
   })
   .strict()
 

@@ -17,8 +17,7 @@ export const createApiStep = (config: Partial<ApiRouteConfig> = {}, filePath?: s
   filePath: path.join(process.cwd(), filePath || '/playground/steps/motiaServerExample/startServerExample.step.ts'),
 })
 
-// eslint-disable-next-line @typescript-eslint/no-explicit-any
-export const createEventStep = (config: Partial<EventConfig<any>> = {}, filePath?: string): Step<EventConfig<any>> => ({
+export const createEventStep = (config: Partial<EventConfig> = {}, filePath?: string): Step<EventConfig> => ({
   config: {
     type: 'event',
     name: 'Processor',

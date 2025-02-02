@@ -23,7 +23,7 @@ export type EventHandler<TInput extends ZodObject<any>> = (input: z.infer<TInput
 export type Emit = string | { type: string; label?: string; conditional?: boolean }
 
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
-export type EventConfig<TInput extends ZodObject<any>> = {
+export type EventConfig<TInput extends ZodObject<any> = any> = {
   type: 'event'
   name: string
   description?: string
@@ -31,7 +31,7 @@ export type EventConfig<TInput extends ZodObject<any>> = {
   emits: Emit[]
   virtualEmits?: Emit[]
   input: TInput
-  flows: string[]
+  flows?: string[]
 }
 
 export type NoopConfig = {
@@ -40,7 +40,7 @@ export type NoopConfig = {
   description?: string
   virtualEmits: Emit[]
   virtualSubscribes: string[]
-  flows: string[]
+  flows?: string[]
 }
 
 export type ApiRouteMethod = 'GET' | 'POST' | 'PUT' | 'DELETE' | 'PATCH' | 'OPTIONS' | 'HEAD'
@@ -54,7 +54,7 @@ export type ApiRouteConfig = {
   emits: Emit[]
   virtualEmits?: Emit[]
   virtualSubscribes?: string[]
-  flows: string[]
+  flows?: string[]
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
   bodySchema?: ZodObject<any>
 }
@@ -83,7 +83,7 @@ export type CronConfig = {
   cron: string
   virtualEmits?: Emit[]
   emits: Emit[]
-  flows: string[]
+  flows?: string[]
 }
 
 export type StepHandler<T> =
@@ -100,7 +100,7 @@ export type Event<TData = unknown> = {
   type: string
   data: TData
   traceId: string
-  flows: string[]
+  flows?: string[]
   logger: Logger
 }
 

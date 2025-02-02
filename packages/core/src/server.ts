@@ -12,6 +12,7 @@ import { ApiRequest, ApiRouteConfig, ApiRouteHandler, EmitData, EventManager, St
 import { getModuleExport } from './node/get-module-export'
 import { systemSteps } from './steps'
 import { LockedData } from './locked-data'
+import { isAllowedToEmit } from './utils'
 
 export type MotiaServer = {
   app: Express
@@ -35,7 +36,7 @@ export const createServer = async (
   const allSteps = [...systemSteps, ...lockedData.activeSteps]
   const cronManager = setupCronHandlers(lockedData, eventManager, io)
 
-  const asyncHandler = (step: Step, flows: string[]) => {
+  const asyncHandler = (step: Step<ApiRouteConfig>, flows?: string[]) => {
     return async (req: Request, res: Response) => {
       const traceId = randomUUID()
       const logger = new Logger(traceId, flows, step.config.name, io)
@@ -50,6 +51,11 @@ export const createServer = async (
         queryParams: req.query as Record<string, string | string[]>,
       }
       const emit = async ({ data, type }: EmitData) => {
+        if (!isAllowedToEmit(step, type)) {
+          lockedData.printer.printInvalidEmit(step, type)
+          return
+        }
+
         await eventManager.emit({ data, type, traceId, flows, logger }, step.filePath)
       }
 

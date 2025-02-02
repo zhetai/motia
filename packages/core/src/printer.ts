@@ -4,46 +4,51 @@ import { ValidationError } from './step-validator'
 import { Step } from './types'
 import { isApiStep, isCronStep, isEventStep, isNoopStep } from './guards'
 
-export class Printer {
-  private stepTag = colors.bold(colors.magenta('Step'))
-  private flowTag = colors.bold(colors.blue('Flow'))
+const stepTag = colors.bold(colors.magenta('Step'))
+const flowTag = colors.bold(colors.blue('Flow'))
+const created = colors.green('➜ [CREATED]')
+const updated = colors.yellow('➜ [UPDATED]')
+const removed = colors.red('➜ [REMOVED]')
+const invalidEmit = colors.red('➜ [INVALID EMIT]')
+const error = colors.red('[ERROR]')
 
+export class Printer {
   constructor(private readonly baseDir: string) {}
 
-  printStepCreated(step: Step) {
+  printInvalidEmit(step: Step, emit: string) {
     console.log(
-      `${colors.green('➜ [CREATED]')} ${this.stepTag} ${this.getStepType(step)} ${this.getStepPath(step)} created`,
+      `${invalidEmit} ${stepTag} ${this.getStepType(step)} ${this.getStepPath(step)} tried to emit an event not defined in the step config: ${colors.yellow(emit)}`,
     )
+  }
+
+  printStepCreated(step: Step) {
+    console.log(`${created} ${stepTag} ${this.getStepType(step)} ${this.getStepPath(step)} created`)
   }
 
   printStepUpdated(step: Step) {
-    console.log(
-      `${colors.yellow('➜ [UPDATED]')} ${this.stepTag} ${this.getStepType(step)} ${this.getStepPath(step)} updated`,
-    )
+    console.log(`${updated} ${stepTag} ${this.getStepType(step)} ${this.getStepPath(step)} updated`)
   }
 
   printStepRemoved(step: Step) {
-    console.log(
-      `${colors.red('➜ [REMOVED]')} ${this.stepTag} ${this.getStepType(step)} ${this.getStepPath(step)} removed`,
-    )
+    console.log(`${removed} ${stepTag} ${this.getStepType(step)} ${this.getStepPath(step)} removed`)
   }
 
   printFlowCreated(flowName: string) {
-    console.log(`${colors.green('➜ [CREATED]')} ${this.flowTag} ${colors.bold(colors.cyan(flowName))} created`)
+    console.log(`${created} ${flowTag} ${colors.bold(colors.cyan(flowName))} created`)
   }
 
   printFlowUpdated(flowName: string) {
-    console.log(`${colors.yellow('➜ [UPDATED]')} ${this.flowTag} ${colors.bold(colors.cyan(flowName))} updated`)
+    console.log(`${updated} ${flowTag} ${colors.bold(colors.cyan(flowName))} updated`)
   }
 
   printFlowRemoved(flowName: string) {
-    console.log(`${colors.red('➜ [REMOVED]')} ${this.flowTag} ${colors.bold(colors.cyan(flowName))} removed`)
+    console.log(`${removed} ${flowTag} ${colors.bold(colors.cyan(flowName))} removed`)
   }
 
   printValidationError(stepPath: string, validationError: ValidationError) {
     const relativePath = this.getRelativePath(stepPath)
 
-    console.log(`${colors.red('[ERROR]')} ${colors.bold(colors.cyan(relativePath))}`)
+    console.log(`${error} ${colors.bold(colors.cyan(relativePath))}`)
     validationError.errors?.forEach((error) => {
       if (error.path) {
         console.log(`${colors.red('│')} ${colors.yellow(`✖ ${error.path}`)}: ${error.message}`)
