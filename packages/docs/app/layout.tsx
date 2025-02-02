@@ -10,38 +10,120 @@ const inter = Inter({
 
 export const metadata: Metadata = {
   title: {
-    template: '%s | Motia',
-    default: 'Motia - Code-first framework for intelligent workflows',
+    template: '%s | motia',
+    default: 'motia - Code-first framework for intelligent workflows',
   },
-  description: 'Write in any language. Automate anything. From AI agents to backend automation, Motia runs event-driven workflows with zero overhead.',
+  description: 'Write in any language. Automate anything. From AI agents to backend automation, motia runs event-driven workflows with zero overhead.',
   metadataBase: new URL('https://motia.dev'),
+
+  // Standard OpenGraph
   openGraph: {
     type: 'website',
     locale: 'en_US',
     url: 'https://motia.dev',
-    siteName: 'Motia',
-    title: 'Motia - Code-first framework for intelligent workflows',
-    description: 'Write in any language. Automate anything. From AI agents to backend automation, Motia runs event-driven workflows with zero overhead.',
+    siteName: 'motia',
+    title: 'motia - Code-first framework for intelligent workflows',
+    description: 'Write in any language. Automate anything. From AI agents to backend automation, motia runs event-driven workflows with zero overhead.',
     images: [
       {
-        url: '/og-image.png',  // You'll need to create this image
+        url: '/og-image.png',
         width: 1200,
         height: 630,
-        alt: 'Motia - Code-first framework for intelligent workflows',
+        alt: 'motia - Code-first framework for intelligent workflows',
       }
     ],
   },
+
+  // Twitter/X
   twitter: {
     card: 'summary_large_image',
-    site: '@motiadev',  // Replace with your Twitter handle
-    creator: '@motiadev',  // Replace with your Twitter handle
-    title: 'Motia - Code-first framework for intelligent workflows',
-    description: 'Write in any language. Automate anything. From AI agents to backend automation, Motia runs event-driven workflows with zero overhead.',
-    images: ['/og-image.png'],  // Same image as OG
+    site: '@motiadev',
+    creator: '@motiadev',
+    title: 'motia - Code-first framework for intelligent workflows',
+    description: 'Write in any language. Automate anything. From AI agents to backend automation, motia runs event-driven workflows with zero overhead.',
+    images: ['/og-image.png'],
   },
+
+  // Icons and PWA
+  icons: {
+    icon: [
+      { url: '/favicon.ico' },
+      { url: '/icon.png', type: 'image/png' },
+    ],
+    apple: [
+      { url: '/apple-icon.png', type: 'image/png' },
+    ],
+    other: [
+      {
+        rel: 'mask-icon',
+        url: '/safari-pinned-tab.svg',
+        color: '#3b82f6',
+      },
+    ],
+  },
+
+  // Additional metadata
   other: {
-    'twitter:image:alt': 'Motia - Code-first framework for intelligent workflows',
-  }
+    // Twitter alt text
+    'twitter:image:alt': 'motia - Code-first framework for intelligent workflows',
+
+    // Instagram
+    'instagram:card': 'summary_large_image',
+    'instagram:title': 'motia - Code-first framework for intelligent workflows',
+    'instagram:description': 'Write in any language. Automate anything. From AI agents to backend automation, motia runs event-driven workflows with zero overhead.',
+    'instagram:image': 'https://motia.dev/og-image.png',
+
+    // Reddit
+    'reddit:title': 'motia - Code-first framework for intelligent workflows',
+    'reddit:description': 'Write in any language. Automate anything. From AI agents to backend automation, motia runs event-driven workflows with zero overhead.',
+    'reddit:image': 'https://motia.dev/og-image.png',
+
+    // LinkedIn
+    'linkedin:card': 'summary_large_image',
+    'linkedin:title': 'motia - Code-first framework for intelligent workflows',
+    'linkedin:description': 'Write in any language. Automate anything. From AI agents to backend automation, motia runs event-driven workflows with zero overhead.',
+    'linkedin:image': 'https://motia.dev/og-image.png',
+
+    // Slack
+    'slack-app-id': 'YOUR_SLACK_APP_ID', // If you have a Slack app
+
+    // PWA related
+    'theme-color': '#3b82f6',
+    'application-name': 'motia',
+    'apple-mobile-web-app-title': 'motia',
+    'apple-mobile-web-app-capable': 'yes',
+    'apple-mobile-web-app-status-bar-style': 'default',
+    'mobile-web-app-capable': 'yes',
+    'msapplication-TileColor': '#3b82f6',
+    'msapplication-config': '/browserconfig.xml',
+    'format-detection': 'telephone=no',
+
+    // Search Engine
+    'google-site-verification': 'YOUR_GOOGLE_VERIFICATION', // If you have Google Search Console
+    'yandex-verification': 'YOUR_YANDEX_VERIFICATION', // If you target Yandex
+    'bing-verification': 'YOUR_BING_VERIFICATION', // If you target Bing
+
+    // Canonical URL (important for SEO)
+    'canonical': 'https://motia.dev',
+  },
+
+  // Robots
+  robots: {
+    index: true,
+    follow: true,
+    googleBot: {
+      index: true,
+      follow: true,
+      'max-video-preview': -1,
+      'max-image-preview': 'large',
+      'max-snippet': -1,
+    },
+  },
+
+  // Verification for webmaster tools
+  verification: {
+    google: 'YOUR_GOOGLE_VERIFICATION',
+  },
 }
 
 export default function Layout({ children }: { children: ReactNode }) {
