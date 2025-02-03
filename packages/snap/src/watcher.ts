@@ -108,9 +108,13 @@ export class Watcher {
   init() {
     this.watcher = chokidar
       .watch(this.dir, { persistent: true, ignoreInitial: true })
-      .on('add', (path) => this.onFileAdd(path))
-      .on('change', (path) => this.onFileChange(path))
-      .on('unlink', (path) => this.onFileDelete(path))
+      .on('add', (path) => this.isStepFile(path) && this.onFileAdd(path))
+      .on('change', (path) => this.isStepFile(path) && this.onFileChange(path))
+      .on('unlink', (path) => this.isStepFile(path) && this.onFileDelete(path))
+  }
+
+  private isStepFile(path: string): boolean {
+    return /\.step\.[^.]+$/.test(path) && !/\.tsx$/.test(path)
   }
 
   async stop(): Promise<void> {

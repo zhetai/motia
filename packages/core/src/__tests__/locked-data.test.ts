@@ -1,3 +1,4 @@
+import path from 'path'
 import { LockedData } from '../locked-data'
 import { createApiStep, createCronStep, createEventStep, createNoopStep } from './fixtures/step-fixtures'
 
@@ -87,11 +88,13 @@ describe('LockedData', () => {
     })
 
     it('should handle type changes correctly', () => {
-      const lockedData = new LockedData(process.cwd())
-      const oldStep = createApiStep({}, '/test/dir/steps/flow-1/step.ts')
+      const baseDir = '/test/dir'
+      const lockedData = new LockedData(baseDir)
+      const filePath = path.join(baseDir, 'steps/flow-1/step.ts')
+      const oldStep = createApiStep({}, filePath)
       lockedData.createStep(oldStep)
 
-      const newStep = createEventStep({}, '/test/dir/steps/flow-1/step.ts')
+      const newStep = createEventStep({}, filePath)
       lockedData.updateStep(oldStep, newStep)
 
       expect(lockedData.apiSteps()).toHaveLength(0)

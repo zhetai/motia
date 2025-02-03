@@ -3,7 +3,7 @@ import { Server } from 'socket.io'
 
 const isDebugEnabled = () => process.env.LOG_LEVEL === 'debug'
 
-class BaseLogger {
+export class BaseLogger {
   private logger: pino.Logger
 
   constructor(meta: Record<string, unknown> = {}) {
@@ -29,6 +29,10 @@ class BaseLogger {
 
   warn(message: string, args?: unknown) {
     this.logger.warn(args, message)
+  }
+
+  log(args: unknown) {
+    this.logger.info(args)
   }
 }
 

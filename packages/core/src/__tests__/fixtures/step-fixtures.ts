@@ -14,7 +14,7 @@ export const createApiStep = (config: Partial<ApiRouteConfig> = {}, filePath?: s
     ...config,
   },
   version: '1',
-  filePath: path.join(process.cwd(), filePath || '/playground/steps/motiaServerExample/startServerExample.step.ts'),
+  filePath: filePath ?? path.join(process.cwd(), '/playground/steps/motiaServerExample/startServerExample.step.ts'),
 })
 
 export const createEventStep = (config: Partial<EventConfig> = {}, filePath?: string): Step<EventConfig> => ({
@@ -28,7 +28,7 @@ export const createEventStep = (config: Partial<EventConfig> = {}, filePath?: st
     ...config,
   },
   version: '1',
-  filePath: path.join(process.cwd(), filePath || '/playground/steps/motiaServerExample/processor.step.ts'),
+  filePath: filePath ?? path.join(process.cwd(), '/playground/steps/motiaServerExample/processor.step.ts'),
 })
 
 export const createCronStep = (config: Partial<CronConfig> = {}, filePath?: string): Step<CronConfig> => ({
@@ -41,7 +41,7 @@ export const createCronStep = (config: Partial<CronConfig> = {}, filePath?: stri
     ...config,
   },
   version: '1',
-  filePath: path.join(process.cwd(), filePath || '/playground/steps/motiaServerExample/cronJob.step.ts'),
+  filePath: filePath ?? path.join(process.cwd(), '/playground/steps/motiaServerExample/cronJob.step.ts'),
 })
 
 export const createNoopStep = (config: Partial<NoopConfig> = {}, filePath?: string): Step<NoopConfig> => ({
@@ -54,5 +54,5 @@ export const createNoopStep = (config: Partial<NoopConfig> = {}, filePath?: stri
     ...config,
   },
   version: '1',
-  filePath: path.join(process.cwd(), filePath || '/playground/steps/motiaServerExample/noop.step.ts'),
+  filePath: filePath ?? path.join(process.cwd(), '/playground/steps/motiaServerExample/noop.step.ts'),
 })
