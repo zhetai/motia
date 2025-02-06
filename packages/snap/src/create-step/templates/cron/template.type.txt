@@ -1,0 +1,22 @@
+import { CronConfig, StepHandler } from '@motiadev/core'
+
+export const config: CronConfig = {
+  type: 'cron',
+  name: '{{STEP_NAME}}',
+  description: '{{DESCRIPTION}}',
+  cron: '{{CRON_EXPRESSION}}',
+  emits: {{EMITS}},
+  flows: {{FLOWS}}
+}
+
+export const handler: StepHandler<typeof config> = async ({ logger, emit }) => {
+  logger.info('Running {{STEP_NAME}} cron job')
+
+  // Add your cron logic here
+  
+  // Example emit
+  // await emit({
+  //   type: 'event-type',
+  //   data: {}
+  // })
+}

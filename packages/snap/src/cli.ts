@@ -106,6 +106,18 @@ program
     }
   })
 
+const generate = program.command('generate').description('Generate motia resources')
+generate
+  .command('step')
+  .description('Create a new step with interactive prompts')
+  .option('-d, --dir <step file path>', 'The path relative to the steps directory, used to create the step file')
+  .action(async (arg) => {
+    const { createStep } = require('./create-step') // eslint-disable-line @typescript-eslint/no-require-imports
+    await createStep({
+      stepFilePath: arg.dir,
+    })
+  })
+
 const state = program.command('state').description('Manage application state')
 
 state

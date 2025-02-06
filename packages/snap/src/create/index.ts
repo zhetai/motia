@@ -58,9 +58,9 @@ const installRequiredDependencies = async (packageManager: string, rootDir: stri
     pnpm: 'pnpm add',
   }[packageManager]
 
-  const dependencies = ['@motiadev/core', 'motia', '@motiadev/workbench', 'zod'].join(' ')
+  const dependencies = ['@motiadev/core', 'motia', '@motiadev/workbench', 'zod', 'react@^19.0.0'].join(' ')
 
-  const devDependencies = ['ts-node@^10.9.2', 'typescript@^5.7.3'].join(' ')
+  const devDependencies = ['ts-node@^10.9.2', 'typescript@^5.7.3', '@types/react@^18.3.18'].join(' ')
 
   try {
     await executeCommand(`${installCommand} ${dependencies}`, rootDir)

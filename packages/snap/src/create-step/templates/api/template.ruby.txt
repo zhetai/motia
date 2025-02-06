@@ -1,0 +1,22 @@
+def config
+  {
+    type: 'api',
+    name: '{{STEP_NAME}}',
+    description: '{{DESCRIPTION}}',
+    path: '{{PATH}}',
+    method: '{{METHOD}}',
+    emits: {{EMITS}},
+    flows: {{FLOWS}}
+  }
+end
+
+def handler(req, context)
+  context.logger.info('Processing {{STEP_NAME}}', req)
+
+  # Add your handler logic here
+  
+  {
+    status: 200,
+    body: { message: 'Success' }
+  }
+end

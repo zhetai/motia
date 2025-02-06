@@ -1,0 +1,30 @@
+import { EventConfig, StepHandler } from '@motiadev/core'
+import { z } from 'zod'
+
+type Input = typeof inputSchema
+
+const inputSchema = z.object({
+  // Add your schema here
+})
+
+export const config: EventConfig = {
+  type: 'event',
+  name: '{{STEP_NAME}}',
+  description: '{{DESCRIPTION}}',
+  subscribes: {{SUBSCRIPTIONS}},
+  emits: {{EMITS}},
+  input: inputSchema,
+  flows: {{FLOWS}}
+}
+
+export const handler: StepHandler<typeof config> = async (input, { logger, emit }) => {
+  logger.info('Processing {{STEP_NAME}}', input)
+
+  // Add your handler logic here
+  
+  // Example emit
+  // await emit({
+  //   type: 'event-type',
+  //   data: {}
+  // })
+}

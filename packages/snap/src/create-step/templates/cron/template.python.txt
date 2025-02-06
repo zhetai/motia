@@ -1,0 +1,19 @@
+config = {
+    "type": "cron",
+    "name": "{{STEP_NAME}}",
+    "description": "{{DESCRIPTION}}",
+    "cron": "{{CRON_EXPRESSION}}",
+    "emits": {{EMITS}},
+    "flows": {{FLOWS}}
+}
+
+async def handler(data, context):
+    context.logger.info("Running {{STEP_NAME}} cron job")
+
+    # Add your cron logic here
+    
+    # Example emit
+    # await context.emit({
+    #     "type": "event-type",
+    #     "data": {}
+    # })
