@@ -1,7 +1,6 @@
 import { randomUUID } from 'crypto'
 import { Express } from 'express'
 import fs from 'fs'
-import zodToJsonSchema from 'zod-to-json-schema'
 import { Emit, Step } from './types'
 import { isApiStep, isEventStep, isNoopStep, isCronStep } from './guards'
 import { getStepLanguage } from './get-step-language'
@@ -140,7 +139,7 @@ const createApiStepResponse = (step: Step, id: string): FlowStepResponse => {
     subscribes: step.config.virtualSubscribes ?? undefined,
     action: 'webhook',
     webhookUrl: `${step.config.method} ${step.config.path}`,
-    bodySchema: step.config.bodySchema ? zodToJsonSchema(step.config.bodySchema) : undefined,
+    bodySchema: step.config.bodySchema ?? undefined,
   }
 }
 

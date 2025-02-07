@@ -10,8 +10,7 @@ def send_message(message)
     io.write(json_message)
     io.flush
   rescue Errno::EBADF => e
-    warn "Error writing to IPC channel: #{e.message}"
-    exit(1)
+    raise "Error writing to IPC channel: #{e.message}"
   ensure
     io.close if io && !io.closed?
   end
@@ -41,20 +40,17 @@ end
 # Main execution block
 begin
   if ARGV.empty?
-    warn 'Error: No file path provided'
-    exit(1)
+    raise 'Error: No file path provided'
   end
 
   file_path = ARGV[0]
   
   unless File.exist?(file_path)
-    warn "Error: File not found: #{file_path}"
-    exit(1)
+    raise "Error: File not found: #{file_path}"
   end
   
   unless File.readable?(file_path)
-    warn "Error: File is not readable: #{file_path}"
-    exit(1)
+    raise "Error: File is not readable: #{file_path}"
   end
 
   # Extract and send config
@@ -62,7 +58,4 @@ begin
   send_message(config)
   
   exit(0)
-rescue => e
-  warn "Error: #{e.message}"
-  exit(1)
 end

@@ -1,20 +1,63 @@
-import { getNodeFileConfig } from './node/get-config'
-import { getPythonConfig } from './python/get-python-config'
-import { getRubyConfig } from './ruby/get-ruby-config'
+import { spawn } from 'child_process'
+import path from 'path'
 import { StepConfig } from './types'
+import { globalLogger } from './logger'
 
-export const getStepConfig = async (filePath: string): Promise<StepConfig | null> => {
-  const isRb = filePath.endsWith('.rb')
-  const isPython = filePath.endsWith('.py')
-  const isNode = filePath.endsWith('.js') || filePath.endsWith('.ts')
+const getLanguageBasedRunner = (
+  stepFilePath = '',
+): {
+  command: string
+  runner: string
+  args: string[]
+} => {
+  const isPython = stepFilePath.endsWith('.py')
+  const isRuby = stepFilePath.endsWith('.rb')
+  const isNode = stepFilePath.endsWith('.js') || stepFilePath.endsWith('.ts')
 
-  if (isRb) {
-    return getRubyConfig(filePath)
-  } else if (isPython) {
-    return getPythonConfig(filePath)
+  if (isPython) {
+    const pythonRunner = path.join(__dirname, 'python', 'get-config.py')
+    return { runner: pythonRunner, command: 'python', args: [] }
+  } else if (isRuby) {
+    const rubyRunner = path.join(__dirname, 'ruby', 'get-config.rb')
+    return { runner: rubyRunner, command: 'ruby', args: [] }
   } else if (isNode) {
-    return getNodeFileConfig(filePath)
+    if (process.env._MOTIA_TEST_MODE === 'true') {
+      const nodeRunner = path.join(__dirname, 'node', 'get-config.ts')
+      return { runner: nodeRunner, command: 'node', args: ['-r', 'ts-node/register'] }
+    }
+
+    const nodeRunner = path.join(__dirname, 'node', 'get-config.js')
+    return { runner: nodeRunner, command: 'node', args: [] }
   }
 
-  return null
+  throw Error(`Unsupported file extension ${stepFilePath}`)
+}
+
+export const getStepConfig = (file: string): Promise<StepConfig | null> => {
+  const { runner, command, args } = getLanguageBasedRunner(file)
+
+  return new Promise((resolve, reject) => {
+    let config: StepConfig | null = null
+
+    const child = spawn(command, [...args, runner, file], {
+      stdio: ['inherit', 'inherit', 'inherit', 'ipc'],
+    })
+
+    child.on('message', (message) => {
+      globalLogger.debug('[Config] Read config', { config: message })
+      config = message as StepConfig
+      resolve(config)
+      child.kill() // we can kill the child process since we already received the message
+    })
+
+    child.on('close', (code) => {
+      if (config) {
+        return // Config was already resolved
+      } else if (code !== 0) {
+        reject(new Error(`Process exited with code ${code}`))
+      } else if (!config) {
+        reject(new Error(`No config found for file ${file}`))
+      }
+    })
+  })
 }

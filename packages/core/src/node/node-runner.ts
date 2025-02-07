@@ -39,7 +39,9 @@ async function runTypescriptModule(filePath: string, event: Record<string, unkno
     sender.init()
 
     // Call the function with provided arguments
-    await module.handler(event.data, context)
+    const result = await module.handler(event.data, context)
+
+    await sender.send('result', result)
     await sender.close()
 
     process.exit(0)

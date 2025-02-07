@@ -8,11 +8,10 @@ import { flowsEndpoint } from './flows-endpoint'
 import { isApiStep } from './guards'
 import { globalLogger, Logger } from './logger'
 import { StateAdapter } from './state/state-adapter'
-import { ApiRequest, ApiRouteConfig, ApiRouteHandler, EmitData, EventManager, Step } from './types'
-import { getModuleExport } from './node/get-module-export'
+import { ApiRequest, ApiResponse, ApiRouteConfig, EventManager, Step } from './types'
 import { systemSteps } from './steps'
 import { LockedData } from './locked-data'
-import { isAllowedToEmit } from './utils'
+import { callStepFile } from './call-step-file'
 
 export type MotiaServer = {
   app: Express
@@ -36,31 +35,37 @@ export const createServer = async (
   const allSteps = [...systemSteps, ...lockedData.activeSteps]
   const cronManager = setupCronHandlers(lockedData, eventManager, io)
 
-  const asyncHandler = (step: Step<ApiRouteConfig>, flows?: string[]) => {
+  const asyncHandler = (step: Step<ApiRouteConfig>) => {
     return async (req: Request, res: Response) => {
       const traceId = randomUUID()
-      const logger = new Logger(traceId, flows, step.config.name, io)
+      const { name, flows } = step.config
+      const logger = new Logger(traceId, flows, name, io)
 
       logger.debug('[API] Received request, processing step', { path: req.path, step })
 
-      const handler = (await getModuleExport(step.filePath, 'handler')) as ApiRouteHandler
       const request: ApiRequest = {
         body: req.body,
         headers: req.headers as Record<string, string | string[]>,
         pathParams: req.params,
         queryParams: req.query as Record<string, string | string[]>,
       }
-      const emit = async ({ data, type }: EmitData) => {
-        if (!isAllowedToEmit(step, type)) {
-          lockedData.printer.printInvalidEmit(step, type)
-          return
-        }
-
-        await eventManager.emit({ data, type, traceId, flows, logger }, step.filePath)
-      }
 
       try {
-        const result = await handler(request, { emit, state, logger, traceId })
+        const data = request
+        const result = await callStepFile<ApiResponse>({
+          data,
+          step,
+          lockedData,
+          logger,
+          eventManager,
+          state,
+          traceId,
+        })
+
+        if (!result) {
+          res.status(500).json({ error: 'Internal server error' })
+          return
+        }
 
         if (result.headers) {
           Object.entries(result.headers).forEach(([key, value]) => res.setHeader(key, value))
@@ -82,13 +87,13 @@ export const createServer = async (
   const router = express.Router()
 
   const addRoute = (step: Step<ApiRouteConfig>) => {
-    const { method, flows, path } = step.config
+    const { method, path } = step.config
     globalLogger.debug('[API] Registering route', step.config)
 
     if (method === 'POST') {
-      router.post(path, asyncHandler(step, flows))
+      router.post(path, asyncHandler(step))
     } else if (method === 'GET') {
-      router.get(path, asyncHandler(step, flows))
+      router.get(path, asyncHandler(step))
     } else {
       throw new Error(`Unsupported method: ${method}`)
     }

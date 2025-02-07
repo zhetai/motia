@@ -42,10 +42,11 @@ export class Watcher {
       return
     }
 
-    const config = await getStepConfig(path)
+    const config = await getStepConfig(path).catch((err) => {
+      console.error(err)
+    })
 
     if (!config) {
-      console.warn(`No config found in step ${path}, step skipped`)
       return
     }
 
@@ -56,16 +57,13 @@ export class Watcher {
   }
 
   private async onFileChange(path: string): Promise<void> {
-    if (!this.stepChangeHandler) {
-      console.warn(`No step change handler, step skipped`)
-      return
-    }
+    const config = await getStepConfig(path).catch((err) => {
+      console.error(err)
+    })
 
-    const config = await getStepConfig(path)
     const step = this.findStep(path)
 
     if (!step && !config) {
-      console.warn(`Step ${path} not found, step skipped`)
       return
     }
 
@@ -90,11 +88,6 @@ export class Watcher {
   }
 
   private async onFileDelete(path: string): Promise<void> {
-    if (!this.stepDeleteHandler) {
-      console.warn(`No step delete handler, step skipped`)
-      return
-    }
-
     const step = this.findStep(path)
 
     if (!step) {

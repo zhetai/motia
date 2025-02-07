@@ -6,8 +6,6 @@ An API step is exposed as an HTTP endpoint that acts as an entry point into your
 
 ## Config
 
-<Callout type="warn">Currently, API steps are only supported in TS or JS</Callout>
-
 The following properties are specific to the API Step, in addition to the [common step config](/docs/core/steps/defining-steps#config).
 
 <DescriptionTable
@@ -21,21 +19,20 @@ The following properties are specific to the API Step, in addition to the [commo
       type: 'GET | POST',
     },
     bodySchema: {
-      description: 'This is only required for TS or JS steps that use zod for their http request body schema, this is used when processing the step to validate the request body before executing the step handler.',
-      type: 'string[]',
-    }
-  }} 
+      description:
+        'In TS/JS we use zod to validate the request body, in Python/Ruby we use json schema to validate the request body.',
+      type: 'JSON Schema',
+    },
+  }}
 />
 
 The following examples showcase how to configure an **API Step**
 
-<Tabs  items={['TS', 'JS']}>
-  <Tab value="TS">
+<Tabs items={['TypeScript', 'JavaScript', 'Python', 'Ruby']}>
+  <Tab value="TypeScript">
     ```typescript
+      import { ApiRouteConfig, StepHandler } from '@motiadev/core'
       import { z } from 'zod'
-      import { ApiRouteConfig } from '@motiadev/core'
-      
-      const inputSchema = z.object({})
 
       export const config: ApiRouteConfig = {
         type: 'api',
@@ -44,25 +41,111 @@ The following examples showcase how to configure an **API Step**
         path: '/test-state',
         method: 'POST',
         emits: ['test-state'],
-        bodySchema: inputSchema,
+        bodySchema: z.object({}),
         flows: ['test-state'],
       }
-    ```
-  </Tab>
-  <Tab value="JS">
-    ```javascript
-    const apiInputSchema = z.object({});
 
-    const apiConfig = {
+      export const handler: StepHandler<typeof config> = async (req, { logger, emit }) => {
+        logger.info('[Test State] Received request', req)
+
+        await emit({
+          type: 'test-state',
+          data: req.body
+        })
+
+        return {
+          status: 200,
+          body: { message: 'Success' },
+        }
+      }
+    ```
+
+  </Tab>
+  <Tab value="JavaScript">
+    ```javascript
+    const { z } = require('zod')
+
+    exports.config = {
       type: 'api',
       name: 'Test state api trigger',
       description: 'test state',
       path: '/test-state',
       method: 'POST',
       emits: ['test-state'],
-      bodySchema: apiInputSchema,
+      bodySchema: z.object({}),
       flows: ['test-state'],
-    };
+    }
+
+    exports.handler = async (req, { logger, emit }) => {
+      logger.info('[Test State] Received request', req)
+
+      await emit({
+        type: 'test-state',
+        data: req.body
+      })
+
+      return {
+        status: 200,
+        body: { message: 'Success' },
+      }
+    }
     ```
+
+  </Tab>
+
+  <Tab value="Python">
+    ```python
+    config = {
+        'type': 'api',
+        'name': 'Test state api trigger',
+        'description': 'test state',
+        'path': '/test-state',
+        'method': 'POST',
+        'emits': ['test-state'],
+        'flows': ['test-state']
+    }
+
+    async def handler(req, context):
+        context.logger.info('[Test State] Received request', {'body': req.body})
+
+        await context.emit({
+            'type': 'test-state',
+            'data': req.body
+        })
+
+        return {
+            'status': 200,
+            'body': {'message': 'Success'}
+        }
+    ```
+
+  </Tab>
+  <Tab value="Ruby">
+    ```ruby
+    def config
+      {
+        type: 'api',
+        name: 'Test state api trigger',
+        description: 'test state',
+        path: '/test-state',
+        method: 'POST',
+        emits: ['test-state'],
+        flows: ['test-state']
+      }
+    end
+
+    def handler(req, ctx)
+      ctx.emit({
+        "type" => "test-state",
+        "data" => req.body
+      })
+
+      {
+        "status" => 200,
+        "body" => { "message" => "Success" }
+      }
+    end
+    ```
+
   </Tab>
 </Tabs>

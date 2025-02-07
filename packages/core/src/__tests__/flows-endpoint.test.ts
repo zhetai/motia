@@ -3,6 +3,7 @@ import { generateFlowsList } from '../flows-endpoint'
 import { LockedData } from '../locked-data'
 import { z } from 'zod'
 import { Step } from '../types'
+import zodToJsonSchema from 'zod-to-json-schema'
 
 const mockFlowSteps: Step[] = [
   createApiStep({
@@ -17,14 +18,14 @@ const mockFlowSteps: Step[] = [
     name: 'Processor',
     subscribes: ['ws-server-example.start'],
     emits: ['ws-server-example.processed'],
-    input: z.object({}),
+    input: zodToJsonSchema(z.object({})),
     flows: ['motia-server'],
   }),
   createEventStep({
     name: 'Finalizer',
     subscribes: ['ws-server-example.processed'],
     emits: [],
-    input: z.object({}),
+    input: zodToJsonSchema(z.object({})),
     flows: ['motia-server'],
   }),
 ]

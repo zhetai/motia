@@ -1,12 +1,47 @@
-import { StepConfig } from '../types'
-import { getModuleExport } from './get-module-export'
+import path from 'path'
+import { ZodObject } from 'zod'
+import zodToJsonSchema from 'zod-to-json-schema'
 
-export const getNodeFileConfig = async (filePath: string): Promise<StepConfig> => {
+// Add ts-node registration before dynamic imports
+// eslint-disable-next-line @typescript-eslint/no-require-imports
+require('ts-node').register({
+  transpileOnly: true,
+  compilerOptions: { module: 'commonjs' },
+})
+
+async function getConfig(filePath: string) {
   try {
-    return await getModuleExport(filePath, 'config')
-  } catch (error) {
-    console.error(`Failed to extract config from ${filePath}:`, error)
+    // eslint-disable-next-line @typescript-eslint/no-require-imports
+    const module = require(path.resolve(filePath))
 
-    throw new Error(`No config found in step ${filePath}`)
+    // Check if the specified function exists in the module
+    if (!module.config) {
+      throw new Error(`Config not found in module ${filePath}`)
+    }
+
+    if (module.config.input instanceof ZodObject) {
+      module.config.input = zodToJsonSchema(module.config.input)
+    } else if (module.config.bodySchema instanceof ZodObject) {
+      module.config.bodySchema = zodToJsonSchema(module.config.bodySchema)
+    }
+
+    process.send?.(module.config)
+
+    process.exit(0)
+  } catch (error) {
+    console.error('Error running TypeScript module:', error)
+    process.exit(1)
   }
 }
+
+const [, , filePath] = process.argv
+
+if (!filePath) {
+  console.error('Usage: node get-config.js <file-path>')
+  process.exit(1)
+}
+
+getConfig(filePath).catch((err) => {
+  console.error('Error:', err)
+  process.exit(1)
+})

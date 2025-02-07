@@ -22,7 +22,7 @@ def handler(event, context)
 
   context.state.set(context.trace_id, 'stepC', partial_result_c)
 
-  context.emit.call({
+  context.emit({
     type: 'pms.stepC.done',
     data: partial_result_c
   })

@@ -1,6 +1,7 @@
 import { z } from 'zod'
 import { Step, ApiRouteConfig, EventConfig, CronConfig, NoopConfig } from '../../types'
 import path from 'path'
+import zodToJsonSchema from 'zod-to-json-schema'
 
 export const createApiStep = (config: Partial<ApiRouteConfig> = {}, filePath?: string): Step<ApiRouteConfig> => ({
   config: {
@@ -23,7 +24,7 @@ export const createEventStep = (config: Partial<EventConfig> = {}, filePath?: st
     name: 'Processor',
     subscribes: ['ws-server-example.start'],
     emits: ['ws-server-example.processed'],
-    input: z.object({}),
+    input: zodToJsonSchema(z.object({})),
     flows: ['motia-server'],
     ...config,
   },

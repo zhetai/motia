@@ -1,4 +1,4 @@
-import { EventConfig, EventManager, Step } from './types'
+import { Event, EventConfig, EventManager, Step } from './types'
 import { globalLogger } from './logger'
 import { callStepFile } from './call-step-file'
 import { LockedData } from './locked-data'
@@ -18,9 +18,15 @@ export const createStepHandlers = (
 
   globalLogger.debug(`[step handler] creating step handlers for ${eventSteps.length} steps`)
 
+  const removeLogger = (event: Event) => {
+    // eslint-disable-next-line @typescript-eslint/no-unused-vars
+    const { logger, ...rest } = event
+    return rest
+  }
+
   const createHandler = (step: Step<EventConfig>) => {
     const { config, filePath } = step
-    const { subscribes } = config
+    const { subscribes, name } = config
 
     globalLogger.debug('[step handler] establishing step subscriptions', { filePath, step: step.config.name })
 
@@ -30,18 +36,18 @@ export const createStepHandlers = (
         event: subscribe,
         handlerName: step.config.name,
         handler: async (event) => {
-          // eslint-disable-next-line @typescript-eslint/no-unused-vars
-          const { logger, ...rest } = event
-          globalLogger.debug('[step handler] received event', { event: rest, step: step.config.name })
+          const { logger, data, traceId } = event
+
+          globalLogger.debug('[step handler] received event', { event: removeLogger(event), step: name })
 
           try {
-            await callStepFile(step, lockedData, event, eventManager, state)
+            await callStepFile({ step, lockedData, eventManager, state, data, traceId, logger })
             // eslint-disable-next-line @typescript-eslint/no-explicit-any
           } catch (error: any) {
             globalLogger.error(`[step handler] error calling step`, {
               error: error.message,
               filePath,
-              step: step.config.name,
+              step: name,
             })
           }
         },

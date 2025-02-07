@@ -1,6 +1,40 @@
 import { z } from 'zod'
 import { Step } from './types'
 
+const jsonSchema = z.object({
+  type: z.string(),
+  properties: z.record(z.any()),
+  required: z.array(z.string()).optional(),
+  additionalProperties: z.boolean().optional(),
+  description: z.string().optional(),
+  title: z.string().optional(),
+  definitions: z.record(z.any()).optional(),
+  $ref: z.string().optional(),
+  items: z.any().optional(),
+  enum: z.array(z.any()).optional(),
+  allOf: z.array(z.any()).optional(),
+  anyOf: z.array(z.any()).optional(),
+  oneOf: z.array(z.any()).optional(),
+  not: z.any().optional(),
+  format: z.string().optional(),
+  default: z.any().optional(),
+  examples: z.array(z.any()).optional(),
+  multipleOf: z.number().optional(),
+  maximum: z.number().optional(),
+  exclusiveMaximum: z.union([z.boolean(), z.number()]).optional(),
+  minimum: z.number().optional(),
+  exclusiveMinimum: z.union([z.boolean(), z.number()]).optional(),
+  maxLength: z.number().optional(),
+  minLength: z.number().optional(),
+  pattern: z.string().optional(),
+  maxItems: z.number().optional(),
+  minItems: z.number().optional(),
+  uniqueItems: z.boolean().optional(),
+  maxProperties: z.number().optional(),
+  minProperties: z.number().optional(),
+  const: z.any().optional(),
+})
+
 const emits = z.array(
   z.union([
     z.string(),
@@ -33,7 +67,7 @@ const eventSchema = z
     subscribes: z.array(z.string()),
     emits: emits,
     virtualEmits: emits.optional(),
-    input: z.any(),
+    input: z.union([jsonSchema, z.null()]).optional(),
     flows: z.array(z.string()).optional(),
   })
   .strict()
@@ -49,7 +83,7 @@ const apiSchema = z
     virtualEmits: emits.optional(),
     virtualSubscribes: z.array(z.string()).optional(),
     flows: z.array(z.string()).optional(),
-    bodySchema: z.instanceof(z.ZodObject).optional(),
+    bodySchema: z.union([jsonSchema, z.null()]).optional(),
   })
   .strict()
 
