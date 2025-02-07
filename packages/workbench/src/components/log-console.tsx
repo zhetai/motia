@@ -96,8 +96,8 @@ export const LogConsole = () => {
                     <TableHead>Level</TableHead>
                     <TableHead>Trace</TableHead>
                     <TableHead>Flow</TableHead>
+                    <TableHead>Step</TableHead>
                     <TableHead>Message</TableHead>
-                    <TableHead>File</TableHead>
                   </TableRow>
                 </TableHeader>
                 <TableBody className="text-md font-mono">
@@ -109,8 +109,8 @@ export const LogConsole = () => {
                       </TableCell>
                       <TableCell>{log.traceId.split('-').pop()}</TableCell>
                       <TableCell>{log.flows?.join?.(', ')}</TableCell>
+                      <TableCell>{log.step}</TableCell>
                       <TableCell>{log.msg}</TableCell>
-                      <TableCell>{log.file}</TableCell>
                     </TableRow>
                   ))}
                 </TableBody>

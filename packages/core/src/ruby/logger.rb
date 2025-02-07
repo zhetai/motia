@@ -2,10 +2,9 @@ require 'json'
 require 'time'
 
 class CustomLogger
-  def initialize(trace_id, flows, file_path, sender)
+  def initialize(trace_id, flows, sender)
     @trace_id = trace_id
     @flows = flows
-    @file_name = file_path.split('/').last
     @sender = sender
   end
 
@@ -25,7 +24,6 @@ class CustomLogger
       time: (Time.now.to_f * 1000).to_i,  # Milliseconds since epoch to match Node
       traceId: @trace_id,
       flows: @flows,
-      file: @file_name,
       msg: message
     }
 

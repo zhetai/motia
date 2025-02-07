@@ -11,7 +11,9 @@ export const config: ApiRouteConfig = {
   flows: ['parallel-merge'],
 }
 
-export const handler: StepHandler<typeof config> = async (_, { emit }) => {
+export const handler: StepHandler<typeof config> = async (_, { emit, logger }) => {
+  logger.info('Starting parallel merge')
+
   await emit({ type: 'pms.start', data: {} })
 
   return { status: 200, body: { message: 'Started parallel merge' } }

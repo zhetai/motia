@@ -30,7 +30,7 @@ async function runTypescriptModule(filePath: string, event: Record<string, unkno
 
     const { traceId, flows } = event
     const sender = new RpcSender(process)
-    const logger = new Logger(traceId as string, flows as string[], filePath, sender)
+    const logger = new Logger(traceId as string, flows as string[], sender)
     const state = new RpcStateManager(sender)
 
     const emit = async (data: unknown) => sender.send('emit', data)

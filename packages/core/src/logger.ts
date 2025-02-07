@@ -6,13 +6,17 @@ const isDebugEnabled = () => process.env.LOG_LEVEL === 'debug'
 export class BaseLogger {
   private logger: pino.Logger
 
-  constructor(meta: Record<string, unknown> = {}) {
+  constructor(private readonly meta: Record<string, unknown> = {}) {
     this.logger = pino({
       level: process.env.LOG_LEVEL || 'info',
       formatters: { level: (level) => ({ level }) },
       base: null,
       mixin: () => meta,
     })
+  }
+
+  child(meta: Record<string, unknown> = {}): this {
+    return new BaseLogger({ ...this.meta, ...meta }) as this
   }
 
   info(message: string, args?: unknown) {
@@ -42,18 +46,14 @@ export class Logger extends BaseLogger {
   constructor(
     private readonly traceId: string,
     private readonly flows: string[] | undefined,
-    private readonly file: string,
-    socketServer?: Server,
+    private readonly step: string,
+    private readonly socketServer?: Server,
   ) {
-    super({ traceId, flows, file })
+    super({ traceId, flows, step })
 
     this.emitLog = (level: string, msg: string, args?: unknown) => {
-      if (!socketServer) {
-        return
-      }
-
-      socketServer.emit('log', {
-        file: this.file,
+      socketServer?.emit('log', {
+        step: this.step,
         ...(args ?? {}),
         level,
         time: Date.now(),
@@ -62,6 +62,10 @@ export class Logger extends BaseLogger {
         flows: this.flows,
       })
     }
+  }
+
+  child(meta: Record<string, unknown> = {}): this {
+    return new Logger(this.traceId, this.flows, meta.step as string, this.socketServer) as this
   }
 
   // eslint-disable-next-line @typescript-eslint/no-explicit-any

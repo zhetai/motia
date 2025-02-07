@@ -20,14 +20,13 @@ def parse_args(arg: str) -> Any:
         return arg
 
 class Context:
-    def __init__(self, args: Any, rpc: RpcSender, file_name: str):
+    def __init__(self, args: Any, rpc: RpcSender):
         self.trace_id = args.traceId
         self.traceId = args.traceId
         self.flows = args.flows
-        self.file_name = file_name
         self.rpc = rpc
         self.state = RpcStateManager(rpc)
-        self.logger = Logger(self.trace_id, self.flows, self.file_name, rpc)
+        self.logger = Logger(self.trace_id, self.flows, rpc)
 
     async def emit(self, event: Any):
         return await self.rpc.send('emit', event)
@@ -50,7 +49,7 @@ async def run_python_module(file_path: str, rpc: RpcSender, args: Any) -> None:
         if not hasattr(module, 'handler'):
             raise AttributeError(f"Function 'handler' not found in module {module_path}")
 
-        context = Context(args, rpc, file_path)
+        context = Context(args, rpc)
 
         result = await module.handler(args.data, context)
 

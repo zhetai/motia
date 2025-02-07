@@ -25,14 +25,13 @@ class Context
     promise  # Return promise to maintain async pattern
   end
 
-  def initialize(rpc, args, file_path)
+  def initialize(rpc, args)
     @rpc = rpc
     @trace_id = args.traceId
     @traceId = args.traceId
     @flows = args.flows
-    @file_name = file_path.split('/').last  # Consistent with Python/Node
     @state = RpcStateManager.new(rpc)
-    @logger = CustomLogger.new(@trace_id, @flows, @file_name, @rpc)
+    @logger = CustomLogger.new(@trace_id, @flows, @rpc)
   end
 end
 
@@ -51,7 +50,7 @@ def run_ruby_module(file_path, args)
     end
 
     rpc = RpcSender.new
-    context = Context.new(rpc, args, file_path)
+    context = Context.new(rpc, args)
     rpc.init
 
     # Call handler and wait for any promises

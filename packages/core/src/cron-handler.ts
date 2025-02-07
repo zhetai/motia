@@ -16,25 +16,25 @@ export const setupCronHandlers = (lockedData: LockedData, eventManager: EventMan
 
   const createCronJob = (step: Step<CronConfig>) => {
     const { config, filePath } = step
-    const { cron: cronExpression } = config
+    const { cron: cronExpression, name: stepName } = config
 
     if (!cron.validate(cronExpression)) {
       globalLogger.error('[cron handler] invalid cron expression', {
         expression: cronExpression,
-        step: step.config.name,
+        step: stepName,
       })
       return
     }
 
     globalLogger.debug('[cron handler] setting up cron job', {
       filePath,
-      step: step.config.name,
+      step: stepName,
       cron: cronExpression,
     })
 
     const task = cron.schedule(cronExpression, async () => {
       const traceId = Math.random().toString(36).substring(7)
-      const logger = new Logger(traceId, config.flows, step.config.name, socketServer)
+      const logger = new Logger(traceId, config.flows, stepName, socketServer)
       const flows = config.flows
 
       try {

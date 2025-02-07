@@ -4,7 +4,6 @@ export class Logger {
   constructor(
     private readonly traceId: string,
     private readonly flows: string[],
-    private readonly fileName: string,
     private readonly sender: RpcSender,
   ) {}
 
@@ -15,7 +14,6 @@ export class Logger {
       time: Date.now(),
       traceId: this.traceId,
       flows: this.flows,
-      file: this.fileName,
       msg: message,
     }
 

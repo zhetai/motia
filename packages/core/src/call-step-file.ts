@@ -52,7 +52,8 @@ type CallStepFileOptions = {
 }
 
 export const callStepFile = <TData>(options: CallStepFileOptions): Promise<TData | undefined> => {
-  const { step, lockedData, logger, eventManager, state, traceId, data } = options
+  const { step, lockedData, eventManager, state, traceId, data } = options
+  const logger = options.logger.child({ step: step.config.name })
   const flows = step.config.flows
 
   return new Promise((resolve, reject) => {

@@ -3,10 +3,9 @@ from typing import Any, Dict, Optional
 from rpc import RpcSender
 
 class Logger:
-    def __init__(self, trace_id: str, flows: list[str], file_path: str, rpc: RpcSender):
+    def __init__(self, trace_id: str, flows: list[str], rpc: RpcSender):
         self.trace_id = trace_id
         self.flows = flows
-        self.file_name = file_path.split('/')[-1]
         self.rpc = rpc
 
     def _log(self, level: str, message: str, args: Optional[Dict[str, Any]] = None) -> None:
@@ -15,7 +14,6 @@ class Logger:
             "time": int(time.time() * 1000),
             "traceId": self.trace_id,
             "flows": self.flows,
-            "file": self.file_name,
             "msg": message
         }
 
