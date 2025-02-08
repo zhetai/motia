@@ -10,9 +10,10 @@ import { LockedData } from './locked-data'
 type FlowListResponse = { id: string; name: string }
 
 export type EdgeData = {
-  label?: string
   variant: 'event' | 'virtual'
   emitType: string
+  label?: string
+  labelVariant?: 'default' | 'conditional'
 }
 
 type FlowEdge = {
@@ -79,18 +80,25 @@ const createEdge = (
   emitType: string,
   label: string | undefined,
   variant: 'event' | 'virtual',
+  conditional?: boolean,
 ): FlowEdge => ({
   id: `${sourceId}-${targetId}`,
   source: sourceId,
   target: targetId,
-  data: { variant, label, emitType },
+  data: {
+    variant,
+    label,
+    emitType,
+    labelVariant: conditional ? 'conditional' : 'default',
+  },
 })
 
-const processEmit = (emit: Emit): { type: string; label?: string } => {
+const processEmit = (emit: Emit): { type: string; label?: string; conditional?: boolean } => {
   const isString = typeof emit === 'string'
   return {
     type: isString ? emit : emit.type,
     label: isString ? undefined : emit.label,
+    conditional: isString ? undefined : emit.conditional,
   }
 }
 
@@ -103,11 +111,11 @@ const createEdgesForEmits = (
   const edges: FlowEdge[] = []
 
   emits.forEach((emit) => {
-    const { type: emitType, label } = processEmit(emit)
+    const { type: emitType, label, conditional } = processEmit(emit)
 
     targetSteps.forEach((targetStep) => {
       if (targetStep.subscribes?.includes(emitType)) {
-        edges.push(createEdge(sourceStep.id, targetStep.id, emitType, label, variant))
+        edges.push(createEdge(sourceStep.id, targetStep.id, emitType, label, variant, conditional))
       }
     })
   })

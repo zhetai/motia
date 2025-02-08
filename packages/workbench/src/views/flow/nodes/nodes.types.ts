@@ -40,6 +40,7 @@ export type NodeData = EventNodeData | ApiNodeData | NoopNodeData | CronNodeData
 
 // ducplicate of packages/core/src/flows-endpoint.ts
 export type EdgeData = {
-  label?: string
   variant: 'event' | 'virtual'
+  label?: string
+  labelVariant?: 'default' | 'conditional'
 }
