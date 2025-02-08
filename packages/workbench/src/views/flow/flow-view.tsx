@@ -6,7 +6,6 @@ import { ArrowHead } from './arrow-head'
 import { useGetFlowState, FlowResponse } from './hooks/use-get-flow-state'
 import { NodeOrganizer } from './node-organizer'
 import { FlowLoader } from './flow-loader'
-import { useLogListener } from '@/hooks/use-log-listener'
 import { LogConsole } from '@/components/log-console'
 import { Legend } from './legend'
 
@@ -22,8 +21,6 @@ export const FlowView: React.FC<Props> = ({ flow }) => {
   const { nodes, edges, onNodesChange, onEdgesChange, nodeTypes } = useGetFlowState(flow)
   const [initialized, setInitialized] = useState(false)
   const [hoveredType, setHoveredType] = useState<string | null>(null)
-
-  useLogListener()
 
   useEffect(() => setInitialized(false), [flow])
   const onInitialized = useCallback(() => {

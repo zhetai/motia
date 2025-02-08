@@ -1,19 +1,13 @@
-import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '@/components/ui/table'
 import { useLogs } from '@/stores/use-logs'
 import { motion, AnimatePresence } from 'framer-motion'
 import { ChevronDown, ChevronUp, Trash2 } from 'lucide-react'
 import React, { useState, useCallback, useRef, useEffect } from 'react'
-import { LogLevelBadge } from './log-level-badge'
 import { Button } from './ui/button'
 import { cn } from '@/lib/utils'
+import { Logs } from './logs'
 
 const MIN_HEIGHT = 100
 const DEFAULT_HEIGHT = 200
-
-const timestamp = (time: number) => {
-  const date = new Date(Number(time))
-  return `${date.toLocaleDateString()} ${date.toLocaleTimeString()}`
-}
 
 export const LogConsole = () => {
   const [isExpanded, setIsExpanded] = useState(false)
@@ -88,34 +82,7 @@ export const LogConsole = () => {
             transition={{ duration: 0.2 }}
             className="overflow-hidden"
           >
-            <div className="overflow-y-auto" style={{ height }}>
-              <Table>
-                <TableHeader>
-                  <TableRow className="bg-black border-b border-zinc-700 [&>th]:text-green-500 [&>th]:font-bold">
-                    <TableHead>Time</TableHead>
-                    <TableHead>Level</TableHead>
-                    <TableHead>Trace</TableHead>
-                    <TableHead>Flow</TableHead>
-                    <TableHead>Step</TableHead>
-                    <TableHead>Message</TableHead>
-                  </TableRow>
-                </TableHeader>
-                <TableBody className="text-md font-mono">
-                  {logs.map((log, index) => (
-                    <TableRow key={index} className="border-b border-zinc-800/50">
-                      <TableCell className="text-green-500">{timestamp(log.time)}</TableCell>
-                      <TableCell>
-                        <LogLevelBadge level={log.level} />
-                      </TableCell>
-                      <TableCell>{log.traceId.split('-').pop()}</TableCell>
-                      <TableCell>{log.flows?.join?.(', ')}</TableCell>
-                      <TableCell>{log.step}</TableCell>
-                      <TableCell>{log.msg}</TableCell>
-                    </TableRow>
-                  ))}
-                </TableBody>
-              </Table>
-            </div>
+            <Logs />
           </motion.div>
         )}
       </AnimatePresence>

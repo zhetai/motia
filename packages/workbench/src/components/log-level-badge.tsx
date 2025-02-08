@@ -1,7 +1,7 @@
 import React from 'react'
 import { Badge, BadgeProps } from './ui/badge'
 
-export const LogLevelBadge: React.FC<{ level: string }> = (props) => {
+export const LogLevelBadge: React.FC<{ level: string; className?: string }> = (props) => {
   const map: Record<string, BadgeProps['variant']> = {
     info: 'info',
     error: 'error',
@@ -9,5 +9,9 @@ export const LogLevelBadge: React.FC<{ level: string }> = (props) => {
     debug: 'info',
   }
 
-  return <Badge variant={map[props.level] as BadgeProps['variant']}>{props.level}</Badge>
+  return (
+    <Badge variant={map[props.level] as BadgeProps['variant']} className={props.className}>
+      {props.level}
+    </Badge>
+  )
 }
