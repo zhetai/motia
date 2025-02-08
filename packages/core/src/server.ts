@@ -28,12 +28,13 @@ export const createServer = async (
   eventManager: EventManager,
   state: StateAdapter,
 ): Promise<MotiaServer> => {
+  const printer = lockedData.printer
   const app = express()
   const server = http.createServer(app)
   const io = new SocketIOServer(server)
 
   const allSteps = [...systemSteps, ...lockedData.activeSteps]
-  const cronManager = setupCronHandlers(lockedData, eventManager, io)
+  const cronManager = setupCronHandlers(lockedData, eventManager, state, io)
 
   const asyncHandler = (step: Step<ApiRouteConfig>) => {
     return async (req: Request, res: Response) => {
@@ -41,7 +42,7 @@ export const createServer = async (
       const { name, flows } = step.config
       const logger = new Logger(traceId, flows, name, io)
 
-      logger.debug('[API] Received request, processing step', { path: req.path, step })
+      logger.debug('[API] Received request, processing step', { path: req.path })
 
       const request: ApiRequest = {
         body: req.body,
@@ -53,9 +54,10 @@ export const createServer = async (
       try {
         const data = request
         const result = await callStepFile<ApiResponse>({
+          contextInFirstArg: false,
           data,
           step,
-          lockedData,
+          printer,
           logger,
           eventManager,
           state,

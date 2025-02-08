@@ -54,8 +54,12 @@ def run_ruby_module(file_path, args)
     rpc.init
 
     # Call handler and wait for any promises
-    result = handler(args.data, context)
-    
+    if args.contextInFirstArg
+      result = handler(context)
+    else
+      result = handler(args.data, context)
+    end
+
     if result
       rpc.send('result', result)
     end

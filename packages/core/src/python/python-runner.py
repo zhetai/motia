@@ -36,6 +36,7 @@ async def run_python_module(file_path: str, rpc: RpcSender, args: Any) -> None:
         # Construct path relative to steps directory
         flows_dir = os.path.join(os.getcwd(), 'steps')
         module_path = os.path.join(flows_dir, file_path)
+        contextInFirstArg = args.contextInFirstArg
 
         # Load the module dynamically
         spec = importlib.util.spec_from_file_location("dynamic_module", module_path)
@@ -51,7 +52,10 @@ async def run_python_module(file_path: str, rpc: RpcSender, args: Any) -> None:
 
         context = Context(args, rpc)
 
-        result = await module.handler(args.data, context)
+        if contextInFirstArg:
+            result = await module.handler(context)
+        else:
+            result = await module.handler(args.data, context)
 
         if (result):
             await rpc.send('result', result)

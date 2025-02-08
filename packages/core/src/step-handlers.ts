@@ -15,6 +15,7 @@ export const createStepHandlers = (
   state: StateAdapter,
 ): MotiaEventManager => {
   const eventSteps = lockedData.eventSteps()
+  const printer = lockedData.printer
 
   globalLogger.debug(`[step handler] creating step handlers for ${eventSteps.length} steps`)
 
@@ -41,7 +42,17 @@ export const createStepHandlers = (
           globalLogger.debug('[step handler] received event', { event: removeLogger(event), step: name })
 
           try {
-            await callStepFile({ step, lockedData, eventManager, state, data, traceId, logger })
+            await callStepFile({
+              contextInFirstArg: false,
+              step,
+              printer,
+              eventManager,
+              state,
+              data,
+              traceId,
+              logger,
+            })
+
             // eslint-disable-next-line @typescript-eslint/no-explicit-any
           } catch (error: any) {
             globalLogger.error(`[step handler] error calling step`, {

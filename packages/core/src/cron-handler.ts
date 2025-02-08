@@ -1,9 +1,11 @@
+import { randomUUID } from 'crypto'
 import * as cron from 'node-cron'
 import { Server } from 'socket.io'
+import { callStepFile } from './call-step-file'
 import { LockedData } from './locked-data'
 import { globalLogger, Logger } from './logger'
-import { getModuleExport } from './node/get-module-export'
-import { EventManager, FlowContext, Step, CronConfig } from './types'
+import { StateAdapter } from './state/state-adapter'
+import { CronConfig, EventManager, Step } from './types'
 
 export type CronManager = {
   createCronJob: (step: Step<CronConfig>) => void
@@ -11,8 +13,14 @@ export type CronManager = {
   close: () => void
 }
 
-export const setupCronHandlers = (lockedData: LockedData, eventManager: EventManager, socketServer: Server) => {
+export const setupCronHandlers = (
+  lockedData: LockedData,
+  eventManager: EventManager,
+  state: StateAdapter,
+  socketServer: Server,
+) => {
   const cronJobs = new Map<string, cron.ScheduledTask>()
+  const printer = lockedData.printer
 
   const createCronJob = (step: Step<CronConfig>) => {
     const { config, filePath } = step
@@ -33,27 +41,20 @@ export const setupCronHandlers = (lockedData: LockedData, eventManager: EventMan
     })
 
     const task = cron.schedule(cronExpression, async () => {
-      const traceId = Math.random().toString(36).substring(7)
+      const traceId = randomUUID()
       const logger = new Logger(traceId, config.flows, stepName, socketServer)
-      const flows = config.flows
 
       try {
-        const handler = await getModuleExport(filePath, 'handler')
-        const emit = async (event: { type: string; data: unknown }) => {
-          await eventManager.emit({ ...event, traceId, flows, logger }, filePath)
-        }
+        await callStepFile({
+          contextInFirstArg: true,
+          step,
+          eventManager,
+          printer,
+          state,
+          traceId,
+          logger,
+        })
 
-        if (handler) {
-          await handler({ emit, logger, traceId } as FlowContext)
-        } else {
-          const data = { timestamp: Date.now() }
-          await Promise.all(
-            config.emits.map((item) => {
-              const type = typeof item === 'string' ? item : item.type
-              emit({ type, data })
-            }),
-          )
-        }
         // eslint-disable-next-line @typescript-eslint/no-explicit-any
       } catch (error: any) {
         logger.error('[cron handler] error executing cron job', {

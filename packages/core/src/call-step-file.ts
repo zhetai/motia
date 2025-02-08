@@ -1,10 +1,10 @@
-import { LockedData } from './locked-data'
 import { RpcProcessor } from './step-handler-rpc-processor'
 import { Event, EventManager, InternalStateManager, Step } from './types'
 import { spawn } from 'child_process'
 import path from 'path'
 import { isAllowedToEmit } from './utils'
 import { BaseLogger } from './logger'
+import { Printer } from './printer'
 
 type StateGetInput = { traceId: string; key: string }
 type StateSetInput = { traceId: string; key: string; value: unknown }
@@ -43,21 +43,22 @@ const getLanguageBasedRunner = (
 
 type CallStepFileOptions = {
   step: Step
-  lockedData: LockedData
   logger: BaseLogger
   eventManager: EventManager
   state: InternalStateManager
   traceId: string
-  data: any // eslint-disable-line @typescript-eslint/no-explicit-any
+  printer: Printer
+  data?: any // eslint-disable-line @typescript-eslint/no-explicit-any
+  contextInFirstArg: boolean // if true, the step file will only receive the context object
 }
 
 export const callStepFile = <TData>(options: CallStepFileOptions): Promise<TData | undefined> => {
-  const { step, lockedData, eventManager, state, traceId, data } = options
+  const { step, printer, eventManager, state, traceId, data, contextInFirstArg } = options
   const logger = options.logger.child({ step: step.config.name })
   const flows = step.config.flows
 
   return new Promise((resolve, reject) => {
-    const jsonData = JSON.stringify({ data, flows, traceId })
+    const jsonData = JSON.stringify({ data, flows, traceId, contextInFirstArg })
     const { runner, command, args } = getLanguageBasedRunner(step.filePath)
     let result: TData | undefined
 
@@ -78,8 +79,7 @@ export const callStepFile = <TData>(options: CallStepFileOptions): Promise<TData
     })
     rpcProcessor.handler<Event>('emit', async (input) => {
       if (!isAllowedToEmit(step, input.type)) {
-        lockedData.printer.printInvalidEmit(step, input.type)
-        return
+        return printer.printInvalidEmit(step, input.type)
       }
 
       return eventManager.emit({ ...input, traceId, flows: step.config.flows, logger }, step.filePath)
@@ -92,11 +92,11 @@ export const callStepFile = <TData>(options: CallStepFileOptions): Promise<TData
         const message = JSON.parse(data.toString())
         logger.log(message)
       } catch {
-        logger.info(Buffer.from(data).toString(), { step })
+        logger.info(Buffer.from(data).toString())
       }
     })
 
-    child.stderr?.on('data', (data) => logger.error(Buffer.from(data).toString(), { step }))
+    child.stderr?.on('data', (data) => logger.error(Buffer.from(data).toString()))
 
     child.on('close', (code) => {
       if (code !== 0 && code !== null) {

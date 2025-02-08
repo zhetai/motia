@@ -1,4 +1,4 @@
-import { CronConfig, FlowContext } from '@motiadev/core'
+import { CronConfig, FlowContext, StepHandler } from '@motiadev/core'
 
 export const config: CronConfig = {
   type: 'cron',
@@ -9,7 +9,9 @@ export const config: CronConfig = {
   flows: ['cron-example'],
 }
 
-export const handler = async ({ emit }: FlowContext) => {
+export const handler: StepHandler<typeof config> = async ({ emit, logger }: FlowContext) => {
+  logger.info('Running cron job')
+
   await emit({
     type: 'cron-ticked',
     data: {

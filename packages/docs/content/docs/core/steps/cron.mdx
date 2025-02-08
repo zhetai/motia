@@ -14,7 +14,7 @@ The following properties are specific to the Cron Step, in addition to the [comm
       description: 'The cron schedule expression for your step',
       type: 'string',
     },
-  }} 
+  }}
 />
 
 The following examples showcase how to configure an **CRON Step**
@@ -32,7 +32,15 @@ The following examples showcase how to configure an **CRON Step**
       emits: ['cron-ticked'],
       flows: ['cron-example'],
     }
+
+    export const handler: StepHandler<typeof config> = async ({ emit }) => {
+      await emit({
+        type: 'cron-ticked',
+        data: { message: 'Cron job executed' },
+      })
+    }
     ```
+
   </Tab>
   <Tab value="JS">
     ```javascript
@@ -44,10 +52,19 @@ The following examples showcase how to configure an **CRON Step**
       emits: ['cron-ticked'],
       flows: ['cron-example'],
     };
+
+    const handler = async ({ emit }) => {
+      await emit({
+        type: 'cron-ticked',
+        data: { message: 'Cron job executed' },
+      })
+    }
+
     ```
+
   </Tab>
   <Tab value="Python">
-  ```python
+    ```python
     config = {
         "type": "cron",
         "name": "PeriodicJob",
@@ -56,24 +73,36 @@ The following examples showcase how to configure an **CRON Step**
         "emits": ["cron-ticked"],
         "flows": ["cron-example"]
     }
-  ```
+  
+    async def handler(context):
+        await context.emit({
+            "type": "cron-ticked",
+            "data": { "message": "Cron job executed" },
+        })
+
+    ```
+
   </Tab>
   <Tab value="Ruby">
-  ```ruby
-    class Config
-      attr_reader :type, :name, :subscribes, :emits, :input, :flows
-
-      def initialize
-        @type = "cron"
-        @name = "PeriodicJob"
-        @description = "Runs every minute and emits a timestamp"
-        @cron = "0 * * * *"
-        @emits = ["cron-ticked"]
-        @flows = ["cron-example"]
-      end
+    ```ruby
+    def config
+      {
+        type: 'cron',
+        name: 'PeriodicJob',
+        description: 'Runs every minute and emits a timestamp',
+        cron: '0 * * * *',
+        emits: ['cron-ticked'],
+        flows: ['cron-example'],
+      }
     end
 
-    config = Config.new
-  ```
+    def handler(context)
+      context.emit({
+        type: 'cron-ticked',
+        data: { message: 'Cron job executed' },
+      })
+    end
+    ```
+
   </Tab>
 </Tabs>

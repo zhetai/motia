@@ -86,6 +86,8 @@ export type CronConfig = {
   flows?: string[]
 }
 
+export type CronHandler = (ctx: FlowContext) => Promise<void>
+
 export type StepHandler<T> =
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
   T extends EventConfig<any>
@@ -93,7 +95,7 @@ export type StepHandler<T> =
     : T extends ApiRouteConfig
       ? ApiRouteHandler
       : T extends CronConfig
-        ? never
+        ? CronHandler
         : never
 
 export type Event<TData = unknown> = {

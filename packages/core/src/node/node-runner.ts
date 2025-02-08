@@ -3,6 +3,9 @@ import { Logger } from './logger'
 import { RpcStateManager } from './rpc-state-manager'
 import { RpcSender } from './rpc'
 
+// eslint-disable-next-line @typescript-eslint/no-require-imports
+require('dotenv').config()
+
 // Add ts-node registration before dynamic imports
 // eslint-disable-next-line @typescript-eslint/no-require-imports
 require('ts-node').register({
@@ -28,7 +31,7 @@ async function runTypescriptModule(filePath: string, event: Record<string, unkno
       throw new Error(`Function handler not found in module ${filePath}`)
     }
 
-    const { traceId, flows } = event
+    const { traceId, flows, contextInFirstArg } = event
     const sender = new RpcSender(process)
     const logger = new Logger(traceId as string, flows as string[], sender)
     const state = new RpcStateManager(sender)
@@ -39,7 +42,7 @@ async function runTypescriptModule(filePath: string, event: Record<string, unkno
     sender.init()
 
     // Call the function with provided arguments
-    const result = await module.handler(event.data, context)
+    const result = contextInFirstArg ? await module.handler(context) : await module.handler(event.data, context)
 
     await sender.send('result', result)
     await sender.close()
