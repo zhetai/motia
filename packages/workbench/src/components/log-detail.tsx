@@ -24,14 +24,14 @@ export const LogDetail: React.FC<Props> = ({ log, onClose }) => {
 
   return (
     <Sheet open={isOpen} onOpenChange={onOpenChange}>
-      <SheetContent>
+      <SheetContent className="flex flex-col h-full">
         <SheetHeader>
           <SheetTitle>Logs details</SheetTitle>
           <SheetDescription>Log details and application.</SheetDescription>
         </SheetHeader>
-        <div className="font-mono">
+        <div className="font-mono overflow-y-auto">
           {log && (
-            <div className="mt-6 flex flex-col gap-6 ">
+            <div className="flex flex-col gap-6 ">
               <div className="flex flex-row gap-4">
                 <span className="bg-gray-900 text-white p-4 rounded-lg flex items-center justify-center">
                   <LogLevelBadge level={log.level} className="text-xl" />
