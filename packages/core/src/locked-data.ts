@@ -57,7 +57,7 @@ export class LockedData {
       this.activeSteps = this.activeSteps.filter((s) => s.filePath !== oldStep.filePath)
       this.devSteps = this.devSteps.filter((s) => s.filePath !== oldStep.filePath)
 
-      if (newStep.config.virtualEmits) {
+      if (newStep.config.type === 'noop') {
         this.devSteps.push(newStep)
       } else {
         this.activeSteps.push(newStep)
@@ -106,7 +106,7 @@ export class LockedData {
 
     this.stepsMap[step.filePath] = step
 
-    if (step.config.virtualEmits) {
+    if (step.config.type === 'noop') {
       this.devSteps.push(step)
     } else {
       this.activeSteps.push(step)

@@ -11,8 +11,8 @@ export const ApiNode = ({ data, children, excludePubsub }: Props) => {
     <BaseNode
       variant="api"
       title={data.name}
-      disableSourceHandle={!data.emits?.length}
-      disableTargetHandle={!data.subscribes?.length}
+      disableSourceHandle={!data.emits?.length && !data.virtualEmits?.length}
+      disableTargetHandle={!data.subscribes?.length && !data.virtualSubscribes?.length}
     >
       {data.description && <div className="text-sm max-w-[300px] text-white/60">{data.description}</div>}
       {children}

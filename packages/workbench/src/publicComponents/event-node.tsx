@@ -19,8 +19,8 @@ export const EventNode = (props: Props) => {
     <BaseNode
       variant="event"
       title={data.name}
-      disableSourceHandle={!data.emits.length}
-      disableTargetHandle={!data.subscribes.length}
+      disableSourceHandle={!data.emits.length && !data.virtualEmits?.length}
+      disableTargetHandle={!data.subscribes.length && !data.virtualSubscribes?.length}
       headerChildren={<LanguageIndicator language={data.language} />}
     >
       {data.description && <div className="text-sm max-w-[300px] text-white/60">{data.description}</div>}

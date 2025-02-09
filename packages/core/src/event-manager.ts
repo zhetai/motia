@@ -30,7 +30,7 @@ export const createEventManager = (): EventManager => {
 
   const unsubscribe = (config: UnsubscribeConfig) => {
     const { filePath, event } = config
-    handlers[event] = handlers[event].filter((handler) => handler.filePath !== filePath)
+    handlers[event] = handlers[event]?.filter((handler) => handler.filePath !== filePath)
   }
 
   return { emit, subscribe, unsubscribe }

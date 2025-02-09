@@ -9,7 +9,8 @@ export const CronNode = ({ data }: CronNodeProps) => {
       variant="cron"
       title={data.name}
       headerChildren={<Clock className="w-4 h-4 text-purple-400" />}
-      disableTargetHandle
+      disableTargetHandle={!data.virtualSubscribes?.length}
+      disableSourceHandle={!data.virtualEmits?.length}
     >
       <div className="text-sm text-white/70">{data.description}</div>
       <div className="text-xs text-white/50 flex items-center gap-2">
