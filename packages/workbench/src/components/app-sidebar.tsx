@@ -1,5 +1,5 @@
 import { useListFlows } from '@/hooks/use-list-flows'
-import { Logs, Workflow } from 'lucide-react'
+import { File, Logs, Workflow } from 'lucide-react'
 import { Link, useLocation } from 'react-router'
 import {
   Sidebar,
@@ -27,7 +27,7 @@ export const AppSidebar = () => {
       <SidebarHeader />
       <SidebarContent>
         <SidebarGroup>
-          <SidebarGroupLabel>Flows</SidebarGroupLabel>
+          <SidebarGroupLabel>Motia</SidebarGroupLabel>
           <SidebarGroupContent>
             <SidebarMenu>
               <SidebarMenuItem>
@@ -38,6 +38,14 @@ export const AppSidebar = () => {
                     {pathname !== '/logs' && unreadLogsCount > 0 && (
                       <Badge variant="red-rounded">{unreadLogsCount}</Badge>
                     )}
+                  </Link>
+                </SidebarMenuButton>
+              </SidebarMenuItem>
+              <SidebarMenuItem>
+                <SidebarMenuButton asChild className="cursor-pointer" isActive={pathname === '/states'}>
+                  <Link to="/states">
+                    <File />
+                    States
                   </Link>
                 </SidebarMenuButton>
               </SidebarMenuItem>

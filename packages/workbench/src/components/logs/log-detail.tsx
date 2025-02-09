@@ -1,8 +1,8 @@
 import React from 'react'
-import { Log } from '../stores/use-logs'
+import { Log } from '../../stores/use-logs'
 import { LogLevelBadge } from './log-level-badge'
-import { LogField } from './logs/LogField'
-import { Sheet, SheetContent, SheetDescription, SheetHeader, SheetTitle } from './ui/sheet'
+import { LogField } from './log-field'
+import { Sheet, SheetContent, SheetDescription, SheetHeader, SheetTitle } from '../ui/sheet'
 
 type Props = {
   log?: Log

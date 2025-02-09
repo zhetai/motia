@@ -3,6 +3,7 @@ import { generateLockedData } from './generate-locked-data'
 import path from 'path'
 import { FileStateAdapter } from '@motiadev/core/dist/src/state/adapters/default-state-adapter'
 import { createDevWatchers } from './dev-watchers'
+import { stateEndpoints } from './dev/state-endpoints'
 
 // eslint-disable-next-line @typescript-eslint/no-require-imports
 require('ts-node').register({
@@ -11,11 +12,12 @@ require('ts-node').register({
 })
 
 export const dev = async (port: number): Promise<void> => {
-  const lockedData = await generateLockedData(process.cwd())
+  const baseDir = process.cwd()
+  const lockedData = await generateLockedData(baseDir)
   const eventManager = createEventManager()
   const state = createStateAdapter({
     adapter: 'default',
-    filePath: path.join(process.cwd(), '.motia'),
+    filePath: path.join(baseDir, '.motia'),
   })
   await (state as FileStateAdapter).init()
 
@@ -25,6 +27,7 @@ export const dev = async (port: number): Promise<void> => {
 
   watcher.init()
 
+  stateEndpoints(motiaServer, state)
   motiaServer.server.listen(port)
   console.log('🚀 Server ready and listening on port', port)
   console.log(`🔗 Open http://localhost:${port}/ to open workbench 🛠️`)

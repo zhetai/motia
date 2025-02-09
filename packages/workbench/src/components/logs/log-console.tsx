@@ -2,7 +2,7 @@ import { useLogs } from '@/stores/use-logs'
 import { motion, AnimatePresence } from 'framer-motion'
 import { ChevronDown, ChevronUp, Trash2 } from 'lucide-react'
 import React, { useState, useCallback, useRef, useEffect } from 'react'
-import { Button } from './ui/button'
+import { Button } from '../ui/button'
 import { cn } from '@/lib/utils'
 import { Logs } from './logs'
 

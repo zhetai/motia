@@ -7,6 +7,7 @@ import { Flow } from './routes/flow'
 import { RouteWrapper } from './route-wrapper'
 import { LogsPage } from './routes/logs-page'
 import { RootMotia } from './components/root-motia'
+import { StatesPage } from './routes/states-page'
 
 // Render the app
 const rootElement = document.getElementById('root')!
@@ -22,6 +23,7 @@ if (!rootElement.innerHTML) {
               <Route path="/" element={<Index />} />
               <Route path="/flow/:id" element={<Flow />} />
               <Route path="/logs" element={<LogsPage />} />
+              <Route path="/states" element={<StatesPage />} />
             </Routes>
           </RouteWrapper>
         </RootMotia>

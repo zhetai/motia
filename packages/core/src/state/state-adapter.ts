@@ -7,4 +7,7 @@ export interface StateAdapter {
   delete(traceId: string, key: string): Promise<void>
   clear(traceId: string): Promise<void>
   cleanup(): Promise<void>
+
+  keys(traceId: string): Promise<string[]>
+  traceIds(): Promise<string[]>
 }

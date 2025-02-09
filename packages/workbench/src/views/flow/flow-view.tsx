@@ -1,13 +1,13 @@
-import React, { useCallback, useEffect, useState } from 'react'
+import { LogConsole } from '@/components/logs/log-console'
 import { Background, BackgroundVariant, ReactFlow } from '@xyflow/react'
 import '@xyflow/react/dist/style.css'
-import { BaseEdge } from './base-edge'
+import React, { useCallback, useEffect, useState } from 'react'
 import { ArrowHead } from './arrow-head'
-import { useGetFlowState, FlowResponse } from './hooks/use-get-flow-state'
-import { NodeOrganizer } from './node-organizer'
+import { BaseEdge } from './base-edge'
 import { FlowLoader } from './flow-loader'
-import { LogConsole } from '@/components/log-console'
+import { FlowResponse, useGetFlowState } from './hooks/use-get-flow-state'
 import { Legend } from './legend'
+import { NodeOrganizer } from './node-organizer'
 
 const edgeTypes = {
   base: BaseEdge,

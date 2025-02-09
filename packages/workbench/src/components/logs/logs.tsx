@@ -18,10 +18,10 @@ export const Logs = () => {
   }
 
   return (
-    <div className="overflow-y-auto h-full text-bold">
+    <div className="overflow-y-auto h-full text-bold p-4">
       <LogDetail log={selectedLog} onClose={() => setSelectedLog(undefined)} />
       <Table>
-        <TableHeader>
+        <TableHeader className="sticky top-0">
           <TableRow className="bg-zinc-800 border-b border-zinc-700 [&>th]:font-bold">
             <TableHead>Time</TableHead>
             <TableHead>Level</TableHead>
@@ -33,7 +33,7 @@ export const Logs = () => {
         </TableHeader>
         <TableBody className="text-md font-mono">
           {logs.map((log, index) => (
-            <TableRow key={index} className="border-b border-zinc-800/50" onClick={() => handleLogClick(log)}>
+            <TableRow key={index} className="font-bold border-b border-zinc-800/50" onClick={() => handleLogClick(log)}>
               <TableCell>{timestamp(log.time)}</TableCell>
               <TableCell>
                 <LogLevelBadge level={log.level} />

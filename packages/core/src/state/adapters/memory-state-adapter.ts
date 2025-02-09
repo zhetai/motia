@@ -35,6 +35,20 @@ export class MemoryStateAdapter implements StateAdapter {
     }
   }
 
+  async keys(traceId: string) {
+    return Object.keys(this.state)
+      .filter((key) => key.startsWith(this._makeKey(traceId, '')))
+      .map((key) => key.replace(this._makeKey(traceId, ''), ''))
+  }
+
+  async traceIds() {
+    const traceIds = new Set<string>()
+
+    Object.keys(this.state).forEach((key) => traceIds.add(key.split(':')[0]))
+
+    return Array.from(traceIds)
+  }
+
   async cleanup() {
     // No cleanup needed for file system
   }

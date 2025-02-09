@@ -45,6 +45,18 @@ export class RedisStateAdapter implements StateAdapter {
     }
   }
 
+  async keys(traceId: string) {
+    const pattern = this._makeKey(traceId, '*')
+    const keys = await this.client.keys(pattern)
+    return keys.map((key) => key.replace(this._makeKey(traceId, ''), ''))
+  }
+
+  async traceIds() {
+    const pattern = `${this.prefix}:*`
+    const keys = await this.client.keys(pattern)
+    return keys.map((key) => key.split(':')[1])
+  }
+
   async cleanup() {
     await this.client.quit()
   }

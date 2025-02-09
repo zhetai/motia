@@ -1,5 +1,5 @@
 import React from 'react'
-import { Badge, BadgeProps } from './ui/badge'
+import { Badge, BadgeProps } from '../ui/badge'
 
 export const LogLevelBadge: React.FC<{ level: string; className?: string }> = (props) => {
   const map: Record<string, BadgeProps['variant']> = {
