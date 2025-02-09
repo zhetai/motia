@@ -13,7 +13,7 @@ export type NoopNodeData = {
   type: string
   name: string
   description?: string
-  emits: string[]
+  virtualEmits: string[]
   subscribes: string[]
 }
 
