@@ -8,7 +8,7 @@ import { flowsEndpoint } from './flows-endpoint'
 import { isApiStep } from './guards'
 import { globalLogger, Logger } from './logger'
 import { StateAdapter } from './state/state-adapter'
-import { ApiRequest, ApiResponse, ApiRouteConfig, EventManager, Step } from './types'
+import { ApiRequest, ApiResponse, ApiRouteConfig, ApiRouteMethod, EventManager, Step } from './types'
 import { systemSteps } from './steps'
 import { LockedData } from './locked-data'
 import { callStepFile } from './call-step-file'
@@ -92,13 +92,23 @@ export const createServer = async (
     const { method, path } = step.config
     globalLogger.debug('[API] Registering route', step.config)
 
-    if (method === 'POST') {
-      router.post(path, asyncHandler(step))
-    } else if (method === 'GET') {
-      router.get(path, asyncHandler(step))
-    } else {
+    const handler = asyncHandler(step)
+    const methods: Record<ApiRouteMethod, () => void> = {
+      GET: () => router.get(path, handler),
+      POST: () => router.post(path, handler),
+      PUT: () => router.put(path, handler),
+      DELETE: () => router.delete(path, handler),
+      PATCH: () => router.patch(path, handler),
+      OPTIONS: () => router.options(path, handler),
+      HEAD: () => router.head(path, handler),
+    }
+
+    const methodHandler = methods[method]
+    if (!methodHandler) {
       throw new Error(`Unsupported method: ${method}`)
     }
+
+    methodHandler()
   }
 
   const removeRoute = (step: Step<ApiRouteConfig>) => {
