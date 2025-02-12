@@ -7,6 +7,8 @@ import { createApiStep } from './fixtures/step-fixtures'
 import { MemoryStateAdapter } from '../state/adapters/memory-state-adapter'
 import path from 'path'
 
+const config = { isVerbose: true }
+
 describe('Server', () => {
   beforeAll(() => {
     process.env._MOTIA_TEST_MODE = 'true'
@@ -20,7 +22,7 @@ describe('Server', () => {
       const lockedData = new LockedData(baseDir)
       const eventManager = createEventManager()
       const state = new MemoryStateAdapter()
-      server = await createServer(lockedData, eventManager, state)
+      server = await createServer(lockedData, eventManager, state, config)
     })
     afterEach(async () => server?.close())
 
@@ -77,7 +79,7 @@ describe('Server', () => {
 
       lockedData.createStep(mockApiStep)
 
-      const server = await createServer(lockedData, eventManager, state)
+      const server = await createServer(lockedData, eventManager, state, config)
 
       const response = await request(server.app).post('/test')
       expect(response.status).toBe(200)

@@ -1,11 +1,11 @@
 import { randomUUID } from 'crypto'
 import * as cron from 'node-cron'
-import { Server } from 'socket.io'
 import { callStepFile } from './call-step-file'
 import { LockedData } from './locked-data'
-import { globalLogger, Logger } from './logger'
+import { globalLogger } from './logger'
 import { StateAdapter } from './state/state-adapter'
 import { CronConfig, EventManager, Step } from './types'
+import { LoggerFactory } from './LoggerFactory'
 
 export type CronManager = {
   createCronJob: (step: Step<CronConfig>) => void
@@ -17,14 +17,14 @@ export const setupCronHandlers = (
   lockedData: LockedData,
   eventManager: EventManager,
   state: StateAdapter,
-  socketServer: Server,
+  loggerFactory: LoggerFactory,
 ) => {
   const cronJobs = new Map<string, cron.ScheduledTask>()
   const printer = lockedData.printer
 
   const createCronJob = (step: Step<CronConfig>) => {
     const { config, filePath } = step
-    const { cron: cronExpression, name: stepName } = config
+    const { cron: cronExpression, name: stepName, flows } = config
 
     if (!cron.validate(cronExpression)) {
       globalLogger.error('[cron handler] invalid cron expression', {
@@ -42,7 +42,7 @@ export const setupCronHandlers = (
 
     const task = cron.schedule(cronExpression, async () => {
       const traceId = randomUUID()
-      const logger = new Logger(traceId, config.flows, stepName, socketServer)
+      const logger = loggerFactory.create({ traceId, flows, stepName })
 
       try {
         await callStepFile({

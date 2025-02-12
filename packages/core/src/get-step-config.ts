@@ -54,9 +54,17 @@ export const getStepConfig = (file: string): Promise<StepConfig | null> => {
       if (config) {
         return // Config was already resolved
       } else if (code !== 0) {
-        reject(new Error(`Process exited with code ${code}`))
+        reject(`Process exited with code ${code}`)
       } else if (!config) {
-        reject(new Error(`No config found for file ${file}`))
+        reject(`No config found for file ${file}`)
+      }
+    })
+
+    child.on('error', (error: { code?: string }) => {
+      if (error.code === 'ENOENT') {
+        reject(`Executable ${command} not found`)
+      } else {
+        reject(error)
       }
     })
   })

@@ -11,7 +11,7 @@ require('ts-node').register({
   compilerOptions: { module: 'commonjs' },
 })
 
-export const dev = async (port: number): Promise<void> => {
+export const dev = async (port: number, isVerbose: boolean): Promise<void> => {
   const baseDir = process.cwd()
   const lockedData = await generateLockedData(baseDir)
   const eventManager = createEventManager()
@@ -21,7 +21,8 @@ export const dev = async (port: number): Promise<void> => {
   })
   await (state as FileStateAdapter).init()
 
-  const motiaServer = await createServer(lockedData, eventManager, state)
+  const config = { isVerbose }
+  const motiaServer = await createServer(lockedData, eventManager, state, config)
   const motiaEventManager = createStepHandlers(lockedData, eventManager, state)
   const watcher = createDevWatchers(lockedData, motiaServer, motiaEventManager, motiaServer.cronManager)
 

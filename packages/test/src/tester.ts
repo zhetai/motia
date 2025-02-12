@@ -26,7 +26,9 @@ export const createMotiaTester = (): MotiaTester => {
   const promise = (async () => {
     const lockedData = await generateLockedData(path.join(process.cwd()))
     const state = createStateAdapter({ adapter: 'memory' })
-    const { server, socketServer, close } = await createServer(lockedData, eventManager, state)
+    const { server, socketServer, close } = await createServer(lockedData, eventManager, state, {
+      isVerbose: true,
+    })
 
     createStepHandlers(lockedData, eventManager, state)
 

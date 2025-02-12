@@ -6,12 +6,13 @@ import http from 'http'
 import { Server as SocketIOServer } from 'socket.io'
 import { flowsEndpoint } from './flows-endpoint'
 import { isApiStep } from './guards'
-import { globalLogger, Logger } from './logger'
+import { globalLogger } from './logger'
 import { StateAdapter } from './state/state-adapter'
 import { ApiRequest, ApiResponse, ApiRouteConfig, ApiRouteMethod, EventManager, Step } from './types'
 import { systemSteps } from './steps'
 import { LockedData } from './locked-data'
 import { callStepFile } from './call-step-file'
+import { LoggerFactory } from './LoggerFactory'
 
 export type MotiaServer = {
   app: Express
@@ -23,24 +24,30 @@ export type MotiaServer = {
   cronManager: CronManager
 }
 
+type MotiaServerConfig = {
+  isVerbose: boolean
+}
+
 export const createServer = async (
   lockedData: LockedData,
   eventManager: EventManager,
   state: StateAdapter,
+  config: MotiaServerConfig,
 ): Promise<MotiaServer> => {
   const printer = lockedData.printer
   const app = express()
   const server = http.createServer(app)
   const io = new SocketIOServer(server)
+  const loggerFactory = new LoggerFactory(config.isVerbose, io)
 
   const allSteps = [...systemSteps, ...lockedData.activeSteps]
-  const cronManager = setupCronHandlers(lockedData, eventManager, state, io)
+  const cronManager = setupCronHandlers(lockedData, eventManager, state, loggerFactory)
 
   const asyncHandler = (step: Step<ApiRouteConfig>) => {
     return async (req: Request, res: Response) => {
       const traceId = randomUUID()
-      const { name, flows } = step.config
-      const logger = new Logger(traceId, flows, name, io)
+      const { name: stepName, flows } = step.config
+      const logger = loggerFactory.create({ traceId, flows, stepName })
 
       logger.debug('[API] Received request, processing step', { path: req.path })
 

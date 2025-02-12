@@ -1,42 +1,53 @@
-import pino from 'pino'
 import { Server } from 'socket.io'
+import { prettyPrint } from './pretty-print'
 
-const isDebugEnabled = () => process.env.LOG_LEVEL === 'debug'
+const logLevel = process.env.LOG_LEVEL ?? 'info'
+
+const isDebugEnabled = logLevel === 'debug'
+const isInfoEnabled = ['info', 'debug'].includes(logLevel)
+const isWarnEnabled = ['warn', 'info', 'debug', 'trace'].includes(logLevel)
 
 export class BaseLogger {
-  private logger: pino.Logger
-
-  constructor(private readonly meta: Record<string, unknown> = {}) {
-    this.logger = pino({
-      level: process.env.LOG_LEVEL || 'info',
-      formatters: { level: (level) => ({ level }) },
-      base: null,
-      mixin: () => meta,
-    })
-  }
+  constructor(
+    readonly isVerbose: boolean = false,
+    private readonly meta: Record<string, unknown> = {},
+  ) {}
 
   child(meta: Record<string, unknown> = {}): this {
-    return new BaseLogger({ ...this.meta, ...meta }) as this
+    return new BaseLogger(this.isVerbose, { ...this.meta, ...meta }) as this
+  }
+
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  private _log(level: string, msg: string, args?: any) {
+    const time = Date.now()
+    prettyPrint({ level, time, msg, ...this.meta, ...(args ?? {}) }, !this.isVerbose)
   }
 
   info(message: string, args?: unknown) {
-    this.logger.info(args, message)
+    if (isInfoEnabled) {
+      this._log('info', message, args)
+    }
   }
 
   error(message: string, args?: unknown) {
-    this.logger.error(args, message)
+    this._log('error', message, args)
   }
 
   debug(message: string, args?: unknown) {
-    this.logger.debug(args, message)
+    if (isDebugEnabled) {
+      this._log('debug', message, args)
+    }
   }
 
   warn(message: string, args?: unknown) {
-    this.logger.warn(args, message)
+    if (isWarnEnabled) {
+      this._log('warn', message, args)
+    }
   }
 
-  log(args: unknown) {
-    this.logger.info(args)
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  log(args: any) {
+    this._log('info', args.msg, args)
   }
 }
 
@@ -47,9 +58,10 @@ export class Logger extends BaseLogger {
     private readonly traceId: string,
     private readonly flows: string[] | undefined,
     private readonly step: string,
+    isVerbose: boolean,
     private readonly socketServer?: Server,
   ) {
-    super({ traceId, flows, step })
+    super(isVerbose, { traceId, flows, step })
 
     this.emitLog = (level: string, msg: string, args?: unknown) => {
       socketServer?.emit('log', {
@@ -65,12 +77,12 @@ export class Logger extends BaseLogger {
   }
 
   child(meta: Record<string, unknown> = {}): this {
-    return new Logger(this.traceId, this.flows, meta.step as string, this.socketServer) as this
+    return new Logger(this.traceId, this.flows, meta.step as string, this.isVerbose, this.socketServer) as this
   }
 
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
   log(message: any) {
-    console.log(JSON.stringify(message))
+    super.log(message)
     this.emitLog(message.level, message.msg, message)
   }
 
@@ -85,8 +97,8 @@ export class Logger extends BaseLogger {
   }
 
   debug = (message: string, args?: unknown) => {
-    super.debug(message, args)
-    if (isDebugEnabled()) {
+    if (isDebugEnabled) {
+      super.debug(message, args)
       this.emitLog('debug', message, args)
     }
   }

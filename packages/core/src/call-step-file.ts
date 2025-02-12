@@ -100,9 +100,17 @@ export const callStepFile = <TData>(options: CallStepFileOptions): Promise<TData
 
     child.on('close', (code) => {
       if (code !== 0 && code !== null) {
-        reject(new Error(`Process exited with code ${code}`))
+        reject(`Process exited with code ${code}`)
       } else {
         resolve(result)
+      }
+    })
+
+    child.on('error', (error: { code?: string }) => {
+      if (error.code === 'ENOENT') {
+        reject(`Executable ${command} not found`)
+      } else {
+        reject(error)
       }
     })
   })

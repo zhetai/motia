@@ -55,11 +55,8 @@ export const createStepHandlers = (
 
             // eslint-disable-next-line @typescript-eslint/no-explicit-any
           } catch (error: any) {
-            globalLogger.error(`[step handler] error calling step`, {
-              error: error.message,
-              filePath,
-              step: name,
-            })
+            const message = typeof error === 'string' ? error : error.message
+            logger.error(message)
           }
         },
       })
