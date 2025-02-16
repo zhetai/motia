@@ -67,7 +67,13 @@ Motia.js strives to be:
    pnpm install
    ```
 
-3. Set up environment variables:
+3. Install Motia CLI globally:
+
+   ```bash
+   npm install -g motia
+   ```
+
+4. Set up environment variables:
    - Copy the example `.env` file:
      ```bash
      cp playground/.env.example playground/.env

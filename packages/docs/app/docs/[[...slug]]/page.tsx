@@ -18,6 +18,7 @@ import { TypeTable } from 'fumadocs-ui/components/type-table';
 import { Card, Cards } from 'fumadocs-ui/components/card';
 import { File, Folder, Files } from 'fumadocs-ui/components/files';
 import { Breadcrumb } from '@/components/Breadcrumb';
+import { CodeSandbox } from '@/components/CodeSandbox';
 
 export default async function Page(props: {
   params: Promise<{ slug?: string[] }>;
@@ -55,6 +56,7 @@ export default async function Page(props: {
           Steps,
           TypeTable,
           img: (props) => <ImageZoom {...(props as ImageZoomProps)} />,
+          CodeSandbox,
         }} />
         <Banner>Need help? See our&nbsp;<a href="/community">Community Resources</a>&nbsp;for questions, examples, and discussions.</Banner>
       </DocsBody>

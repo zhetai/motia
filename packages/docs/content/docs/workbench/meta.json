@@ -1,3 +1,8 @@
 {
-  "pages": ["overview","noop-steps","ui-steps"]
+  "defaultOpen": true,
+  "pages": [
+    "overview",
+    "ui-steps",
+    "noop-steps"
+  ]
 }

@@ -1,0 +1,10 @@
+{
+  "title": "Getting Started",
+  "defaultOpen": true,
+  "pages": [
+    "installation",
+    "quick-start",
+    "prerequisites",
+    "core-concepts"
+  ]
+}

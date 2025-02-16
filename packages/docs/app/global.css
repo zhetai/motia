@@ -34,3 +34,17 @@ body {
     margin-top: 0 !important;
     padding-top: 0 !important;
 }
+
+/* Add these styles */
+.sandbox-wrapper {
+  @apply relative w-full my-8;
+}
+
+.sandbox-wrapper iframe {
+  @apply rounded-lg shadow-lg;
+  border: 1px solid theme('colors.gray.200');
+}
+
+.dark .sandbox-wrapper iframe {
+  border-color: theme('colors.gray.800');
+}

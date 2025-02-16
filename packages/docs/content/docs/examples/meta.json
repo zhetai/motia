@@ -1,3 +1,7 @@
 {
-  "pages": ["index","sentiment-analysis"]
+  "title": "Examples",
+  "defaultOpen": true,
+  "pages": [
+    "sentiment-analysis"
+  ]
 }
