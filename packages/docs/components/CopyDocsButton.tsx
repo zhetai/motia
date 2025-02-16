@@ -8,13 +8,11 @@ const CopyDocsButton = () => {
   const [content, setContent] = useState('');
 
   useEffect(() => {
-    // Prefetch the docs content once when the component mounts
-    fetch('/docs-content.json')
-      .then(response => response.json())
+    // Fetch the docs content from the API endpoint
+    fetch('/llms.txt') // Directly fetch llms.txt from the public directory
+      .then(response => response.text()) // Use response.text() to get plain text
       .then(data => {
-        if (data?.content) {
-          setContent(data.content);
-        }
+        setContent(data);
       })
       .catch(error => console.error('Failed to fetch docs:', error));
   }, []);
@@ -25,7 +23,6 @@ const CopyDocsButton = () => {
       return;
     }
     try {
-      // Directly write text to clipboard in response to user gesture
       await navigator.clipboard.writeText(content);
       setCopied(true);
       setTimeout(() => setCopied(false), 2000);
@@ -52,7 +49,7 @@ const CopyDocsButton = () => {
       ) : (
         <>
           <Copy className="w-4 h-4" />
-          <span>For LLM</span>
+          <span>llms.txt</span>
         </>
       )}
     </button>
