@@ -11,6 +11,182 @@ NOOP (No Operation) steps are a powerful feature in Motia that serve multiple pu
 
 <Callout type="warn">Currently, NOOP steps are only supported in TS or JS</Callout>
 
+## File Structure
+
+NOOP steps require two files with the same base name:
+- `stepName.step.ts` - Contains the step configuration
+- `stepName.step.tsx` - Contains the UI component (optional)
+
+### Step Configuration File (.ts)
+
+<Tabs items={['TS', 'JS']}>
+  <Tab value="TS">
+    ```typescript
+    // myStep.step.ts
+    import { NoopConfig } from '@motiadev/core'
+
+    export const config: NoopConfig = {
+      type: 'noop',
+      name: 'My NOOP Step',
+      description: 'Description of what this step simulates',
+      virtualEmits: ['event.one', 'event.two'],
+      virtualSubscribes: [], // Required even if empty
+      flows: ['my-flow'],
+    }
+    ```
+  </Tab>
+  <Tab value="JS">
+    ```javascript
+    // myStep.step.js
+    const config = {
+      type: 'noop',
+      name: 'My NOOP Step',
+      description: 'Description of what this step simulates',
+      virtualEmits: ['event.one', 'event.two'],
+      virtualSubscribes: [], // Required even if empty
+      flows: ['my-flow'],
+    }
+
+    module.exports = { config }
+    ```
+  </Tab>
+</Tabs>
+
+### UI Component File (.tsx)
+
+<Tabs items={['TS', 'JS']}>
+  <Tab value="TS">
+    ```typescript
+    // myStep.step.tsx
+    import React from 'react'
+    import { BaseHandle, Position } from '@motiadev/workbench'
+
+    export default function MyStep() {
+      return (
+        <div className="p-4 bg-gray-800 rounded-lg border border-gray-600 text-white">
+          <div className="text-sm font-medium">My Step UI</div>
+          {/* Your custom UI elements */}
+          <BaseHandle type="source" position={Position.Bottom} />
+        </div>
+      )
+    }
+    ```
+  </Tab>
+  <Tab value="JS">
+    ```javascript
+    // myStep.step.jsx
+    import React from 'react'
+    import { BaseHandle, Position } from '@motiadev/workbench'
+
+    export default function MyStep() {
+      return (
+        <div className="p-4 bg-gray-800 rounded-lg border border-gray-600 text-white">
+          <div className="text-sm font-medium">My Step UI</div>
+          {/* Your custom UI elements */}
+          <BaseHandle type="source" position={Position.Bottom} />
+        </div>
+      )
+    }
+    ```
+  </Tab>
+</Tabs>
+
+## Example: Webhook Testing
+
+Here's a complete example of a NOOP step that simulates webhook events:
+
+<Tabs items={['TS', 'JS']}>
+  <Tab value="TS">
+    ```typescript
+    // test-webhook.step.ts
+    import { NoopConfig } from '@motiadev/core'
+
+    export const config: NoopConfig = {
+      type: 'noop',
+      name: 'Webhook Simulator',
+      description: 'Simulates incoming webhook events',
+      virtualEmits: ['webhook.received'],
+      virtualSubscribes: [],
+      flows: ['webhook-flow'],
+    }
+    ```
+  </Tab>
+  <Tab value="JS">
+    ```javascript
+    // test-webhook.step.js
+    const config = {
+      type: 'noop',
+      name: 'Webhook Simulator',
+      description: 'Simulates incoming webhook events',
+      virtualEmits: ['webhook.received'],
+      virtualSubscribes: [],
+      flows: ['webhook-flow'],
+    }
+
+    module.exports = { config }
+    ```
+  </Tab>
+</Tabs>
+
+<Tabs items={['TS', 'JS']}>
+  <Tab value="TS">
+    ```typescript
+    // test-webhook.step.tsx
+    import React from 'react'
+    import { BaseHandle, Position } from '@motiadev/workbench'
+
+    export default function WebhookSimulator() {
+      return (
+        <div className="p-4 bg-gray-800 rounded-lg border border-gray-600 text-white">
+          <div className="text-sm font-medium mb-2">Webhook Simulator</div>
+          <button 
+            onClick={() => {
+              fetch('/api/webhook', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ event: 'test' }),
+              })
+            }}
+            className="px-3 py-1 bg-blue-600 rounded text-sm"
+          >
+            Trigger Webhook
+          </button>
+          <BaseHandle type="source" position={Position.Bottom} />
+        </div>
+      )
+    }
+    ```
+  </Tab>
+  <Tab value="JS">
+    ```javascript
+    // test-webhook.step.jsx
+    import React from 'react'
+    import { BaseHandle, Position } from '@motiadev/workbench'
+
+    export default function WebhookSimulator() {
+      return (
+        <div className="p-4 bg-gray-800 rounded-lg border border-gray-600 text-white">
+          <div className="text-sm font-medium mb-2">Webhook Simulator</div>
+          <button 
+            onClick={() => {
+              fetch('/api/webhook', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ event: 'test' }),
+              })
+            }}
+            className="px-3 py-1 bg-blue-600 rounded text-sm"
+          >
+            Trigger Webhook
+          </button>
+          <BaseHandle type="source" position={Position.Bottom} />
+        </div>
+      )
+    }
+    ```
+  </Tab>
+</Tabs>
+
 ## Representing External Processes
 
 NOOP steps represent parts of your workflow that happen outside your system. Common examples include:
@@ -205,9 +381,11 @@ You can enhance your NOOP steps with custom React components for better visualiz
 
 | Category | Guidelines |
 |----------|------------|
-| **External Process Modeling** | • Use descriptive, action-oriented names<br/>• Document expected timeframes and SLAs<br/>• Define all possible outcomes and edge cases<br/>• Use exact API route matching |
-| **UI Components** | • Leverage Tailwind's utility classes<br/>• Keep components minimal and focused<br/>• Design clear visual connection points<br/>• Maintain consistent styling patterns |
-| **Testing** | • Create isolated test flows<br/>• Implement clear status indicators<br/>• Label test steps explicitly<br/>• Document test scenarios and procedures |
+| **File Organization** | • Keep configuration and UI code in separate files<br/>• Use `.step.ts` for configuration<br/>• Use `.step.tsx` for UI components |
+| **UI Components** | • Use functional React components<br/>• Include proper TypeScript types<br/>• Follow Tailwind's utility classes<br/>• Keep components minimal and focused<br/>• Design clear visual connection points<br/>• Always include BaseHandle components for flow connections |
+| **Configuration** | • Always include `virtualSubscribes` (even if empty)<br/>• Use descriptive names for virtual events<br/>• Include clear descriptions<br/>• Use descriptive, action-oriented names |
+| **External Process Modeling** | • Document expected timeframes and SLAs<br/>• Define all possible outcomes and edge cases<br/>• Use exact API route matching |
+| **Testing** | • Create isolated test flows<br/>• Use realistic test data<br/>• Handle errors gracefully<br/>• Implement clear status indicators<br/>• Label test steps explicitly<br/>• Provide visual feedback for actions |
 
 ## Component Reference
 
@@ -232,6 +410,5 @@ You can enhance your NOOP steps with custom React components for better visualiz
 | Category | Guidelines |
 |----------|------------|
 | Colors | Use semantic colors to indicate state (success, error, pending) |
-| Typography | • Ensure high contrast for readability<br/>• Use consistent font sizes (recommended: 14px-16px) |
 | States | • Implement clear visual indicators for active/inactive states<br/>• Use subtle animations for state transitions |
-| Design System | • Follow your project's design tokens<br/>• Maintain consistent spacing and padding<br/>• Use standard border radiuses |
+| Design System | • Follow your project's design tokens<br/>• Maintain consistent spacing and padding<br/>• Use standard border radiuses<br/>• Ensure high contrast for readability<br/>• Use consistent font sizes (14px-16px) |
