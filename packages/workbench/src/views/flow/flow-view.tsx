@@ -1,13 +1,23 @@
+// packages/workbench/src/views/flow/flow-view.tsx
+
 import { LogConsole } from '@/components/logs/log-console'
-import { Background, BackgroundVariant, ReactFlow } from '@xyflow/react'
-import '@xyflow/react/dist/style.css'
+import { Background, BackgroundVariant, NodeChange, OnNodesChange, ReactFlow, useReactFlow } from '@xyflow/react'
 import React, { useCallback, useEffect, useState } from 'react'
 import { ArrowHead } from './arrow-head'
 import { BaseEdge } from './base-edge'
 import { FlowLoader } from './flow-loader'
-import { FlowResponse, useGetFlowState } from './hooks/use-get-flow-state'
+import { EdgeData, NodeData } from './nodes/nodes.types'
+import { FlowConfigResponse, FlowResponse, useGetFlowState } from './hooks/use-get-flow-state'
 import { Legend } from './legend'
+import { useSaveWorkflowConfig } from './hooks/use-save-workflow-config'
 import { NodeOrganizer } from './node-organizer'
+import { Node as ReactFlowNode, Edge as ReactFlowEdge } from '@xyflow/react'
+import { useDebounced } from '@/hooks/use-debounced'
+
+import '@xyflow/react/dist/style.css'
+
+export type FlowNode = ReactFlowNode<NodeData>
+export type FlowEdge = ReactFlowEdge<EdgeData>
 
 const edgeTypes = {
   base: BaseEdge,
@@ -15,11 +25,14 @@ const edgeTypes = {
 
 type Props = {
   flow: FlowResponse
+  flowConfig: FlowConfigResponse
 }
 
-export const FlowView: React.FC<Props> = ({ flow }) => {
-  const { nodes, edges, onNodesChange, onEdgesChange, nodeTypes } = useGetFlowState(flow)
+export const FlowView: React.FC<Props> = ({ flow, flowConfig }) => {
+  const { nodes, edges, onNodesChange, onEdgesChange, nodeTypes } = useGetFlowState(flow, flowConfig)
   const [initialized, setInitialized] = useState(false)
+  const { getNodes, getEdges } = useReactFlow<FlowNode, FlowEdge>()
+  const { saveConfig } = useSaveWorkflowConfig(flow.id)
   const [hoveredType, setHoveredType] = useState<string | null>(null)
 
   useEffect(() => setInitialized(false), [flow])
@@ -50,6 +63,20 @@ export const FlowView: React.FC<Props> = ({ flow }) => {
     className: getClassName(), // No argument means it's an edge
   }))
 
+  const saveFlowConfig = useCallback(() => {
+    return saveConfig({ steps: getNodes(), edges: getEdges() })
+  }, [saveConfig, getNodes, getEdges])
+
+  const debouncedSaveConfig = useDebounced(saveFlowConfig)
+
+  const onNodesChangeHandler = useCallback<OnNodesChange<FlowNode>>(
+    (changes: NodeChange<FlowNode>[]) => {
+      onNodesChange(changes)
+      debouncedSaveConfig()
+    },
+    [onNodesChange, debouncedSaveConfig],
+  )
+
   if (!nodeTypes) {
     return null
   }
@@ -63,7 +90,7 @@ export const FlowView: React.FC<Props> = ({ flow }) => {
         edges={edgesWithHighlights}
         nodeTypes={nodeTypes}
         edgeTypes={edgeTypes}
-        onNodesChange={onNodesChange}
+        onNodesChange={onNodesChangeHandler}
         onEdgesChange={onEdgesChange}
       >
         <Background variant={BackgroundVariant.Dots} gap={20} size={1} color="#446" bgColor="#000" />

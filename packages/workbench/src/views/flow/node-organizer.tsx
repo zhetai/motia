@@ -10,7 +10,6 @@ const organizeNodes = (
   const dagreGraph = new dagre.graphlib.Graph({ compound: true })
   dagreGraph.setDefaultEdgeLabel(() => ({}))
 
-  // Top-to-bottom layout
   dagreGraph.setGraph({ rankdir: 'TB', ranksep: 80, nodesep: 60, edgesep: 20, ranker: 'tight-tree' })
 
   nodes.forEach((node) => {
@@ -33,6 +32,10 @@ const organizeNodes = (
   dagre.layout(dagreGraph)
 
   return nodes.map((node) => {
+    if (node.position.x !== 0 || node.position.y !== 0) {
+      return node
+    }
+
     const { x, y } = dagreGraph.node(node.id)
     const position = {
       x: x - (node.measured?.width ?? 0) / 2,

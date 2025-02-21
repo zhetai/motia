@@ -1,9 +1,11 @@
+// packages/snap/src/dev.ts
 import { createServer, createStepHandlers, createEventManager, globalLogger, createStateAdapter } from '@motiadev/core'
 import { generateLockedData } from './generate-locked-data'
 import path from 'path'
 import { FileStateAdapter } from '@motiadev/core/dist/src/state/adapters/default-state-adapter'
 import { createDevWatchers } from './dev-watchers'
 import { stateEndpoints } from './dev/state-endpoints'
+import { workflowConfigEndpoints } from './dev/workflow-config-endpoints'
 
 // eslint-disable-next-line @typescript-eslint/no-require-imports
 require('ts-node').register({
@@ -29,6 +31,7 @@ export const dev = async (port: number, isVerbose: boolean): Promise<void> => {
   watcher.init()
 
   stateEndpoints(motiaServer, state)
+  workflowConfigEndpoints(motiaServer, baseDir)
   motiaServer.server.listen(port)
   console.log('🚀 Server ready and listening on port', port)
   console.log(`🔗 Open http://localhost:${port}/ to open workbench 🛠️`)
