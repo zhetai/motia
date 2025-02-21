@@ -1,5 +1,4 @@
 import { PropsWithChildren } from 'react'
-import { LanguageIndicator } from '../views/flow/nodes/language-indicator'
 import { BaseNode } from './base-node'
 import { Emits } from './emits'
 import { EventNodeProps } from './node-props'
@@ -19,9 +18,9 @@ export const EventNode = (props: Props) => {
     <BaseNode
       variant="event"
       title={data.name}
+      language={data.language}
       disableSourceHandle={!data.emits.length && !data.virtualEmits?.length}
       disableTargetHandle={!data.subscribes.length && !data.virtualSubscribes?.length}
-      headerChildren={<LanguageIndicator language={data.language} />}
     >
       {data.description && <div className="text-sm max-w-[300px] text-white/60">{data.description}</div>}
       {children}

@@ -1,10 +1,9 @@
 import React, { PropsWithChildren } from 'react'
 import { AppSidebar } from './components/app-sidebar'
-import { SidebarProvider } from './components/ui/sidebar'
 
 export const RouteWrapper: React.FC<PropsWithChildren> = ({ children }) => (
-  <SidebarProvider>
+  <div className="flex flex-row">
     <AppSidebar />
-    {children}
-  </SidebarProvider>
+    <div className="flex-1">{children}</div>
+  </div>
 )

@@ -149,7 +149,7 @@ table {
   text-rendering: optimizeLegibility;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
-  font-family: 'PT Sans', serif;
+  font-family: 'DM Sans', serif;
   font-optical-sizing: auto;
 }
 
@@ -162,7 +162,7 @@ body {
 
 button,
 textarea {
-  font-family: 'PT Sans', serif;
+  font-family: 'DM Sans', serif;
 }
 
 strong {
@@ -216,7 +216,8 @@ body,
     --sidebar-ring: 217.2 91.2% 59.8%;
   }
   .dark {
-    --background: 224 71.4% 4.1%;
+    --background: 249 23% 11%;
+    --border: 240 18% 18%;
     --foreground: 210 20% 98%;
     --card: 224 71.4% 4.1%;
     --card-foreground: 210 20% 98%;
@@ -232,7 +233,6 @@ body,
     --accent-foreground: 210 20% 98%;
     --destructive: 0 62.8% 30.6%;
     --destructive-foreground: 210 20% 98%;
-    --border: 215 27.9% 16.9%;
     --input: 215 27.9% 16.9%;
     --ring: 216 12.2% 83.9%;
     --chart-1: 220 70% 50%;
@@ -248,6 +248,19 @@ body,
     --sidebar-accent-foreground: 240 4.8% 95.9%;
     --sidebar-border: 240 3.7% 15.9%;
     --sidebar-ring: 217.2 91.2% 59.8%;
+  }
+  
+  .text-md {
+    font-size: 14px;
+  }
+
+  .text-lg {
+    font-size: 16px !important;
+  }
+
+  * {
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
   }
 }
 

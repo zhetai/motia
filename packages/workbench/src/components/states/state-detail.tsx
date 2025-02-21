@@ -1,5 +1,5 @@
 import React from 'react'
-import { StateField } from './state-field'
+import { StateValue } from './state-value'
 import { Sheet, SheetContent, SheetDescription, SheetHeader, SheetTitle } from '../ui/sheet'
 
 type Props = {
@@ -16,9 +16,6 @@ export const StateDetail: React.FC<Props> = ({ state, onClose }) => {
     }
   }
 
-  const isObject = typeof state === 'object'
-  const fields = Object.keys(state ?? {})
-
   return (
     <Sheet open={isOpen} onOpenChange={onOpenChange}>
       <SheetContent className="flex flex-col h-full">
@@ -28,9 +25,8 @@ export const StateDetail: React.FC<Props> = ({ state, onClose }) => {
         </SheetHeader>
         <div className="font-mono overflow-y-auto">
           {state && (
-            <div className="flex flex-col gap-6 ">
-              {isObject && fields.map((key) => <StateField key={key} label={key} value={state[key]} />)}
-              {!isObject && <StateField label="Value" value={state} />}
+            <div className="flex flex-col gap-2">
+              <StateValue value={state} isRoot />
             </div>
           )}
         </div>

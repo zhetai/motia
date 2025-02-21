@@ -1,6 +1,5 @@
 import { CronManager, setupCronHandlers } from './cron-handler'
 import bodyParser from 'body-parser'
-import { randomUUID } from 'crypto'
 import express, { Express, Request, Response } from 'express'
 import http from 'http'
 import { Server as SocketIOServer } from 'socket.io'
@@ -13,6 +12,7 @@ import { systemSteps } from './steps'
 import { LockedData } from './locked-data'
 import { callStepFile } from './call-step-file'
 import { LoggerFactory } from './LoggerFactory'
+import { generateTraceId } from './generate-trace-id'
 
 export type MotiaServer = {
   app: Express
@@ -45,7 +45,7 @@ export const createServer = async (
 
   const asyncHandler = (step: Step<ApiRouteConfig>) => {
     return async (req: Request, res: Response) => {
-      const traceId = randomUUID()
+      const traceId = generateTraceId()
       const { name: stepName, flows } = step.config
       const logger = loggerFactory.create({ traceId, flows, stepName })
 

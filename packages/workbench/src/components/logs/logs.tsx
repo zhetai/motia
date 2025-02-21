@@ -22,7 +22,7 @@ export const Logs = () => {
       <LogDetail log={selectedLog} onClose={() => setSelectedLog(undefined)} />
       <Table>
         <TableHeader className="sticky top-0">
-          <TableRow className="bg-zinc-800 border-b border-zinc-700 [&>th]:font-bold">
+          <TableRow>
             <TableHead>Time</TableHead>
             <TableHead>Level</TableHead>
             <TableHead>Trace</TableHead>
@@ -33,12 +33,16 @@ export const Logs = () => {
         </TableHeader>
         <TableBody className="text-md font-mono">
           {logs.map((log, index) => (
-            <TableRow key={index} className="font-bold border-b border-zinc-800/50" onClick={() => handleLogClick(log)}>
-              <TableCell>{timestamp(log.time)}</TableCell>
+            <TableRow
+              key={index}
+              className="text-white border-b border-zinc-800/50"
+              onClick={() => handleLogClick(log)}
+            >
+              <TableCell className="whitespace-nowrap">{timestamp(log.time)}</TableCell>
               <TableCell>
                 <LogLevelBadge level={log.level} />
               </TableCell>
-              <TableCell>{log.traceId.split('-').pop()}</TableCell>
+              <TableCell>{log.traceId}</TableCell>
               <TableCell>{log.flows?.join?.(', ')}</TableCell>
               <TableCell>{log.step}</TableCell>
               <TableCell>{log.msg}</TableCell>

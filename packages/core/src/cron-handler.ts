@@ -1,4 +1,3 @@
-import { randomUUID } from 'crypto'
 import * as cron from 'node-cron'
 import { callStepFile } from './call-step-file'
 import { LockedData } from './locked-data'
@@ -6,6 +5,7 @@ import { globalLogger } from './logger'
 import { StateAdapter } from './state/state-adapter'
 import { CronConfig, EventManager, Step } from './types'
 import { LoggerFactory } from './LoggerFactory'
+import { generateTraceId } from './generate-trace-id'
 
 export type CronManager = {
   createCronJob: (step: Step<CronConfig>) => void
@@ -41,7 +41,7 @@ export const setupCronHandlers = (
     })
 
     const task = cron.schedule(cronExpression, async () => {
-      const traceId = randomUUID()
+      const traceId = generateTraceId()
       const logger = loggerFactory.create({ traceId, flows, stepName })
 
       try {

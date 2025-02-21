@@ -66,7 +66,7 @@ export const FlowView: React.FC<Props> = ({ flow }) => {
         onNodesChange={onNodesChange}
         onEdgesChange={onEdgesChange}
       >
-        <Background variant={BackgroundVariant.Dots} gap={20} size={1} color="#444" />
+        <Background variant={BackgroundVariant.Dots} gap={20} size={1} color="#446" bgColor="#000" />
         <NodeOrganizer onInitialized={onInitialized} />
         <svg>
           <defs>

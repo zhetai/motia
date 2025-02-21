@@ -11,6 +11,7 @@ export const ApiNode = ({ data, children, excludePubsub }: Props) => {
     <BaseNode
       variant="api"
       title={data.name}
+      language={data.language}
       disableSourceHandle={!data.emits?.length && !data.virtualEmits?.length}
       disableTargetHandle={!data.subscribes?.length && !data.virtualSubscribes?.length}
     >

@@ -31,16 +31,13 @@ export const LogDetail: React.FC<Props> = ({ log, onClose }) => {
         </SheetHeader>
         <div className="font-mono overflow-y-auto">
           {log && (
-            <div className="flex flex-col gap-6 ">
-              <div className="flex flex-row gap-4">
-                <span className="bg-gray-900 text-white p-4 rounded-lg flex items-center justify-center">
-                  <LogLevelBadge level={log.level} className="text-xl" />
-                </span>
-
-                <LogField label="Time" value={new Date(log.time).toLocaleTimeString()} className="flex-1" />
+            <div className="flex flex-col gap-2">
+              <div className="flex flex-row gap-2">
+                <LogField label="Level" value={<LogLevelBadge level={log.level} />} className="flex-1" />
+                <LogField label="Time" value={new Date(log.time).toLocaleString()} className="flex-1" />
               </div>
 
-              <div className="flex flex-row gap-4">
+              <div className="flex flex-row gap-2">
                 <LogField label="Step" value={log.step} className="flex-1" />
                 <LogField label="Flows" value={log.flows.join(', ')} className="flex-1" />
               </div>

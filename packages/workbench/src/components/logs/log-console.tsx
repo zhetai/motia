@@ -51,24 +51,24 @@ export const LogConsole = () => {
   }, [isDragging])
 
   return (
-    <div className="absolute bottom-0 left-0 right-0 w-full bg-zinc-900/90 border-t border-zinc-700">
+    <div className="absolute bottom-0 left-0 right-0 bg-background/80 border border-solid border-border m-4 rounded-lg">
       <div
         ref={dragRef}
         onMouseDown={handleMouseDown}
         className={cn(
-          'absolute -top-1 left-0 right-0 h-1 cursor-ns-resize hover:bg-green-500/20',
-          isDragging && 'bg-green-500/40',
+          'absolute -top-1 left-0 right-0 h-1 cursor-ns-resize hover:bg-background/40',
+          isDragging && 'bg-background/40',
         )}
       />
-      <div className="flex justify-between w-full items-center p-2">
-        <label className="text-green-500 w-full text-left justify-start h-full text-lg font-bold">Logs</label>
+      <div className="text-white/50 flex justify-between w-full items-center p-4 gap-2">
+        <label className="w-full text-left justify-start h-full text-md uppercase">Logs</label>
         {logs.length > 0 && (
-          <Button variant="link" onClick={resetLogs} className="text-green-500">
-            <Trash2 className="w-4 h-4 text-green-500" />
+          <Button variant="outline" onClick={resetLogs}>
+            <Trash2 className="w-4 h-4" />
             Clear logs
           </Button>
         )}
-        <Button variant="link" onClick={toggleExpand} className="text-green-500">
+        <Button variant="outline" onClick={toggleExpand}>
           {isExpanded ? <ChevronDown className="w-4 h-4" /> : <ChevronUp className="w-4 h-4" />}
         </Button>
       </div>

@@ -22,6 +22,7 @@ export type NoopNodeData = {
 export type ApiNodeData = {
   type: string
   name: string
+  language?: string
   description?: string
   emits: Array<string | { type: string; label?: string }>
   subscribes?: string[]

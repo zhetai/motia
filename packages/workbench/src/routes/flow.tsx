@@ -21,7 +21,7 @@ export const Flow = () => {
   if (!flow) return null
 
   return (
-    <div className="w-screen h-screen">
+    <div className="w-full h-screen">
       <FlowView flow={flow} />
     </div>
   )

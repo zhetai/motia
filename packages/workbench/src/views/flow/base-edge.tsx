@@ -6,7 +6,7 @@ import { cn } from '@/lib/utils'
 const labelVariants = cva('absolute pointer-events-all text-cs border p-1 px-2', {
   variants: {
     color: {
-      default: 'border-[#b3b3b3] bg-black text-gray-100 font-semibold border-solid rounded-full',
+      default: 'border-[#b3b3b3] bg-[#060014] text-gray-100 font-semibold border-solid rounded-full',
       conditional: 'bg-amber-300 border-amber-950 text-amber-950 border-solid font-semibold italic rounded-lg',
     },
   },
@@ -36,8 +36,8 @@ export const BaseEdge: React.FC<EdgeProps> = (props: EdgeProps) => {
       <BaseReactFlowEdge
         path={edgePath}
         style={{
-          stroke: data?.variant === 'virtual' ? 'rgb(147, 169, 197)' : 'rgb(133, 176, 132)',
-          strokeWidth: 0.5,
+          stroke: data?.variant === 'virtual' ? 'rgb(111, 111, 111)' : '#0094FF',
+          strokeWidth: 2,
           shapeRendering: 'geometricPrecision',
           fill: 'none',
           mixBlendMode: 'screen',
