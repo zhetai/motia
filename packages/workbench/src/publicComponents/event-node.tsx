@@ -1,18 +1,12 @@
 import { PropsWithChildren } from 'react'
 import { BaseNode } from './base-node'
-import { Emits } from './emits'
+import { NodeDetails } from './node-details'
 import { EventNodeProps } from './node-props'
-import { Subscribe } from './subscribe'
 
-type Props = PropsWithChildren<
-  EventNodeProps & {
-    excludePubsub?: boolean
-    className?: string
-  }
->
+type Props = PropsWithChildren<EventNodeProps & { className?: string }>
 
 export const EventNode = (props: Props) => {
-  const { data, excludePubsub, children } = props
+  const { data, children } = props
 
   return (
     <BaseNode
@@ -22,14 +16,16 @@ export const EventNode = (props: Props) => {
       disableSourceHandle={!data.emits.length && !data.virtualEmits?.length}
       disableTargetHandle={!data.subscribes.length && !data.virtualSubscribes?.length}
     >
-      {data.description && <div className="text-sm max-w-[300px] text-white/60">{data.description}</div>}
       {children}
-      {!excludePubsub && (
-        <div className="space-y-2 pt-2 border-t border-white/10">
-          <Subscribe data={data} />
-        </div>
-      )}
-      <Emits emits={data.emits} />
+
+      <NodeDetails
+        type="event"
+        name={data.name}
+        subscribes={data.subscribes}
+        emits={data.emits}
+        description={data.description}
+        language={data.language}
+      />
     </BaseNode>
   )
 }

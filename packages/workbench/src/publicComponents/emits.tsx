@@ -14,7 +14,7 @@ export const Emits: React.FC<{ emits: EventNodeData['emits'] }> = ({ emits }) =>
           className="flex gap-2 items-center text-xs text-white/60"
           data-testid={`emits__${toType(emit)}`}
         >
-          <Send className="w-3 h-3 text-white/40" />
+          <Send className="w-4 h-4 text-white/40" />
           <div className="font-mono tracking-wider">{toType(emit)}</div>
         </div>
       ))}

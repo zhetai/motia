@@ -54,7 +54,7 @@ export const BaseNode = (props: Props) => {
 
   return (
     <div
-      className="p-[1px] rounded-lg shadow-[0px_7px_14px_0px_rgba(7,0,23,0.98)]"
+      className="p-[1px] rounded-lg shadow-[0px_7px_14px_0px_rgba(7,0,23,0.98)] max-w-[350px] "
       style={{
         background: `linear-gradient(100.74deg, rgba(0, 71, 255, 0) -2.15%, ${colorMap[variant!]} 45.08%, rgba(0, 71, 255, 0) 96.79%)`,
       }}
