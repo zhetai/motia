@@ -21,7 +21,7 @@ export const handler: StepHandler<typeof config> = async (input, { emit }) => {
   const userMessage = input.message || 'Hello from Node Starter!'
   // Now emit an event telling the server-based component to do an API call
   await emit({
-    type: 'handshake.callApi',
+    topic: 'handshake.callApi',
     data: { userMessage },
   })
 }

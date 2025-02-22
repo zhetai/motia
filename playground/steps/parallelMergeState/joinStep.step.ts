@@ -33,6 +33,6 @@ export const handler: StepHandler<typeof config> = async (input, { emit, traceId
   const mergedAt = new Date().toISOString()
   const merged = { stepA, stepB, stepC, mergedAt }
 
-  await emit({ type: 'pms.join.complete', data: merged })
+  await emit({ topic: 'pms.join.complete', data: merged })
   await state.clear(traceId)
 }

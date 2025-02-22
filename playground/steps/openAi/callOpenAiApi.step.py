@@ -12,7 +12,7 @@ async def handler(req, context):
     context.logger.info('[Call OpenAI] Received callOpenAi event', {'body': req.body.message})
 
     await context.emit({
-        'type': 'call-openai',
+        'topic': 'call-openai',
         'data': {'message': req.body.message}
     })
 

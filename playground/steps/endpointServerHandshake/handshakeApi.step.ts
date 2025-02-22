@@ -28,10 +28,8 @@ export const handler: StepHandler<typeof config> = async (req, { emit }) => {
   }
 
   await emit({
-    type: 'handshake.initiate',
-    data: {
-      message: data.message,
-    },
+    topic: 'handshake.initiate',
+    data: { message: data.message },
   })
 
   return {

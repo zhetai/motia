@@ -35,7 +35,7 @@ describe('callStepFile', () => {
 
     expect(eventManager.emit).toHaveBeenCalledWith(
       {
-        type: 'TEST_EVENT',
+        topic: 'TEST_EVENT',
         data: { test: 'data' },
         flows: ['motia-server'],
         traceId,

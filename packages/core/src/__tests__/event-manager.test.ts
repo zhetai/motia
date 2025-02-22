@@ -4,7 +4,7 @@ import { createEvent } from './fixtures/event-fixtures'
 describe('EventManager', () => {
   it('should handle subscription, emission and unsubscription of events', async () => {
     const eventManager = createEventManager()
-    const testEvent = createEvent({ type: 'TEST_EVENT' })
+    const testEvent = createEvent({ topic: 'TEST_EVENT' })
 
     const mockHandler = jest.fn()
 
@@ -29,7 +29,7 @@ describe('EventManager', () => {
 
   it('should handle multiple subscriptions to same event', async () => {
     const eventManager = createEventManager()
-    const testEvent = createEvent({ type: 'TEST_EVENT' })
+    const testEvent = createEvent({ topic: 'TEST_EVENT' })
 
     const mockHandler1 = jest.fn()
     const mockHandler2 = jest.fn()

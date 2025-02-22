@@ -35,7 +35,7 @@ The following examples showcase how to configure an **CRON Step**
 
     export const handler: StepHandler<typeof config> = async ({ emit }) => {
       await emit({
-        type: 'cron-ticked',
+        topic: 'cron-ticked',
         data: { message: 'Cron job executed' },
       })
     }
@@ -55,7 +55,7 @@ The following examples showcase how to configure an **CRON Step**
 
     const handler = async ({ emit }) => {
       await emit({
-        type: 'cron-ticked',
+        topic: 'cron-ticked',
         data: { message: 'Cron job executed' },
       })
     }
@@ -76,7 +76,7 @@ The following examples showcase how to configure an **CRON Step**
   
     async def handler(context):
         await context.emit({
-            "type": "cron-ticked",
+            "topic": "cron-ticked",
             "data": { "message": "Cron job executed" },
         })
 
@@ -98,7 +98,7 @@ The following examples showcase how to configure an **CRON Step**
 
     def handler(context)
       context.emit({
-        type: 'cron-ticked',
+        topic: 'cron-ticked',
         data: { message: 'Cron job executed' },
       })
     end

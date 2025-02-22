@@ -28,7 +28,7 @@ async def handler(input, ctx):
     } for item in items]
     
     await ctx.emit({
-        "type": "hybrid.transformed",
+        "topic": "hybrid.transformed",
         "data": {
             "items": transformed,
             "timestamp": getattr(input, "timestamp")

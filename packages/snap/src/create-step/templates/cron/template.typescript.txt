@@ -16,7 +16,7 @@ export const handler = async ({ logger, emit }: FlowContext) => {
   
   // Example emit
   // await emit({
-  //   type: 'event-type',
+  //   topic: 'event-type',
   //   data: {}
   // })
 }

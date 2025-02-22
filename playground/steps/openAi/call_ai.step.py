@@ -11,6 +11,6 @@ async def handler(args, ctx):
     ctx.logger.info('[Call Python OpenAI] Received call_ai event', args)
 
     await ctx.emit({
-        "type": "openai-response",
+        "topic": "openai-response",
         "data": { "message": args.message },
     })

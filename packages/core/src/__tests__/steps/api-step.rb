@@ -10,7 +10,7 @@ def config
   
   def handler(req, ctx)
     ctx.emit({
-      "type" => "TEST_EVENT",
+      "topic" => "TEST_EVENT",
       "data" => { "test" => "data" }
     })
     

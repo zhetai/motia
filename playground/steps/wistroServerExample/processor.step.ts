@@ -22,7 +22,7 @@ export const handler: StepHandler<typeof config> = async (input, { emit, logger 
   const reversed = input.message ? input.message.split('').reverse().join('') : '(no input.message)'
 
   await emit({
-    type: 'ws-server-example.processed',
+    topic: 'ws-server-example.processed',
     data: { reversed },
   })
 }

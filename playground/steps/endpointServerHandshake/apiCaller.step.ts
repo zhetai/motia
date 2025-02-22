@@ -32,7 +32,7 @@ export const handler: StepHandler<typeof config> = async (input, { emit }) => {
   console.log('[API Caller] External API result:', result)
 
   await emit({
-    type: 'handshake.apiResponse',
+    topic: 'handshake.apiResponse',
     data: result,
   })
 }

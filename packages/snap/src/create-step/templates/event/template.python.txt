@@ -15,6 +15,6 @@ async def handler(args, ctx):
 
     # Add your handler logic here
     # await ctx.emit({
-    #   type: 'event-type',
+    #   topic: 'event-type',
     #   data: {}
     # })

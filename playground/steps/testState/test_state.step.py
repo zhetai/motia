@@ -14,6 +14,6 @@ async def handler(args, ctx):
     ctx.state.set(ctx.trace_id, 'python_state', value)
 
     await ctx.emit({
-        "type": "check-state-change",
+        "topic": "check-state-change",
         "data": { "key": "python_state", "expected": value },
     })

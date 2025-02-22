@@ -53,7 +53,7 @@ export const handler: StepHandler<typeof config> = async (input, { emit, state }
     })
 
     await emit({
-      type: 'dbz.send-text',
+      topic: 'dbz.send-text',
       data: {
         message: `Welcome ${customer.name}, can you provide your seat, row, and ticket numbers please?`,
         phoneNumber: customerPhoneNumber,
@@ -61,7 +61,7 @@ export const handler: StepHandler<typeof config> = async (input, { emit, state }
     })
   } catch (error: unknown) {
     await emit({
-      type: 'dbz.error',
+      topic: 'dbz.error',
       data: {
         message: error instanceof Error ? error.message : `unknown error captured`,
       },

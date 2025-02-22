@@ -21,7 +21,7 @@ export const handler = async (input, { logger, emit }) => {
   
   // Example emit
   // await emit({
-  //   type: 'event-type',
+  //   topic: 'event-type',
   //   data: {}
   // })
 }

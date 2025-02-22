@@ -21,7 +21,7 @@ export const createEventManager = (): TestEventManager => {
   }
 
   const emit = async <TData>(event: Event<TData>) => {
-    const eventHandlers = handlers[event.type] ?? []
+    const eventHandlers = handlers[event.topic] ?? []
     events.push(...eventHandlers.map((handler) => handler(event)))
   }
 

@@ -18,7 +18,7 @@ export const handler: StepHandler<typeof config> = async (input, { emit }) => {
   const { items, analysis, timestamp } = input
 
   await emit({
-    type: 'hybrid.completed',
+    topic: 'hybrid.completed',
     data: {
       summary: {
         itemCount: items.length,

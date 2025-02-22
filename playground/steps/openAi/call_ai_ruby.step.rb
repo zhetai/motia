@@ -19,7 +19,7 @@ def handler(args, ctx)
   end
 
   ctx.emit({
-    "type" => "openai-response",
+    "topic" => "openai-response",
     "data" => { "message" => message }
   })
 end

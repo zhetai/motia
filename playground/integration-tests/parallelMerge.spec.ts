@@ -28,7 +28,7 @@ describe('parallelMerge', () => {
     // Checking the last captured event
     expect(joinComplete.getLastCapturedEvent()).toEqual({
       traceId: expect.any(String),
-      type: 'pms.join.complete',
+      topic: 'pms.join.complete',
       flows: ['parallel-merge'],
       data: {
         mergedAt: expect.stringMatching(ISO_DATE_REGEX),

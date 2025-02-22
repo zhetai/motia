@@ -13,7 +13,7 @@ export const handler: StepHandler<typeof config> = async ({ emit, logger }: Flow
   logger.info('Running cron job')
 
   await emit({
-    type: 'cron-ticked',
+    topic: 'cron-ticked',
     data: {
       timestamp: Date.now(),
       message: 'Cron job executed',

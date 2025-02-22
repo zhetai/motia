@@ -2,20 +2,20 @@ import { Send } from 'lucide-react'
 import { EventNodeData } from '../views/flow/nodes/nodes.types'
 import React from 'react'
 
-const toType = (emit: string | { type: string; label?: string; conditional?: boolean }) =>
-  typeof emit === 'string' ? emit : emit.type
+const toTopic = (emit: string | { topic: string; label?: string; conditional?: boolean }) =>
+  typeof emit === 'string' ? emit : emit.topic
 
 export const Emits: React.FC<{ emits: EventNodeData['emits'] }> = ({ emits }) => {
   return (
     <>
       {emits.map((emit) => (
         <div
-          key={toType(emit)}
+          key={toTopic(emit)}
           className="flex gap-2 items-center text-xs text-white/60"
-          data-testid={`emits__${toType(emit)}`}
+          data-testid={`emits__${toTopic(emit)}`}
         >
           <Send className="w-4 h-4 text-white/40" />
-          <div className="font-mono tracking-wider">{toType(emit)}</div>
+          <div className="font-mono tracking-wider">{toTopic(emit)}</div>
         </div>
       ))}
     </>

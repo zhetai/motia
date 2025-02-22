@@ -16,7 +16,7 @@ def handler(context)
   
   # Example emit
   # context.emit({
-  #   type: 'event-type',
+  #   topic: 'event-type',
   #   data: {}
   # })
 end

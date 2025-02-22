@@ -40,7 +40,7 @@ const emits = z.array(
     z.string(),
     z
       .object({
-        type: z.string(),
+        topic: z.string(),
         label: z.string().optional(),
         conditional: z.boolean().optional(),
       })

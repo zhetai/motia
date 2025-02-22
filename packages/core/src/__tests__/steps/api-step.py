@@ -12,7 +12,7 @@ config = {
 async def handler(_, ctx: Any) -> Dict:
     await ctx.emit({
         "data": {"test": "data"},
-        "type": "TEST_EVENT"
+        "topic": "TEST_EVENT"
     })
     
     return {

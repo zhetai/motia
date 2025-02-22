@@ -33,7 +33,7 @@ export const handler: StepHandler<typeof config> = async (input, { emit }) => {
     }
   } catch (error) {
     await emit({
-      type: 'dbz.error',
+      topic: 'dbz.error',
       data: {
         message: error instanceof Error ? error.message : `unknown error captured`,
       },

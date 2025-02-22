@@ -10,19 +10,19 @@ export const config: ApiRouteConfig = {
   emits: [], // Dynamic emissions
   flows: ['_system'],
   bodySchema: z.object({
-    type: z.string(),
+    topic: z.string(),
     data: z.record(z.unknown()),
   }),
 }
 
 export const handler: StepHandler<typeof config> = async (req, { emit, logger }) => {
-  const { type, data } = req.body
+  const { topic, data } = req.body
 
-  logger.info('[Event Emitter] Emitting event', { type, data })
-  await emit({ type, data })
+  logger.info('[Event Emitter] Emitting event', { topic, data })
+  await emit({ topic, data })
 
   return {
     status: 200,
-    body: { success: true, emitted: { type, data } },
+    body: { success: true, emitted: { topic, data } },
   }
 }

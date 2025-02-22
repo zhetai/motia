@@ -23,7 +23,7 @@ export const handler: StepHandler<typeof config> = async (input, { traceId, logg
   await state.set<any>(traceId, 'test', message)
 
   await emit({
-    type: 'check-state-change',
+    topic: 'check-state-change',
     data: {key: 'test', expected: message}
   })
 }

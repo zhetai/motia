@@ -24,7 +24,7 @@ export const handler: StepHandler<typeof config> = async (input, { emit, state }
 
   if (!validation.success) {
     await emit({
-      type: 'dbz.error',
+      topic: 'dbz.error',
       data: { message: 'input validation error' },
     })
     return
@@ -54,7 +54,7 @@ export const handler: StepHandler<typeof config> = async (input, { emit, state }
 
     if (!upgradedSeats.length) {
       await emit({
-        type: 'dbz.send-text',
+        topic: 'dbz.send-text',
         data: {
           message: 'Sorry, there are no available seats for your venue',
           phoneNumber: input.customerPhoneNumber,
@@ -71,7 +71,7 @@ export const handler: StepHandler<typeof config> = async (input, { emit, state }
       .join('\n')
 
     await emit({
-      type: 'dbz.send-text',
+      topic: 'dbz.send-text',
       data: {
         message: `Here are your VIP upgrades:\n${seatList}`,
         phoneNumber: input.customerPhoneNumber,
@@ -79,7 +79,7 @@ export const handler: StepHandler<typeof config> = async (input, { emit, state }
     })
   } catch (error) {
     await emit({
-      type: 'dbz.error',
+      topic: 'dbz.error',
       data: {
         message: error instanceof Error ? error.message : `unknown error captured`,
       },

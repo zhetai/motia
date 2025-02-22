@@ -1201,7 +1201,7 @@ The following examples showcase how to configure an **API Step**
         logger.info('[Test State] Received request', req)
 
         await emit({
-          type: 'test-state',
+          topic: 'test-state',
           data: req.body
         })
 
@@ -1232,7 +1232,7 @@ The following examples showcase how to configure an **API Step**
       logger.info('[Test State] Received request', req)
 
       await emit({
-        type: 'test-state',
+        topic: 'test-state',
         data: req.body
       })
 
@@ -1288,7 +1288,7 @@ The following examples showcase how to configure an **API Step**
 
     def handler(req, ctx)
       ctx.emit({
-        "type" => "test-state",
+        "topic" => "test-state",
         "data" => req.body
       })
 
@@ -1341,7 +1341,7 @@ The following examples showcase how to configure an **CRON Step**
 
     export const handler: StepHandler<typeof config> = async ({ emit }) => {
       await emit({
-        type: 'cron-ticked',
+        topic: 'cron-ticked',
         data: { message: 'Cron job executed' },
       })
     }
@@ -1361,7 +1361,7 @@ The following examples showcase how to configure an **CRON Step**
 
     const handler = async ({ emit }) => {
       await emit({
-        type: 'cron-ticked',
+        topic: 'cron-ticked',
         data: { message: 'Cron job executed' },
       })
     }
@@ -1382,7 +1382,7 @@ The following examples showcase how to configure an **CRON Step**
   
     async def handler(context):
         await context.emit({
-            "type": "cron-ticked",
+            "topic": "cron-ticked",
             "data": { "message": "Cron job executed" },
         })
 
@@ -1404,7 +1404,7 @@ The following examples showcase how to configure an **CRON Step**
 
     def handler(context)
       context.emit({
-        type: 'cron-ticked',
+        topic: 'cron-ticked',
         data: { message: 'Cron job executed' },
       })
     end
@@ -1593,7 +1593,7 @@ The following examples showcase how to configure an **Event Step**
       logger.info('Processing message:', input.message)
       
       await emit({
-        type: 'pms.stepA.done',
+        topic: 'pms.stepA.done',
         data: {
           result: `Processed: ${input.message}`
         }
@@ -1623,7 +1623,7 @@ The following examples showcase how to configure an **Event Step**
       logger.info('Processing message:', input.message)
       
       await emit({
-        type: 'pms.stepA.done',
+        topic: 'pms.stepA.done',
         data: {
           result: `Processed: ${input.message}`
         }
@@ -1648,7 +1648,7 @@ The following examples showcase how to configure an **Event Step**
         context.logger.info('Processing input:', input)
         
         await context.emit({
-            "type": "openai-response",
+            "topic": "openai-response",
             "data": {
                 "result": f"Processed: {input.get('message', '')}"
             }
@@ -1676,7 +1676,7 @@ The following examples showcase how to configure an **Event Step**
       context.logger.info("Processing input: #{input}")
       
       context.emit({
-        type: "openai-response",
+        topic: "openai-response",
         data: {
           result: "Processed: #{input[:message]}"
         }
@@ -1723,7 +1723,7 @@ describe('MyStep', () => {
     await handler({ name: 'John' }, { emit })
 
     expect(emit).toHaveBeenCalledWith({
-      type: 'my-event',
+      topic: 'my-event',
       data: { greeting: 'Hello, John!' },
     })
 
@@ -1927,7 +1927,7 @@ Sometimes you don't just want a **simple** "prompt => response." Instead, you wa
 
       // Emit an event to call OpenAI
       await emit({
-        type: 'openai.analyzeSentimentRequest',
+        topic: 'openai.analyzeSentimentRequest',
         data: { text },
       })
 
@@ -1999,13 +1999,13 @@ Sometimes you don't just want a **simple** "prompt => response." Instead, you wa
         // 6) Decide how to route the event
         if (parsed.sentiment?.toLowerCase() === 'positive') {
           await emit({
-            type: 'openai.positiveSentiment',
+            topic: 'openai.positiveSentiment',
             data: { ...parsed },
           })
         } else {
           // default to negative
           await emit({
-            type: 'openai.negativeSentiment',
+            topic: 'openai.negativeSentiment',
             data: { ...parsed },
           })
         }
@@ -2192,7 +2192,7 @@ Sometimes you don't just want a **simple** "prompt => response." Instead, you wa
 
       // Emit an event to call OpenAI
       await emit({
-        type: 'openai.analyzeSentimentRequest',
+        topic: 'openai.analyzeSentimentRequest',
         data: { text },
       })
 
@@ -2264,13 +2264,13 @@ Sometimes you don't just want a **simple** "prompt => response." Instead, you wa
         // 6) Decide how to route the event
         if (parsed.sentiment?.toLowerCase() === 'positive') {
           await emit({
-            type: 'openai.positiveSentiment',
+            topic: 'openai.positiveSentiment',
             data: { ...parsed },
           })
         } else {
           // default to negative
           await emit({
-            type: 'openai.negativeSentiment',
+            topic: 'openai.negativeSentiment',
             data: { ...parsed },
           })
         }
@@ -2708,7 +2708,7 @@ This guide will walk you through everything you need to define a minimal **step*
       exports.handler = async (input, { emit }) => {
         const sum = (input.a || 0) + (input.b || 0)
         await emit({
-          type: 'numbers-added',
+          topic: 'numbers-added',
           data: { result: sum },
         })
       }
@@ -3026,7 +3026,7 @@ The Trello board is organized into four main lists:
       })
 
       await emit({
-        type: 'trello.webhook',
+        topic: 'trello.webhook',
         data: action,
       })
 
@@ -3066,14 +3066,14 @@ The Trello board is organized into four main lists:
       switch (action.type) {
         case 'createCard':
           await emit({
-            type: 'trello.cardCreated',
+            topic: 'trello.cardCreated',
             data: action.data.card
           })
           break
         case 'updateCard':
           if (action.data.listAfter) {
             await emit({
-              type: 'trello.cardMoved',
+              topic: 'trello.cardMoved',
               data: {
                 card: action.data.card,
                 listBefore: action.data.listBefore,
@@ -3130,7 +3130,7 @@ The Trello board is organized into four main lists:
       }
 
       await emit({
-        type: 'trello.cardValidated',
+        topic: 'trello.cardValidated',
         data: { cardId: card.id }
       })
     }
@@ -3167,7 +3167,7 @@ The Trello board is organized into four main lists:
       )
 
       await emit({
-        type: 'trello.cardStarted',
+        topic: 'trello.cardStarted',
         data: { cardId: input.cardId }
       })
     }
@@ -3205,7 +3205,7 @@ The Trello board is organized into four main lists:
       }
 
       await emit({
-        type: 'trello.readyForReview',
+        topic: 'trello.readyForReview',
         data: {
           cardId: input.card.id,
           cardName: input.card.name
@@ -3250,7 +3250,7 @@ The Trello board is organized into four main lists:
       )
 
       await emit({
-        type: 'trello.cardCompleted',
+        topic: 'trello.cardCompleted',
         data: { cardId: input.card.id }
       })
     }
@@ -3277,7 +3277,7 @@ The Trello board is organized into four main lists:
       
       for (const card of cards) {
         await emit({
-          type: 'trello.cardOverdue',
+          topic: 'trello.cardOverdue',
           data: {
             cardId: card.id,
             cardName: card.name,
@@ -3504,7 +3504,7 @@ The Trello board is organized into four main lists:
       })
 
       await emit({
-        type: 'trello.webhook',
+        topic: 'trello.webhook',
         data: action,
       })
 
@@ -3544,14 +3544,14 @@ The Trello board is organized into four main lists:
       switch (action.type) {
         case 'createCard':
           await emit({
-            type: 'trello.cardCreated',
+            topic: 'trello.cardCreated',
             data: action.data.card
           })
           break
         case 'updateCard':
           if (action.data.listAfter) {
             await emit({
-              type: 'trello.cardMoved',
+              topic: 'trello.cardMoved',
               data: {
                 card: action.data.card,
                 listBefore: action.data.listBefore,
@@ -3608,7 +3608,7 @@ The Trello board is organized into four main lists:
       }
 
       await emit({
-        type: 'trello.cardValidated',
+        topic: 'trello.cardValidated',
         data: { cardId: card.id }
       })
     }
@@ -3645,7 +3645,7 @@ The Trello board is organized into four main lists:
       )
 
       await emit({
-        type: 'trello.cardStarted',
+        topic: 'trello.cardStarted',
         data: { cardId: input.cardId }
       })
     }
@@ -3683,7 +3683,7 @@ The Trello board is organized into four main lists:
       }
 
       await emit({
-        type: 'trello.readyForReview',
+        topic: 'trello.readyForReview',
         data: {
           cardId: input.card.id,
           cardName: input.card.name
@@ -3728,7 +3728,7 @@ The Trello board is organized into four main lists:
       )
 
       await emit({
-        type: 'trello.cardCompleted',
+        topic: 'trello.cardCompleted',
         data: { cardId: input.card.id }
       })
     }
@@ -3755,7 +3755,7 @@ The Trello board is organized into four main lists:
       
       for (const card of cards) {
         await emit({
-          type: 'trello.cardOverdue',
+          topic: 'trello.cardOverdue',
           data: {
             cardId: card.id,
             cardName: card.name,

@@ -78,8 +78,8 @@ export const callStepFile = <TData>(options: CallStepFileOptions): Promise<TData
       result = input
     })
     rpcProcessor.handler<Event>('emit', async (input) => {
-      if (!isAllowedToEmit(step, input.type)) {
-        return printer.printInvalidEmit(step, input.type)
+      if (!isAllowedToEmit(step, input.topic)) {
+        return printer.printInvalidEmit(step, input.topic)
       }
 
       return eventManager.emit({ ...input, traceId, flows: step.config.flows, logger }, step.filePath)

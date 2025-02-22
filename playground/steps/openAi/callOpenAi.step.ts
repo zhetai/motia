@@ -14,7 +14,7 @@ export const config: EventConfig<Input> = {
   name: 'Call OpenAI',
   description: 'Call OpenAI',
   subscribes: ['call-openai'],
-  emits: [{ type: 'openai-response', label: 'OpenAI Response' }],
+  emits: [{ topic: 'openai-response', label: 'OpenAI Response' }],
   input: inputSchema,
   flows: ['openai'],
 }
@@ -23,7 +23,7 @@ export const handler: StepHandler<typeof config> = async (input, { logger, emit 
   logger.info('[Call OpenAI] Received callOpenAi event', input)
 
   await emit({
-    type: 'openai-response',
+    topic: 'openai-response',
     data: { message: input.message },
   })
 }

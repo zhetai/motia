@@ -22,7 +22,7 @@ export const handler: StepHandler<typeof config> = async (input, { emit }) => {
   }))
 
   await emit({
-    type: 'hybrid.enriched',
+    topic: 'hybrid.enriched',
     data: {
       items: enriched,
       timestamp: input.timestamp,

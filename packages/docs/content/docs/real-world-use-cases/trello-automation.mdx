@@ -7,10 +7,7 @@ description: Build an automated card progression system for Trello boards with A
 
 Try out the code directly in your browser:
 
-<CodeSandbox 
-  repo="MotiaDev/motia-examples/tree/main/examples/trello-flow"
-  path="/steps"
-/>
+<CodeSandbox repo="MotiaDev/motia-examples/tree/main/examples/trello-flow" path="/steps" />
 
 ## Let's build a Trello automation system that:
 
@@ -67,13 +64,13 @@ The Trello board is organized into four main lists:
     export const handler: StepHandler<typeof config> = async (req, { emit, logger }) => {
       const { action } = req.body
 
-      logger.info('[TrelloWebhook] Received webhook', { 
+      logger.info('[TrelloWebhook] Received webhook', {
         type: action.type,
-        data: action.data 
+        data: action.data
       })
 
       await emit({
-        type: 'trello.webhook',
+        topic: 'trello.webhook',
         data: action,
       })
 
@@ -83,6 +80,7 @@ The Trello board is organized into four main lists:
       }
     }
     ```
+
   </Tab>
   <Tab value="validation">
     ```ts
@@ -113,14 +111,14 @@ The Trello board is organized into four main lists:
       switch (action.type) {
         case 'createCard':
           await emit({
-            type: 'trello.cardCreated',
+            topic: 'trello.cardCreated',
             data: action.data.card
           })
           break
         case 'updateCard':
           if (action.data.listAfter) {
             await emit({
-              type: 'trello.cardMoved',
+              topic: 'trello.cardMoved',
               data: {
                 card: action.data.card,
                 listBefore: action.data.listBefore,
@@ -133,6 +131,7 @@ The Trello board is organized into four main lists:
       }
     }
     ```
+
   </Tab>
   <Tab value="requirements">
     ```ts
@@ -159,7 +158,7 @@ The Trello board is organized into four main lists:
 
     export const handler: StepHandler<typeof config> = async (card, { emit, logger }) => {
       const trello = new TrelloClient()
-      
+
       const requirements = [
         { check: card.name.length > 0, message: 'Title is required' },
         { check: card.desc.length > 0, message: 'Description is required' },
@@ -171,17 +170,18 @@ The Trello board is organized into four main lists:
         .map(req => req.message)
 
       if (failures.length > 0) {
-        await trello.addComment(card.id, 
+        await trello.addComment(card.id,
           `⚠️ Card requirements not met:\n${failures.join('\n')}`)
         return
       }
 
       await emit({
-        type: 'trello.cardValidated',
+        topic: 'trello.cardValidated',
         data: { cardId: card.id }
       })
     }
     ```
+
   </Tab>
   <Tab value="assigned">
     ```ts
@@ -206,7 +206,7 @@ The Trello board is organized into four main lists:
 
     export const handler: StepHandler<typeof config> = async (input, { emit, logger }) => {
       const trello = new TrelloClient()
-      
+
       // Move to In Progress list
       await trello.moveCard(
         input.cardId,
@@ -214,11 +214,12 @@ The Trello board is organized into four main lists:
       )
 
       await emit({
-        type: 'trello.cardStarted',
+        topic: 'trello.cardStarted',
         data: { cardId: input.cardId }
       })
     }
     ```
+
   </Tab>
   <Tab value="review">
     ```ts
@@ -252,7 +253,7 @@ The Trello board is organized into four main lists:
       }
 
       await emit({
-        type: 'trello.readyForReview',
+        topic: 'trello.readyForReview',
         data: {
           cardId: input.card.id,
           cardName: input.card.name
@@ -260,6 +261,7 @@ The Trello board is organized into four main lists:
       })
     }
     ```
+
   </Tab>
   <Tab value="completion">
     ```ts
@@ -290,18 +292,19 @@ The Trello board is organized into four main lists:
       }
 
       const trello = new TrelloClient()
-      
+
       await trello.moveCard(
         input.card.id,
         process.env.TRELLO_COMPLETED_LIST_ID!
       )
 
       await emit({
-        type: 'trello.cardCompleted',
+        topic: 'trello.cardCompleted',
         data: { cardId: input.card.id }
       })
     }
     ```
+
   </Tab>
   <Tab value="overdue">
     ```ts
@@ -319,12 +322,12 @@ The Trello board is organized into four main lists:
 
     export const handler: StepHandler<typeof config> = async (_, { emit, logger }) => {
       const trello = new TrelloClient()
-      
+
       const cards = await trello.getOverdueCards()
-      
+
       for (const card of cards) {
         await emit({
-          type: 'trello.cardOverdue',
+          topic: 'trello.cardOverdue',
           data: {
             cardId: card.id,
             cardName: card.name,
@@ -334,6 +337,7 @@ The Trello board is organized into four main lists:
       }
     }
     ```
+
   </Tab>
   <Tab value="slack">
     ```ts
@@ -377,6 +381,7 @@ The Trello board is organized into four main lists:
       }
     }
     ```
+
   </Tab>
 </Tabs>
 
@@ -384,9 +389,7 @@ The Trello board is organized into four main lists:
 
 Here's how the automation flow works:
 
-<div className="my-8">
-  ![Flow: Trello Automation Steps](../img/trello-automation.png)
-</div>
+<div className="my-8">![Flow: Trello Automation Steps](../img/trello-automation.png)</div>
 
 1. **Card Validation** → Checks for required information
 2. **Progress Tracking** → Moves cards between lists
@@ -400,6 +403,7 @@ Here's how the automation flow works:
 ### Prerequisites
 
 Make sure you have:
+
 - Trello account with API access
 - Node.js installed
 - Slack workspace (for notifications)
@@ -446,6 +450,7 @@ TRELLO_COMPLETED_LIST_ID=your_completed_list_id
 ### Set Up Trello Board
 
 1. Create a new Trello board with these lists:
+
    - New Tasks
    - In Progress
    - Needs Review
@@ -470,5 +475,6 @@ pnpm dev
 </Steps>
 
 <Callout type="info">
-  For more detailed setup instructions and configuration options, check out the [full documentation](https://github.com/MotiaDev/motia-examples/tree/main/examples/trello-flow).
-</Callout> 
+  For more detailed setup instructions and configuration options, check out the [full
+  documentation](https://github.com/MotiaDev/motia-examples/tree/main/examples/trello-flow).
+</Callout>{' '}

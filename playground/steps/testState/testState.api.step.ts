@@ -18,7 +18,7 @@ export const handler: StepHandler<typeof config> = async (req, { logger, emit })
   logger.info('[Test motia state] triggering api step', req)
 
   await emit({
-    type: 'test-state',
+    topic: 'test-state',
     data: {},
   })
 

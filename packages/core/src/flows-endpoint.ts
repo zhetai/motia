@@ -11,7 +11,7 @@ type FlowListResponse = { id: string; name: string }
 
 export type EdgeData = {
   variant: 'event' | 'virtual'
-  emitType: string
+  topic: string
   label?: string
   labelVariant?: 'default' | 'conditional'
 }
@@ -77,7 +77,7 @@ const getNodeComponentPath = (filePath: string): string | undefined => {
 const createEdge = (
   sourceId: string,
   targetId: string,
-  emitType: string,
+  topic: string,
   label: string | undefined,
   variant: 'event' | 'virtual',
   conditional?: boolean,
@@ -88,15 +88,16 @@ const createEdge = (
   data: {
     variant,
     label,
-    emitType,
+    topic,
     labelVariant: conditional ? 'conditional' : 'default',
   },
 })
 
-const processEmit = (emit: Emit): { type: string; label?: string; conditional?: boolean } => {
+const processEmit = (emit: Emit): { topic: string; label?: string; conditional?: boolean } => {
   const isString = typeof emit === 'string'
+
   return {
-    type: isString ? emit : emit.type,
+    topic: isString ? emit : emit.topic,
     label: isString ? undefined : emit.label,
     conditional: isString ? undefined : emit.conditional,
   }
@@ -111,11 +112,11 @@ const createEdgesForEmits = (
   const edges: FlowEdge[] = []
 
   emits.forEach((emit) => {
-    const { type: emitType, label, conditional } = processEmit(emit)
+    const { topic, label, conditional } = processEmit(emit)
 
     targetSteps.forEach((targetStep) => {
-      if (targetStep.subscribes?.includes(emitType)) {
-        edges.push(createEdge(sourceStep.id, targetStep.id, emitType, label, variant, conditional))
+      if (targetStep.subscribes?.includes(topic)) {
+        edges.push(createEdge(sourceStep.id, targetStep.id, topic, label, variant, conditional))
       }
     })
   })

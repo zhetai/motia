@@ -22,7 +22,7 @@ export const handler: StepHandler<typeof config> = async (req, { logger, emit })
   logger.info('[Call OpenAI] Received callOpenAi event', req)
 
   await emit({
-    type: 'call-openai',
+    topic: 'call-openai',
     data: { message: req.body.message },
   })
 

@@ -8,7 +8,7 @@ export type InternalStateManager = {
   clear(traceId: string): Promise<void>
 }
 
-export type EmitData = { type: string; data: Record<string, unknown> }
+export type EmitData = { topic: string; data: Record<string, unknown> }
 export type Emitter = (event: EmitData) => Promise<void>
 export type FlowContext = {
   emit: Emitter
@@ -20,7 +20,7 @@ export type FlowContext = {
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
 export type EventHandler<TInput extends ZodObject<any>> = (input: z.infer<TInput>, ctx: FlowContext) => Promise<void>
 
-export type Emit = string | { type: string; label?: string; conditional?: boolean }
+export type Emit = string | { topic: string; label?: string; conditional?: boolean }
 
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
 export type EventConfig<TInput extends ZodObject<any> = any> = {
@@ -99,7 +99,7 @@ export type StepHandler<T> =
         : never
 
 export type Event<TData = unknown> = {
-  type: string
+  topic: string
   data: TData
   traceId: string
   flows?: string[]

@@ -11,7 +11,8 @@ The following properties are specific to the Event Step, in addition to the [com
 <DescriptionTable
   type={{
     input: {
-      description: 'This is only required for TS or JS steps that use zod for their input schema, this is used when processing the step to validate the input before executing the step handler.',
+      description:
+        'This is only required for TS or JS steps that use zod for their input schema, this is used when processing the step to validate the input before executing the step handler.',
       type: 'string[]',
     },
   }}
@@ -43,15 +44,16 @@ The following examples showcase how to configure an **Event Step**
 
     export const handler: StepHandler<typeof config> = async (input, { emit, logger }) => {
       logger.info('Processing message:', input.message)
-      
+
       await emit({
-        type: 'pms.stepA.done',
+        topic: 'pms.stepA.done',
         data: {
           result: `Processed: ${input.message}`
         }
       })
     }
     ```
+
   </Tab>
   <Tab value="JS">
     ```javascript
@@ -73,9 +75,9 @@ The following examples showcase how to configure an **Event Step**
 
     const handler = async (input, { emit, logger }) => {
       logger.info('Processing message:', input.message)
-      
+
       await emit({
-        type: 'pms.stepA.done',
+        topic: 'pms.stepA.done',
         data: {
           result: `Processed: ${input.message}`
         }
@@ -84,6 +86,7 @@ The following examples showcase how to configure an **Event Step**
 
     module.exports = { config, handler };
     ```
+
   </Tab>
   <Tab value="Python">
     ```python
@@ -98,14 +101,15 @@ The following examples showcase how to configure an **Event Step**
 
     async def handler(input, context):
         context.logger.info('Processing input:', input)
-        
+
         await context.emit({
-            "type": "openai-response",
+            "topic": "openai-response",
             "data": {
                 "result": f"Processed: {input.get('message', '')}"
             }
         })
     ```
+
   </Tab>
   <Tab value="Ruby">
     ```ruby
@@ -126,18 +130,17 @@ The following examples showcase how to configure an **Event Step**
 
     def handler(input, context)
       context.logger.info("Processing input: #{input}")
-      
+
       context.emit({
-        type: "openai-response",
+        topic: "openai-response",
         data: {
           result: "Processed: #{input[:message]}"
         }
       })
     end
     ```
+
   </Tab>
 </Tabs>
 
 ## Example
-
-

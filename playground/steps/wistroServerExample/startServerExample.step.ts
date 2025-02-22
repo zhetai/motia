@@ -18,7 +18,7 @@ export const handler: StepHandler<typeof config> = async (_, { emit, logger }) =
   logger.info('[Motia Server Example] start-event')
 
   await emit({
-    type: 'ws-server-example.start',
+    topic: 'ws-server-example.start',
     data: { message: 'The flow has been started!' },
   })
 

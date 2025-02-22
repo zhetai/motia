@@ -49,7 +49,7 @@ The following examples showcase how to configure an **API Step**
         logger.info('[Test State] Received request', req)
 
         await emit({
-          type: 'test-state',
+          topic: 'test-state',
           data: req.body
         })
 
@@ -80,7 +80,7 @@ The following examples showcase how to configure an **API Step**
       logger.info('[Test State] Received request', req)
 
       await emit({
-        type: 'test-state',
+        topic: 'test-state',
         data: req.body
       })
 
@@ -109,7 +109,7 @@ The following examples showcase how to configure an **API Step**
         context.logger.info('[Test State] Received request', {'body': req.body})
 
         await context.emit({
-            'type': 'test-state',
+            'topic': 'test-state',
             'data': req.body
         })
 
@@ -136,7 +136,7 @@ The following examples showcase how to configure an **API Step**
 
     def handler(req, ctx)
       ctx.emit({
-        "type" => "test-state",
+        "topic" => "test-state",
         "data" => req.body
       })
 

@@ -25,7 +25,7 @@ export const handler: StepHandler<typeof config> = async (_, { emit, traceId, st
   await state.set<ParallelMergeStep>(traceId, 'stepA', partialResultA)
 
   await emit({
-    type: 'pms.stepA.done',
+    topic: 'pms.stepA.done',
     data: partialResultA,
   })
 }

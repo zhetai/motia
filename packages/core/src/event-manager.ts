@@ -10,7 +10,7 @@ export const createEventManager = (): EventManager => {
   const handlers: Record<string, EventHandler[]> = {}
 
   const emit = async <TData>(event: Event<TData>, file?: string) => {
-    const eventHandlers = handlers[event.type] ?? []
+    const eventHandlers = handlers[event.topic] ?? []
     const { logger, ...rest } = event
 
     logger.debug('[Flow Emit] Event emitted', { handlers: eventHandlers.length, data: rest, file })

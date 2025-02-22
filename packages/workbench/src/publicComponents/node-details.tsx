@@ -14,7 +14,7 @@ type Props = PropsWithChildren<{
   name: string
   type: 'event' | 'api' | 'noop' | 'cron'
   subscribes?: string[]
-  emits?: Array<string | { type: string; label?: string }>
+  emits?: Array<string | { topic: string; label?: string }>
   description?: string
   language?: string
 }>

@@ -8,5 +8,5 @@ export const config: CronConfig = {
 }
 
 export const handler: CronHandler = async (ctx: FlowContext) => {
-  await ctx.emit({ data: { test: 'data' }, type: 'TEST_EVENT' })
+  await ctx.emit({ data: { test: 'data' }, topic: 'TEST_EVENT' })
 }

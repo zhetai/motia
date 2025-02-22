@@ -32,7 +32,7 @@ export const handler: StepHandler<typeof config> = async (req, { emit }) => {
     }
   }
 
-  await emit({ type: 'hybrid.validated', data: data })
+  await emit({ topic: 'hybrid.validated', data })
 
   return {
     status: 200,

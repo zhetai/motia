@@ -20,7 +20,6 @@ Sometimes you don't just want a **simple** "prompt => response." Instead, you wa
   <File name="handleNegative.step.ts" />
 </Folder>
 
-
 <Tabs items={['analyzeSentimentApi', 'openAiAnalyzeSentiment', 'handlePositive', 'handleNegative']}>
   <Tab value="analyzeSentimentApi">
     ```ts
@@ -47,7 +46,7 @@ Sometimes you don't just want a **simple** "prompt => response." Instead, you wa
 
       // Emit an event to call OpenAI
       await emit({
-        type: 'openai.analyzeSentimentRequest',
+        topic: 'openai.analyzeSentimentRequest',
         data: { text },
       })
 
@@ -58,6 +57,7 @@ Sometimes you don't just want a **simple** "prompt => response." Instead, you wa
       }
     }
     ```
+
   </Tab>
   <Tab value="openAiAnalyzeSentiment">
     ```ts
@@ -119,13 +119,13 @@ Sometimes you don't just want a **simple** "prompt => response." Instead, you wa
         // 6) Decide how to route the event
         if (parsed.sentiment?.toLowerCase() === 'positive') {
           await emit({
-            type: 'openai.positiveSentiment',
+            topic: 'openai.positiveSentiment',
             data: { ...parsed },
           })
         } else {
           // default to negative
           await emit({
-            type: 'openai.negativeSentiment',
+            topic: 'openai.negativeSentiment',
             data: { ...parsed },
           })
         }
@@ -134,6 +134,7 @@ Sometimes you don't just want a **simple** "prompt => response." Instead, you wa
       }
     }
     ```
+
   </Tab>
   <Tab value="handlePositive">
     ```ts
@@ -160,6 +161,7 @@ Sometimes you don't just want a **simple** "prompt => response." Instead, you wa
       // Maybe notify a Slack channel: "All good vibes here!"
     }
     ```
+
   </Tab>
   <Tab value="handleNegative">
     ```ts
@@ -186,6 +188,7 @@ Sometimes you don't just want a **simple** "prompt => response." Instead, you wa
       // Could escalate to a service, or respond gently, etc.
     }
     ```
+
   </Tab>
 </Tabs>
 
@@ -195,9 +198,7 @@ Sometimes you don't just want a **simple** "prompt => response." Instead, you wa
 
 Here's how the events chain together:
 
-<div className="my-8">
-  ![Flow: Sentiment Analysis Steps](./../img/sentiment-analyzer.png)
-</div>
+<div className="my-8">![Flow: Sentiment Analysis Steps](./../img/sentiment-analyzer.png)</div>
 
 1. **Analyze Sentiment (API)** → emits `openai.analyzeSentimentRequest`
 2. **OpenAI Sentiment Analyzer** → calls OpenAI, parses JSON →
@@ -251,6 +252,7 @@ Check your logs - you should see either the `[Positive Responder]` or `[Negative
 ### Extend Further
 
 Here are some ways to build upon this example:
+
 - Tweak the system instructions to force certain outputs or include more details
 - Create more specialized responders (like "neutralSentiment")
 - Integrate a notification step (Slack, database, etc.)

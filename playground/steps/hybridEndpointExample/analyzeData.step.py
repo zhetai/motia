@@ -39,7 +39,7 @@ async def handler(input, ctx):
     serializable_items = [item.__dict__ for item in items]
 
     await ctx.emit({
-        "type": "hybrid.analyzed",
+        "topic": "hybrid.analyzed",
         "data": {
             "items": serializable_items,
             "analysis": analysis,

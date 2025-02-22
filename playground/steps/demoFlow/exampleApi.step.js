@@ -9,6 +9,6 @@ exports.config = {
 
 exports.handler = async (req, { emit, logger }) => {
   logger.info('[AddNumbersApi] Received data', { body: req.body })
-  await emit({ type: 'add-numbers', data: req.body })
+  await emit({ topic: 'add-numbers', data: req.body })
   return { status: 200, body: { message: 'Triggered add-numbers event' } }
 }

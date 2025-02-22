@@ -26,7 +26,7 @@ async def handler(_, context):
     context.logger.info("[stepB] state set")
 
     await context.emit({
-        "type": "pms.stepB.done",
+        "topic": "pms.stepB.done",
         "data": partial_result_b
     })
 

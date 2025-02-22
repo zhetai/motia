@@ -30,7 +30,7 @@ export const handler: StepHandler<typeof config> = async (req, { emit }) => {
   }
 
   await emit({
-    type: 'dbz.search-customer',
+    topic: 'dbz.search-customer',
     data: {
       venuePhoneNumber: data.venuePhoneNumber,
       customerPhoneNumber: data.customerPhoneNumber,

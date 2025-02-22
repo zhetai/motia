@@ -20,7 +20,7 @@ def handler(req, ctx)
   end
 
   ctx.emit({
-    "type" => "call-openai",
+    "topic" => "call-openai",
     "data" => { "message" => message }
   })
 

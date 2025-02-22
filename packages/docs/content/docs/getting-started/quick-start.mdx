@@ -8,7 +8,7 @@ This guide will walk you through everything you need to define a minimal **step*
   <Step>
   ### Setup your project: Create a New Project Folder
 
-  Let's create a new Motia project in a dedicated folder. This is the recommended approach for keeping your projects organized.
+Let's create a new Motia project in a dedicated folder. This is the recommended approach for keeping your projects organized.
 
   <Tabs items={['Automated', 'Manual']}>
 <Tab value="Automated">
@@ -57,6 +57,7 @@ This guide will walk you through everything you need to define a minimal **step*
       motia create -t default -n <your-project-name>
       ```
     </Tab>
+
   </Tabs>
 
     *   **This will**:
@@ -71,9 +72,10 @@ This guide will walk you through everything you need to define a minimal **step*
     **Choosing a Project Name:** Replace `<your-project-name>` with your desired project folder name.
 
     **Alternative Templates:** To see other templates, run: `npx motia templates` (or `motia templates` if you installed globally).
+
   </Callout>
 
-  You should see a new folder created with the following files inside:
+You should see a new folder created with the following files inside:
 
   <Files>
     <Folder name="steps" defaultOpen>
@@ -123,94 +125,80 @@ This guide will walk you through everything you need to define a minimal **step*
           mkdir steps
           ```
     </Tab>
+
   </Tabs>
 
   </Step>
   <Step>
   ### Minimal Step Example (Already Included!)
 
-  ✨ **Good News!** If you used the automated project setup with the `default` template (as recommended above), you can **skip this step!**
+✨ **Good News!** If you used the automated project setup with the `default` template (as recommended above), you can **skip this step!**
 
-  The `default` template already includes example steps in the `steps` folder, including `addNumbers.step.js` (or similar, depending on the template). These pre-built steps are ready for you to explore and run.
+The `default` template already includes example steps in the `steps` folder, including `addNumbers.step.js` (or similar, depending on the template). These pre-built steps are ready for you to explore and run.
 
-  ---
+---
 
-  **If you chose not to use the template or want to create a step from scratch manually,** follow these steps:
+**If you chose not to use the template or want to create a step from scratch manually,** follow these steps:
 
-  1.  **Create a `steps` folder** in your project's root directory (if you haven't already).
+1.  **Create a `steps` folder** in your project's root directory (if you haven't already).
 
-  2.  **Create a new file** named `addNumbers.step.js` (or `addNumbers.step.ts` for TypeScript) inside the `steps` folder.
+2.  **Create a new file** named `addNumbers.step.js` (or `addNumbers.step.ts` for TypeScript) inside the `steps` folder.
 
-      <Files>
-        <Folder name="steps" defaultOpen>
-          <File name="addNumbers.step.js" />
-        </Folder>
-      </Files>
+    <Files>
+      <Folder name="steps" defaultOpen>
+        <File name="addNumbers.step.js" />
+      </Folder>
+    </Files>
 
-  3.  **Paste the following code** into your `addNumbers.step.js` file:
+3.  **Paste the following code** into your `addNumbers.step.js` file:
 
-      ```javascript
-      exports.config = {
-        type: 'event', // "event", "api", or "cron"
-        name: 'AddNumbers',
-        subscribes: ['add-numbers'],
-        emits: ['numbers-added'],
-        flows: ['numbers']
-      }
+    ```javascript
+    exports.config = {
+      type: 'event', // "event", "api", or "cron"
+      name: 'AddNumbers',
+      subscribes: ['add-numbers'],
+      emits: ['numbers-added'],
+      flows: ['numbers'],
+    }
 
-      exports.handler = async (input, { emit }) => {
-        const sum = (input.a || 0) + (input.b || 0)
-        await emit({
-          type: 'numbers-added',
-          data: { result: sum },
-        })
-      }
-      ```
+    exports.handler = async (input, { emit }) => {
+      const sum = (input.a || 0) + (input.b || 0)
+      await emit({
+        topic: 'numbers-added',
+        data: { result: sum },
+      })
+    }
+    ```
 
-      This minimal step **listens** for the event `"add-numbers"` and **emits** `"numbers-added"`. It's a basic example to get you started.
+    This minimal step **listens** for the event `"add-numbers"` and **emits** `"numbers-added"`. It's a basic example to get you started.
 
   </Step>
   <Step>
   ### Start Motia Development Server & Workbench
 
-  Now, let's start Motia and see your workflow in action!
+Now, let's start Motia and see your workflow in action!
 
-  1.  **Open your terminal** in your Motia project's root directory (where your `package.json` file is located).
+1.  **Open your terminal** in your Motia project's root directory (where your `package.json` file is located).
 
-  2.  **Run the development server command:** Use the `dev` script that was set up in your `package.json`:
+2.  **Run the development server command:** Use the `dev` script that was set up in your `package.json`:
 
-      <Tabs items={['pnpm', 'yarn', 'npm', 'bun']}>
-        <Tab value='pnpm'>
-          ```bash
-          pnpm run dev
-          ```
-        </Tab>
-        <Tab value='yarn'>
-          ```bash
-          yarn run dev
-          ```
-        </Tab>
-        <Tab value='npm'>
-          ```bash
-          npm run dev
-          ```
-        </Tab>
-        <Tab value='bun'>
-          ```bash
-          bun run dev
-          ```
-        </Tab>
-      </Tabs>
+    <Tabs items={['pnpm', 'yarn', 'npm', 'bun']}>
+      <Tab value="pnpm">```bash pnpm run dev ```</Tab>
+      <Tab value="yarn">```bash yarn run dev ```</Tab>
+      <Tab value="npm">```bash npm run dev ```</Tab>
+      <Tab value="bun">```bash bun run dev ```</Tab>
+    </Tabs>
 
-      Motia will:
+    Motia will:
 
-      *   **Scan** your `steps` folder for step definition files (`.step.ts`, `.step.js`, `.step.py`, `.step.rb`).
-      *   **Register** your Steps with the Motia runtime.
-      *   **Launch** a development server and the Motia Workbench UI (typically at [`http://localhost:3000`](http://localhost:3000)).
+    - **Scan** your `steps` folder for step definition files (`.step.ts`, `.step.js`, `.step.py`, `.step.rb`).
+    - **Register** your Steps with the Motia runtime.
+    - **Launch** a development server and the Motia Workbench UI (typically at [`http://localhost:3000`](http://localhost:3000)).
 
-      <Callout type="info">
-          **Changing the Port:** To run the Workbench on a different port, use the `--port` option:  `pnpm run dev --port 3001`
-      </Callout>
+    <Callout type="info">
+      **Changing the Port:** To run the Workbench on a different port, use the `--port` option: `pnpm run dev --port
+      3001`
+    </Callout>
 
   </Step>
   <Step>
@@ -276,4 +264,5 @@ This guide will walk you through everything you need to define a minimal **step*
     Log the journey of the event, including the emitted numbers-added event
 
     </Step>
+
 </Steps>

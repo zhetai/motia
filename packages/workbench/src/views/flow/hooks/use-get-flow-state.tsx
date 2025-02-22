@@ -6,7 +6,7 @@ import { NoopFlowNode } from '../nodes/noop-flow-node'
 import { EventFlowNode } from '../nodes/event-flow-node'
 import { CronNode } from '@/publicComponents/cron-node'
 
-type Emit = string | { type: string; label?: string }
+type Emit = string | { topic: string; label?: string }
 
 type FlowStep = {
   id: string

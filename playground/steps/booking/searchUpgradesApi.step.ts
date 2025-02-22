@@ -31,7 +31,7 @@ export const handler: StepHandler<typeof config> = async (req, { emit }) => {
     }
   }
 
-  await emit({ type: 'dbz.evaluate-upgrades', data })
+  await emit({ topic: 'dbz.evaluate-upgrades', data })
 
   return {
     status: 200,

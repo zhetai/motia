@@ -24,7 +24,7 @@ export const handler: StepHandler<typeof config> = async (input, { logger, emit 
   
   // Example emit
   // await emit({
-  //   type: 'event-type',
+  //   topic: 'event-type',
   //   data: {}
   // })
 }

@@ -18,7 +18,7 @@ export const handler: StepHandler<typeof config> = async (req, { logger, emit })
   logger.info('processing default flow api step', req)
 
   await emit({
-    type: 'test-state',
+    topic: 'test-state',
     data: {},
   })
 

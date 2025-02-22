@@ -5,8 +5,8 @@ export type EventNodeData = {
   name: string
   description?: string
   subscribes: string[]
-  emits: Array<string | { type: string; label?: string }>
-  virtualEmits?: Array<string | { type: string; label?: string }>
+  emits: Array<string | { topic: string; label?: string }>
+  virtualEmits?: Array<string | { topic: string; label?: string }>
   virtualSubscribes?: string[]
   language?: string
 }
@@ -24,9 +24,9 @@ export type ApiNodeData = {
   name: string
   language?: string
   description?: string
-  emits: Array<string | { type: string; label?: string }>
+  emits: Array<string | { topic: string; label?: string }>
   subscribes?: string[]
-  virtualEmits?: Array<string | { type: string; label?: string }>
+  virtualEmits?: Array<string | { topic: string; label?: string }>
   virtualSubscribes?: string[]
   webhookUrl?: string
   bodySchema?: JSONSchema7
@@ -36,8 +36,8 @@ export type CronNodeData = {
   type: string
   name: string
   description?: string
-  emits: Array<string | { type: string; label?: string }>
-  virtualEmits?: Array<string | { type: string; label?: string }>
+  emits: Array<string | { topic: string; label?: string }>
+  virtualEmits?: Array<string | { topic: string; label?: string }>
   virtualSubscribes?: string[]
   cronExpression: string
   language?: string
