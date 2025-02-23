@@ -1,6 +1,7 @@
 {
-    "title": "Real-World Use Cases",
-    "pages": [
-      "trello-automation"
-    ]
-  }
+  "title": "Real-World Use Cases",
+  "open": true,
+  "pages": [
+    "trello-automation"
+  ]
+}

@@ -81,43 +81,63 @@ A handler holds the business logic of a step. When an event occurs that matches 
 
 Here're examples of how to define a handler in the Motia supported languages:
 
-<Tabs  items={['TS', 'JS', 'Python', 'Ruby']}>
-  <Tab value='TS'>
+<Tabs items={['TS', 'JS', 'Python', 'Ruby']}>
+  <Tab value="TS">
     ```typescript
-    import { FlowContext, StepHandler } from '@motiadev/core'
+    import { EventConfig, StepHandler } from '@motiadev/core'
 
-    // ... step config
+    export const config: EventConfig = {
+      type: 'event',
+      name: 'Minimal Step',
+      subscribes: ['start'],
+      emits: ['done'],
+    }
 
-    export const handler: StepHandler<typeof config> = async (input, { emit, traceId, state, logger }: FlowContext) => {
-      // ... business logic here
-      // ...emit new events to other steps
+    export const handler: StepHandler<typeof config> = async (input, { emit, traceId, state, logger }) => {
+      await emit({ topic: 'done', data: {} })
     }
     ```
   </Tab>
-  <Tab value='JS'>
+  <Tab value="JS">
     ```javascript
-    // ... step config
-
-    const handler = async (input, { emit, traceId, state, logger }) => {
-      // ... business logic here
-      // ...emit new events to other steps
+    exports.config = {
+      type: 'event',
+      name: 'Minimal Step',
+      subscribes: ['start'],
+      emits: ['done'],
     }
 
-    module.exports = {config, handler}
+    exports.handler = async (input, { emit, traceId, state, logger }) => {
+      await emit({ topic: 'done', data: {} })
+    }
     ```
   </Tab>
-  <Tab value='Python'>
+  <Tab value="Python">
     ```python
+    config = {
+        'type': 'event',
+        'name': 'Minimal Step',
+        'subscribes': ['start'],
+        'emits': ['done'],
+    }
+
     async def handler(args, ctx):
-        # ... business logic here
-        # ...emit new events to other steps
+      await ctx.emit({'topic': 'done', 'data': {}})
     ```
   </Tab>
-  <Tab value='Ruby'>
-  ```ruby
+  <Tab value="Ruby">
+    ```ruby
+    def config
+      {
+        type: 'event',
+        name: 'Minimal Step',
+        subscribes: ['start'],
+        emits: ['done'],
+      }
+    end
+
     def handler(args, ctx)
-        # ... business logic here
-        # ...emit new events to other steps
+      ctx.emit({topic: 'done', data: {}})
     end
     ```
   </Tab>

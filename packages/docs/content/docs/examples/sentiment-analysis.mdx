@@ -24,7 +24,7 @@ Sometimes you don't just want a **simple** "prompt => response." Instead, you wa
   <Tab value="analyzeSentimentApi">
     ```ts
     // Receives user text, emits "openai.analyzeSentimentRequest".
-    import { ApiRouteConfig, StepHandler } from 'wistro'
+    import { ApiRouteConfig, StepHandler } from 'motia'
     import { z } from 'zod'
 
     export const config: ApiRouteConfig = {
@@ -62,7 +62,7 @@ Sometimes you don't just want a **simple** "prompt => response." Instead, you wa
   <Tab value="openAiAnalyzeSentiment">
     ```ts
     // Calls OpenAI, instructing it to ONLY return JSON like {"sentiment":"positive","analysis":"..."}
-    import { EventConfig, StepHandler } from 'wistro'
+    import { EventConfig, StepHandler } from 'motia'
     import { z } from 'zod'
     import { OpenAI } from 'openai'
 
@@ -139,7 +139,7 @@ Sometimes you don't just want a **simple** "prompt => response." Instead, you wa
   <Tab value="handlePositive">
     ```ts
     // Handles "openai.positiveSentiment"
-    import { EventConfig, StepHandler } from 'wistro'
+    import { EventConfig, StepHandler } from 'motia'
     import { z } from 'zod'
 
     const positiveSchema = z.object({
@@ -166,7 +166,7 @@ Sometimes you don't just want a **simple** "prompt => response." Instead, you wa
   <Tab value="handleNegative">
     ```ts
     // Handles "openai.negativeSentiment"
-    import { EventConfig, StepHandler } from 'wistro'
+    import { EventConfig, StepHandler } from 'motia'
     import { z } from 'zod'
 
     const negativeSchema = z.object({
@@ -215,7 +215,7 @@ Here's how the events chain together:
 ### Install Dependencies
 
 ```shell
-pnpm install wistro openai
+pnpm install motia openai
 ```
 
 ### Create Project Structure
@@ -236,7 +236,7 @@ export OPENAI_API_KEY="sk-..."
 ### Run the Project
 
 ```shell
-pnpm wistro dev
+pnpm motia dev
 ```
 
 ### Test the API
