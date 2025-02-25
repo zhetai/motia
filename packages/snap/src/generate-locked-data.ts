@@ -6,7 +6,7 @@ import path from 'path'
 const version = `${randomUUID()}:${Math.floor(Date.now() / 1000)}`
 
 // Helper function to recursively collect flow data
-const collectFlows = async (baseDir: string, lockedData: LockedData): Promise<Step[]> => {
+export const collectFlows = async (baseDir: string, lockedData: LockedData): Promise<Step[]> => {
   const folderItems = fs.readdirSync(baseDir, { withFileTypes: true })
   let steps: Step[] = []
 

@@ -7,22 +7,26 @@
   },
   "scripts": {
     "move:templates": "sh scripts/move-templates.sh",
-    "build": "rm -rf dist && tsc && pnpm run move:templates",
+    "move:python": "sh scripts/move-python.sh",
+    "build": "rm -rf dist && tsc && pnpm run move:templates && pnpm run move:python",
     "lint": "eslint --config ../../eslint.config.js"
   },
   "dependencies": {
     "@motiadev/core": "workspace:*",
     "@motiadev/workbench": "workspace:*",
+    "archiver": "^7.0.1",
     "chokidar": "^4.0.3",
     "colors": "^1.4.0",
     "commander": "^13.0.0",
     "dotenv": "^16.4.7",
+    "esbuild": "^0.25.0",
     "figlet": "^1.8.0",
     "inquirer": "^12.4.1",
     "ts-node": "^10.9.2",
     "yaml": "^2.7.0"
   },
   "devDependencies": {
+    "@types/archiver": "^6.0.3",
     "@types/figlet": "^1.7.0",
     "@types/jest": "^29.5.14",
     "jest": "^29.7.0",

@@ -5,15 +5,17 @@ import { validateStep } from './step-validator'
 import { Printer } from './printer'
 
 type FlowEvent = 'flow-created' | 'flow-removed' | 'flow-updated'
+type StepEvent = 'step-created' | 'step-removed' | 'step-updated'
 
 export class LockedData {
   public flows: Record<string, Flow>
   public activeSteps: Step[]
   public devSteps: Step[]
-  public readonly printer: Printer
+  public printer: Printer
 
   private stepsMap: Record<string, Step>
   private handlers: Record<FlowEvent, ((flowName: string) => void)[]>
+  private stepHandlers: Record<StepEvent, ((step: Step) => void)[]>
 
   constructor(public readonly baseDir: string) {
     this.flows = {}
@@ -27,10 +29,20 @@ export class LockedData {
       'flow-removed': [],
       'flow-updated': [],
     }
+
+    this.stepHandlers = {
+      'step-created': [],
+      'step-removed': [],
+      'step-updated': [],
+    }
   }
 
   on(event: FlowEvent, handler: (flowName: string) => void) {
     this.handlers[event].push(handler)
+  }
+
+  onStep(event: StepEvent, handler: (step: Step) => void) {
+    this.stepHandlers[event].push(handler)
   }
 
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
@@ -94,6 +106,7 @@ export class LockedData {
 
     savedStep.config = newStep.config
 
+    this.stepHandlers['step-updated'].forEach((handler) => handler(newStep))
     this.printer.printStepUpdated(newStep)
 
     return true
@@ -122,6 +135,7 @@ export class LockedData {
       }
     }
 
+    this.stepHandlers['step-created'].forEach((handler) => handler(step))
     this.printer.printStepCreated(step)
 
     return true
@@ -148,6 +162,7 @@ export class LockedData {
       }
     }
 
+    this.stepHandlers['step-removed'].forEach((handler) => handler(step))
     this.printer.printStepRemoved(step)
   }
 

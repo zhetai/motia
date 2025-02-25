@@ -7,6 +7,8 @@ import { isApiStep, isCronStep, isEventStep, isNoopStep } from './guards'
 const stepTag = colors.bold(colors.magenta('Step'))
 const flowTag = colors.bold(colors.blue('Flow'))
 const created = colors.green('➜ [CREATED]')
+const building = colors.yellow('⚡ [BUILDING]')
+const built = colors.green('✓ [BUILT]')
 const updated = colors.yellow('➜ [UPDATED]')
 const removed = colors.red('➜ [REMOVED]')
 const invalidEmit = colors.red('➜ [INVALID EMIT]')
@@ -14,6 +16,14 @@ const error = colors.red('[ERROR]')
 
 export class Printer {
   constructor(private readonly baseDir: string) {}
+
+  stepTag = stepTag
+  flowTag = flowTag
+  created = created
+  building = building
+  built = built
+  updated = updated
+  removed = removed
 
   printInvalidEmit(step: Step, emit: string) {
     console.log(
@@ -59,11 +69,11 @@ export class Printer {
     console.log(`${colors.red('└─')} ${colors.red(validationError.error)}  `)
   }
 
-  private getRelativePath(filePath: string) {
+  getRelativePath(filePath: string) {
     return path.relative(this.baseDir, filePath)
   }
 
-  private getStepType(step: Step) {
+  getStepType(step: Step) {
     if (isApiStep(step)) return colors.gray('(API)')
     if (isEventStep(step)) return colors.gray('(Event)')
     if (isCronStep(step)) return colors.gray('(Cron)')
@@ -72,8 +82,24 @@ export class Printer {
     return colors.gray('(Unknown)')
   }
 
-  private getStepPath(step: Step) {
+  getStepPath(step: Step) {
     const stepPath = this.getRelativePath(step.filePath)
     return colors.bold(colors.cyan(stepPath))
   }
+}
+
+export class NoPrinter extends Printer {
+  constructor(baseDir: string) {
+    super(baseDir)
+  }
+
+  printInvalidEmit() {}
+  printStepCreated() {}
+  printStepUpdated() {}
+  printStepRemoved() {}
+  printFlowCreated() {}
+  printFlowUpdated() {}
+  printFlowRemoved() {}
+  printStepType() {}
+  printStepPath() {}
 }

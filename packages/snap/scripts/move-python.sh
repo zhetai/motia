@@ -1,0 +1,1 @@
+cp src/builder/python-builder.py dist/src/builder/python-builder.py

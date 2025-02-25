@@ -34,6 +34,17 @@ describe('LockedData', () => {
       expect(lockedData.flows['flow1'].steps).toContain(step)
       expect(lockedData.flows['flow2'].steps).toContain(step)
     })
+
+    it('should trigger event handlers when step is created', () => {
+      const lockedData = new LockedData(process.cwd())
+      const handler = jest.fn()
+      const step = createApiStep()
+
+      lockedData.onStep('step-created', handler)
+      lockedData.createStep(step)
+
+      expect(handler).toHaveBeenCalledWith(step)
+    })
   })
 
   describe('step filtering', () => {
@@ -100,6 +111,23 @@ describe('LockedData', () => {
       expect(lockedData.apiSteps()).toHaveLength(0)
       expect(lockedData.eventSteps()).toHaveLength(1)
     })
+
+    it('should trigger event handlers when step is updated', () => {
+      const baseDir = '/test/dir'
+      const handler = jest.fn()
+      const lockedData = new LockedData(baseDir)
+      const filePath = path.join(baseDir, 'steps/flow-1/step.ts')
+      const oldStep = createApiStep({}, filePath)
+      lockedData.createStep(oldStep)
+
+      const newStep = createEventStep({}, filePath)
+      lockedData.updateStep(oldStep, newStep)
+
+      lockedData.onStep('step-updated', handler)
+      lockedData.updateStep(oldStep, newStep)
+
+      expect(handler).toHaveBeenCalledWith(newStep)
+    })
   })
 
   describe('step deletion', () => {
@@ -143,6 +171,18 @@ describe('LockedData', () => {
       lockedData.deleteStep(step1)
 
       expect(Object.keys(lockedData.flows)).toEqual(['flow-1'])
+    })
+
+    it('should trigger event handlers when step is deleted', () => {
+      const lockedData = new LockedData(process.cwd())
+      const handler = jest.fn()
+      const step = createApiStep()
+
+      lockedData.createStep(step)
+      lockedData.onStep('step-removed', handler)
+      lockedData.deleteStep(step)
+
+      expect(handler).toHaveBeenCalledWith(step)
     })
   })
 

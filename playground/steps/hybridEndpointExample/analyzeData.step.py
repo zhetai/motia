@@ -1,5 +1,3 @@
-import json
-
 config = {
     "type": "event",
     "name": "Analyze Data",

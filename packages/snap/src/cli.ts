@@ -1,13 +1,12 @@
 #!/usr/bin/env node
+/* eslint-disable @typescript-eslint/no-require-imports */
 import { program } from 'commander'
 import path from 'path'
 import fs from 'fs'
 
 const defaultPort = 3000
 
-// eslint-disable-next-line @typescript-eslint/no-require-imports
 require('dotenv/config')
-// eslint-disable-next-line @typescript-eslint/no-require-imports
 require('ts-node').register({
   transpileOnly: true,
   compilerOptions: { module: 'commonjs' },
@@ -22,7 +21,6 @@ program
   )
   .option('-t, --template <template name>', 'The motia template name to use for your project')
   .action(async (arg) => {
-    // eslint-disable-next-line @typescript-eslint/no-require-imports
     const { create } = require('./create')
     await create({
       projectName: arg.project ?? '.',
@@ -34,7 +32,6 @@ program
   .command('templates')
   .description('Prints the list of available templates')
   .action(async () => {
-    // eslint-disable-next-line @typescript-eslint/no-require-imports
     const { templates } = require('./create/templates')
     console.log(`📝 Available templates: \n\n ${Object.keys(templates).join('\n')}`)
   })
@@ -52,8 +49,16 @@ program
     }
 
     const port = arg.port ? parseInt(arg.port) : defaultPort
-    const { dev } = require('./dev') // eslint-disable-line @typescript-eslint/no-require-imports
+    const { dev } = require('./dev')
     await dev(port, arg.verbose)
+  })
+
+program
+  .command('build')
+  .description('Build the project')
+  .action(async () => {
+    const { build } = require('./builder/build')
+    await build()
   })
 
 program
@@ -61,12 +66,11 @@ program
   .description('Get the generated config for your project')
   .option('-o, --output <port>', 'Path to write the generated config')
   .action(async (arg) => {
-    // eslint-disable-next-line @typescript-eslint/no-require-imports
     const { generateLockedData } = require('./src/generate/locked-data')
     const lockedData = await generateLockedData(path.join(process.cwd()))
 
     if (arg.output) {
-      const fs = require('fs') // eslint-disable-line @typescript-eslint/no-require-imports
+      const fs = require('fs')
       fs.writeFileSync(path.join(arg.output, '.motia.generated.json'), JSON.stringify(lockedData, null, 2))
       console.log(`📄 Wrote locked data to ${arg.output}`)
 
@@ -113,7 +117,7 @@ generate
   .description('Create a new step with interactive prompts')
   .option('-d, --dir <step file path>', 'The path relative to the steps directory, used to create the step file')
   .action(async (arg) => {
-    const { createStep } = require('./create-step') // eslint-disable-line @typescript-eslint/no-require-imports
+    const { createStep } = require('./create-step')
     await createStep({
       stepFilePath: arg.dir,
     })
@@ -133,7 +137,7 @@ state
         process.exit(1)
       }
 
-      const state = require(statePath) // eslint-disable-line @typescript-eslint/no-require-imports
+      const state = require(statePath)
       console.log(JSON.stringify(state, null, 2))
     } catch (error) {
       console.error('Error:', error instanceof Error ? error.message : 'Unknown error')
