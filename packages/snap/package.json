@@ -1,6 +1,6 @@
 {
   "name": "motia",
-  "version": "0.0.29",
+  "version": "0.0.30",
   "license": "MIT",
   "bin": {
     "motia": "dist/src/cli.js"
