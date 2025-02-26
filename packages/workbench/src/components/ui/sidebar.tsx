@@ -8,7 +8,7 @@ export const Sidebar: React.FC<PropsWithChildren> = ({ children }) => {
   return (
     <div
       className={cn(
-        'max-h-screen overflow-y-auto transition-[width] duration-300',
+        'max-h-screen overflow-y-auto transition-[width] duration-300 border-r border-zinc-800 border-solid',
         isCollapsed ? 'w-[50px]' : 'w-[250px]',
       )}
     >

@@ -11,7 +11,7 @@ export const LogsPage = () => {
   }, [setUnreadLogsCount])
 
   return (
-    <div className="w-screen h-screen overflow-hidden">
+    <div className="w-full h-screen overflow-hidden">
       <header className="p-4 pb-0 border-b border-zinc-800">
         <h1 className="text-2xl font-bold">Logs</h1>
         <span className="text-sm text-zinc-400">Check all logs saved locally</span>
