@@ -1,5 +1,8 @@
 import type { BaseLayoutProps } from 'fumadocs-ui/layouts/shared';
 import { ArrowRight } from 'lucide-react';
+import GitHubStarButton from '../components/GitHubStarButton';
+import GitHubIcon from '../components/GitHubIcon';
+import DiscordIcon from '../components/DiscordIcon';
 
 /**
  * Shared layout configurations
@@ -15,17 +18,11 @@ export const baseOptions: BaseLayoutProps = {
       <ArrowRight className="h-5 w-5 text-blue-500" strokeWidth={2.5} />
       <span className="font-semibold tracking-tight text-lg">motia</span>
     </div>),
-
   },
   links: [
     {
-      text: 'Documentation',
+      text: 'Docs',
       url: '/docs',
-      active: 'nested-url',
-    },
-    {
-      text: 'Community',
-      url: '/community',
       active: 'nested-url',
     },
     {
@@ -39,6 +36,29 @@ export const baseOptions: BaseLayoutProps = {
       ),
       url: '#',
       active: 'nested-url',
+    },
+    // Add GitHub and Discord links with icons
+    {
+      text: (
+        <span className="inline-flex items-center gap-2">
+          <DiscordIcon />
+        </span>
+      ),
+      url: 'https://discord.gg/sXbs97D8',
+      active: 'nested-url',
+    },
+    {
+      text: (
+        <span className="inline-flex items-center gap-2">
+          <GitHubIcon />
+        </span>
+      ),
+      url: 'https://github.com/MotiaDev/motia',
+      active: 'nested-url',
+    },
+    {
+      type: 'custom',
+      children: <GitHubStarButton />,
     },
   ],
 };

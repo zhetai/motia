@@ -14,9 +14,9 @@ export default function HeroSection({ copied, onCopy }: HeroSectionProps) {
   return (
     <div className={"w-full max-w-7xl mx-auto flex flex-col md:flex-row py-10 px-4 gap-12 items-start relative " + styles.firstSection}>
       <div className="md:w-1/2 flex flex-col justify-center relative overflow-hidden z-10">
-        <Typography 
-          variant="title" 
-          as="h1" 
+        <Typography
+          variant="title"
+          as="h1"
           className="mb-6 relative z-10 text-left"
         >
           Code-first framework

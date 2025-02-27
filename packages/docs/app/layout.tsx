@@ -5,6 +5,7 @@ import { Inter, DM_Mono, DM_Sans } from 'next/font/google';
 import type { ReactNode } from 'react';
 import type { Metadata } from 'next';
 import { Analytics } from "@vercel/analytics/react"
+import Script from 'next/script';
 
 const inter = Inter({
   subsets: ['latin'],
@@ -144,6 +145,15 @@ export const metadata: Metadata = {
 export default function Layout({ children }: { children: ReactNode }) {
   return (
     <html lang="en" className={`${inter.variable} ${dmMono.variable} ${dmSans.variable}`} suppressHydrationWarning>
+      <head>
+        {/* Add the GitHub buttons script here */}
+        <Script
+          src="https://buttons.github.io/buttons.js"
+          strategy="afterInteractive"
+          async
+          defer
+        />
+      </head>
       <body className="flex flex-col h-full min-h-dvh w-dvw landscape:min-h-screen landscape:h-full landscape:w-full p-0 m-0 gap-0" suppressHydrationWarning>
         <RootProvider>
           {children}
