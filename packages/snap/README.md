@@ -37,8 +37,6 @@ pnpm add motia
 ```
 
 
-```
-
 ## Quick Start
 
 ### Email Auto-Reply with Sentiment Analysis
