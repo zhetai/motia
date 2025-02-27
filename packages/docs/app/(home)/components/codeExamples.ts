@@ -1,8 +1,8 @@
 // Code examples for different languages
 export const codeExamples = {
-  typescript: `import { OpenAI } from 'openai';
+    typescript: `import { OpenAI } from 'openai';
 import { z } from 'zod';
-import type { EventConfig, StepHandler } from '@motiadev/core';
+import type { EventConfig, StepHandler } from 'motia';
 
 const openai = new OpenAI({
     apiKey: process.env.OPENAI_API_KEY,
@@ -35,7 +35,7 @@ export const handler: StepHandler<typeof config> = async (inputData, context) =>
         data: { from, subject, body, sentiment },
     });
 };`,
-  javascript: `import { OpenAI } from 'openai';
+    javascript: `import { OpenAI } from 'openai';
 import { z } from 'zod';
 
 const openai = new OpenAI({
@@ -69,7 +69,7 @@ export const handler = async (inputData, context) => {
         data: { from, subject, body, sentiment },
     });
 };`,
-  python: `import os
+    python: `import os
 from openai import OpenAI
 
 openai = OpenAI(api_key=os.getenv('OPENAI_API_KEY'))
@@ -102,7 +102,7 @@ async def handler(input_data, context):
         'type': 'email.send',
         'data': {'from': from_, 'subject': subject, 'body': body, 'sentiment': sentiment}
     })`,
-  ruby: `require 'openai'
+    ruby: `require 'openai'
 
 openai = OpenAI::Client.new(api_key: ENV['OPENAI_API_KEY'])
 
@@ -135,7 +135,7 @@ def handler(input_data, context)
     data: { from: from, subject: subject, body: body, sentiment: sentiment }
   })
 end`,
-  java: `import com.theokanning.openai.OpenAiService;
+    java: `import com.theokanning.openai.OpenAiService;
 import com.theokanning.openai.completion.chat.ChatCompletionRequest;
 import com.theokanning.openai.completion.chat.ChatMessage;
 import com.theokanning.openai.completion.chat.ChatMessageRole;

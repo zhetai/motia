@@ -39,8 +39,8 @@ To create a custom UI for a step, create a `.tsx` or `.jsx` file next to your st
     // myStep.step.tsx
 
     import React from 'react'
-    import { EventNode } from '@motiadev/workbench'
-    import type { EventNodeProps } from '@motiadev/workbench'
+    import { EventNode } from 'motia'
+    import type { EventNodeProps } from 'motia'
 
     export default function MyStep({ data }: EventNodeProps) {
       return (
@@ -58,7 +58,7 @@ To create a custom UI for a step, create a `.tsx` or `.jsx` file next to your st
     // myStep.step.jsx
 
     import React from 'react'
-    import { EventNode } from '@motiadev/workbench'
+    import { EventNode } from 'motia'
 
     export default function MyStep({ data }) {
       return (
@@ -94,8 +94,8 @@ The main component for general-purpose steps.
     // customStep.step.tsx
 
     import React from 'react'
-    import { EventNode } from '@motiadev/workbench'
-    import type { EventNodeProps } from '@motiadev/workbench'
+    import { EventNode } from 'motia'
+    import type { EventNodeProps } from 'motia'
 
     export default function CustomStep({ data }: EventNodeProps) {
       return (
@@ -116,7 +116,7 @@ The main component for general-purpose steps.
     // customStep.step.jsx
 
     import React from 'react'
-    import { EventNode } from '@motiadev/workbench'
+    import { EventNode } from 'motia'
 
     export default function CustomStep({ data }) {
       return (
@@ -163,8 +163,8 @@ Specialized component for API-related steps.
     // apiStep.step.tsx
 
     import React from 'react'
-    import { ApiNode } from '@motiadev/workbench'
-    import type { ApiNodeProps } from '@motiadev/workbench'
+    import { ApiNode } from 'motia'
+    import type { ApiNodeProps } from 'motia'
 
     export default function ApiStep({ data }: ApiNodeProps) {
       return (
@@ -183,7 +183,7 @@ Specialized component for API-related steps.
     // apiStep.step.jsx
 
     import React from 'react'
-    import { ApiNode } from '@motiadev/workbench'
+    import { ApiNode } from 'motia'
 
     export default function ApiStep({ data }) {
       return (

@@ -64,7 +64,7 @@ State data is stored as key-value pairs, namespaced under a scope string.  When 
 <Tabs items={['TypeScript', 'JavaScript', 'Python', 'Ruby']}>
   <Tab label="TypeScript">
     ```typescript
-    import { StepHandler } from '@motiadev/core'
+    import { StepHandler } from 'motia'
 
     interface BookingData {
       customer: { name: string; email: string };
@@ -92,7 +92,7 @@ State data is stored as key-value pairs, namespaced under a scope string.  When 
 
   <Tab label="JavaScript">
     ```javascript
-    import { StepHandler } from '@motiadev/core'
+    import { StepHandler } from 'motia'
 
     export const handler = async (input, { state, traceId }) => { // Get traceId from context
       // Store state (using traceId as scope)
@@ -421,7 +421,7 @@ Always clean up state when you're done with it:
 ### Custom State Adapters
 
 ```typescript title="Custom State Adapter Example"
-import { StateAdapter } from '@motiadev/core'
+import { StateAdapter } from 'motia'
 
 class CustomStateAdapter extends StateAdapter {
   async get<T>(traceId: string, key: string): Promise<T | null> { 

@@ -85,7 +85,7 @@ Motia provides a powerful Command Line Interface (CLI) to help you manage your p
 
 ## Installation
 
-The Motia CLI is automatically installed when you install the `@motiadev/core` package. You can use it by running `npx motia` followed by the desired command.
+The Motia CLI is automatically installed when you install the `motia` package. You can use it by running `npx motia` followed by the desired command.
 
 ## Commands
 
@@ -287,44 +287,6 @@ Checkout the [Motia Workbench](/docs/workbench/overview) docs for more informati
 <Callout>
 New to Motia? Follow the **[quick start](/docs/quick-start)** guide to get set up.
 </Callout>
-
--   [introduction](/docs/concepts/introduction.md): Documentation for introduction.
----
-title: Introduction
-description: Learn about the core concepts and features of our automation framework
----
-
-# Introduction
-
-Welcome to our automation framework documentation! This framework helps you build powerful, flexible automation workflows with a React-based approach.
-
-## What is [Your Framework Name]?
-
-[Your Framework Name] is a modern automation framework that allows you to:
-- Create complex automation workflows using simple React components
-- Manage state across your automation steps
-- Debug and visualize your flows
-- Build custom UI interactions
-
-## Key Features
-
-- **Component-Based**: Build automations using reusable React components
-- **Type-Safe**: Full TypeScript support for better development experience
-- **Extensible**: Create custom steps and flows
-- **Visual Debugging**: Built-in tools for flow visualization
-- **State Management**: Powerful state management across automation steps
-
-## When to Use
-
-This framework is ideal for:
-- Building automation tools
-- Creating workflow applications
-- Developing interactive tutorials
-- Implementing guided user experiences
-
-## Getting Started
-
-Check out our [Quick Start](/docs/core/quick-start) guide to begin building your first automation. 
 
 -   [Logging & Debugging](/docs/concepts/logging-and-debugging.md): Documentation for Logging & Debugging.
 ---
@@ -711,7 +673,7 @@ State data is stored as key-value pairs, namespaced under a scope string.  When 
 <Tabs items={['TypeScript', 'JavaScript', 'Python', 'Ruby']}>
   <Tab label="TypeScript">
     ```typescript
-    import { StepHandler } from '@motiadev/core'
+    import { StepHandler } from 'motia'
 
     interface BookingData {
       customer: { name: string; email: string };
@@ -739,7 +701,7 @@ State data is stored as key-value pairs, namespaced under a scope string.  When 
 
   <Tab label="JavaScript">
     ```javascript
-    import { StepHandler } from '@motiadev/core'
+    import { StepHandler } from 'motia'
 
     export const handler = async (input, { state, traceId }) => { // Get traceId from context
       // Store state (using traceId as scope)
@@ -1068,7 +1030,7 @@ Always clean up state when you're done with it:
 ### Custom State Adapters
 
 ```typescript title="Custom State Adapter Example"
-import { StateAdapter } from '@motiadev/core'
+import { StateAdapter } from 'motia'
 
 class CustomStateAdapter extends StateAdapter {
   async get<T>(traceId: string, key: string): Promise<T | null> { 
@@ -1183,7 +1145,7 @@ The following examples showcase how to configure an **API Step**
 <Tabs items={['TypeScript', 'JavaScript', 'Python', 'Ruby']}>
   <Tab value="TypeScript">
     ```typescript
-      import { ApiRouteConfig, StepHandler } from '@motiadev/core'
+      import { ApiRouteConfig, StepHandler } from 'motia'
       import { z } from 'zod'
 
       export const config: ApiRouteConfig = {
@@ -1261,7 +1223,7 @@ The following examples showcase how to configure an **API Step**
         context.logger.info('[Test State] Received request', {'body': req.body})
 
         await context.emit({
-            'type': 'test-state',
+            'topic': 'test-state',
             'data': req.body
         })
 
@@ -1328,7 +1290,7 @@ The following examples showcase how to configure an **CRON Step**
 <Tabs  items={['TS', 'JS', 'Python', 'Ruby']}>
   <Tab value="TS">
     ```typescript
-    import { CronConfig } from '@motiadev/core'
+    import { CronConfig } from 'motia'
 
     export const config: CronConfig = {
       type: 'cron' as const,
@@ -1498,43 +1460,63 @@ A handler holds the business logic of a step. When an event occurs that matches 
 
 Here're examples of how to define a handler in the Motia supported languages:
 
-<Tabs  items={['TS', 'JS', 'Python', 'Ruby']}>
-  <Tab value='TS'>
+<Tabs items={['TS', 'JS', 'Python', 'Ruby']}>
+  <Tab value="TS">
     ```typescript
-    import { FlowContext, StepHandler } from '@motiadev/core'
+    import { EventConfig, StepHandler } from 'motia'
 
-    // ... step config
+    export const config: EventConfig = {
+      type: 'event',
+      name: 'Minimal Step',
+      subscribes: ['start'],
+      emits: ['done'],
+    }
 
-    export const handler: StepHandler<typeof config> = async (input, { emit, traceId, state, logger }: FlowContext) => {
-      // ... business logic here
-      // ...emit new events to other steps
+    export const handler: StepHandler<typeof config> = async (input, { emit, traceId, state, logger }) => {
+      await emit({ topic: 'done', data: {} })
     }
     ```
   </Tab>
-  <Tab value='JS'>
+  <Tab value="JS">
     ```javascript
-    // ... step config
-
-    const handler = async (input, { emit, traceId, state, logger }) => {
-      // ... business logic here
-      // ...emit new events to other steps
+    exports.config = {
+      type: 'event',
+      name: 'Minimal Step',
+      subscribes: ['start'],
+      emits: ['done'],
     }
 
-    module.exports = {config, handler}
+    exports.handler = async (input, { emit, traceId, state, logger }) => {
+      await emit({ topic: 'done', data: {} })
+    }
     ```
   </Tab>
-  <Tab value='Python'>
+  <Tab value="Python">
     ```python
+    config = {
+        'type': 'event',
+        'name': 'Minimal Step',
+        'subscribes': ['start'],
+        'emits': ['done'],
+    }
+
     async def handler(args, ctx):
-        # ... business logic here
-        # ...emit new events to other steps
+      await ctx.emit({'topic': 'done', 'data': {}})
     ```
   </Tab>
-  <Tab value='Ruby'>
-  ```ruby
+  <Tab value="Ruby">
+    ```ruby
+    def config
+      {
+        type: 'event',
+        name: 'Minimal Step',
+        subscribes: ['start'],
+        emits: ['done'],
+      }
+    end
+
     def handler(args, ctx)
-        # ... business logic here
-        # ...emit new events to other steps
+      ctx.emit({topic: 'done', data: {}})
     end
     ```
   </Tab>
@@ -1559,7 +1541,8 @@ The following properties are specific to the Event Step, in addition to the [com
 <DescriptionTable
   type={{
     input: {
-      description: 'This is only required for TS or JS steps that use zod for their input schema, this is used when processing the step to validate the input before executing the step handler.',
+      description:
+        'This is only required for TS or JS steps that use zod for their input schema, this is used when processing the step to validate the input before executing the step handler.',
       type: 'string[]',
     },
   }}
@@ -1570,7 +1553,7 @@ The following examples showcase how to configure an **Event Step**
 <Tabs  items={['TS', 'JS', 'Python', 'Ruby']}>
   <Tab value="TS">
     ```typescript
-    import { EventConfig, StepHandler } from '@motiadev/core'
+    import { EventConfig, StepHandler } from 'motia'
     import { z } from 'zod'
 
     const inputSchema = z.object({
@@ -1591,7 +1574,7 @@ The following examples showcase how to configure an **Event Step**
 
     export const handler: StepHandler<typeof config> = async (input, { emit, logger }) => {
       logger.info('Processing message:', input.message)
-      
+
       await emit({
         topic: 'pms.stepA.done',
         data: {
@@ -1600,6 +1583,7 @@ The following examples showcase how to configure an **Event Step**
       })
     }
     ```
+
   </Tab>
   <Tab value="JS">
     ```javascript
@@ -1621,7 +1605,7 @@ The following examples showcase how to configure an **Event Step**
 
     const handler = async (input, { emit, logger }) => {
       logger.info('Processing message:', input.message)
-      
+
       await emit({
         topic: 'pms.stepA.done',
         data: {
@@ -1632,6 +1616,7 @@ The following examples showcase how to configure an **Event Step**
 
     module.exports = { config, handler };
     ```
+
   </Tab>
   <Tab value="Python">
     ```python
@@ -1646,7 +1631,7 @@ The following examples showcase how to configure an **Event Step**
 
     async def handler(input, context):
         context.logger.info('Processing input:', input)
-        
+
         await context.emit({
             "topic": "openai-response",
             "data": {
@@ -1654,6 +1639,7 @@ The following examples showcase how to configure an **Event Step**
             }
         })
     ```
+
   </Tab>
   <Tab value="Ruby">
     ```ruby
@@ -1674,7 +1660,7 @@ The following examples showcase how to configure an **Event Step**
 
     def handler(input, context)
       context.logger.info("Processing input: #{input}")
-      
+
       context.emit({
         topic: "openai-response",
         data: {
@@ -1683,12 +1669,11 @@ The following examples showcase how to configure an **Event Step**
       })
     end
     ```
+
   </Tab>
 </Tabs>
 
 ## Example
-
-
 
 
 -   [testing](/docs/concepts/testing.md): Documentation for testing.
@@ -1723,7 +1708,7 @@ describe('MyStep', () => {
     await handler({ name: 'John' }, { emit })
 
     expect(emit).toHaveBeenCalledWith({
-      topic: 'my-event',
+      type: 'my-event',
       data: { greeting: 'Hello, John!' },
     })
 
@@ -1900,12 +1885,11 @@ Sometimes you don't just want a **simple** "prompt => response." Instead, you wa
   <File name="handleNegative.step.ts" />
 </Folder>
 
-
 <Tabs items={['analyzeSentimentApi', 'openAiAnalyzeSentiment', 'handlePositive', 'handleNegative']}>
   <Tab value="analyzeSentimentApi">
     ```ts
     // Receives user text, emits "openai.analyzeSentimentRequest".
-    import { ApiRouteConfig, StepHandler } from 'wistro'
+    import { ApiRouteConfig, StepHandler } from 'motia'
     import { z } from 'zod'
 
     export const config: ApiRouteConfig = {
@@ -1938,11 +1922,12 @@ Sometimes you don't just want a **simple** "prompt => response." Instead, you wa
       }
     }
     ```
+
   </Tab>
   <Tab value="openAiAnalyzeSentiment">
     ```ts
     // Calls OpenAI, instructing it to ONLY return JSON like {"sentiment":"positive","analysis":"..."}
-    import { EventConfig, StepHandler } from 'wistro'
+    import { EventConfig, StepHandler } from 'motia'
     import { z } from 'zod'
     import { OpenAI } from 'openai'
 
@@ -2014,11 +1999,12 @@ Sometimes you don't just want a **simple** "prompt => response." Instead, you wa
       }
     }
     ```
+
   </Tab>
   <Tab value="handlePositive">
     ```ts
     // Handles "openai.positiveSentiment"
-    import { EventConfig, StepHandler } from 'wistro'
+    import { EventConfig, StepHandler } from 'motia'
     import { z } from 'zod'
 
     const positiveSchema = z.object({
@@ -2040,11 +2026,12 @@ Sometimes you don't just want a **simple** "prompt => response." Instead, you wa
       // Maybe notify a Slack channel: "All good vibes here!"
     }
     ```
+
   </Tab>
   <Tab value="handleNegative">
     ```ts
     // Handles "openai.negativeSentiment"
-    import { EventConfig, StepHandler } from 'wistro'
+    import { EventConfig, StepHandler } from 'motia'
     import { z } from 'zod'
 
     const negativeSchema = z.object({
@@ -2066,6 +2053,7 @@ Sometimes you don't just want a **simple** "prompt => response." Instead, you wa
       // Could escalate to a service, or respond gently, etc.
     }
     ```
+
   </Tab>
 </Tabs>
 
@@ -2075,9 +2063,7 @@ Sometimes you don't just want a **simple** "prompt => response." Instead, you wa
 
 Here's how the events chain together:
 
-<div className="my-8">
-  ![Flow: Sentiment Analysis Steps](./../img/sentiment-analyzer.png)
-</div>
+<div className="my-8">![Flow: Sentiment Analysis Steps](./../img/sentiment-analyzer.png)</div>
 
 1. **Analyze Sentiment (API)** → emits `openai.analyzeSentimentRequest`
 2. **OpenAI Sentiment Analyzer** → calls OpenAI, parses JSON →
@@ -2094,7 +2080,7 @@ Here's how the events chain together:
 ### Install Dependencies
 
 ```shell
-pnpm install wistro openai
+pnpm install motia openai
 ```
 
 ### Create Project Structure
@@ -2115,7 +2101,7 @@ export OPENAI_API_KEY="sk-..."
 ### Run the Project
 
 ```shell
-pnpm wistro dev
+pnpm motia dev
 ```
 
 ### Test the API
@@ -2131,6 +2117,7 @@ Check your logs - you should see either the `[Positive Responder]` or `[Negative
 ### Extend Further
 
 Here are some ways to build upon this example:
+
 - Tweak the system instructions to force certain outputs or include more details
 - Create more specialized responders (like "neutralSentiment")
 - Integrate a notification step (Slack, database, etc.)
@@ -2165,12 +2152,11 @@ Sometimes you don't just want a **simple** "prompt => response." Instead, you wa
   <File name="handleNegative.step.ts" />
 </Folder>
 
-
 <Tabs items={['analyzeSentimentApi', 'openAiAnalyzeSentiment', 'handlePositive', 'handleNegative']}>
   <Tab value="analyzeSentimentApi">
     ```ts
     // Receives user text, emits "openai.analyzeSentimentRequest".
-    import { ApiRouteConfig, StepHandler } from 'wistro'
+    import { ApiRouteConfig, StepHandler } from 'motia'
     import { z } from 'zod'
 
     export const config: ApiRouteConfig = {
@@ -2203,11 +2189,12 @@ Sometimes you don't just want a **simple** "prompt => response." Instead, you wa
       }
     }
     ```
+
   </Tab>
   <Tab value="openAiAnalyzeSentiment">
     ```ts
     // Calls OpenAI, instructing it to ONLY return JSON like {"sentiment":"positive","analysis":"..."}
-    import { EventConfig, StepHandler } from 'wistro'
+    import { EventConfig, StepHandler } from 'motia'
     import { z } from 'zod'
     import { OpenAI } from 'openai'
 
@@ -2279,11 +2266,12 @@ Sometimes you don't just want a **simple** "prompt => response." Instead, you wa
       }
     }
     ```
+
   </Tab>
   <Tab value="handlePositive">
     ```ts
     // Handles "openai.positiveSentiment"
-    import { EventConfig, StepHandler } from 'wistro'
+    import { EventConfig, StepHandler } from 'motia'
     import { z } from 'zod'
 
     const positiveSchema = z.object({
@@ -2305,11 +2293,12 @@ Sometimes you don't just want a **simple** "prompt => response." Instead, you wa
       // Maybe notify a Slack channel: "All good vibes here!"
     }
     ```
+
   </Tab>
   <Tab value="handleNegative">
     ```ts
     // Handles "openai.negativeSentiment"
-    import { EventConfig, StepHandler } from 'wistro'
+    import { EventConfig, StepHandler } from 'motia'
     import { z } from 'zod'
 
     const negativeSchema = z.object({
@@ -2331,6 +2320,7 @@ Sometimes you don't just want a **simple** "prompt => response." Instead, you wa
       // Could escalate to a service, or respond gently, etc.
     }
     ```
+
   </Tab>
 </Tabs>
 
@@ -2340,9 +2330,7 @@ Sometimes you don't just want a **simple** "prompt => response." Instead, you wa
 
 Here's how the events chain together:
 
-<div className="my-8">
-  ![Flow: Sentiment Analysis Steps](./../img/sentiment-analyzer.png)
-</div>
+<div className="my-8">![Flow: Sentiment Analysis Steps](./../img/sentiment-analyzer.png)</div>
 
 1. **Analyze Sentiment (API)** → emits `openai.analyzeSentimentRequest`
 2. **OpenAI Sentiment Analyzer** → calls OpenAI, parses JSON →
@@ -2359,7 +2347,7 @@ Here's how the events chain together:
 ### Install Dependencies
 
 ```shell
-pnpm install wistro openai
+pnpm install motia openai
 ```
 
 ### Create Project Structure
@@ -2380,7 +2368,7 @@ export OPENAI_API_KEY="sk-..."
 ### Run the Project
 
 ```shell
-pnpm wistro dev
+pnpm motia dev
 ```
 
 ### Test the API
@@ -2396,6 +2384,7 @@ Check your logs - you should see either the `[Positive Responder]` or `[Negative
 ### Extend Further
 
 Here are some ways to build upon this example:
+
 - Tweak the system instructions to force certain outputs or include more details
 - Create more specialized responders (like "neutralSentiment")
 - Integrate a notification step (Slack, database, etc.)
@@ -2555,7 +2544,7 @@ This guide will walk you through everything you need to define a minimal **step*
   <Step>
   ### Setup your project: Create a New Project Folder
 
-  Let's create a new Motia project in a dedicated folder. This is the recommended approach for keeping your projects organized.
+Let's create a new Motia project in a dedicated folder. This is the recommended approach for keeping your projects organized.
 
   <Tabs items={['Automated', 'Manual']}>
 <Tab value="Automated">
@@ -2604,6 +2593,7 @@ This guide will walk you through everything you need to define a minimal **step*
       motia create -t default -n <your-project-name>
       ```
     </Tab>
+
   </Tabs>
 
     *   **This will**:
@@ -2618,9 +2608,10 @@ This guide will walk you through everything you need to define a minimal **step*
     **Choosing a Project Name:** Replace `<your-project-name>` with your desired project folder name.
 
     **Alternative Templates:** To see other templates, run: `npx motia templates` (or `motia templates` if you installed globally).
+
   </Callout>
 
-  You should see a new folder created with the following files inside:
+You should see a new folder created with the following files inside:
 
   <Files>
     <Folder name="steps" defaultOpen>
@@ -2648,7 +2639,7 @@ This guide will walk you through everything you need to define a minimal **step*
 
       3.  **Install Core Packages:**
           ```package-install
-          @motiadev/core @motiadev/workbench zod
+          motia motia zod
           ```
 
       4.  **Add `dev` Script to `package.json`:**
@@ -2670,94 +2661,80 @@ This guide will walk you through everything you need to define a minimal **step*
           mkdir steps
           ```
     </Tab>
+
   </Tabs>
 
   </Step>
   <Step>
   ### Minimal Step Example (Already Included!)
 
-  ✨ **Good News!** If you used the automated project setup with the `default` template (as recommended above), you can **skip this step!**
+✨ **Good News!** If you used the automated project setup with the `default` template (as recommended above), you can **skip this step!**
 
-  The `default` template already includes example steps in the `steps` folder, including `addNumbers.step.js` (or similar, depending on the template). These pre-built steps are ready for you to explore and run.
+The `default` template already includes example steps in the `steps` folder, including `addNumbers.step.js` (or similar, depending on the template). These pre-built steps are ready for you to explore and run.
 
-  ---
+---
 
-  **If you chose not to use the template or want to create a step from scratch manually,** follow these steps:
+**If you chose not to use the template or want to create a step from scratch manually,** follow these steps:
 
-  1.  **Create a `steps` folder** in your project's root directory (if you haven't already).
+1.  **Create a `steps` folder** in your project's root directory (if you haven't already).
 
-  2.  **Create a new file** named `addNumbers.step.js` (or `addNumbers.step.ts` for TypeScript) inside the `steps` folder.
+2.  **Create a new file** named `addNumbers.step.js` (or `addNumbers.step.ts` for TypeScript) inside the `steps` folder.
 
-      <Files>
-        <Folder name="steps" defaultOpen>
-          <File name="addNumbers.step.js" />
-        </Folder>
-      </Files>
+    <Files>
+      <Folder name="steps" defaultOpen>
+        <File name="addNumbers.step.js" />
+      </Folder>
+    </Files>
 
-  3.  **Paste the following code** into your `addNumbers.step.js` file:
+3.  **Paste the following code** into your `addNumbers.step.js` file:
 
-      ```javascript
-      exports.config = {
-        type: 'event', // "event", "api", or "cron"
-        name: 'AddNumbers',
-        subscribes: ['add-numbers'],
-        emits: ['numbers-added'],
-        flows: ['numbers']
-      }
+    ```javascript
+    exports.config = {
+      type: 'event', // "event", "api", or "cron"
+      name: 'AddNumbers',
+      subscribes: ['add-numbers'],
+      emits: ['numbers-added'],
+      flows: ['numbers'],
+    }
 
-      exports.handler = async (input, { emit }) => {
-        const sum = (input.a || 0) + (input.b || 0)
-        await emit({
-          topic: 'numbers-added',
-          data: { result: sum },
-        })
-      }
-      ```
+    exports.handler = async (input, { emit }) => {
+      const sum = (input.a || 0) + (input.b || 0)
+      await emit({
+        topic: 'numbers-added',
+        data: { result: sum },
+      })
+    }
+    ```
 
-      This minimal step **listens** for the event `"add-numbers"` and **emits** `"numbers-added"`. It's a basic example to get you started.
+    This minimal step **listens** for the event `"add-numbers"` and **emits** `"numbers-added"`. It's a basic example to get you started.
 
   </Step>
   <Step>
   ### Start Motia Development Server & Workbench
 
-  Now, let's start Motia and see your workflow in action!
+Now, let's start Motia and see your workflow in action!
 
-  1.  **Open your terminal** in your Motia project's root directory (where your `package.json` file is located).
+1.  **Open your terminal** in your Motia project's root directory (where your `package.json` file is located).
 
-  2.  **Run the development server command:** Use the `dev` script that was set up in your `package.json`:
+2.  **Run the development server command:** Use the `dev` script that was set up in your `package.json`:
 
-      <Tabs items={['pnpm', 'yarn', 'npm', 'bun']}>
-        <Tab value='pnpm'>
-          ```bash
-          pnpm run dev
-          ```
-        </Tab>
-        <Tab value='yarn'>
-          ```bash
-          yarn run dev
-          ```
-        </Tab>
-        <Tab value='npm'>
-          ```bash
-          npm run dev
-          ```
-        </Tab>
-        <Tab value='bun'>
-          ```bash
-          bun run dev
-          ```
-        </Tab>
-      </Tabs>
+    <Tabs items={['pnpm', 'yarn', 'npm', 'bun']}>
+      <Tab value="pnpm">```bash pnpm run dev ```</Tab>
+      <Tab value="yarn">```bash yarn run dev ```</Tab>
+      <Tab value="npm">```bash npm run dev ```</Tab>
+      <Tab value="bun">```bash bun run dev ```</Tab>
+    </Tabs>
 
-      Motia will:
+    Motia will:
 
-      *   **Scan** your `steps` folder for step definition files (`.step.ts`, `.step.js`, `.step.py`, `.step.rb`).
-      *   **Register** your Steps with the Motia runtime.
-      *   **Launch** a development server and the Motia Workbench UI (typically at [`http://localhost:3000`](http://localhost:3000)).
+    - **Scan** your `steps` folder for step definition files (`.step.ts`, `.step.js`, `.step.py`, `.step.rb`).
+    - **Register** your Steps with the Motia runtime.
+    - **Launch** a development server and the Motia Workbench UI (typically at [`http://localhost:3000`](http://localhost:3000)).
 
-      <Callout type="info">
-          **Changing the Port:** To run the Workbench on a different port, use the `--port` option:  `pnpm run dev --port 3001`
-      </Callout>
+    <Callout type="info">
+      **Changing the Port:** To run the Workbench on a different port, use the `--port` option: `pnpm run dev --port
+      3001`
+    </Callout>
 
   </Step>
   <Step>
@@ -2774,8 +2751,7 @@ This guide will walk you through everything you need to define a minimal **step*
 
     4.  **Observe the Visual Flow:** You should now see a visual representation of your flow in the main panel. This is the Motia Workbench visualizing the steps and event flow within your application!
 
-        TODO:
-        ![Example Flow Visualization in Workbench - Placeholder Image Needed Here]
+        ![Flow Visualization in Workbench](./../img/workbench-example.png)
 
         <Callout type="info">
             You can click and drag the nodes in the visual editor to rearrange them for better clarity. Explore the UI to familiarize yourself with the Workbench!
@@ -2823,7 +2799,9 @@ This guide will walk you through everything you need to define a minimal **step*
     Log the journey of the event, including the emitted numbers-added event
 
     </Step>
+
 </Steps>
+
 
 -   [index](/docs/index.md): Documentation for index.
 ---
@@ -2960,10 +2938,7 @@ description: Build an automated card progression system for Trello boards with A
 
 Try out the code directly in your browser:
 
-<CodeSandbox 
-  repo="MotiaDev/motia-examples/tree/main/examples/trello-flow"
-  path="/steps"
-/>
+<CodeSandbox repo="MotiaDev/motia-examples/tree/main/examples/trello-flow" path="/steps" />
 
 ## Let's build a Trello automation system that:
 
@@ -3020,9 +2995,9 @@ The Trello board is organized into four main lists:
     export const handler: StepHandler<typeof config> = async (req, { emit, logger }) => {
       const { action } = req.body
 
-      logger.info('[TrelloWebhook] Received webhook', { 
+      logger.info('[TrelloWebhook] Received webhook', {
         type: action.type,
-        data: action.data 
+        data: action.data
       })
 
       await emit({
@@ -3036,6 +3011,7 @@ The Trello board is organized into four main lists:
       }
     }
     ```
+
   </Tab>
   <Tab value="validation">
     ```ts
@@ -3086,6 +3062,7 @@ The Trello board is organized into four main lists:
       }
     }
     ```
+
   </Tab>
   <Tab value="requirements">
     ```ts
@@ -3112,7 +3089,7 @@ The Trello board is organized into four main lists:
 
     export const handler: StepHandler<typeof config> = async (card, { emit, logger }) => {
       const trello = new TrelloClient()
-      
+
       const requirements = [
         { check: card.name.length > 0, message: 'Title is required' },
         { check: card.desc.length > 0, message: 'Description is required' },
@@ -3124,7 +3101,7 @@ The Trello board is organized into four main lists:
         .map(req => req.message)
 
       if (failures.length > 0) {
-        await trello.addComment(card.id, 
+        await trello.addComment(card.id,
           `⚠️ Card requirements not met:\n${failures.join('\n')}`)
         return
       }
@@ -3135,6 +3112,7 @@ The Trello board is organized into four main lists:
       })
     }
     ```
+
   </Tab>
   <Tab value="assigned">
     ```ts
@@ -3159,7 +3137,7 @@ The Trello board is organized into four main lists:
 
     export const handler: StepHandler<typeof config> = async (input, { emit, logger }) => {
       const trello = new TrelloClient()
-      
+
       // Move to In Progress list
       await trello.moveCard(
         input.cardId,
@@ -3172,6 +3150,7 @@ The Trello board is organized into four main lists:
       })
     }
     ```
+
   </Tab>
   <Tab value="review">
     ```ts
@@ -3213,6 +3192,7 @@ The Trello board is organized into four main lists:
       })
     }
     ```
+
   </Tab>
   <Tab value="completion">
     ```ts
@@ -3243,7 +3223,7 @@ The Trello board is organized into four main lists:
       }
 
       const trello = new TrelloClient()
-      
+
       await trello.moveCard(
         input.card.id,
         process.env.TRELLO_COMPLETED_LIST_ID!
@@ -3255,6 +3235,7 @@ The Trello board is organized into four main lists:
       })
     }
     ```
+
   </Tab>
   <Tab value="overdue">
     ```ts
@@ -3272,9 +3253,9 @@ The Trello board is organized into four main lists:
 
     export const handler: StepHandler<typeof config> = async (_, { emit, logger }) => {
       const trello = new TrelloClient()
-      
+
       const cards = await trello.getOverdueCards()
-      
+
       for (const card of cards) {
         await emit({
           topic: 'trello.cardOverdue',
@@ -3287,6 +3268,7 @@ The Trello board is organized into four main lists:
       }
     }
     ```
+
   </Tab>
   <Tab value="slack">
     ```ts
@@ -3330,6 +3312,7 @@ The Trello board is organized into four main lists:
       }
     }
     ```
+
   </Tab>
 </Tabs>
 
@@ -3337,9 +3320,7 @@ The Trello board is organized into four main lists:
 
 Here's how the automation flow works:
 
-<div className="my-8">
-  ![Flow: Trello Automation Steps](../img/trello-automation.png)
-</div>
+<div className="my-8">![Flow: Trello Automation Steps](../img/trello-automation.png)</div>
 
 1. **Card Validation** → Checks for required information
 2. **Progress Tracking** → Moves cards between lists
@@ -3353,6 +3334,7 @@ Here's how the automation flow works:
 ### Prerequisites
 
 Make sure you have:
+
 - Trello account with API access
 - Node.js installed
 - Slack workspace (for notifications)
@@ -3399,6 +3381,7 @@ TRELLO_COMPLETED_LIST_ID=your_completed_list_id
 ### Set Up Trello Board
 
 1. Create a new Trello board with these lists:
+
    - New Tasks
    - In Progress
    - Needs Review
@@ -3423,8 +3406,10 @@ pnpm dev
 </Steps>
 
 <Callout type="info">
-  For more detailed setup instructions and configuration options, check out the [full documentation](https://github.com/MotiaDev/motia-examples/tree/main/examples/trello-flow).
-</Callout> 
+  For more detailed setup instructions and configuration options, check out the [full
+  documentation](https://github.com/MotiaDev/motia-examples/tree/main/examples/trello-flow).
+</Callout>{' '}
+
 
 
 ## Use Cases
@@ -3438,10 +3423,7 @@ description: Build an automated card progression system for Trello boards with A
 
 Try out the code directly in your browser:
 
-<CodeSandbox 
-  repo="MotiaDev/motia-examples/tree/main/examples/trello-flow"
-  path="/steps"
-/>
+<CodeSandbox repo="MotiaDev/motia-examples/tree/main/examples/trello-flow" path="/steps" />
 
 ## Let's build a Trello automation system that:
 
@@ -3498,9 +3480,9 @@ The Trello board is organized into four main lists:
     export const handler: StepHandler<typeof config> = async (req, { emit, logger }) => {
       const { action } = req.body
 
-      logger.info('[TrelloWebhook] Received webhook', { 
+      logger.info('[TrelloWebhook] Received webhook', {
         type: action.type,
-        data: action.data 
+        data: action.data
       })
 
       await emit({
@@ -3514,6 +3496,7 @@ The Trello board is organized into four main lists:
       }
     }
     ```
+
   </Tab>
   <Tab value="validation">
     ```ts
@@ -3564,6 +3547,7 @@ The Trello board is organized into four main lists:
       }
     }
     ```
+
   </Tab>
   <Tab value="requirements">
     ```ts
@@ -3590,7 +3574,7 @@ The Trello board is organized into four main lists:
 
     export const handler: StepHandler<typeof config> = async (card, { emit, logger }) => {
       const trello = new TrelloClient()
-      
+
       const requirements = [
         { check: card.name.length > 0, message: 'Title is required' },
         { check: card.desc.length > 0, message: 'Description is required' },
@@ -3602,7 +3586,7 @@ The Trello board is organized into four main lists:
         .map(req => req.message)
 
       if (failures.length > 0) {
-        await trello.addComment(card.id, 
+        await trello.addComment(card.id,
           `⚠️ Card requirements not met:\n${failures.join('\n')}`)
         return
       }
@@ -3613,6 +3597,7 @@ The Trello board is organized into four main lists:
       })
     }
     ```
+
   </Tab>
   <Tab value="assigned">
     ```ts
@@ -3637,7 +3622,7 @@ The Trello board is organized into four main lists:
 
     export const handler: StepHandler<typeof config> = async (input, { emit, logger }) => {
       const trello = new TrelloClient()
-      
+
       // Move to In Progress list
       await trello.moveCard(
         input.cardId,
@@ -3650,6 +3635,7 @@ The Trello board is organized into four main lists:
       })
     }
     ```
+
   </Tab>
   <Tab value="review">
     ```ts
@@ -3691,6 +3677,7 @@ The Trello board is organized into four main lists:
       })
     }
     ```
+
   </Tab>
   <Tab value="completion">
     ```ts
@@ -3721,7 +3708,7 @@ The Trello board is organized into four main lists:
       }
 
       const trello = new TrelloClient()
-      
+
       await trello.moveCard(
         input.card.id,
         process.env.TRELLO_COMPLETED_LIST_ID!
@@ -3733,6 +3720,7 @@ The Trello board is organized into four main lists:
       })
     }
     ```
+
   </Tab>
   <Tab value="overdue">
     ```ts
@@ -3750,9 +3738,9 @@ The Trello board is organized into four main lists:
 
     export const handler: StepHandler<typeof config> = async (_, { emit, logger }) => {
       const trello = new TrelloClient()
-      
+
       const cards = await trello.getOverdueCards()
-      
+
       for (const card of cards) {
         await emit({
           topic: 'trello.cardOverdue',
@@ -3765,6 +3753,7 @@ The Trello board is organized into four main lists:
       }
     }
     ```
+
   </Tab>
   <Tab value="slack">
     ```ts
@@ -3808,6 +3797,7 @@ The Trello board is organized into four main lists:
       }
     }
     ```
+
   </Tab>
 </Tabs>
 
@@ -3815,9 +3805,7 @@ The Trello board is organized into four main lists:
 
 Here's how the automation flow works:
 
-<div className="my-8">
-  ![Flow: Trello Automation Steps](../img/trello-automation.png)
-</div>
+<div className="my-8">![Flow: Trello Automation Steps](../img/trello-automation.png)</div>
 
 1. **Card Validation** → Checks for required information
 2. **Progress Tracking** → Moves cards between lists
@@ -3831,6 +3819,7 @@ Here's how the automation flow works:
 ### Prerequisites
 
 Make sure you have:
+
 - Trello account with API access
 - Node.js installed
 - Slack workspace (for notifications)
@@ -3877,6 +3866,7 @@ TRELLO_COMPLETED_LIST_ID=your_completed_list_id
 ### Set Up Trello Board
 
 1. Create a new Trello board with these lists:
+
    - New Tasks
    - In Progress
    - Needs Review
@@ -3901,8 +3891,56 @@ pnpm dev
 </Steps>
 
 <Callout type="info">
-  For more detailed setup instructions and configuration options, check out the [full documentation](https://github.com/MotiaDev/motia-examples/tree/main/examples/trello-flow).
-</Callout> 
+  For more detailed setup instructions and configuration options, check out the [full
+  documentation](https://github.com/MotiaDev/motia-examples/tree/main/examples/trello-flow).
+</Callout>{' '}
+
+
+-   [tldr-motia-in-3-minutes](/docs/tldr-motia-in-3-minutes.md): Documentation for tldr-motia-in-3-minutes.
+---
+title: TLDR - Motia in 3 Minutes
+description: A 3-minute overview of Motia’s core concepts with a business-ready GenAI use case
+---
+
+# TLDR - Motia in 3 Minutes
+
+Got 3 minutes? Here’s the scoop on Motia—a code-first framework that powers event-driven workflows, perfect for Generative AI (GenAI). We’ll spotlight a real-world win: analyzing customer feedback.
+
+## What’s Motia?
+Motia builds scalable, observable workflows without infrastructure headaches. Code in JS, TS, Python, or Ruby, chain it up, and track it live in a visual Workbench.
+
+- **Why It’s Clutch**: No queue setup, instant APIs/scheduling, real-time insights.
+- **Who’s It For**: Businesses wanting intelligent workflows without the hassle.
+
+## Core Concepts in a Nutshell
+
+| Concept    | What It Does                                                                                   | TLDR Feedback Example                        |
+|------------|------------------------------------------------------------------------------------------------|----------------------------------------------|
+| **Steps**  | Logic blocks that catch events, process, and trigger more.                                    | “Extract sentiment,” “Flag issues,” “Notify.”|
+| **Flows**  | Step groups with a goal. Your workflow’s playbook.                                            | “Feedback analyzer” flow.                    |
+| **Events** | Messages bouncing between steps, hauling data and sparking action.                            | “Feedback in!” or “Issues flagged!”          |
+| **Topics** | Event labels. Steps subscribe to nab what they need.                                          | “Catch ‘feedback.in’ and analyze.”           |
+
+### How It Ties Together
+Here’s a business-ready GenAI flow—crunching customer feedback:
+1. An **API Step** grabs a review (e.g., `POST /feedback`).
+2. It fires an **Event** with **Topic** `feedback.in`.
+3. An **Event Step** uses an LLM to extract sentiment (e.g., positive/negative), emitting `sentiment.out`.
+4. Another **Step** spots critical issues (e.g., “product broke”), emitting `issues.found`.
+5. A final **Step** notifies the team via Slack with sentiment and issues.
+6. This rolls in a **Flow** called `feedback-analyzer`, tracked in the Workbench.
+
+## Why Businesses Love It
+- **Scales Anything**: Links steps into workflows—GenAI or otherwise—with ease.
+- **Language Flex**: Mix Python for analysis, TS for notifications—Motia rolls with it.
+- **Real-Time Visualization**: Workbench maps your flow live, logs and all, for instant clarity.
+
+## 3-Minute Takeaway
+Motia = **Steps** (logic) → **Events** (messages) → **Topics** (routing) → **Flows** (plans). It’s event-driven power made simple, with a dashboard to keep tabs.
+
+<Callout>
+Want to build it? Hit the [Quick Start](/docs/getting-started/quick-start) for a 5-minute go. Or dive into [Core Concepts](/docs/getting-started/core-concepts) for the full rundown.
+</Callout>
 
 -   [welcome](/docs/welcome.md): Documentation for welcome.
 ---
@@ -4010,6 +4048,182 @@ NOOP (No Operation) steps are a powerful feature in Motia that serve multiple pu
 4. Testing flows during development
 
 <Callout type="warn">Currently, NOOP steps are only supported in TS or JS</Callout>
+
+## File Structure
+
+NOOP steps require two files with the same base name:
+- `stepName.step.ts` - Contains the step configuration
+- `stepName.step.tsx` - Contains the UI component (optional)
+
+### Step Configuration File (.ts)
+
+<Tabs items={['TS', 'JS']}>
+  <Tab value="TS">
+    ```typescript
+    // myStep.step.ts
+    import { NoopConfig } from 'motia'
+
+    export const config: NoopConfig = {
+      type: 'noop',
+      name: 'My NOOP Step',
+      description: 'Description of what this step simulates',
+      virtualEmits: ['event.one', 'event.two'],
+      virtualSubscribes: [], // Required even if empty
+      flows: ['my-flow'],
+    }
+    ```
+  </Tab>
+  <Tab value="JS">
+    ```javascript
+    // myStep.step.js
+    const config = {
+      type: 'noop',
+      name: 'My NOOP Step',
+      description: 'Description of what this step simulates',
+      virtualEmits: ['event.one', 'event.two'],
+      virtualSubscribes: [], // Required even if empty
+      flows: ['my-flow'],
+    }
+
+    module.exports = { config }
+    ```
+  </Tab>
+</Tabs>
+
+### UI Component File (.tsx)
+
+<Tabs items={['TS', 'JS']}>
+  <Tab value="TS">
+    ```typescript
+    // myStep.step.tsx
+    import React from 'react'
+    import { BaseHandle, Position } from 'motia'
+
+    export default function MyStep() {
+      return (
+        <div className="p-4 bg-gray-800 rounded-lg border border-gray-600 text-white">
+          <div className="text-sm font-medium">My Step UI</div>
+          {/* Your custom UI elements */}
+          <BaseHandle type="source" position={Position.Bottom} />
+        </div>
+      )
+    }
+    ```
+  </Tab>
+  <Tab value="JS">
+    ```javascript
+    // myStep.step.jsx
+    import React from 'react'
+    import { BaseHandle, Position } from 'motia'
+
+    export default function MyStep() {
+      return (
+        <div className="p-4 bg-gray-800 rounded-lg border border-gray-600 text-white">
+          <div className="text-sm font-medium">My Step UI</div>
+          {/* Your custom UI elements */}
+          <BaseHandle type="source" position={Position.Bottom} />
+        </div>
+      )
+    }
+    ```
+  </Tab>
+</Tabs>
+
+## Example: Webhook Testing
+
+Here's a complete example of a NOOP step that simulates webhook events:
+
+<Tabs items={['TS', 'JS']}>
+  <Tab value="TS">
+    ```typescript
+    // test-webhook.step.ts
+    import { NoopConfig } from 'motia'
+
+    export const config: NoopConfig = {
+      type: 'noop',
+      name: 'Webhook Simulator',
+      description: 'Simulates incoming webhook events',
+      virtualEmits: ['webhook.received'],
+      virtualSubscribes: [],
+      flows: ['webhook-flow'],
+    }
+    ```
+  </Tab>
+  <Tab value="JS">
+    ```javascript
+    // test-webhook.step.js
+    const config = {
+      type: 'noop',
+      name: 'Webhook Simulator',
+      description: 'Simulates incoming webhook events',
+      virtualEmits: ['webhook.received'],
+      virtualSubscribes: [],
+      flows: ['webhook-flow'],
+    }
+
+    module.exports = { config }
+    ```
+  </Tab>
+</Tabs>
+
+<Tabs items={['TS', 'JS']}>
+  <Tab value="TS">
+    ```typescript
+    // test-webhook.step.tsx
+    import React from 'react'
+    import { BaseHandle, Position } from 'motia'
+
+    export default function WebhookSimulator() {
+      return (
+        <div className="p-4 bg-gray-800 rounded-lg border border-gray-600 text-white">
+          <div className="text-sm font-medium mb-2">Webhook Simulator</div>
+          <button 
+            onClick={() => {
+              fetch('/api/webhook', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ event: 'test' }),
+              })
+            }}
+            className="px-3 py-1 bg-blue-600 rounded text-sm"
+          >
+            Trigger Webhook
+          </button>
+          <BaseHandle type="source" position={Position.Bottom} />
+        </div>
+      )
+    }
+    ```
+  </Tab>
+  <Tab value="JS">
+    ```javascript
+    // test-webhook.step.jsx
+    import React from 'react'
+    import { BaseHandle, Position } from 'motia'
+
+    export default function WebhookSimulator() {
+      return (
+        <div className="p-4 bg-gray-800 rounded-lg border border-gray-600 text-white">
+          <div className="text-sm font-medium mb-2">Webhook Simulator</div>
+          <button 
+            onClick={() => {
+              fetch('/api/webhook', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ event: 'test' }),
+              })
+            }}
+            className="px-3 py-1 bg-blue-600 rounded text-sm"
+          >
+            Trigger Webhook
+          </button>
+          <BaseHandle type="source" position={Position.Bottom} />
+        </div>
+      )
+    }
+    ```
+  </Tab>
+</Tabs>
 
 ## Representing External Processes
 
@@ -4149,7 +4363,7 @@ You can enhance your NOOP steps with custom React components for better visualiz
     ```tsx
     // customNode.step.tsx
     import React from 'react'
-    import { BaseHandle, EventNodeProps, Position } from '@motiadev/workbench'
+    import { BaseHandle, EventNodeProps, Position } from 'motia'
 
     export default (_: EventNodeProps) => {
       return (
@@ -4175,7 +4389,7 @@ You can enhance your NOOP steps with custom React components for better visualiz
     ```jsx
     // customNode.step.jsx
     import React from 'react'
-    import { BaseHandle, EventNodeProps, Position } from '@motiadev/workbench'
+    import { BaseHandle, EventNodeProps, Position } from 'motia'
 
     export default (_: EventNodeProps) => {
       return (
@@ -4205,9 +4419,11 @@ You can enhance your NOOP steps with custom React components for better visualiz
 
 | Category | Guidelines |
 |----------|------------|
-| **External Process Modeling** | • Use descriptive, action-oriented names<br/>• Document expected timeframes and SLAs<br/>• Define all possible outcomes and edge cases<br/>• Use exact API route matching |
-| **UI Components** | • Leverage Tailwind's utility classes<br/>• Keep components minimal and focused<br/>• Design clear visual connection points<br/>• Maintain consistent styling patterns |
-| **Testing** | • Create isolated test flows<br/>• Implement clear status indicators<br/>• Label test steps explicitly<br/>• Document test scenarios and procedures |
+| **File Organization** | • Keep configuration and UI code in separate files<br/>• Use `.step.ts` for configuration<br/>• Use `.step.tsx` for UI components |
+| **UI Components** | • Use functional React components<br/>• Include proper TypeScript types<br/>• Follow Tailwind's utility classes<br/>• Keep components minimal and focused<br/>• Design clear visual connection points<br/>• Always include BaseHandle components for flow connections |
+| **Configuration** | • Always include `virtualSubscribes` (even if empty)<br/>• Use descriptive names for virtual events<br/>• Include clear descriptions<br/>• Use descriptive, action-oriented names |
+| **External Process Modeling** | • Document expected timeframes and SLAs<br/>• Define all possible outcomes and edge cases<br/>• Use exact API route matching |
+| **Testing** | • Create isolated test flows<br/>• Use realistic test data<br/>• Handle errors gracefully<br/>• Implement clear status indicators<br/>• Label test steps explicitly<br/>• Provide visual feedback for actions |
 
 ## Component Reference
 
@@ -4232,9 +4448,8 @@ You can enhance your NOOP steps with custom React components for better visualiz
 | Category | Guidelines |
 |----------|------------|
 | Colors | Use semantic colors to indicate state (success, error, pending) |
-| Typography | • Ensure high contrast for readability<br/>• Use consistent font sizes (recommended: 14px-16px) |
 | States | • Implement clear visual indicators for active/inactive states<br/>• Use subtle animations for state transitions |
-| Design System | • Follow your project's design tokens<br/>• Maintain consistent spacing and padding<br/>• Use standard border radiuses |
+| Design System | • Follow your project's design tokens<br/>• Maintain consistent spacing and padding<br/>• Use standard border radiuses<br/>• Ensure high contrast for readability<br/>• Use consistent font sizes (14px-16px) |
 
 
 -   [Overview](/docs/workbench/overview.md): Documentation for Overview.
@@ -4401,8 +4616,8 @@ To create a custom UI for a step, create a `.tsx` or `.jsx` file next to your st
     // myStep.step.tsx
 
     import React from 'react'
-    import { EventNode } from '@motiadev/workbench'
-    import type { EventNodeProps } from '@motiadev/workbench'
+    import { EventNode } from 'motia'
+    import type { EventNodeProps } from 'motia'
 
     export default function MyStep({ data }: EventNodeProps) {
       return (
@@ -4420,7 +4635,7 @@ To create a custom UI for a step, create a `.tsx` or `.jsx` file next to your st
     // myStep.step.jsx
 
     import React from 'react'
-    import { EventNode } from '@motiadev/workbench'
+    import { EventNode } from 'motia'
 
     export default function MyStep({ data }) {
       return (
@@ -4456,8 +4671,8 @@ The main component for general-purpose steps.
     // customStep.step.tsx
 
     import React from 'react'
-    import { EventNode } from '@motiadev/workbench'
-    import type { EventNodeProps } from '@motiadev/workbench'
+    import { EventNode } from 'motia'
+    import type { EventNodeProps } from 'motia'
 
     export default function CustomStep({ data }: EventNodeProps) {
       return (
@@ -4478,7 +4693,7 @@ The main component for general-purpose steps.
     // customStep.step.jsx
 
     import React from 'react'
-    import { EventNode } from '@motiadev/workbench'
+    import { EventNode } from 'motia'
 
     export default function CustomStep({ data }) {
       return (
@@ -4525,8 +4740,8 @@ Specialized component for API-related steps.
     // apiStep.step.tsx
 
     import React from 'react'
-    import { ApiNode } from '@motiadev/workbench'
-    import type { ApiNodeProps } from '@motiadev/workbench'
+    import { ApiNode } from 'motia'
+    import type { ApiNodeProps } from 'motia'
 
     export default function ApiStep({ data }: ApiNodeProps) {
       return (
@@ -4545,7 +4760,7 @@ Specialized component for API-related steps.
     // apiStep.step.jsx
 
     import React from 'react'
-    import { ApiNode } from '@motiadev/workbench'
+    import { ApiNode } from 'motia'
 
     export default function ApiStep({ data }) {
       return (
