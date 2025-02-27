@@ -9,26 +9,26 @@ export default function CodeExampleSection() {
     <div className="py-10">
       <div className="max-w-7xl mx-auto px-4">
         <div className="text-center mb-12 flex flex-col items-center">
-          <Typography 
-            variant="title" 
-            as="h2" 
-            className="mb-6 w-[35rem]"
+          <Typography
+            variant="title"
+            as="h2"
+            className="mb-6"
           >
-            Seamless AI Automation for Your Stack
+            Seamless AI Automation
           </Typography>
-          <Typography 
-            variant="description" 
-            as="p" 
+          <Typography
+            variant="description"
+            as="p"
             className="mx-auto max-w-2xl"
           >
-            Build automation workflows with TypeScript or JavaScript. 
-            Define your workflow configuration and handlers with a clean, 
+            Build automation workflows with TypeScript, JavaScript, Python or Ruby.
+            Define your workflow configuration and handlers with a clean,
             intuitive API that feels natural to developers.
           </Typography>
         </div>
 
         <div className="p-4 mb-8">
-          <CodeSandbox 
+          <CodeSandbox
             height="800px"
             repoPath="trello-flow"
           />

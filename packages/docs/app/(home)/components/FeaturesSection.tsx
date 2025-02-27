@@ -63,7 +63,7 @@ export default function FeaturesSection() {
 
           <div className="grid grid-cols-1 gap-8 lg:col-span-5">
             <FeatureCard
-              title="Powerful Flows, Simple Steps"
+              title="Seamless Flow Orchestration"
               features={powerfulFlowsFeatures}
             />
             <FeatureCard
