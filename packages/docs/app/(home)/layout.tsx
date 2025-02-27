@@ -7,13 +7,13 @@ export default function Layout({ children }: { children: ReactNode }) {
     <div className="min-h-screen flex flex-col">
       <HomeLayout 
         {...baseOptions} 
-        className='flex-1 py-32 dark:bg-gradient-to-t dark:from-zinc-900 dark:to-zinc-1000 bg-gradient-to-b from-gray-100 to-gray-200'
+        className={`flex-1 pb-4 lg:pt-32 sm:pt-20 bg-gradient-to-b from-[#0E002D] to-[#2F0093]`}
       >
         {children}
+        <footer className="text-center py-4 text-sm text-gray-600 dark:text-gray-400">
+          © {new Date().getFullYear()} All rights reserved.
+        </footer>
       </HomeLayout>
-      <footer className="text-center py-4 text-sm text-gray-600 dark:text-gray-400">
-        © {new Date().getFullYear()} All rights reserved.
-      </footer>
     </div>
   );
 }

@@ -10,6 +10,10 @@
         --fd-banner-height: 0px !important;
         --fd-nav-height: 0px !important;
         --fd-tocnav-height: 0px !important;
+        
+        /* Font variables */
+        --font-gt-walsheim: 'GT Walsheim Trial';
+        /* DM Mono is defined via next/font as --font-dm-mono */
     }
 
     .dark {
@@ -20,6 +24,16 @@
 
 body {
     @apply bg-[hsl(var(--background))] text-[hsl(var(--foreground))];
+    font-family: var(--font-inter);
+}
+
+/* Font utility classes */
+.font-gt-walsheim {
+    font-family: var(--font-gt-walsheim);
+}
+
+.font-dm-mono {
+    font-family: var(--font-dm-mono);
 }
 
 /* Override any additional fumadocs spacing */

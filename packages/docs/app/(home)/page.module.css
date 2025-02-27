@@ -1,0 +1,13 @@
+.container {
+    background: linear-gradient(180deg, #0E002D 0%, #2F0093 27.82%);
+}
+
+.firstSection {
+    background-image: url('/images/Illustration.png');
+    background-repeat: no-repeat;
+    background-position: center;
+    background-size: cover;
+    @media (min-width: 768px) {
+        min-height: 40rem;
+    }
+}

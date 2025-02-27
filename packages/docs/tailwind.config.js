@@ -10,5 +10,13 @@ export default {
     './mdx-components.{ts,tsx}',
     './node_modules/fumadocs-ui/dist/**/*.js',
   ],
+  theme: {
+    extend: {
+      fontFamily: {
+        'gt-walsheim': ['var(--font-gt-walsheim)'],
+        'dm-mono': ['var(--font-dm-mono)'],
+      },
+    },
+  },
   presets: [createPreset()],
 };
