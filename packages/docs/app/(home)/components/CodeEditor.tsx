@@ -4,7 +4,7 @@ import React, { useEffect, useState } from 'react';
 import { Prism as SyntaxHighlighter } from 'react-syntax-highlighter';
 import { atomDark } from 'react-syntax-highlighter/dist/cjs/styles/prism';
 import { SiRuby as RubyIcon } from "react-icons/si";
-import { FaJava as JavaIcon } from "react-icons/fa";
+import { FaJava as JavaIcon, FaCheck, FaClipboard } from "react-icons/fa";
 
 import { codeExamples, CodeLanguage } from './codeExamples';
 import { 
@@ -75,6 +75,7 @@ const CodeEditor: React.FC<CodeEditorProps> = ({
 }) => {
   const [selectedLanguage, setSelectedLanguage] = useState<CodeLanguage>(language);
   const [exampleCode, setExampleCode] = useState<string>(code || '');
+  const [copySuccess, setCopySuccess] = useState<boolean>(false);
 
   useEffect(() => {
     // Set the code based on the selected language
@@ -89,6 +90,20 @@ const CodeEditor: React.FC<CodeEditorProps> = ({
     setSelectedLanguage(lang);
     if (onLanguageChange) {
       onLanguageChange(lang);
+    }
+  };
+
+  const handleCopyCode = async () => {
+    try {
+      await navigator.clipboard.writeText(exampleCode);
+      setCopySuccess(true);
+      
+      // Reset copy success state after 2 seconds
+      setTimeout(() => {
+        setCopySuccess(false);
+      }, 2000);
+    } catch (err) {
+      console.error('Failed to copy code:', err);
     }
   };
 
@@ -134,11 +149,16 @@ const CodeEditor: React.FC<CodeEditorProps> = ({
               <span className="ml-1">Java (coming soon)</span>
             </button>
           </div>
-          <button className="text-gray-400 hover:text-white p-1 rounded-md hover:bg-[#1a1828] transition-colors">
-            <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
-              <rect x="9" y="9" width="13" height="13" rx="2" ry="2"></rect>
-              <path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"></path>
-            </svg>
+          <button 
+            onClick={handleCopyCode}
+            className="text-gray-400 hover:text-white p-1.5 rounded-md hover:bg-[#1a1828] transition-colors flex items-center gap-1.5"
+            title="Copy code"
+          >
+            {copySuccess ? (
+                <FaCheck className="w-3.5 h-3.5" />
+            ) : (
+                <FaClipboard className="w-3.5 h-3.5" />
+            )}
           </button>
         </div>
         <div 

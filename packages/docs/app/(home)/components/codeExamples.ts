@@ -37,21 +37,22 @@ export const handler: StepHandler<typeof config> = async (inputData, context) =>
 };`,
     javascript: `import { OpenAI } from 'openai';
 import { z } from 'zod';
+import type { EventConfig, StepHandler } from '@motiadev/core';
 
 const openai = new OpenAI({
     apiKey: process.env.OPENAI_API_KEY,
 });
 
-export const config = {
-    type: 'event',
-    name: 'Auto-Reply to Support Emails',
-    subscribes: ['email.received'],
-    emits: ['email.send'],
-    flows: ['email-support'],
-    input: z.object({ subject: z.string(), body: z.string(), from: z.string() }),
+export const config: EventConfig = {
+  type: 'event',
+  name: 'Auto-Reply to Support Emails',
+  subscribes: ['email.received'],
+  emits: ['email.send'],
+  flows: ['email-support'],
+  input: z.object({ subject: z.string(), body: z.string(), from: z.string() }),
 };
 
-export const handler = async (inputData, context) => {
+export const handler: StepHandler<typeof config> = async (inputData, context) => {
     const { subject, body, from } = inputData;
     const { emit, logger } = context;
 
