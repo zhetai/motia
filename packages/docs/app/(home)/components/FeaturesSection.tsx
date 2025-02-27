@@ -15,8 +15,8 @@ export default function FeaturesSection() {
       description: "Reuse logic across multiple flows to stay DRY."
     },
     {
-      title: "Flow Tags",
-      description: "Organize flows for visualization in the Workbench."
+      title: "Built-in Triggers",
+      description: "Kick off flows with webhooks, HTTP requests, or cron."
     }
   ];
 
@@ -38,16 +38,16 @@ export default function FeaturesSection() {
   return (
     <div className="py-20">
       <div className="max-w-7xl mx-auto px-4 text-center">
-        <Typography 
-          variant="title" 
-          as="h2" 
+        <Typography
+          variant="title"
+          as="h2"
           className="mb-6"
         >
           Powerful Flows, Simple Steps
         </Typography>
-        <Typography 
-          variant="description" 
-          as="p" 
+        <Typography
+          variant="description"
+          as="p"
           className="mx-auto max-w-2xl mb-16"
         >
           Effortlessly build AI-driven workflows. With a
@@ -62,13 +62,13 @@ export default function FeaturesSection() {
           </main>
 
           <div className="grid grid-cols-1 gap-8 lg:col-span-5">
-            <FeatureCard 
-              title="Powerful Flows, Simple Steps" 
-              features={powerfulFlowsFeatures} 
+            <FeatureCard
+              title="Powerful Flows, Simple Steps"
+              features={powerfulFlowsFeatures}
             />
-            <FeatureCard 
-              title="Code-first" 
-              features={codeFirstFeatures} 
+            <FeatureCard
+              title="Code-first"
+              features={codeFirstFeatures}
             />
           </div>
         </div>
