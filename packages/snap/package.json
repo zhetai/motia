@@ -1,5 +1,6 @@
 {
   "name": "motia",
+  "description": "Code-first framework for intelligent workflows",
   "version": "0.0.36",
   "license": "MIT",
   "bin": {
