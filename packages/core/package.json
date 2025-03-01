@@ -1,7 +1,7 @@
 {
   "name": "@motiadev/core",
   "main": "dist/index.js",
-  "version": "0.0.37",
+  "version": "0.0.38-alpha",
   "scripts": {
     "move:python": "mkdir -p dist/src/python && cp src/python/*.py dist/src/python",
     "move:rb": "mkdir -p dist/src/ruby && cp src/ruby/*.rb dist/src/ruby",

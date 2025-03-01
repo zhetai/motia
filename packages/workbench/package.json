@@ -1,6 +1,6 @@
 {
   "name": "@motiadev/workbench",
-  "version": "0.0.37",
+  "version": "0.0.38-alpha",
   "main": "dist/index.js",
   "scripts": {
     "lint": "pnpm run lint:ts && pnpm run lint:tsx",
