@@ -3,6 +3,10 @@
   "description": "Code-first framework for intelligent workflows",
   "version": "0.0.37",
   "license": "MIT",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/motiadev/motia.git"
+  },
   "bin": {
     "motia": "dist/src/cli.js"
   },

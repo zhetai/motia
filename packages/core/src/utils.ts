@@ -3,18 +3,9 @@ import { isApiStep, isCronStep, isEventStep } from './guards'
 
 const toTopic = (emit: Emit) => (typeof emit === 'string' ? emit : emit.topic)
 
-export const isAllowedToEmit = (step: Step, emit: string) => {
-  if (isApiStep(step)) {
-    return step.config.emits.map(toTopic).includes(emit)
-  }
+export const isAllowedToEmit = (step: Step, emit: string): boolean => {
+  if (!isApiStep(step) && !isCronStep(step) && !isEventStep(step)) return false
 
-  if (isEventStep(step)) {
-    return step.config.emits.map(toTopic).includes(emit)
-  }
-
-  if (isCronStep(step)) {
-    return step.config.emits.map(toTopic).includes(emit)
-  }
-
-  return false
+  const emitsTopics = step.config.emits.map(toTopic)
+  return emitsTopics.includes(emit) || emitsTopics.length === 0
 }

@@ -516,7 +516,7 @@ Motia supports four standard log levels:
       </Tab>
       <Tab value='api'>
       ```bash
-      curl -X POST http://localhost:3001/<api-step-path> \
+      curl -X POST http://localhost:3000/<api-step-path> \
       -H "Content-Type: application/json" \
       -d '{}'
       ```
@@ -2780,7 +2780,7 @@ Now, let's start Motia and see your workflow in action!
       <Tab value='curl'>
         If you used the automated project setup with the default template, you can test your step by emitting the following event:
         ```bash
-        curl -X POST http://localhost:3001/default \
+        curl -X POST http://localhost:3000/default \
         -H "Content-Type: application/json" \
         -d '{}'
         ```

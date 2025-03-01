@@ -23,7 +23,7 @@ program
   .action(async (arg) => {
     const { create } = require('./create')
     await create({
-      projectName: arg.project ?? '.',
+      projectName: arg.name ?? '.',
       template: arg.template ?? undefined,
     })
   })
@@ -94,7 +94,7 @@ program
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({
-          type: options.topic,
+          topic: options.topic,
           data: JSON.parse(options.message),
         }),
       })
