@@ -42,7 +42,7 @@ The Motia Workbench is your browser-based development environment. It's where yo
 *   **Live Log Streaming:**  Monitor logs in real-time within the Workbench, making debugging and observing execution a breeze.
 *   **Step Customization:**  Create custom UI components for your steps to enhance visualization and tailor the Workbench to your workflows.
 
-## Minimal Quick Start
+## Quick Start
 
 Ready to get started in minutes? Follow these simple steps using **pnpm** and the automated project creation:
 
