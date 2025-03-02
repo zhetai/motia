@@ -37,6 +37,11 @@ export const baseOptions: BaseLayoutProps = {
       url: '#',
       active: 'nested-url',
     },
+    {
+      text: 'Contact',
+      url: '/contact',
+      active: 'nested-url',
+    },
     // Add GitHub and Discord links with icons
     {
       text: (

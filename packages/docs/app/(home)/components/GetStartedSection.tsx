@@ -124,10 +124,10 @@ export default function GetStartedSection() {
           Start building
         </Link>
         <Link
-          href="/docs"
+          href="/contact"
           className="bg-transparent border border-purple-500 text-white py-3 px-6 rounded-md font-semibold hover:bg-purple-900/30 transition"
         >
-          Developer docs
+          Contact us
         </Link>
       </div>
 
@@ -168,7 +168,6 @@ export default function GetStartedSection() {
               </div>
             </div>
           </div>
-
         </Link>
       </div>
     </div>
