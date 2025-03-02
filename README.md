@@ -12,24 +12,32 @@ Motia is built for developers who want to build **intelligent, event-driven syst
 
 *   **🚀 Zero Infrastructure Hassle:** Say goodbye to message queues, brokers, and complex configurations. Motia handles the underlying infrastructure, letting you concentrate on building your workflows, not managing plumbing. Get started in minutes, not days.
 
-*   **🧩 Code-First, Modular Steps:** Define your workflow logic as reusable, self-contained steps written in **JavaScript, TypeScript, Python, or Ruby**. Mix and match languages within the same flow for ultimate flexibility and leverage your team's diverse skills.
+*   **💻 Code-First Approach:** Define your workflows and agent logic using code, providing you with full control, versioning, and familiar development workflows. Motia embraces code-first principles for maximum flexibility and developer empowerment.
+
+*   **🧩 Modular & Reusable Steps:** Build your workflows from reusable, self-contained steps. This modular architecture promotes code organization, maintainability, and allows you to easily compose complex workflows from smaller, manageable units.
+
+*   **🌐 Choose Your Language: JavaScript, TypeScript, Python, & Ruby:** Develop your steps in the languages you and your team are most comfortable with. Motia supports JavaScript, TypeScript, Python, and Ruby, allowing you to leverage existing skills and codebases.
+
+*   **📦 Import Any Dependency:**  Seamlessly integrate external libraries and packages within your steps.  Whether it's npm, pip, or RubyGems, you can leverage the rich ecosystems of each language to power your workflow logic and agent capabilities.
+
+*   **🔀 Mix & Match Languages in a Single Flow:**  Achieve ultimate flexibility by combining steps written in different languages within the same workflow. Leverage the strengths of each language and create truly polyglot automation solutions.
 
 *   **🧠 Ideal for Intelligent Agents & Workflows:** Motia's event-driven architecture and modular steps are perfectly suited for building sophisticated agents and intelligent automations.  Whether you're creating GenAI-powered workflows, complex decision-making systems, or data processing pipelines, Motia provides the ideal foundation.
 
-    *   **Create Agent Components as Steps:**  Encapsulate agent logic, tool integrations, and decision-making processes within individual steps.
-    *   **Orchestrate Agent Interactions with Flows:**  Design complex agentic workflows by connecting steps to create sophisticated sequences of actions and reactions.
-    *   **Test and Evaluate Agent Behavior Visually:**  The Motia Workbench provides real-time visualization and testing tools to observe and refine your agents' behavior and ensure they perform as expected.
-    *   **Iterate and Evolve Agents Rapidly:** Motia's modularity and observability make it easy to iterate on agent logic, experiment with different approaches, and continuously improve your intelligent systems.
+    *   **Create Agent Components as Steps:**  Encapsulate agent logic, tool integrations, and decision-making processes within individual steps, leveraging the rich ecosystems of JavaScript, Python, and Ruby.
+    *   **Orchestrate Agent Interactions with Flows:**  Design complex agentic workflows by connecting steps to create sophisticated sequences of actions and reactions, easily integrating steps written in different languages.
+    *   **Test and Evaluate Agent Behavior Visually:**  The Motia Workbench provides real-time visualization and testing tools to observe and refine your agents' behavior and ensure they perform as expected, regardless of the underlying step language.
+    *   **Iterate and Evolve Agents Rapidly:** Motia's modularity and observability make it easy to iterate on agent logic, experiment with different approaches, and continuously improve your intelligent systems, taking advantage of the strengths of each supported language.
 
-*   **📊 Built-in Observability & Debugging:**  Gain deep insights into your workflows with the **Motia Workbench**. Visualize your flows, stream live logs, and test steps in real-time. Debugging complex event-driven systems has never been easier.
+*   **📊 Built-in Observability & Debugging:**  Gain deep insights into your workflows with the **Motia Workbench**. Visualize your flows, stream live logs, and test steps in real-time. Debugging complex event-driven systems has never been easier, even with workflows combining multiple languages.
 
-*   **⚡️ Instant APIs & Scheduling:** Expose your workflows as HTTP endpoints with API Steps or schedule tasks with Cron Steps – all out-of-the-box. No extra configuration needed to make your workflows accessible and automated.
+*   **⚡️ Instant APIs & Scheduling:** Expose your workflows as HTTP endpoints with API Steps or schedule tasks with Cron Steps – all out-of-the-box. No extra configuration needed to make your workflows accessible and automated, regardless of the step implementation language.
 
-*   **🧪 Streamlined Testing & Evaluation:** Motia provides built-in testing utilities and the Workbench to thoroughly test your steps and flows.  Evaluate agent behavior, ensure workflow reliability, and catch issues early in development.  The visual testing in the Workbench is invaluable for understanding complex agent interactions.
+*   **🧪 Streamlined Testing & Evaluation:** Motia provides built-in testing utilities and the Workbench to thoroughly test your steps and flows.  Evaluate agent behavior, ensure workflow reliability, and catch issues early in development.  The visual testing in the Workbench is invaluable for understanding complex agent interactions, even across polyglot workflows.
 
-*   **✨ Extensible & Customizable:** Motia is designed to be flexible. Create custom UI components for your steps in the Workbench, build custom state adapters, and extend the framework to meet your specific needs.
+*   **✨ Extensible & Customizable:** Motia is designed to be flexible. Create custom UI components for your steps in the Workbench, build custom state adapters, and extend the framework to meet your specific needs, leveraging your preferred language for each extension point.
 
-*   **🧑‍💻 Developer-First Experience:**  From the intuitive CLI and code-first approach to the powerful Workbench and comprehensive documentation, Motia is built to maximize developer productivity and make building complex systems enjoyable.
+*   **🧑‍💻 Developer-First Experience:**  From the intuitive CLI and code-first approach to the powerful Workbench and comprehensive documentation, Motia is built to maximize developer productivity and make building complex systems enjoyable, no matter your language preference.
 
 ## Motia Workbench: Your Visual Control Center
 
