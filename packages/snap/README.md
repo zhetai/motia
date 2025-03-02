@@ -36,51 +36,55 @@ yarn add motia
 pnpm add motia
 ```
 
-
 ## Quick Start
 
-### Email Auto-Reply with Sentiment Analysis
+Ready to get started in minutes? Follow these simple steps using **pnpm** and the automated project creation:
 
-Here's a real-world example of using Motia to create an automated email reply system with sentiment analysis:
+1.  **Create a new project using the Motia CLI:**
 
-```typescript
-import { OpenAI } from 'openai';
-import { z } from 'zod';
-import type { EventConfig, StepHandler } from 'motia';
+    ```bash
+    npx motia create -t default -n my-motia-project
+    ```
+    *(Replace `my-motia-project` with your desired project name)*
 
-const openai = new OpenAI({
-  apiKey: process.env.OPENAI_API_KEY,
-});
+    This command will:
+    * Create a new folder `my-motia-project`
+    * Set up a basic Motia project with example steps
+    * Install dependencies using pnpm
 
-export const config: EventConfig = {
-  type: 'event',
-  name: 'Auto-Reply to Support Emails',
-  subscribes: ['email.received'],
-  emits: ['email.send'],
-  flows: ['email-support'],
-  input: z.object({ subject: z.string(), body: z.string(), from: z.string() }),
-};
+2.  **Navigate into your new project directory:**
 
-export const handler: StepHandler<typeof config> = async (inputData, context) => {
-  const { subject, body, from } = inputData;
-  const { emit, logger } = context;
+    ```bash
+    cd my-motia-project
+    ```
 
-  const sentimentResponse = await openai.chat.completions.create({
-    model: "gpt-4o",
-    messages: [{ role: "user", content: `Analyze the sentiment of the following email: ${body}` }]
-  });
+3.  **Start the Motia development server:**
 
-  const sentiment = sentimentResponse.choices[0].message.content;
-  
-  logger.info('[EmailAutoReply] Sentiment analysis', { sentiment });
-  
-  emit({
-    type: 'email.send',
-    data: { from, subject, body, sentiment },
-  });
-};
-```
+    ```bash
+    pnpm run dev
+    ```
 
+    This will launch the Motia server and the Workbench UI (typically at `http://localhost:3000`).
+
+4.  **Open the Motia Workbench in your browser (usually `http://localhost:3000`)**. You should see a pre-built flow named "default" with example steps visualized.
+
+5.  **Test an example API Step:** In your terminal, use `curl` to trigger the example API endpoint (often `/default` in the default template):
+
+    ```bash
+    curl -X POST http://localhost:3000/default \
+    -H "Content-Type: application/json" \
+    -d '{}'
+    ```
+
+    Alternatively, use the Motia CLI to emit an event (for event-based steps in the template):
+
+    ```bash
+    npx motia emit --topic test-state --message '{}'
+    ```
+
+    Check the Workbench logs – you should see logs indicating the step execution and event flow!
+
+**Congratulations! You've just created and run your first Motia workflow using the automated project setup.**
 ## CLI Commands
 
 Motia comes with a powerful CLI to help you manage your projects:
