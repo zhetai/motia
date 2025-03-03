@@ -7,6 +7,8 @@
     "type": "git",
     "url": "https://github.com/motiadev/motia.git"
   },
+  "main": "dist/index.js",
+  "types": "dist/index.d.ts",
   "bin": {
     "motia": "dist/src/cli.js"
   },
