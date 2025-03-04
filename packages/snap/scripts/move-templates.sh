@@ -24,19 +24,19 @@ copy_templates() {
 CREATE_TEMPLATES_SRC_DIR="$(dirname "$0")/../src/create/templates"
 
 # Copy templates to CJS directory
-CREATE_TEMPLATES_DEST_DIR="$(dirname "$0")/../dist/cjs/src/create/templates"
+CREATE_TEMPLATES_DEST_DIR="$(dirname "$0")/../dist/cjs/create/templates"
 copy_templates "$CREATE_TEMPLATES_SRC_DIR" "$CREATE_TEMPLATES_DEST_DIR"
 
 # Copy templates to ESM directory
-CREATE_TEMPLATES_DEST_DIR="$(dirname "$0")/../dist/esm/src/create/templates"
+CREATE_TEMPLATES_DEST_DIR="$(dirname "$0")/../dist/esm/create/templates"
 copy_templates "$CREATE_TEMPLATES_SRC_DIR" "$CREATE_TEMPLATES_DEST_DIR"
 
 CREATE_STEP_TEMPLATES_SRC_DIR="$(dirname "$0")/../src/create-step/templates"
 
 # Copy step templates to CJS directory
-CREATE_STEP_TEMPLATES_DEST_DIR="$(dirname "$0")/../dist/cjs/src/create-step/templates"
+CREATE_STEP_TEMPLATES_DEST_DIR="$(dirname "$0")/../dist/cjs/create-step/templates"
 copy_templates "$CREATE_STEP_TEMPLATES_SRC_DIR" "$CREATE_STEP_TEMPLATES_DEST_DIR"
 
 # Copy step templates to ESM directory
-CREATE_STEP_TEMPLATES_DEST_DIR="$(dirname "$0")/../dist/esm/src/create-step/templates"
+CREATE_STEP_TEMPLATES_DEST_DIR="$(dirname "$0")/../dist/esm/create-step/templates"
 copy_templates "$CREATE_STEP_TEMPLATES_SRC_DIR" "$CREATE_STEP_TEMPLATES_DEST_DIR"
