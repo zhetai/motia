@@ -7,15 +7,28 @@
     "type": "git",
     "url": "https://github.com/motiadev/motia.git"
   },
-  "main": "dist/index.js",
-  "types": "dist/index.d.ts",
+  "main": "dist/cjs/index.js",
+  "module": "dist/esm/index.js",
+  "types": "dist/types/index.d.ts",
+  "exports": {
+    ".": {
+      "require": "./dist/cjs/index.js",
+      "import": "./dist/esm/index.js",
+      "types": "./dist/types/index.d.ts"
+    },
+    "./workbench": {
+      "require": "./dist/cjs/workbench.js",
+      "import": "./dist/esm/workbench.js",
+      "types": "./dist/types/workbench.d.ts"
+    }
+  },
   "bin": {
-    "motia": "dist/src/cli.js"
+    "motia": "dist/cjs/cli.js"
   },
   "scripts": {
     "move:templates": "sh scripts/move-templates.sh",
     "move:python": "sh scripts/move-python.sh",
-    "build": "rm -rf dist && tsc && pnpm run move:templates && pnpm run move:python",
+    "build": "sh scripts/build.sh",
     "lint": "eslint --config ../../eslint.config.js"
   },
   "dependencies": {

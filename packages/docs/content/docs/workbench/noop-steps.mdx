@@ -59,7 +59,7 @@ NOOP steps require two files with the same base name:
     ```typescript
     // myStep.step.tsx
     import React from 'react'
-    import { BaseHandle, Position } from 'motia'
+    import { BaseHandle, Position } from 'motia/workbench'
 
     export default function MyStep() {
       return (
@@ -76,7 +76,7 @@ NOOP steps require two files with the same base name:
     ```javascript
     // myStep.step.jsx
     import React from 'react'
-    import { BaseHandle, Position } from 'motia'
+    import { BaseHandle, Position } from 'motia/workbench'
 
     export default function MyStep() {
       return (
@@ -133,7 +133,7 @@ Here's a complete example of a NOOP step that simulates webhook events:
     ```typescript
     // test-webhook.step.tsx
     import React from 'react'
-    import { BaseHandle, Position } from 'motia'
+    import { BaseHandle, Position } from 'motia/workbench'
 
     export default function WebhookSimulator() {
       return (
@@ -161,7 +161,7 @@ Here's a complete example of a NOOP step that simulates webhook events:
     ```javascript
     // test-webhook.step.jsx
     import React from 'react'
-    import { BaseHandle, Position } from 'motia'
+    import { BaseHandle, Position } from 'motia/workbench'
 
     export default function WebhookSimulator() {
       return (
@@ -227,9 +227,9 @@ NOOP steps represent parts of your workflow that happen outside your system. Com
     ```typescript
     export const config: NoopConfig = {
       type: 'noop',
-  name: 'Manager Review',
-  description: 'Manager reviews request',
-  virtualSubscribes: ['approval.requested'],
+      name: 'Manager Review',
+      description: 'Manager reviews request',
+      virtualSubscribes: ['approval.requested'],
       virtualEmits: ['/api/approvals/submit'],
       flows: ['approval'],
     }
@@ -325,7 +325,7 @@ You can enhance your NOOP steps with custom React components for better visualiz
     ```tsx
     // customNode.step.tsx
     import React from 'react'
-    import { BaseHandle, EventNodeProps, Position } from 'motia'
+    import { BaseHandle, EventNodeProps, Position } from 'motia/workbench'
 
     export default (_: EventNodeProps) => {
       return (
@@ -351,7 +351,7 @@ You can enhance your NOOP steps with custom React components for better visualiz
     ```jsx
     // customNode.step.jsx
     import React from 'react'
-    import { BaseHandle, EventNodeProps, Position } from 'motia'
+    import { BaseHandle, EventNodeProps, Position } from 'motia/workbench'
 
     export default (_: EventNodeProps) => {
       return (

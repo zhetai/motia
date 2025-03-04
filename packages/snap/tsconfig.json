@@ -9,12 +9,12 @@
     "forceConsistentCasingInFileNames": true,
     "resolveJsonModule": true,
     "allowJs": true,
-    "outDir": "dist",
-    "rootDir": ".",
+    "outDir": "dist/cjs",
+    "rootDir": "src",
     "baseUrl": ".",
     "declaration": true
   },
-  "include": ["**/*.ts"],
+  "include": ["src/**/*.ts"],
   "jsx": "react-jsx",
   "exclude": ["node_modules", "dist"]
 }
