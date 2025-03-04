@@ -13,8 +13,8 @@ export const EventNode = (props: Props) => {
       variant="event"
       title={data.name}
       language={data.language}
-      disableSourceHandle={!data.emits.length && !data.virtualEmits?.length}
-      disableTargetHandle={!data.subscribes.length && !data.virtualSubscribes?.length}
+      disableSourceHandle={!data.emits?.length && !data.virtualEmits?.length}
+      disableTargetHandle={!data.subscribes?.length && !data.virtualSubscribes?.length}
     >
       {children}
 
