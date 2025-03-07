@@ -2,6 +2,7 @@
   "title": "Real-World Use Cases",
   "open": true,
   "pages": [
-    "trello-automation"
+    "trello-automation",
+    "github-integration-workflow"
   ]
 }

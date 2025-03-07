@@ -5,11 +5,19 @@ const path = require('path');
 async function generateImages() {
   // SVG content matching your HeaderLogo: a blue arrow with transparent background
   const svgContent = `
-    <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="#3B82F6" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-      <line x1="5" y1="12" x2="19" y2="12"/>
-      <polyline points="12 5 19 12 12 19"/>
+    <svg width="295" height="127" viewBox="0 0 295 127" fill="none" xmlns="http://www.w3.org/2000/svg">
+      <g clip-path="url(#clip0_512_36)">
+        <path d="M0.520508 84.2194H32.0014C53.9923 84.2194 74.81 74.298 88.6654 57.2074C102.512 40.1254 123.33 30.1954 145.329 30.1954H173.394" stroke="white" stroke-width="60.3909" stroke-miterlimit="10"/>
+        <path d="M119.724 84.2194H151.205C173.196 84.2194 194.014 74.298 207.869 57.2074C221.716 40.1254 242.533 30.1954 264.533 30.1954H292.597" stroke="white" stroke-width="60.3909" stroke-miterlimit="10"/>
+        <path d="M292.477 53.8428H232.086V114.122H292.477V53.8428Z" fill="white"/>
+      </g>
+      <defs>
+        <clipPath id="clip0_512_36">
+          <rect width="294.199" height="126.993" fill="white" transform="translate(0.520508)"/>
+        </clipPath>
+      </defs>
     </svg>
-  `;
+  `
 
   // Create public directory if it doesn't exist.
   const publicDir = path.join(process.cwd(), 'public');

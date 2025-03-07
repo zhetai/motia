@@ -6,22 +6,11 @@ import { useState, useRef, useEffect } from 'react';
 import Typography from '@/components/Typography';
 import CommandDisplay from './CommandDisplay';
 
-export default function GetStartedSection() {
-  const [copied, setCopied] = useState(false);
+export default function GetStartedSection({ copied, onCopy }: { copied: boolean, onCopy: () => void }) {
   const [isHovering, setIsHovering] = useState(false);
   const [mousePosition, setMousePosition] = useState({ x: 0, y: 0 });
   const sectionRef = useRef<HTMLDivElement>(null);
   const glowRef = useRef<HTMLDivElement>(null);
-
-  const handleCopy = async () => {
-    try {
-      await navigator.clipboard.writeText("npx motia create -t default -n new-project");
-      setCopied(true);
-      setTimeout(() => setCopied(false), 2000);
-    } catch (err) {
-      console.error('Failed to copy:', err);
-    }
-  };
 
   useEffect(() => {
     const section = sectionRef.current;
@@ -112,7 +101,7 @@ export default function GetStartedSection() {
         <CommandDisplay
           command="npx motia create -t default -n new-project"
           copied={copied}
-          onCopy={handleCopy}
+          onCopy={onCopy}
         />
       </div>
 

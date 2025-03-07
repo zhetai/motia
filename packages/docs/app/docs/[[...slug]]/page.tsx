@@ -19,6 +19,8 @@ import { Card, Cards } from 'fumadocs-ui/components/card';
 import { File, Folder, Files } from 'fumadocs-ui/components/files';
 import { Breadcrumb } from '@/components/Breadcrumb';
 import { CodeSandbox } from '@/components/CodeSandbox';
+import { TrelloTab } from '@/components/TrelloCodeFetcher';
+import { GitHubWorkflowTab } from '@/components/GitHubIntegrationCodeFetcher';
 
 export default async function Page(props: {
   params: Promise<{ slug?: string[] }>;
@@ -57,6 +59,8 @@ export default async function Page(props: {
           TypeTable,
           img: (props) => <ImageZoom {...(props as ImageZoomProps)} />,
           CodeSandbox,
+          TrelloTab,
+          GitHubWorkflowTab,
         }} />
         <Banner>Need help? See our&nbsp;<a href="/community">Community Resources</a>&nbsp;for questions, examples, and discussions.</Banner>
       </DocsBody>

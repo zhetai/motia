@@ -1,5 +1,4 @@
 import type { BaseLayoutProps } from 'fumadocs-ui/layouts/shared';
-import { ArrowRight } from 'lucide-react';
 import GitHubStarButton from '../components/GitHubStarButton';
 import GitHubIcon from '../components/GitHubIcon';
 import DiscordIcon from '../components/DiscordIcon';
@@ -14,9 +13,8 @@ import DiscordIcon from '../components/DiscordIcon';
 export const baseOptions: BaseLayoutProps = {
   nav: {
     transparentMode: 'top',
-    title: (<div className="inline-flex items-center gap-1">
-      <ArrowRight className="h-5 w-5 text-blue-500" strokeWidth={2.5} />
-      <span className="font-semibold tracking-tight text-lg">motia</span>
+    title: (<div className="inline-flex items-center gap-1 ">
+      <img src="/logos/logo-white.svg" alt="Motia Icon" className="h-5" />
     </div>),
   },
   links: [

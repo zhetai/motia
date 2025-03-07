@@ -7,7 +7,7 @@ import CommandDisplay from './CommandDisplay';
 
 interface HeroSectionProps {
   copied: boolean;
-  onCopy: () => Promise<void>;
+  onCopy: () => void;
 }
 
 export default function HeroSection({ copied, onCopy }: HeroSectionProps) {

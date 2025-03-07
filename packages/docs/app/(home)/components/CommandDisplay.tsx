@@ -5,7 +5,7 @@ import { FaClipboard, FaCheck } from 'react-icons/fa';
 interface CommandDisplayProps {
   command: string;
   copied: boolean;
-  onCopy: () => Promise<void>;
+  onCopy: () => void;
   className?: string;
 }
 
