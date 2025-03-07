@@ -1,6 +1,6 @@
 # Motia: Code-First Framework for Intelligent Workflows and Agentic Systems
 
-[![Motia on GitHub](https://img.shields.io/github/stars/MotiaDev/motia?style=social)](https://github.com/MotiaDev/motia) [![Join our Discord](https://img.shields.io/discord/1322278831184281721?label=Discord&logo=discord&logoColor=white)](https://discord.gg/sXbs97D8)
+[![Motia on GitHub](https://img.shields.io/github/stars/MotiaDev/motia?style=social)](https://github.com/MotiaDev/motia) [![Join our Discord](https://img.shields.io/discord/1322278831184281721?label=Discord&logo=discord&logoColor=white)](https://discord.gg/beBTWeMZ)
 
 **Unleash the power of event-driven workflows and intelligent agents with Motia – the code-first framework designed for developers.**
 
