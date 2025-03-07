@@ -47,7 +47,7 @@ export const baseOptions: BaseLayoutProps = {
           <DiscordIcon />
         </span>
       ),
-      url: 'https://discord.gg/sXbs97D8',
+      url: 'https://discord.gg/nJFfsH5d6v',
       active: 'nested-url',
     },
     {

@@ -5,7 +5,7 @@ export const CONTACT_INFO = {
     linkText: 'mike@motia.dev',
   },
   DISCORD: {
-    url: 'https://discord.gg/sXbs97D8',
+    url: 'https://discord.gg/nJFfsH5d6v',
     title: 'Discord',
     linkText: 'Join our community',
   },
