@@ -1,6 +1,6 @@
 # Motia: Code-First Framework for Intelligent Workflows and Agentic Systems
 
-[![Motia on GitHub](https://img.shields.io/github/stars/MotiaDev/motia?style=social)](https://github.com/MotiaDev/motia) [![Join our Discord](https://img.shields.io/discord/1322278831184281721?label=Discord&logo=discord&logoColor=white)](https://discord.gg/beBTWeMZ)
+[![Motia on GitHub](https://img.shields.io/github/stars/MotiaDev/motia?style=social)](https://github.com/MotiaDev/motia) [![Join our Discord](https://img.shields.io/discord/1322278831184281721?label=Discord&logo=discord&logoColor=white)](https://discord.gg/nJFfsH5d6v)
 
 **Unleash the power of event-driven workflows and intelligent agents with Motia – the code-first framework designed for developers.**
 
@@ -104,7 +104,7 @@ Ready to get started in minutes? Follow these simple steps using **pnpm** and th
 
 *   **Dive into the Documentation:** Explore the [full Motia documentation](https://motia.dev/docs) to understand core concepts, step types, state management, and more.
 *   **Explore Examples:** Check out practical [examples](https://motia.dev/docs/real-world-use-cases) to see Motia in action and get inspiration for your own workflows and agents.
-*   **Join the Community:** Connect with other Motia users and the development team on our [Discord server](https://discord.gg/sXbs97D8) and contribute to the project on [GitHub](https://github.com/MotiaDev/motia).
+*   **Join the Community:** Connect with other Motia users and the development team on our [Discord server](https://discord.gg/nJFfsH5d6v) and contribute to the project on [GitHub](https://github.com/MotiaDev/motia).
 
 ## We're excited to see what you build with Motia!
 
