@@ -5,6 +5,7 @@ import { FaGithub, FaUsers, FaArrowRight } from 'react-icons/fa';
 import { useState, useRef, useEffect } from 'react';
 import Typography from '@/components/Typography';
 import CommandDisplay from './CommandDisplay';
+import { trackTwitterEvent } from '@/app/utils/tracking';
 
 export default function GetStartedSection({ copied, onCopy }: { copied: boolean, onCopy: () => void }) {
   const [isHovering, setIsHovering] = useState(false);
@@ -114,6 +115,7 @@ export default function GetStartedSection({ copied, onCopy }: { copied: boolean,
         </Link>
         <Link
           href="/contact"
+          onClick={() => trackTwitterEvent('contact_us_click')}
           className="bg-transparent border border-purple-500 text-white py-3 px-6 rounded-md font-semibold hover:bg-purple-900/30 transition"
         >
           Contact us

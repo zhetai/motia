@@ -6,6 +6,7 @@ import type { ReactNode } from 'react';
 import type { Metadata } from 'next';
 import { Analytics } from "@vercel/analytics/react"
 import Script from 'next/script';
+import { RouteTracker } from './utils/RouteTracker';
 
 const inter = Inter({
   subsets: ['latin'],
@@ -153,11 +154,21 @@ export default function Layout({ children }: { children: ReactNode }) {
           async
           defer
         />
+        
+        <script id="twitter-pixel">
+          {`
+            !function(e,t,n,s,u,a){e.twq||(s=e.twq=function(){s.exe?s.exe.apply(s,arguments):s.queue.push(arguments);
+            },s.version='1.1',s.queue=[],u=t.createElement(n),u.async=!0,u.src='https://static.ads-twitter.com/uwt.js',
+            a=t.getElementsByTagName(n)[0],a.parentNode.insertBefore(u,a))}(window,document,'script');
+            twq('config','p7aa5');
+          `}
+        </script>
       </head>
       <body className="flex flex-col h-full min-h-dvh w-dvw landscape:min-h-screen landscape:h-full landscape:w-full p-0 m-0 gap-0" suppressHydrationWarning>
         <RootProvider>
           {children}
           <Analytics />
+          <RouteTracker />
         </RootProvider>
       </body>
     </html>
