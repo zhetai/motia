@@ -2,6 +2,7 @@ import { Step, StepConfig } from '@motiadev/core'
 import { LockedData } from '@motiadev/core/dist/src/locked-data'
 import { NoPrinter } from '@motiadev/core/dist/src/printer'
 import colors from 'colors'
+import { globSync } from 'glob'
 import * as esbuild from 'esbuild'
 import fs from 'fs'
 import path from 'path'
@@ -32,6 +33,25 @@ class Builder {
   }
 }
 
+const includeStaticFiles = (step: Step, builder: Builder, archive: archiver.Archiver) => {
+  if ('includeFiles' in step.config) {
+    const staticFiles = step.config.includeFiles
+
+    if (!staticFiles || !Array.isArray(staticFiles) || staticFiles.length === 0) {
+      return
+    }
+
+    staticFiles.forEach((file) => {
+      const globPattern = path.join(path.dirname(step.filePath), file)
+      const matches = globSync(globPattern)
+      matches.forEach((filePath) => {
+        const relativeFilePath = path.dirname(filePath.replace(builder.projectDir, ''))
+        archive.append(fs.createReadStream(filePath), { name: path.resolve(relativeFilePath, path.basename(filePath)) })
+      })
+    })
+  }
+}
+
 const buildPython = async (step: Step, builder: Builder) => {
   const archive = archiver('zip', { zlib: { level: 9 } })
   const entrypointPath = step.filePath.replace(builder.projectDir, '')
@@ -53,6 +73,8 @@ const buildPython = async (step: Step, builder: Builder) => {
       builder.registerStep({ entrypointPath, bundlePath, step, type })
 
       archive.pipe(fs.createWriteStream(outfile))
+
+      includeStaticFiles(step, builder, archive)
 
       child.on('message', (message: string[]) => {
         message.forEach((file) => {
@@ -104,6 +126,7 @@ const buildNode = async (step: Step, builder: Builder) => {
       archive.pipe(fs.createWriteStream(path.join(builder.distDir, bundlePath)))
       archive.append(fs.createReadStream(outputJsFile), { name: entrypointPath })
       archive.append(fs.createReadStream(outputMapFile), { name: entrypointMapPath })
+      includeStaticFiles(step, builder, archive)
       archive.finalize()
 
       archive.on('close', () => {

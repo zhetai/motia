@@ -32,6 +32,11 @@ export type EventConfig<TInput extends ZodObject<any> = any> = {
   virtualEmits?: Emit[]
   input: TInput
   flows?: string[]
+  /**
+   * Files to include in the step bundle.
+   * Needs to be relative to the step file.
+   */
+  includeFiles?: string[]
 }
 
 export type NoopConfig = {
@@ -57,6 +62,11 @@ export type ApiRouteConfig = {
   flows?: string[]
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
   bodySchema?: ZodObject<any>
+  /**
+   * Files to include in the step bundle.
+   * Needs to be relative to the step file.
+   */
+  includeFiles?: string[]
 }
 
 export type ApiRequest = {
@@ -84,6 +94,11 @@ export type CronConfig = {
   virtualEmits?: Emit[]
   emits: Emit[]
   flows?: string[]
+  /**
+   * Files to include in the step bundle.
+   * Needs to be relative to the step file.
+   */
+  includeFiles?: string[]
 }
 
 export type CronHandler = (ctx: FlowContext) => Promise<void>

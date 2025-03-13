@@ -17,6 +17,7 @@ export const config: EventConfig<Input> = {
   emits: [{ topic: 'openai-response', label: 'OpenAI Response' }],
   input: inputSchema,
   flows: ['openai'],
+  includeFiles: ['*.txt'],
 }
 
 export const handler: StepHandler<typeof config> = async (input, { logger, emit }) => {

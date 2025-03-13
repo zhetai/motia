@@ -69,6 +69,7 @@ const eventSchema = z
     virtualEmits: emits.optional(),
     input: z.union([jsonSchema, z.null()]).optional(),
     flows: z.array(z.string()).optional(),
+    includeFiles: z.array(z.string()).optional(),
   })
   .strict()
 
@@ -84,6 +85,7 @@ const apiSchema = z
     virtualSubscribes: z.array(z.string()).optional(),
     flows: z.array(z.string()).optional(),
     bodySchema: z.union([jsonSchema, z.null()]).optional(),
+    includeFiles: z.array(z.string()).optional(),
   })
   .strict()
 
@@ -96,6 +98,7 @@ const cronSchema = z
     virtualEmits: emits.optional(),
     emits: emits,
     flows: z.array(z.string()).optional(),
+    includeFiles: z.array(z.string()).optional(),
   })
   .strict()
 
