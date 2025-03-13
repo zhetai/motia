@@ -109,14 +109,14 @@ export default function GetStartedSection({ copied, onCopy }: { copied: boolean,
       <div className="flex gap-4 mb-16 relative z-10">
         <Link
           href="/docs/getting-started"
-          className="bg-white text-purple-900 py-3 px-6 rounded-md font-semibold hover:bg-gray-100 transition"
+          className="bg-white text-purple-900 py-3 px-6 rounded-md transition-colors duration-300 font-dm-mono hover:scale-105 active:scale-95"
         >
           Start building
         </Link>
         <Link
           href="/contact"
           onClick={() => trackTwitterEvent('contact_us_click')}
-          className="bg-transparent border border-purple-500 text-white py-3 px-6 rounded-md font-semibold hover:bg-purple-900/30 transition"
+          className="bg-transparent border border-purple-500 text-white py-3 px-6 rounded-md hover:bg-purple-900 transition font-dm-mono hover:scale-105 active:scale-95"
         >
           Contact us
         </Link>

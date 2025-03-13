@@ -4,6 +4,9 @@ import HeroSection from '@/app/(home)/components/HeroSection';
 import FeaturesSection from '@/app/(home)/components/FeaturesSection';
 import WorkbenchSection from '@/app/(home)/components/WorkbenchSection';
 import GetStartedSection from '@/app/(home)/components/GetStartedSection';
+import SignupSection from '@/app/(home)/components/SignupSection';
+import CodeExampleSection from '@/app/(home)/components/CodeExampleSection';
+import CardSection from '@/app/(home)/components/CardSection';
 import { useCopyToClipboard } from '@/hooks/useCopyToClipboard';
 
 export default function HomePage() {
@@ -14,6 +17,9 @@ export default function HomePage() {
       <HeroSection copied={copied} onCopy={copyToClipboard} />
       <FeaturesSection />
       <WorkbenchSection />
+      <CodeExampleSection />
+      <SignupSection />
+      <CardSection />
       <GetStartedSection copied={copied} onCopy={copyToClipboard} />
     </div>
   );

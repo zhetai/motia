@@ -21,7 +21,7 @@ export default function HeroSection({ copied, onCopy }: HeroSectionProps) {
         >
           Code-first framework
           <br />
-          for intelligent workflows
+          for agents
         </Typography>
       </div>
       <div className="md:w-1/2 flex flex-col justify-center items-end z-10">
@@ -47,13 +47,13 @@ export default function HeroSection({ copied, onCopy }: HeroSectionProps) {
           <div className="flex gap-4">
             <Link
               href="/docs/getting-started"
-              className="bg-white text-purple-900 py-3 px-6 rounded-md hover:bg-gray-100 transition font-dm-mono"
+              className="bg-white text-purple-900 py-3 px-6 rounded-md hover:scale-105 active:scale-95 transition-colors duration-300 font-dm-mono"
             >
               Start building
             </Link>
             <Link
               href="/docs"
-              className="bg-transparent border border-purple-500 text-white py-3 px-6 rounded-md hover:bg-purple-900 transition font-dm-mono"
+              className="bg-transparent border border-purple-500 text-white py-3 px-6 rounded-md hover:scale-105 active:scale-95 transition-colors duration-300 font-dm-mono"
             >
               Docs
             </Link>

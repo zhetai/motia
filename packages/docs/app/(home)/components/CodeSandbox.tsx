@@ -47,7 +47,7 @@ const CodeSandbox: React.FC<CodeSandboxProps> = ({
 
       <div className="pt-[40px] h-full">
         <iframe
-          src="https://codesandbox.io/p/sandbox/angry-merkle-xcmc4x?fontsize=14&hidenavigation=0&theme=dark&view=preview&runonclick=1&forcerefresh"
+          src="https://codesandbox.io/embed/github/MotiaDev/motia-examples/tree/main/examples/trello-flow?fontsize=14&hidenavigation=0&theme=dark&view=preview&runonclick=1&forcerefresh"
           style={{
             width: '100%',
             height: `calc(${height} - 40px)`,
