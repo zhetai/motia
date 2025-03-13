@@ -1,50 +1,35 @@
-<p align="center">
-  <a href="http://motia.dev">
-    <img src="assets/PNGs/icon.png" width="180px" alt="motia">
-  </a>
-</p>
+<a name="readme-top"></a>
 
-Multi-Language, Opinionated, Code-First Framework For Agents and Intelligent Automations. Create Agents With Code, Visualize With UI.
+<div align="center">
+  <img src="assets/PNGs/icon.png" alt="Logo" width="180">
+  <h1 align="center"> Motia: Build AI Agents in any Coding Language </h1>
+</div>
 
-<p align="center">
-  <a href="http://motia.dev">
-    <img src="assets/flow.png" width="900px" alt="motia">
-  </a>
-</p>
+Motia lets developers create, test, and deploy production-ready AI agents in minutes instead of weeks. Write your agent logic in the language you love, visualize execution in real-time, and deploy without DevOps headaches.
 
-[![Motia on GitHub](https://img.shields.io/github/stars/MotiaDev/motia?style=social)](https://github.com/MotiaDev/motia) [![Join our Discord](https://img.shields.io/discord/1322278831184281721?label=Discord&logo=discord&logoColor=white)](https://discord.gg/nJFfsH5d6v)
+## The Problem Motia Solves
+Building agents that work in production is hard. You're either stuck with:
 
+- Simple no-code tools that can't handle real-world complexity
+- Frameworks that require a Ph.D. in infrastructure to get running
+- Custom code that becomes unmaintainable as your agent evolves
 
-Motia simplifies the creation, testing, and deployment of robust, scalable, and observable agents and automations. Let motia handle the infrastructure and orchistration while you focus on what truly matters: **your business logic.**
+Motia gives you the flexibility of code with the simplicity of a visual interface, letting you focus on what truly matters: your business logic, not your infrastructure.
+
 
 ## Why Choose Motia?
 
-Motia is built for developers who want to build ** agentic and intelligent, event-driven systems rapidly and reliably.** Here's what makes Motia the ideal choice:
+Motia is built for developers who want to build ** agentic and intelligent, event-driven systems rapidly and reliably. Here's what makes Motia the ideal choice:
 
-*   **🚀 Zero Infrastructure** 
+- **🚀 Zero Infrastructure Headaches** - No Kubernetes expertise required. Deploy agents with a single command.
+- **💻 True Code-First Development** - Write agent logic in familiar languages, not proprietary DSLs.
+- **🔀 Unique Multi-Language Support** - Mix Python for ML, TypeScript for type safety, and Ruby for APIs in the same agent.
+- **🧩 Composable Steps with Runtime Validation** - Build agents from modular, reusable components with automatic input/output validation.
+- **📊 Built-in Observability** - Debug agent behavior with visual execution graphs and real-time logging.
+- **⚡️ Instant APIs & Webhooks** - Expose agent functionality via HTTP endpoints without extra code.
+- **🧠 Full Control Over AI Logic** - Use any LLM, vector store, or reasoning pattern without restrictions.
 
-*   **💻 Code-First Approach**
-
-*   **🤝 Flexible Control:** Fully agentic, intelligent automation or hard-coded logic
-
-*   **🧩 Modular & Reusable Steps** 
-
-*   **🌐 Choose Your Language: JavaScript, TypeScript, Python, & Ruby:** 
-
-*   **📦 Import Any Dependency**  NPM, PiPy, RubyGems
-
-*   **🔀 Mix & Match Languages in a Single Flow**  
-
-*   **📊 Built-in Observability & Debugging**
-
-*   **⚡️ Instant APIs, Webhook and Scheduled Triggers:** Human in the loop is built in
-
-*   **🧪 Streamlined Testing & Evaluation** 
-
-*   **✨ Extensible & Customizable** 
-
-*   **🧑‍💻 Developer-First Experience:**  
-
+![Motia Example](assets/flow.png)
 
 ## Ideal for Agents & Intelligent Automations
 Motia's event-driven architecture and modular steps are perfectly suited for building sophisticated agents and intelligent automations.  Whether you're creating GenAI-powered workflows, complex decision-making systems, or data processing pipelines, Motia provides the ideal foundation.
@@ -161,9 +146,5 @@ export const handler: StepHandler<typeof config> = async (inputData, context) =>
 *   **Dive into the Documentation:** Explore the [full Motia documentation](https://motia.dev/docs) to understand core concepts, step types, state management, and more.
 *   **Explore Examples:** Check out practical [examples](https://motia.dev/docs/real-world-use-cases) to see Motia in action and get inspiration for your own workflows and agents.
 *   **Join the Community:** Connect with other Motia users and the development team on our [Discord server](https://discord.gg/nJFfsH5d6v) and contribute to the project on [GitHub](https://github.com/MotiaDev/motia).
-
-## We're excited to see what you build with Motia!
-
----
 
 **License:** [MIT](LICENSE)
