@@ -15,15 +15,18 @@ interface ParamId {
 export const flowsConfigEndpoint = (app: Express, baseDir: string) => {
   const configPath = path.join(baseDir, 'motia-workbench.json')
 
-  if (!fs.existsSync(configPath)) {
-    fs.writeFileSync(configPath, JSON.stringify({}, null, 2))
+  const getConfig = (): FlowConfig => {
+    if (fs.existsSync(configPath)) {
+      return JSON.parse(fs.readFileSync(configPath, 'utf8'))
+    }
+    return {}
   }
 
   app.post('/flows/:id/config', (req: Request<ParamId>, res: Response) => {
     const newFlowConfig: FlowConfig = req.body
 
     try {
-      const existingConfig = JSON.parse(fs.readFileSync(configPath, 'utf8'))
+      const existingConfig = getConfig()
 
       const updatedConfig: FlowConfig = {
         ...existingConfig,
@@ -48,8 +51,7 @@ export const flowsConfigEndpoint = (app: Express, baseDir: string) => {
     const { id } = req.params
 
     try {
-      const file = fs.readFileSync(configPath, 'utf8')
-      const allFlowsConfig = JSON.parse(file)
+      const allFlowsConfig = getConfig()
       const flowConfig = allFlowsConfig[id] || {}
 
       res.status(200).send(flowConfig)
