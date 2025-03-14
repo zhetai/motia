@@ -42,7 +42,7 @@ export const flowsConfigEndpoint = (app: Express, baseDir: string) => {
       fs.writeFileSync(configPath, JSON.stringify(updatedConfig, null, 2))
       res.status(200).send({ message: 'Flow config saved successfully' })
     } catch (error) {
-      console.error('Error saving flow config:', error)
+      console.error('Error saving flow config:', (error as Error).message)
       res.status(500).json({ error: 'Failed to save flow config' })
     }
   })
@@ -56,6 +56,7 @@ export const flowsConfigEndpoint = (app: Express, baseDir: string) => {
 
       res.status(200).send(flowConfig)
     } catch (error) {
+      console.error('Error reading flow config:', (error as Error).message)
       res.status(400).send({ error: 'Failed to read flow config' })
     }
   })
