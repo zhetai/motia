@@ -18,7 +18,7 @@ const GitHubStarButton = ({ className = '' }) => {
 
   return (
     <a
-      href="https://github.com/MotiaDev/motia/stargazers"
+      href="https://github.com/MotiaDev/motia"
       target="_blank"
       rel="noopener noreferrer"
       className={`inline-flex items-center px-3 py-0.5 gap-1.5 rounded-md border border-gray-600 bg-white text-gray-800 hover:bg-gray-50 transition-colors ${className}`
