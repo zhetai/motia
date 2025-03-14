@@ -3,6 +3,7 @@
   "defaultOpen": true,
   "pages": [
     "trello-automation",
-    "github-integration-workflow"
+    "github-integration-workflow",
+    "gmail-automation"
   ]
 }
