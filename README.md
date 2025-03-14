@@ -52,7 +52,7 @@ Motia's event-driven architecture and modular steps are perfectly suited for bui
 
 The Motia Workbench is your browser-based development environment.
 
-![Motia Workbench Interface](./assets/workbench-example.png)
+![Motia Workbench Interface](./assets/gmail-example.png)
 
 *   **Interactive Flow Visualization:** See your steps connected in a dynamic, visual graph. Understand event flow and step interactions at a glance.
 *   **Real-time Testing:** Trigger API endpoints and emit events directly from the UI to test your flows and agents in real-time.
