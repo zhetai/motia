@@ -19,12 +19,12 @@ program
     '-n, --name <project name>',
     'The name for your project, used to create a directory, use ./ or . to create it under the existing directory',
   )
-  .option('-t, --template <template name>', 'The motia template name to use for your project')
+  .option('-t, --template <template name>', 'The motia template name to use for your project', 'default')
   .action(async (arg) => {
     const { create } = require('./create')
     await create({
       projectName: arg.name ?? '.',
-      template: arg.template ?? undefined,
+      template: arg.template ?? 'default',
     })
   })
 
