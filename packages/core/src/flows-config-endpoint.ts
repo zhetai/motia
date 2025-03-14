@@ -8,18 +8,21 @@ interface FlowConfig {
   }
 }
 
-type ParamId = { id: string }
+interface ParamId {
+  id: string
+}
 
 export const flowsConfigEndpoint = (app: Express, baseDir: string) => {
   const configPath = path.join(baseDir, 'motia-workbench.json')
+
+  if (!fs.existsSync(configPath)) {
+    fs.writeFileSync(configPath, JSON.stringify({}, null, 2))
+  }
 
   app.post('/flows/:id/config', (req: Request<ParamId>, res: Response) => {
     const newFlowConfig: FlowConfig = req.body
 
     try {
-      if (!fs.existsSync(configPath)) {
-        fs.writeFileSync(configPath, JSON.stringify({}, null, 2))
-      }
       const existingConfig = JSON.parse(fs.readFileSync(configPath, 'utf8'))
 
       const updatedConfig: FlowConfig = {
@@ -51,8 +54,7 @@ export const flowsConfigEndpoint = (app: Express, baseDir: string) => {
 
       res.status(200).send(flowConfig)
     } catch (error) {
-      console.error('Error reading flow config:', error)
-      res.status(400).send({})
+      res.status(400).send({ error: 'Failed to read flow config' })
     }
   })
 }
