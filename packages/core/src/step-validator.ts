@@ -86,6 +86,7 @@ const apiSchema = z
     flows: z.array(z.string()).optional(),
     bodySchema: z.union([jsonSchema, z.null()]).optional(),
     includeFiles: z.array(z.string()).optional(),
+    middleware: z.array(z.function()).optional(),
   })
   .strict()
 
