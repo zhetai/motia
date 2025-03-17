@@ -45,7 +45,7 @@ export const getStepConfig = (file: string): Promise<StepConfig | null> => {
 
     child.on('message', (message: StepConfig) => {
       globalLogger.debug('[Config] Read config', { config: message })
-      config = message
+      config = command === 'node' ? eval('(' + message + ')') : message
       resolve(config)
       child.kill() // we can kill the child process since we already received the message
     })
