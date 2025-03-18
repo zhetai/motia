@@ -5,9 +5,9 @@ import os
 import asyncio
 import traceback
 from logger import Logger
-from rpc import RpcSender
+from rpc import RpcSender, serialize_for_json
 from rpc_state_manager import RpcStateManager
-from typing import Any
+from typing import Any, Optional
 
 def parse_args(arg: str) -> Any:
     from types import SimpleNamespace
@@ -65,6 +65,8 @@ async def run_python_module(file_path: str, rpc: RpcSender, args: Any) -> None:
         if contextInFirstArg:
             result = await module.handler(context)
         else:
+            if hasattr(args.data, 'body'):
+                args.data.body = serialize_for_json(args.data.body)
             result = await module.handler(args.data, context)
 
         if result:

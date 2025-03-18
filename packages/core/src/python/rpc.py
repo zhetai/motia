@@ -8,6 +8,20 @@ from typing import Any, Dict, Tuple
 # get the FD from ENV
 NODEIPCFD = int(os.environ["NODE_CHANNEL_FD"])
 
+def serialize_for_json(obj: Any) -> Any:
+    """Convert Python objects to JSON-serializable types"""
+    if hasattr(obj, '__dict__'):
+        return obj.__dict__
+    elif hasattr(obj, '_asdict'):  # For namedtuples
+        return obj._asdict()
+    elif isinstance(obj, (list, tuple)):
+        return [serialize_for_json(item) for item in obj]
+    elif isinstance(obj, dict):
+        return {k: serialize_for_json(v) for k, v in obj.items()}
+    else:
+        # Try to return the object as is, letting json handle basic types
+        return obj
+
 class RpcSender:
     def __init__(self):
         self.executing = True
