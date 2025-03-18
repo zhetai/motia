@@ -4,6 +4,7 @@
   "pages": [
     "trello-automation",
     "github-integration-workflow",
-    "gmail-automation"
+    "gmail-automation",
+    "finance-agent"
   ]
 }
