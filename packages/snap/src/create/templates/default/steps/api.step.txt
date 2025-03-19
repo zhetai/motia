@@ -1,4 +1,4 @@
-import { ApiRouteConfig, StepHandler } from '@motiadev/core'
+import { ApiRouteConfig, StepHandler } from 'motia'
 import { z } from 'zod'
 
 const inputSchema = z.object({})
@@ -8,6 +8,7 @@ export const config: ApiRouteConfig = {
   name: 'default flow api trigger',
   description: 'default template api trigger',
   path: '/default',
+  virtualSubscribes: ['/default'],
   method: 'POST',
   emits: ['test-state'],
   bodySchema: inputSchema,

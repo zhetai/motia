@@ -15,6 +15,8 @@ export const generateStepFiles = async (flowDir: string, files: { [key: string]:
 
 export const generateDefaultTemplateSteps = async (flowDir: string): Promise<void> => {
   const stepFiles = {
+    'noop.step.ts': await fs.readFile(path.join(__dirname, 'steps', 'noop.step.txt'), 'utf8'),
+    'noop.step.tsx': await fs.readFile(path.join(__dirname, 'steps', 'noop.step.tsx.txt'), 'utf8'),
     'one.step.ts': await fs.readFile(path.join(__dirname, 'steps', 'one.step.txt'), 'utf8'),
     'two.step.ts': await fs.readFile(path.join(__dirname, 'steps', 'two.step.txt'), 'utf8'),
     'api.step.ts': await fs.readFile(path.join(__dirname, 'steps', 'api.step.txt'), 'utf8'),

@@ -20,7 +20,7 @@ class Context
 
   def emit(event)
     # Add type field if not present to match Node.js/Python behavior
-    event = { type: event[:type] || event['type'], data: event[:data] || event['data'] } unless event.is_a?(String)
+    event = { topic: event[:topic] || event['topic'], data: event[:data] || event['data'] } unless event.is_a?(String)
     promise = @rpc.send('emit', event)
     promise  # Return promise to maintain async pattern
   end

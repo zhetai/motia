@@ -15,7 +15,7 @@ export const createEventManager = (): TestEventManager => {
     // and we need to ensure that all events have been processed before we can continue
     while (eventsToAwait.length > 0) {
       events.splice(0, eventsToAwait.length)
-      await Promise.allSettled(eventsToAwait)
+      await Promise.race([Promise.allSettled(eventsToAwait), new Promise((resolve) => setTimeout(resolve, 2000))])
       eventsToAwait = [...events]
     }
   }

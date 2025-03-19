@@ -21,6 +21,9 @@ def deep_compare(obj1, obj2)
   # If they are the same object, no need to compare further
   return true if obj1.equal?(obj2)
 
+  obj1 = obj1.to_h if obj1.is_a?(OpenStruct)
+  obj2 = obj2.to_h if obj2.is_a?(OpenStruct)
+
   # If both objects are OpenStruct, compare their attributes
   if obj1.is_a?(OpenStruct) && obj2.is_a?(OpenStruct)
     # Compare attributes recursively

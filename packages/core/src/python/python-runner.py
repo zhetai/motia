@@ -8,6 +8,7 @@ from logger import Logger
 from rpc import RpcSender, serialize_for_json
 from rpc_state_manager import RpcStateManager
 from typing import Any, Optional
+import functools
 
 def parse_args(arg: str) -> Any:
     from types import SimpleNamespace
@@ -19,16 +20,43 @@ def parse_args(arg: str) -> Any:
         return arg
 
 class Context:
-    def __init__(self, args: Any, rpc: RpcSender):
+    def __init__(self, args: Any, rpc: RpcSender, is_api_handler: bool = False):
         self.trace_id = args.traceId
         self.traceId = args.traceId
         self.flows = args.flows
         self.rpc = rpc
         self.state = RpcStateManager(rpc)
         self.logger = Logger(self.trace_id, self.flows, rpc)
+        self._loop = asyncio.get_event_loop()
+        self.is_api_handler = is_api_handler
+        self._pending_tasks = []
 
     async def emit(self, event: Any):
-        return await self.rpc.send('emit', event)
+        if self.is_api_handler:
+            self.rpc.send_no_wait('emit', event)
+            return None
+        else:
+            return await self.rpc.send('emit', event)
+        
+    # Add wrapper to handle non-awaited emit coroutine
+    def __getattribute__(self, name):
+        attr = super().__getattribute__(name)
+        if name == 'emit' and asyncio.iscoroutinefunction(attr):
+            @functools.wraps(attr)
+            def wrapper(*args, **kwargs):
+                coro = attr(*args, **kwargs)
+                # Check if this is being awaited
+                frame = sys._getframe(1)
+                if frame.f_code.co_name != '__await__':
+                    task = asyncio.create_task(coro)
+                    def handle_exception(t):
+                        if t.done() and not t.cancelled() and t.exception():
+                            print(f"Unhandled exception in background task: {t.exception()}", file=sys.stderr)
+                    task.add_done_callback(handle_exception)
+                    return task
+                return coro
+            return wrapper
+        return attr
 
 async def run_python_module(file_path: str, rpc: RpcSender, args: Any) -> None:
     try:
@@ -62,6 +90,17 @@ async def run_python_module(file_path: str, rpc: RpcSender, args: Any) -> None:
 
         context = Context(args, rpc)
 
+        # Check if this is an API handler
+        is_api_handler = False
+        if hasattr(module, 'config'):
+            if isinstance(module.config, dict) and module.config.get('type') == 'api':
+                is_api_handler = True
+            elif hasattr(module.config, 'type') and module.config.type == 'api':
+                is_api_handler = True
+
+        # Create context with is_api_handler flag
+        context = Context(args, rpc, is_api_handler)
+
         if contextInFirstArg:
             result = await module.handler(context)
         else:
@@ -69,8 +108,21 @@ async def run_python_module(file_path: str, rpc: RpcSender, args: Any) -> None:
                 args.data.body = serialize_for_json(args.data.body)
             result = await module.handler(args.data, context)
 
+        # For API handlers, we want to return immediately without waiting for background tasks
+        # This prevents the API from getting stuck
+        if not is_api_handler:
+            pending = asyncio.all_tasks() - {asyncio.current_task()}
+            if pending:
+                await asyncio.gather(*pending)
+
         if result:
             await rpc.send('result', result)
+
+        # For non-API handlers, ensure all pending tasks are completed before closing
+        if not is_api_handler:
+            pending = asyncio.all_tasks() - {asyncio.current_task()}
+            if pending:
+                await asyncio.gather(*pending)
 
         rpc.close()
         rpc.send_no_wait('close', None)

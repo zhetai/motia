@@ -11,9 +11,15 @@ async def handler(args, ctx):
     ctx.logger.info('[Test motia state with python] received test-state event', args)
     
     value = {"state": {"with": {"nested": {"value": 1}}}}
-    ctx.state.set(ctx.trace_id, 'python_state', value)
+    
+    ctx.logger.info('[Test motia state with python] setting state value', value)
+    
+    await ctx.state.set(ctx.trace_id, 'python_state', value)
 
     await ctx.emit({
         "topic": "check-state-change",
-        "data": { "key": "python_state", "expected": value },
+        "data": { 
+            "key": "python_state", 
+            "expected": value 
+        },
     })

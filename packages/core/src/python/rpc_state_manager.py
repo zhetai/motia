@@ -10,7 +10,15 @@ class RpcStateManager:
         self._loop = asyncio.get_event_loop()
 
     async def get(self, trace_id: str, key: str) -> asyncio.Future[Any]:
-        return await self.rpc.send('state.get', {'traceId': trace_id, 'key': key})
+        result = await self.rpc.send('state.get', {'traceId': trace_id, 'key': key})
+        
+        if result is None:
+            return {'data': None}
+        elif isinstance(result, dict):
+            if 'data' not in result:
+                return {'data': result}
+        
+        return result
 
     async def set(self, trace_id: str, key: str, value: Any) -> asyncio.Future[None]:
         future = await self.rpc.send('state.set', {'traceId': trace_id, 'key': key, 'value': value})
@@ -33,9 +41,14 @@ class RpcStateManager:
                 frame = sys._getframe(1)
                 if frame.f_code.co_name != '__await__':
                     # Not being awaited, schedule in background
+                    # But we need to make sure this task completes before the handler returns
+                    # So we'll return the task for the caller to await if needed
                     task = asyncio.create_task(coro)
-                    # Optional: Add error handling for the background task
-                    task.add_done_callback(lambda t: t.exception() if t.done() and not t.cancelled() else None)
+                    # Add error handling for the background task
+                    def handle_exception(t):
+                        if t.done() and not t.cancelled() and t.exception():
+                            print(f"Unhandled exception in background task: {t.exception()}", file=sys.stderr)
+                    task.add_done_callback(handle_exception)
                     return task
                 # Being awaited, return coroutine as normal
                 return coro
