@@ -4,6 +4,7 @@ import express, { Express, Request, Response } from 'express'
 import http from 'http'
 import multer from 'multer'
 import { Server as SocketIOServer } from 'socket.io'
+import cors from 'cors'
 import { flowsEndpoint } from './flows-endpoint'
 import { isApiStep } from './guards'
 import { globalLogger } from './logger'
@@ -138,6 +139,8 @@ export const createServer = async (
   }
 
   allSteps.filter(isApiStep).forEach(addRoute)
+
+  app.use(cors())
   app.use(router)
 
   flowsEndpoint(lockedData, app)

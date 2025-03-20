@@ -14,6 +14,26 @@ describe('Server', () => {
     process.env._MOTIA_TEST_MODE = 'true'
   })
 
+  describe('CORS', () => {
+    const baseDir = path.join(__dirname, 'steps')
+    let server: MotiaServer
+
+    beforeEach(async () => {
+      const lockedData = new LockedData(baseDir)
+      const eventManager = createEventManager()
+      const state = new MemoryStateAdapter()
+      server = await createServer(lockedData, eventManager, state, config)
+    })
+
+    afterEach(async () => server?.close())
+
+    it('should allow all origins', async () => {
+      const response = await request(server.app).options('/')
+      expect(response.status).toBe(204)
+      expect(response.headers['access-control-allow-origin']).toBe('*')
+    })
+  })
+
   describe('API With multiple languages', () => {
     const baseDir = path.join(__dirname, 'steps')
     let server: MotiaServer
