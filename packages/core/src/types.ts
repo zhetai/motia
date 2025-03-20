@@ -1,4 +1,5 @@
 import { z, ZodObject } from 'zod'
+import type { Express } from 'express'
 import { BaseLogger, Logger } from './logger'
 
 export type InternalStateManager = {
@@ -82,6 +83,11 @@ export type ApiRequest = {
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
   body: Record<string, any>
   headers: Record<string, string | string[]>
+  files?:
+    | Express.Multer.File[]
+    | {
+        [fieldname: string]: Express.Multer.File[]
+      }
 }
 
 export type ApiResponse = {

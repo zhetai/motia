@@ -1,0 +1,96 @@
+name: WIP Release
+
+permissions:
+  contents: write
+  packages: write
+
+on:
+  workflow_dispatch:
+    inputs:
+      version:
+        description: 'Version to publish (e.g. 0.0.8-beta.1)'
+        required: true
+      tag:
+        description: 'NPM distribution tag (e.g. beta, alpha, next)'
+        required: true
+        default: 'next'
+      branch:
+        description: 'Branch containing the WIP changes'
+        required: true
+        default: 'main'
+
+jobs:
+  wip-release:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+        with:
+          ref: ${{ github.event.inputs.branch }}
+          fetch-depth: 0
+
+      - name: Setup
+        uses: ./.github/actions/setup
+
+      - name: Set version on all packages
+        run: |
+          pnpm -r --filter "@motiadev/*" exec pnpm version ${{ github.event.inputs.version }} --no-git-tag-version
+          pnpm -r --filter motia exec pnpm version ${{ github.event.inputs.version }} --no-git-tag-version
+
+      - name: Setup NPM authentication
+        env:
+          NPM_TOKEN: ${{ secrets.NPM_TOKEN }}
+        run: |
+          echo "//registry.npmjs.org/:_authToken=${NPM_TOKEN}" >> .npmrc
+
+      - name: Publish packages with custom tag
+        run: |
+          pnpm publish -r --filter @motiadev/core --no-git-checks --tag ${{ github.event.inputs.tag }}
+          pnpm publish -r --filter @motiadev/workbench --no-git-checks --tag ${{ github.event.inputs.tag }}
+          pnpm publish -r --filter motia --no-git-checks --tag ${{ github.event.inputs.tag }}
+          pnpm publish -r --filter @motiadev/test --no-git-checks --tag ${{ github.event.inputs.tag }}
+
+      - name: Create git tag
+        run: |
+          git config user.name "GitHub Actions"
+          git config user.email "actions@github.com"
+          git tag -a v${{ github.event.inputs.version }} -m "WIP release v${{ github.event.inputs.version }} (${{ github.event.inputs.tag }})"
+          git push origin v${{ github.event.inputs.version }}
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+
+      - name: Create GitHub release
+        uses: softprops/action-gh-release@v1
+        with:
+          tag_name: v${{ github.event.inputs.version }}
+          name: WIP Release v${{ github.event.inputs.version }} (${{ github.event.inputs.tag }})
+          body: |
+            This is a work-in-progress release published with the npm tag: `${{ github.event.inputs.tag }}`
+            
+            ## Installation
+            
+            ```bash
+            # Install the specific version
+            npm install motia@${{ github.event.inputs.version }}
+            
+            # Or install using the distribution tag
+            npm install motia@${{ github.event.inputs.tag }}
+            ```
+            
+            ## Changes
+            
+            - WIP changes from branch: ${{ github.event.inputs.branch }}
+          draft: false
+          prerelease: true
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+
+      - name: Commit version changes
+        run: |
+          git config user.name "GitHub Actions"
+          git config user.email "actions@github.com"
+          git add .
+          git commit -m "chore: wip release v${{ github.event.inputs.version }} (${{ github.event.inputs.tag }})" || echo "No changes to commit"
+          git push origin ${{ github.event.inputs.branch }}
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}

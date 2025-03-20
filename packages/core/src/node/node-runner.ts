@@ -2,6 +2,7 @@ import path from 'path'
 import { Logger } from './logger'
 import { RpcStateManager } from './rpc-state-manager'
 import { RpcSender } from './rpc'
+import { composeMiddleware } from './middleware-compose'
 
 // eslint-disable-next-line @typescript-eslint/no-require-imports
 require('dotenv').config()
@@ -41,8 +42,14 @@ async function runTypescriptModule(filePath: string, event: Record<string, unkno
 
     sender.init()
 
-    // Call the function with provided arguments
-    const result = contextInFirstArg ? await module.handler(context) : await module.handler(event.data, context)
+    const middlewares = Array.isArray(module.config.middleware) ? module.config.middleware : []
+
+    const composedMiddleware = composeMiddleware(...middlewares)
+    const handlerFn = () => {
+      return contextInFirstArg ? module.handler(context) : module.handler(event.data, context)
+    }
+
+    const result = await composedMiddleware(event.data, context, handlerFn)
 
     await sender.send('result', result)
     await sender.close()

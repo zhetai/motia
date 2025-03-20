@@ -1,7 +1,6 @@
 import path from 'path'
 import { ZodObject } from 'zod'
 import zodToJsonSchema from 'zod-to-json-schema'
-import serialize from 'serialize-javascript'
 
 // Add ts-node registration before dynamic imports
 // eslint-disable-next-line @typescript-eslint/no-require-imports
@@ -26,7 +25,7 @@ async function getConfig(filePath: string) {
       module.config.bodySchema = zodToJsonSchema(module.config.bodySchema)
     }
 
-    process.send?.(serialize(module.config))
+    process.send?.(module.config)
 
     process.exit(0)
   } catch (error) {

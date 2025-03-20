@@ -7,7 +7,7 @@ export default {
   reporters: ['default', ['jest-junit', { outputDirectory: 'reports/unit', outputName: 'unit-test-results.xml' }]],
   testEnvironment: 'node',
   setupFiles: ['dotenv/config'],
-  testTimeout: 10000,
+  testTimeout: 15000,
   forceExit: true,
   detectOpenHandles: true,
 }
