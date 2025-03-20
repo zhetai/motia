@@ -17,14 +17,16 @@
 Motia lets developers create, test, and deploy production-ready AI agents in minutes instead of weeks. Write your agent logic in the language you love, visualize execution in real-time, and deploy without DevOps headaches.
 
 ## The Problem Motia Solves
-Building agents that work in production is hard. You're either stuck with:
+Building production-grade AI agents is tough. You're usually forced to choose:
 
-- Simple no-code tools that can't handle real-world complexity
-- Frameworks that require a Ph.D. in infrastructure to get running
-- Custom code that becomes unmaintainable as your agent evolves
+- No-code/Low-code tools: Quick to start, but can't handle real-world complexity at scale.
+- Fully-agentic Frameworks: Great for creative tasks but difficult to manage and control consistent outputs
+- ML-focused Frameworks: Designed for model training and optimization, not for orchestrating complex business workflows.
+- Custom code: Quickly becomes unmanageable as agents grow in complexity and span across teams. 
 
 Motia gives you the flexibility of code with the simplicity of a visual interface, letting you focus on what truly matters: your business logic, not your infrastructure.
 
+![Motia Example](assets/flow.png)
 
 ## Why Choose Motia?
 
@@ -37,8 +39,6 @@ Motia is built for developers who want to build ** agentic and intelligent, even
 - **📊 Built-in Observability** - Debug agent behavior with visual execution graphs and real-time logging.
 - **⚡️ Instant APIs & Webhooks** - Expose agent functionality via HTTP endpoints without extra code.
 - **🧠 Full Control Over AI Logic** - Use any LLM, vector store, or reasoning pattern without restrictions.
-
-![Motia Example](assets/flow.png)
 
 ## Ideal for Agents & Intelligent Automations
 Motia's event-driven architecture and modular steps are perfectly suited for building sophisticated agents and intelligent automations.  Whether you're creating GenAI-powered workflows, complex decision-making systems, or data processing pipelines, Motia provides the ideal foundation.
