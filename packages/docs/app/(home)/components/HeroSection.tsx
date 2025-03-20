@@ -1,39 +1,34 @@
-'use client';
+'use client'
 
-import Link from 'next/link';
-import styles from '../page.module.css';
-import Typography from '@/components/Typography';
-import CommandDisplay from './CommandDisplay';
+import Link from 'next/link'
+import styles from '../page.module.css'
+import Typography from '@/components/Typography'
+import CommandDisplay from './CommandDisplay'
 
 interface HeroSectionProps {
-  copied: boolean;
-  onCopy: () => void;
+  copied: boolean
+  onCopy: () => void
 }
 
 export default function HeroSection({ copied, onCopy }: HeroSectionProps) {
   return (
-    <div className={"w-full max-w-7xl mx-auto flex flex-col md:flex-row py-10 px-4 gap-12 items-start relative " + styles.firstSection}>
+    <div
+      className={
+        'w-full max-w-7xl mx-auto flex flex-col md:flex-row py-10 px-4 gap-12 items-start relative ' +
+        styles.firstSection
+      }
+    >
       <div className="md:w-1/2 flex flex-col justify-center relative overflow-hidden z-10">
-        <Typography
-          variant="title"
-          as="h1"
-          className="mb-6 relative z-10 text-left"
-        >
-          Code-first framework
+        <Typography variant="title" as="h1" className="mb-6 relative z-10 text-left">
+          AI Agent Framework
           <br />
-          for agents
+          for Software Engineers
         </Typography>
       </div>
       <div className="md:w-1/2 flex flex-col justify-center items-end z-10">
         <div>
-          <Typography
-            variant="description"
-            as="p"
-            className="mb-4 max-w-md text-left"
-          >
-            Write in any language. Automate
-            anything. From AI agents to backend
-            automation, Motia runs event-driven
+          <Typography variant="description" as="p" className="mb-4 max-w-md text-left">
+            Write in any language. Automate anything. From AI agents to backend automation, Motia runs event-driven
             workflows with zero overhead.
           </Typography>
 
@@ -61,5 +56,5 @@ export default function HeroSection({ copied, onCopy }: HeroSectionProps) {
         </div>
       </div>
     </div>
-  );
-} 
+  )
+}
