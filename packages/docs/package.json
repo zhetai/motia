@@ -4,7 +4,8 @@
   "private": true,
   "scripts": {
     "prepare-docs": "node scripts/prepare-docs.js",
-    "build": "fumadocs-mdx && next build && npm run prepare-docs",
+    "build": "fumadocs-mdx && next build  && npm run prepare-docs",
+    "postbuild": "next-sitemap",
     "dev": "next dev",
     "start": "next start",
     "postinstall": "fumadocs-mdx",
@@ -36,6 +37,7 @@
     "autoprefixer": "^10.4.20",
     "eslint": "^9.17.0",
     "eslint-config-next": "15.1.5",
+    "next-sitemap": "^4.2.3",
     "postcss": "^8.5.1",
     "sharp": "^0.33.5",
     "tailwindcss": "^3.4.17",
