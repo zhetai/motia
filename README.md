@@ -24,7 +24,7 @@ Building production-grade AI agents is tough. You're usually forced to choose:
 - ML-focused Frameworks: Designed for model training and optimization, not for orchestrating complex business workflows.
 - Custom code: Quickly becomes unmanageable as agents grow in complexity and span across teams. 
 
-Motia gives you the flexibility of code with the simplicity of a visual interface, letting you focus on what truly matters: your business logic, not your infrastructure.
+Motia gives you full, code-first control of your agents and automations with the simplicity of a visual interface, letting you focus on what truly matters: your business logic, not your infrastructure.
 
 ![Motia Example](assets/flow.png)
 
