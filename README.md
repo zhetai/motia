@@ -2,7 +2,7 @@
 
 <div align="center">
   <img src="assets/PNGs/icon.png" alt="Logo" width="180">
-  <h1 align="center"> Motia: Build AI Agents in any Coding Language </h1>
+  <h1 align="center"> AI Agent Framework Built for Software Engineers </h1>
 </div>
 
 <div align="center">
