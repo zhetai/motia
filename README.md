@@ -30,7 +30,7 @@ Motia gives you full, code-first control of your agents and automations with the
 
 ## Why Choose Motia?
 
-Motia is built for developers who want to build ** agentic and intelligent, event-driven systems rapidly and reliably. Here's what makes Motia the ideal choice:
+Motia is built for developers who want to build agentic and intelligent, event-driven systems rapidly and reliably. Here's what makes Motia the ideal choice:
 
 - **🚀 Zero Infrastructure Headaches** - No Kubernetes expertise required. Deploy agents with a single command.
 - **💻 True Code-First Development** - Write agent logic in familiar languages, not proprietary DSLs.
@@ -39,6 +39,7 @@ Motia is built for developers who want to build ** agentic and intelligent, even
 - **📊 Built-in Observability** - Debug agent behavior with visual execution graphs and real-time logging.
 - **⚡️ Instant APIs & Webhooks** - Expose agent functionality via HTTP endpoints without extra code.
 - **🧠 Full Control Over AI Logic** - Use any LLM, vector store, or reasoning pattern without restrictions.
+- **🤸‍♀️ Flexible Control** - Easilty switch between agentic and deterministic control within the same flow.
 
 ## Ideal for Agents & Intelligent Automations
 Motia's event-driven architecture and modular steps are perfectly suited for building sophisticated agents and intelligent automations.  Whether you're creating GenAI-powered workflows, complex decision-making systems, or data processing pipelines, Motia provides the ideal foundation.
