@@ -2,10 +2,10 @@ import './global.css'
 import './fonts.css'
 import { RootProvider } from 'fumadocs-ui/provider'
 import { Inter, DM_Mono, DM_Sans } from 'next/font/google'
+import Script from 'next/script'
 import type { ReactNode } from 'react'
 import type { Metadata } from 'next'
 import { Analytics } from '@vercel/analytics/react'
-import Script from 'next/script'
 import { RouteTracker } from './utils/RouteTracker'
 
 const inter = Inter({
@@ -148,7 +148,7 @@ export default function Layout({ children }: { children: ReactNode }) {
   return (
     <html lang="en" className={`${inter.variable} ${dmMono.variable} ${dmSans.variable}`} suppressHydrationWarning>
       <head>
-        <Script id="google-tag-manager" strategy="afterInteractive">
+        <script id="google-tag-manager" >
           {`
             (function(w,d,s,l,i){w[l]=w[l]||[];w[l].push({'gtm.start':
             new Date().getTime(),event:'gtm.js'});var f=d.getElementsByTagName(s)[0],
@@ -156,7 +156,7 @@ export default function Layout({ children }: { children: ReactNode }) {
             'https://www.googletagmanager.com/gtm.js?id='+i+dl;f.parentNode.insertBefore(j,f);
             })(window,document,'script','dataLayer','GTM-P6672CSW');
           `}
-        </Script>
+        </script>
 
         {/* Add the GitHub buttons script here */}
         <Script src="https://buttons.github.io/buttons.js" strategy="afterInteractive" async defer />
