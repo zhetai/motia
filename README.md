@@ -67,19 +67,19 @@ Ready to get started in minutes? Follow these simple steps using **pnpm** and th
 1.  **Create a new project using the Motia CLI:**
 
     ```bash
-    npx motia create -t default -n my-motia-project
+    npx motia create -n my-first-agent
     ```
-    *(Replace `my-motia-project` with your desired project name)*
+    *(Replace `my-first-agent` with your desired project name)*
 
     This command will:
-    * Create a new folder `my-motia-project`
+    * Create a new folder `my-first-agent`
     * Set up a basic Motia project with example steps
     * Install dependencies using pnpm
 
 2.  **Navigate into your new project directory:**
 
     ```bash
-    cd my-motia-project
+    cd my-first-agent
     ```
 
 3.  **Start the Motia development server:**
