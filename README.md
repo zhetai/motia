@@ -132,22 +132,22 @@ export const config: EventConfig = {
 };
 
 export const handler: StepHandler<typeof config> = async (inputData, context) => {
-    const { subject, body, from } = inputData;
-    const { emit, logger } = context;
+  const { subject, body, from } = inputData;
+  const { emit, logger } = context;
 
-    const sentimentResponse = await openai.chat.completions.create({
-        model: "gpt-4o",
-        messages: [{ role: "user", content: `Analyze the sentiment of the following text: ${body}` }],
-    });
+  const sentimentResponse = await openai.chat.completions.create({
+    model: "gpt-4o",
+    messages: [{ role: "user", content: `Analyze the sentiment of the following text: ${body}` }],
+  });
 
-    const sentiment = sentimentResponse.choices[0].message.content;
+  const sentiment = sentimentResponse.choices[0].message.content;
 
-    logger.info('[EmailAutoReply] Sentiment analysis', { sentiment });
+  logger.info('[EmailAutoReply] Sentiment analysis', { sentiment });
 
-    emit({
-        type: 'email.send',
-        data: { from, subject, body, sentiment },
-    });
+  emit({
+    type: 'email.send',
+    data: { from, subject, body, sentiment },
+  });
 };
 ```
 
