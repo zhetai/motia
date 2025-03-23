@@ -38,7 +38,7 @@
     "@motiadev/core": "workspace:*",
     "@motiadev/workbench": "workspace:*",
     "archiver": "^7.0.1",
-    "axios": "^1.6.7",
+    "axios": "^1.8.2",
     "chokidar": "^4.0.3",
     "colors": "^1.4.0",
     "commander": "^13.0.0",
