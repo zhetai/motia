@@ -167,8 +167,8 @@ A complete RAG agent implementation for building knowledge-based AI applications
 An agent that generates and evaluates AI images with feedback loops and quality metrics.
 
 <div style="display: flex; gap: 10px;">
-  <img src="assets/examples/images/generate-image.png" width="49%" alt="Vision Agent" />
-  <img src="assets/examples/images/eval-agent.png" width="49%" alt="Evaluation Results" />
+  <img src="assets/examples/generate-image.png" width="49%" alt="Vision Agent" />
+  <img src="assets/examples/eval-agent.png" width="49%" alt="Evaluation Results" />
 </div>
 
 **Key Features:**
