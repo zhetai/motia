@@ -10,7 +10,7 @@
 
 <p align="center">
   <a href="https://www.npmjs.com/package/motia"><img src="https://img.shields.io/npm/v/motia.svg" alt="npm version"></a>
-  <a href="https://github.com/motiajs/motia/blob/main/LICENSE"><img src="https://img.shields.io/badge/license-MIT-blue.svg" alt="license"></a>
+  <a href="https://github.com/MotiaDev/motia/blob/main/LICENSE"><img src="https://img.shields.io/badge/license-MIT-blue.svg" alt="license"></a>
 </p>
 
 ## What is Motia?
@@ -147,7 +147,7 @@ For full documentation, visit [https://motia.dev/docs](https://motia.dev/docs)
 
 ## Contributing
 
-We welcome contributions! Please see our [Contributing Guide](https://github.com/motiajs/motia/blob/main/CONTRIBUTING.md) for details.
+We welcome contributions! Please see our [Contributing Guide](https://github.com/MotiaDev/motia/blob/main/CONTRIBUTING.md) for details.
 
 ## License
 
