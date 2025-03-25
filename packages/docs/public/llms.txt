@@ -2699,9 +2699,8 @@ Before you begin, ensure you have the following installed:
 
 ## Your Next Steps:
 
-1.  **Installation:** [Get Motia Installed](/docs/getting-started/installation) -  Learn how to quickly install the core Motia framework and necessary dependencies in your project.
-2.  **Quick Start Guide:** [Build Your First Flow](/docs/getting-started/quick-start) -  Follow our step-by-step guide to create a minimal Motia workflow and see it in action.
-3.  **Core Concepts:** [Understand the Fundamentals](/docs/getting-started/core-concepts) -  Dive deeper into the essential concepts of Motia: Steps, Flows, Events, and Topics.
+1.  **Quick Start Guide:** [Build Your First Flow](/docs/getting-started/quick-start) -  Follow our step-by-step guide to create a minimal Motia workflow and see it in action.
+2.  **Core Concepts:** [Understand the Fundamentals](/docs/getting-started/core-concepts) -  Dive deeper into the essential concepts of Motia: Steps, Flows, Events, and Topics.
 
 -   [Quick Start](/docs/getting-started/quick-start.md): Documentation for Quick Start.
 ---

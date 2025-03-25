@@ -30,7 +30,7 @@ const dmSans = DM_Sans({
 export const metadata: Metadata = {
   title: {
     template: '%s | motia',
-    default: 'motia - code-first framework for intelligent workflows',
+    default: 'Motia - AI Agent Framework for Software Engineering Teams',
   },
   description:
     'Write in any language. Automate anything. From AI agents to backend automation, motia runs event-driven workflows with zero overhead.',
@@ -42,7 +42,7 @@ export const metadata: Metadata = {
     locale: 'en_US',
     url: 'https://motia.dev',
     siteName: 'motia',
-    title: 'motia - code-first framework for intelligent workflows',
+    title: 'Motia - AI Agent Framework for Software Engineering Teams',
     description:
       'Write in any language. Automate anything. From AI agents to backend automation, motia runs event-driven workflows with zero overhead.',
     images: [
@@ -50,7 +50,7 @@ export const metadata: Metadata = {
         url: '/og-image.png',
         width: 1200,
         height: 630,
-        alt: 'motia - code-first framework for intelligent workflows',
+        alt: 'Motia - AI Agent Framework for Software Engineering Teams',
       },
     ],
   },
@@ -60,7 +60,7 @@ export const metadata: Metadata = {
     card: 'summary_large_image',
     site: '@motiadev',
     creator: '@motiadev',
-    title: 'motia - code-first framework for intelligent workflows',
+    title: 'Motia - AI Agent Framework for Software Engineering Teams',
     description:
       'Write in any language. Automate anything. From AI agents to backend automation, motia runs event-driven workflows with zero overhead.',
     images: ['/og-image.png'],
@@ -82,24 +82,24 @@ export const metadata: Metadata = {
   // Additional metadata
   other: {
     // Twitter alt text
-    'twitter:image:alt': 'motia - code-first framework for intelligent workflows',
+    'twitter:image:alt': 'Motia - AI Agent Framework for Software Engineering Teams',
 
     // Instagram
     'instagram:card': 'summary_large_image',
-    'instagram:title': 'motia - code-first framework for intelligent workflows',
+    'instagram:title': 'Motia - AI Agent Framework for Software Engineering Teams',
     'instagram:description':
       'Write in any language. Automate anything. From AI agents to backend automation, motia runs event-driven workflows with zero overhead.',
     'instagram:image': 'https://motia.dev/og-image.png',
 
     // Reddit
-    'reddit:title': 'motia - code-first framework for intelligent workflows',
+    'reddit:title': 'Motia - AI Agent Framework for Software Engineering Teams',
     'reddit:description':
       'Write in any language. Automate anything. From AI agents to backend automation, motia runs event-driven workflows with zero overhead.',
     'reddit:image': 'https://motia.dev/og-image.png',
 
     // LinkedIn
     'linkedin:card': 'summary_large_image',
-    'linkedin:title': 'motia - code-first framework for intelligent workflows',
+    'linkedin:title': 'Motia - AI Agent Framework for Software Engineering Teams',
     'linkedin:description':
       'Write in any language. Automate anything. From AI agents to backend automation, motia runs event-driven workflows with zero overhead.',
     'linkedin:image': 'https://motia.dev/og-image.png',
