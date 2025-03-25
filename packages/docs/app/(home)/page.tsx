@@ -9,7 +9,7 @@ import CardSection from '@/app/(home)/components/CardSection';
 import { useCopyToClipboard } from '@/hooks/useCopyToClipboard';
 
 export default function HomePage() {
-  const { copied, copyToClipboard } = useCopyToClipboard("npx motia create -t default -n new-project");
+  const { copied, copyToClipboard } = useCopyToClipboard("npx motia create -n new-project");
 
   return (
     <div className="bg-gradient-to-b from-[#0E002D] to-[#2F0093]">

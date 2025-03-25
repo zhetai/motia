@@ -33,7 +33,7 @@ export default function HeroSection({ copied, onCopy }: HeroSectionProps) {
           </Typography>
 
           <CommandDisplay
-            command="npx motia create -t default -n new-project"
+            command="npx motia create -n new-project"
             copied={copied}
             onCopy={onCopy}
             className="mb-8"

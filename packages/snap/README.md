@@ -43,7 +43,7 @@ Ready to get started in minutes? Follow these simple steps using **pnpm** and th
 1.  **Create a new project using the Motia CLI:**
 
     ```bash
-    npx motia create -t default -n my-motia-project
+    npx motia create -n my-motia-project
     ```
     *(Replace `my-motia-project` with your desired project name)*
 

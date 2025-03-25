@@ -100,7 +100,7 @@ export default function GetStartedSection({ copied, onCopy }: { copied: boolean,
 
       <div className="mb-12 relative z-10 flex justify-center">
         <CommandDisplay
-          command="npx motia create -t default -n new-project"
+          command="npx motia create -n new-project"
           copied={copied}
           onCopy={onCopy}
         />
