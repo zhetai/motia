@@ -7,7 +7,7 @@ export default function FlowStarter({ data }: NoopNodeProps) {
   }
 
   return (
-    <BaseNode title="Start" variant="noop" data={data} disableTargetHandle>
+    <BaseNode title="Start" variant="noop" disableTargetHandle>
       <Button onClick={start}>Start Flow</Button>
     </BaseNode>
   )
