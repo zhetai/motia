@@ -16,6 +16,8 @@
 
 Motia lets developers create, test, and deploy production-ready AI agents in minutes, in a framework that will feel familar to software engineering teams. Write your agent logic in the languages and package you know and love. Visualize execution in real-time, and deploy without DevOps headaches.
 
+*Motia is currently in Alpha. This means we're actively developing, iterating quickly, and looking for feedback from early adopters like you!*
+
 ## The Problem Motia Solves
 
 Building production-grade AI agents is tough. You're usually forced to choose:
