@@ -59,32 +59,6 @@ jobs:
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
 
-      - name: Create GitHub release
-        uses: softprops/action-gh-release@v1
-        with:
-          tag_name: v${{ github.event.inputs.version }}
-          name: WIP Release v${{ github.event.inputs.version }} (${{ github.event.inputs.tag }})
-          body: |
-            This is a work-in-progress release published with the npm tag: `${{ github.event.inputs.tag }}`
-            
-            ## Installation
-            
-            ```bash
-            # Install the specific version
-            npm install motia@${{ github.event.inputs.version }}
-            
-            # Or install using the distribution tag
-            npm install motia@${{ github.event.inputs.tag }}
-            ```
-            
-            ## Changes
-            
-            - WIP changes from branch: ${{ github.event.inputs.branch }}
-          draft: false
-          prerelease: true
-        env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-
       - name: Commit version changes
         run: |
           git config user.name "GitHub Actions"
