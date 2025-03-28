@@ -70,7 +70,8 @@ async function importFlow(flow: FlowResponse, flowConfig: FlowConfigResponse): P
   // Load custom node components if they exist
   for (const step of flow.steps) {
     if (step.nodeComponentPath) {
-      const module = await import(/* @vite-ignore */ step.nodeComponentPath)
+      const importPath = `/@fs/${step.nodeComponentPath}`
+      const module = await import(/* @vite-ignore */ importPath)
       nodeTypes[step.nodeComponentPath] = module.Node ?? module.default
     }
   }
