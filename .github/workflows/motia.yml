@@ -33,7 +33,17 @@ jobs:
     needs: [quality]
 
     steps:
+      - name: Generate token
+        id: generate_token
+        uses: actions/create-github-app-token@v1
+        with:
+          app-id: ${{ secrets.MOTIA_CI_APP_ID }}
+          private-key: ${{ secrets.MOTIA_CI_APP_PRIVATE_KEY }}
+
       - uses: actions/checkout@v4
+        with:
+          token: ${{ steps.generate_token.outputs.token }}
+          
       - name: Setup
         uses: ./.github/actions/setup
 
@@ -69,4 +79,4 @@ jobs:
           git commit -m "chore: publish packages for version $VERSION"
           git push origin main
         env:
-          GITHUB_TOKEN: ${{ secrets.GIT_TOKEN }}
+          GITHUB_TOKEN: ${{ steps.generate_token.outputs.token }}
