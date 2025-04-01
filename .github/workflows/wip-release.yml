@@ -23,9 +23,16 @@ jobs:
   wip-release:
     runs-on: ubuntu-latest
     steps:
-      - name: Checkout code
-        uses: actions/checkout@v4
+      - name: Generate token
+        id: generate_token
+        uses: actions/create-github-app-token@v1
         with:
+          app-id: ${{ secrets.MOTIA_CI_APP_ID }}
+          private-key: ${{ secrets.MOTIA_CI_APP_PRIVATE_KEY }}
+
+      - uses: actions/checkout@v4
+        with:
+          token: ${{ steps.generate_token.outputs.token }}
           ref: ${{ github.event.inputs.branch }}
           fetch-depth: 0
 
@@ -57,7 +64,7 @@ jobs:
           git tag -a v${{ github.event.inputs.version }} -m "WIP release v${{ github.event.inputs.version }} (${{ github.event.inputs.tag }})"
           git push origin v${{ github.event.inputs.version }}
         env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          GITHUB_TOKEN: ${{ steps.generate_token.outputs.token }}
 
       - name: Commit version changes
         run: |
@@ -67,4 +74,4 @@ jobs:
           git commit -m "chore: wip release v${{ github.event.inputs.version }} (${{ github.event.inputs.tag }})" || echo "No changes to commit"
           git push origin ${{ github.event.inputs.branch }}
         env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          GITHUB_TOKEN: ${{ steps.generate_token.outputs.token }}
