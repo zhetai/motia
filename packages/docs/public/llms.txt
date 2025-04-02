@@ -4857,8 +4857,6 @@ NOOP (No Operation) steps are a powerful feature in Motia that serve multiple pu
 3. Creating custom visualizations in the workbench
 4. Testing flows during development
 
-<Callout type="warn">Currently, NOOP steps are only supported in TS or JS</Callout>
-
 ## File Structure
 
 NOOP steps require two files with the same base name:
@@ -5392,8 +5390,6 @@ title: UI Steps
 UI Steps provide a powerful way to create custom, visually appealing representations of your workflow steps in the Workbench flow visualization tool. 
 
 With UI Steps, you can enhance the user experience by designing intuitive, context-aware visual components that clearly communicate your flow's sequencing and events.
-
-<Callout type="warn">Currently, UI steps are only supported in TypeScript and JavaScript</Callout>
 
 ## Overview
 
