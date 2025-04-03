@@ -27,7 +27,11 @@ class Context:
         self.rpc = rpc
         self.state = RpcStateManager(rpc)
         self.logger = Logger(self.trace_id, self.flows, rpc)
-        self._loop = asyncio.get_event_loop()
+        try:
+            self._loop = asyncio.get_running_loop()
+        except RuntimeError:
+            self._loop = asyncio.new_event_loop()
+        asyncio.set_event_loop(self._loop)
         self.is_api_handler = is_api_handler
         self._pending_tasks = []
 
@@ -141,6 +145,10 @@ if __name__ == "__main__":
     arg = sys.argv[2] if len(sys.argv) > 2 else None
 
     rpc = RpcSender()
-    loop = asyncio.get_event_loop()
+    try:
+        loop = asyncio.get_running_loop()
+    except RuntimeError:
+        loop = asyncio.new_event_loop()
+    asyncio.set_event_loop(loop)
     tasks = asyncio.gather(rpc.init(), run_python_module(file_path, rpc, parse_args(arg)))
     loop.run_until_complete(tasks)
