@@ -18,6 +18,12 @@ Motia lets developers create, test, and deploy production-ready AI agents in min
 
 *Motia is currently in Beta. This means we're actively developing, iterating quickly, and looking for feedback from early adopters like you!*
 
+## Start Building Now
+```bash
+npx motia@latest create -n new-project
+cd new-project && npm run dev
+```
+
 ## The Problem Motia Solves
 
 Building production-grade AI agents is tough. You're usually forced to choose:
