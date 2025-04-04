@@ -214,4 +214,6 @@ export const create = async ({ projectName, template }: Args): Promise<void> => 
   await templates[template](stepsDir)
 
   await wrapUpSetup(rootDir)
+
+  process.exit(0)
 }
