@@ -1,16 +1,9 @@
-'use client'
-
 import Link from 'next/link'
 import styles from '../page.module.css'
 import Typography from '@/components/Typography'
 import CommandDisplay from './CommandDisplay'
 
-interface HeroSectionProps {
-  copied: boolean
-  onCopy: () => void
-}
-
-export default function HeroSection({ copied, onCopy }: HeroSectionProps) {
+export default function HeroSection() {
   return (
     <div
       className={
@@ -21,7 +14,7 @@ export default function HeroSection({ copied, onCopy }: HeroSectionProps) {
       <div className="md:w-1/2 flex flex-col justify-center relative overflow-hidden z-10">
         <Typography variant="title" as="h1" className="mb-6 relative z-10 text-left">
           AI Agent Framework
-          <br />
+          <br/>
           for Software Engineers
         </Typography>
       </div>
@@ -33,9 +26,7 @@ export default function HeroSection({ copied, onCopy }: HeroSectionProps) {
           </Typography>
 
           <CommandDisplay
-            command="npx motia create -n new-project"
-            copied={copied}
-            onCopy={onCopy}
+            command="npx motia@latest create -n new-project"
             className="mb-8"
           />
 

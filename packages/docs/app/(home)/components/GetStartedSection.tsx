@@ -1,15 +1,15 @@
 'use client';
 
 import Link from 'next/link';
-import { FaGithub, FaUsers, FaArrowRight } from 'react-icons/fa';
-import { useState, useRef, useEffect } from 'react';
+import {FaArrowRight, FaGithub, FaUsers} from 'react-icons/fa';
+import {useEffect, useRef, useState} from 'react';
 import Typography from '@/components/Typography';
 import CommandDisplay from './CommandDisplay';
-import { trackTwitterEvent } from '@/app/utils/tracking';
+import {trackTwitterEvent} from '@/app/utils/tracking';
 
-export default function GetStartedSection({ copied, onCopy }: { copied: boolean, onCopy: () => void }) {
+export default function GetStartedSection() {
   const [isHovering, setIsHovering] = useState(false);
-  const [mousePosition, setMousePosition] = useState({ x: 0, y: 0 });
+  const [mousePosition, setMousePosition] = useState({x: 0, y: 0});
   const sectionRef = useRef<HTMLDivElement>(null);
   const glowRef = useRef<HTMLDivElement>(null);
 
@@ -20,18 +20,18 @@ export default function GetStartedSection({ copied, onCopy }: { copied: boolean,
 
     const handleMouseEnter = () => setIsHovering(true);
     const handleMouseLeave = () => setIsHovering(false);
-    
+
     const handleMouseMove = (e: MouseEvent) => {
       const rect = section.getBoundingClientRect();
       const x = e.clientX - rect.left;
       const y = e.clientY - rect.top;
-      
+
       requestAnimationFrame(() => {
         glowElement.style.left = `${x}px`;
         glowElement.style.top = `${y}px`;
       });
-      
-      setMousePosition({ x, y });
+
+      setMousePosition({x, y});
     };
 
     section.addEventListener('mouseenter', handleMouseEnter);
@@ -46,11 +46,11 @@ export default function GetStartedSection({ copied, onCopy }: { copied: boolean,
   }, []);
 
   return (
-    <div 
+    <div
       ref={sectionRef}
       className="w-full max-w-7xl mx-auto py-10 px-4 flex flex-col items-center relative overflow-hidden"
     >
-      <div 
+      <div
         className={`absolute inset-0 pointer-events-none transition-opacity duration-1000 ${
           isHovering ? 'opacity-20' : 'opacity-0'
         }`}
@@ -62,7 +62,7 @@ export default function GetStartedSection({ copied, onCopy }: { copied: boolean,
         }}
       />
 
-      <div 
+      <div
         ref={glowRef}
         className={`absolute pointer-events-none ${isHovering ? 'opacity-100' : 'opacity-0'}`}
         style={{
@@ -81,28 +81,26 @@ export default function GetStartedSection({ copied, onCopy }: { copied: boolean,
       />
 
       <div className="text-center mb-12 relative z-10">
-        <Typography 
-          variant="title" 
-          as="h2" 
+        <Typography
+          variant="title"
+          as="h2"
           className="mb-6"
         >
           Get started
         </Typography>
-        <Typography 
-          variant="description" 
-          as="p" 
+        <Typography
+          variant="description"
+          as="p"
           className="max-w-2xl mx-auto"
         >
-          Write in any language. Automate anything. From AI agents to backend automation, 
+          Write in any language. Automate anything. From AI agents to backend automation,
           Motia runs event-driven workflows with zero overhead.
         </Typography>
       </div>
 
       <div className="mb-12 relative z-10 flex justify-center">
         <CommandDisplay
-          command="npx motia create -n new-project"
-          copied={copied}
-          onCopy={onCopy}
+          command="npx motia@latest create -n new-project"
         />
       </div>
 
@@ -123,39 +121,39 @@ export default function GetStartedSection({ copied, onCopy }: { copied: boolean,
       </div>
 
       <div className="grid grid-cols-1 md:grid-cols-2 gap-6 max-w-4xl w-full relative z-10">
-        <Link 
-          href="https://github.com/MotiaDev/motia" 
+        <Link
+          href="https://github.com/MotiaDev/motia"
           target="_blank"
           rel="noopener noreferrer"
           className="backdrop-blur-sm rounded-md p-4 flex flex-col h-full border border-[rgba(255,255,255,0.21)] hover:border-purple-700/40 transition-all group"
         >
           <div className="p-3 rounded-lg mr-4 flex items-center justify-center w-12 h-12">
-            <FaGithub className="text-white text-2xl" />
+            <FaGithub className="text-white text-2xl"/>
           </div>
           <div className="flex flex-col items-start">
             <h3 className="text-2xl font-bold text-white mb-4">Contribute to Github</h3>
             <div className="mt-auto flex justify-between w-full">
               <p className="text-white/70 mb-6 text-sm">Share flows and debug together</p>
               <div className="text-white/60 group-hover:text-white transition-colors">
-                <FaArrowRight className="h-5 w-5" />
+                <FaArrowRight className="h-5 w-5"/>
               </div>
             </div>
           </div>
         </Link>
 
-        <Link 
-          href="https://discord.com/channels/1322278831184281721/1323378241641123952" 
+        <Link
+          href="https://discord.com/channels/1322278831184281721/1323378241641123952"
           className="backdrop-blur-sm rounded-md p-4 flex flex-col h-full border border-[rgba(255,255,255,0.21)] hover:border-purple-700/40 transition-all group"
         >
           <div className="p-3 rounded-lg mr-4 flex items-center justify-center w-12 h-12">
-            <FaUsers className="text-white text-2xl" />
+            <FaUsers className="text-white text-2xl"/>
           </div>
           <div className="flex flex-col items-start">
             <h3 className="text-2xl font-bold text-white mb-4">Join the community</h3>
             <div className="mt-auto flex justify-between w-full">
               <p className="text-white/70 mb-6 text-sm">Share flows and debug together</p>
               <div className="text-white/60 group-hover:text-white transition-colors">
-                <FaArrowRight className="h-5 w-5" />
+                <FaArrowRight className="h-5 w-5"/>
               </div>
             </div>
           </div>

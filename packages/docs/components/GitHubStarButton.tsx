@@ -21,7 +21,10 @@ const GitHubStarButton = ({ className = '' }) => {
       href="https://github.com/MotiaDev/motia"
       target="_blank"
       rel="noopener noreferrer"
-      className={`inline-flex items-center px-3 py-0.5 gap-1.5 rounded-md border border-gray-600 bg-white text-gray-800 hover:bg-gray-50 transition-colors ${className}`
+      className={`inline-flex items-center px-3 py-0.5 gap-1.5 rounded-md border transition-colors
+        bg-white hover:bg-gray-50 text-gray-800 border-gray-600
+        dark:bg-gray-800 dark:hover:bg-gray-700 dark:text-gray-200 dark:border-gray-700 
+        ${className}`
       }
       style={{ height: '28px' }}
     >
@@ -31,7 +34,7 @@ const GitHubStarButton = ({ className = '' }) => {
       <span className="font-medium text-xs">Star</span>
       {
         starCount !== null && (
-          <span className="ml-1 text-xs border-l border-gray-300 pl-1.5">{starCount}</span>
+          <span className="ml-1 text-xs border-l border-gray-300 dark:border-gray-600 pl-1.5">{starCount}</span>
         )
       }
     </a >
