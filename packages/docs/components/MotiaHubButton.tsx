@@ -21,7 +21,7 @@ function MotiaHubButton() {
   return (
     <Dialog>
       <DialogTrigger>
-        <div className="inline-flex items-center gap-2">
+        <div className="flex items-center gap-2">
           MotiaHub
           <span
             className="rounded bg-blue-100 px-1.5 py-0.5 text-xs font-medium text-blue-800 dark:bg-blue-900 dark:text-blue-200">

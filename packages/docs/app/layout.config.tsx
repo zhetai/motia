@@ -28,9 +28,8 @@ export const baseOptions: BaseLayoutProps = {
       active: 'nested-url',
     },
     {
-      text: <MotiaHubButton/>,
-      url: '#',
-      active: 'nested-url',
+      type: 'custom',
+      children: <MotiaHubButton/>,
     },
     // Add GitHub and Discord links with icons
     {
