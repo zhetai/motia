@@ -50,6 +50,15 @@ program
   })
 
 program
+  .command('install')
+  .description('Sets up Python virtual environment and install dependencies')
+  .option('-v, --verbose', 'Enable verbose logging')
+  .action(async (options) => {
+    const { install } = require('./install')
+    await install(options.verbose)
+  })
+
+program
   .command('dev')
   .description('Start the development server')
   .option('-p, --port <port>', 'The port to run the server on', `${defaultPort}`)

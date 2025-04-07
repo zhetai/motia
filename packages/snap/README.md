@@ -98,6 +98,14 @@ Initializes a new Motia project in the current directory.
 motia init
 ```
 
+### `motia install`
+
+Sets up your project's dependencies and environment. For Python projects, this will create and configure a virtual environment.
+
+```sh
+motia install
+```
+
 ### `motia build`
 
 Builds a lock file based on your current project setup which is then used by the Motia ecosystem.
@@ -108,7 +116,7 @@ motia build
 
 ### `motia dev`
 
-Initiates a dev environment for your project allowing you to use Motia Workbench (visualization tool for your flows).
+Initiates a dev environment for your project allowing you to use Motia Workbench (visualization tool for your flows). For Python projects, this will automatically use the configured virtual environment.
 
 ```sh
 motia dev [options]

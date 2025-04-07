@@ -1,0 +1,21 @@
+config = {
+  "type": "event",
+  "name": "Check state change",
+  "description": "check state change",
+  "subscribes": ["check-state-change"], 
+  "emits": [],
+  "input": None,  # No schema validation for Python
+  "flows": ["default"]
+}
+
+async def handler(input, context):
+  context.logger.info('received check-state-change event', input)
+
+  value = await context.state.get(context.traceId, input.key)
+
+  if value != input.expected:
+    context.logger.error("🔴 the provided  value for the state key ${input.key} does not match", { "value": value, "expected": input.expected })
+  else:
+    context.logger.info("🟢 the provided value matches the state value for key ${input.key} 🏁")
+
+

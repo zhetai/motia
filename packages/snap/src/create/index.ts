@@ -1,8 +1,8 @@
 import path from 'path'
 import fs from 'fs'
-import { exec } from 'child_process'
 import { templates } from './templates'
 import figlet from 'figlet'
+import { executeCommand } from '@/utils/executeCommand'
 
 // eslint-disable-next-line @typescript-eslint/no-require-imports
 require('ts-node').register({
@@ -32,21 +32,6 @@ const getPackageManager = (dir: string): string => {
   } else {
     return 'unknown'
   }
-}
-
-const executeCommand = async (command: string, rootDir: string) => {
-  return new Promise((resolve, reject) => {
-    exec(command, { cwd: rootDir }, (error, stdout, stderr) => {
-      if (error) {
-        console.error(`exec error: ${error}`)
-        reject(error)
-        return
-      }
-      if (stdout) console.log(stdout.toString())
-      if (stderr) console.error(stderr.toString())
-      resolve(stdout)
-    })
-  })
 }
 
 const installRequiredDependencies = async (packageManager: string, rootDir: string) => {
@@ -136,12 +121,15 @@ export const create = async ({ projectName, template, cursorEnabled }: Args): Pr
 
   if (!checkIfFileExists(rootDir, 'package.json')) {
     const packageJsonContent = {
-      name: 'my-motia-project',
+      name: projectName,
       description: '',
       scripts: {
+        postinstall: 'motia install',
         dev: 'motia dev',
         'dev:debug': 'motia dev --debug',
-        'generate:config': 'motia get-config --output ./',
+        //'build': 'motia build', TODO: doesnt work at the moment
+        clean: 'rm -rf dist node_modules python_modules .motia .mermaid',
+        //'generate:config': 'motia get-config --output ./', TODO: doesnt work at the moment
       },
       keywords: ['motia'],
     }
@@ -193,6 +181,32 @@ export const create = async ({ projectName, template, cursorEnabled }: Args): Pr
     console.log('✅ tsconfig.json created')
   }
 
+  if (!checkIfFileExists(rootDir, 'requirements.txt')) {
+    const requirementsContent = [
+      // TODO: motia PyPi package
+      // Add other Python dependencies as needed
+    ].join('\n')
+
+    fs.writeFileSync(path.join(rootDir, 'requirements.txt'), requirementsContent)
+    console.log('✅ requirements.txt created')
+  }
+
+  if (!checkIfFileExists(rootDir, '.gitignore')) {
+    const gitignoreContent = [
+      'node_modules',
+      'python_modules',
+      '.venv',
+      'venv',
+      '.motia',
+      '.mermaid',
+      'dist',
+      '*.pyc',
+    ].join('\n')
+
+    fs.writeFileSync(path.join(rootDir, '.gitignore'), gitignoreContent)
+    console.log('✅ .gitignore created')
+  }
+
   const cursorTemplateDir = path.join(__dirname, '../dot-files/.cursor')
   const cursorTargetDir = path.join(rootDir, '.cursor')
 
@@ -200,6 +214,7 @@ export const create = async ({ projectName, template, cursorEnabled }: Args): Pr
     fs.cpSync(cursorTemplateDir, cursorTargetDir, { recursive: true })
     console.log('✅ .cursor folder copied')
   }
+
   const stepsDir = path.join(rootDir, 'steps')
   if (!checkIfDirectoryExists(stepsDir)) {
     fs.mkdirSync(stepsDir)
