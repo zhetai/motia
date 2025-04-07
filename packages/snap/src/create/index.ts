@@ -107,9 +107,10 @@ const wrapUpSetup = async (rootDir: string) => {
 type Args = {
   projectName: string
   template?: string
+  cursorEnabled?: boolean
 }
 
-export const create = async ({ projectName, template }: Args): Promise<void> => {
+export const create = async ({ projectName, template, cursorEnabled }: Args): Promise<void> => {
   console.log(
     '\n\n' +
       figlet.textSync('MOTIA', {
@@ -192,6 +193,13 @@ export const create = async ({ projectName, template }: Args): Promise<void> => 
     console.log('✅ tsconfig.json created')
   }
 
+  const cursorTemplateDir = path.join(__dirname, '../dot-files/.cursor')
+  const cursorTargetDir = path.join(rootDir, '.cursor')
+
+  if (cursorEnabled && !checkIfDirectoryExists(cursorTargetDir)) {
+    fs.cpSync(cursorTemplateDir, cursorTargetDir, { recursive: true })
+    console.log('✅ .cursor folder copied')
+  }
   const stepsDir = path.join(rootDir, 'steps')
   if (!checkIfDirectoryExists(stepsDir)) {
     fs.mkdirSync(stepsDir)
