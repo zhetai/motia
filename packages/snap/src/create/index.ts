@@ -2,7 +2,7 @@ import path from 'path'
 import fs from 'fs'
 import { templates } from './templates'
 import figlet from 'figlet'
-import { executeCommand } from '@/utils/executeCommand'
+import { executeCommand } from '../utils/executeCommand'
 
 // eslint-disable-next-line @typescript-eslint/no-require-imports
 require('ts-node').register({
