@@ -5,8 +5,17 @@ config = {
     "subscribes": {{SUBSCRIPTIONS}}, 
     "emits": {{EMITS}},
     "flows": {{FLOWS}},
-    "input": None,  # No schema validation in Python
+    "input": None,  # Replace with Pydantic model for validation
 }
+
+# Example of using Pydantic for input validation:
+# from pydantic import BaseModel
+# 
+# class InputModel(BaseModel):
+#     message: str
+#     count: int = 0
+# 
+# config["input"] = InputModel
 
 async def handler(args, ctx):
     ctx.logger.info('Processing {{STEP_NAME}}', args)

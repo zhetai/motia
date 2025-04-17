@@ -1,5 +1,6 @@
 # Dependencies
 node_modules/
+python_modules/
 .pnpm-store/
 .npm
 .npmrc
@@ -88,3 +89,4 @@ agents/**/components/
 
 **/tsconfig.app.tsbuildinfo
 .motia/
+.mermaid/

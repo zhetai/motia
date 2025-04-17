@@ -15,12 +15,13 @@ require('ts-node').register({
 
 const packageJsonPath = path.resolve(__dirname, '..', '..', 'package.json')
 const packageJson = JSON.parse(fs.readFileSync(packageJsonPath, 'utf8'))
+const version = `${packageJson.version}`
 
 program
   .command('version')
   .description('Display detailed version information')
   .action(() => {
-    console.log(`Motia CLI v${packageJson.version}`)
+    console.log(`Motia CLI v${version}`)
   })
 
 program
@@ -385,6 +386,6 @@ infrastructure
     }
   })
 
-program.version(packageJson.version, '-V, --vers', 'Output the current version')
+program.version(version, '-V, --version', 'Output the current version')
 
 program.parse(process.argv)

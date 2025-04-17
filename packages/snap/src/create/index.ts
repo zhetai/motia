@@ -207,7 +207,7 @@ export const create = async ({ projectName, template, cursorEnabled }: Args): Pr
     console.log('✅ .gitignore created')
   }
 
-  const cursorTemplateDir = path.join(__dirname, '../dot-files/.cursor')
+  const cursorTemplateDir = path.join(__dirname, '../../dot-files/.cursor')
   const cursorTargetDir = path.join(rootDir, '.cursor')
 
   if (cursorEnabled && !checkIfDirectoryExists(cursorTargetDir)) {

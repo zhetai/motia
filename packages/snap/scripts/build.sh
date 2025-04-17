@@ -11,8 +11,10 @@ npx tsc --project tsconfig.build.json --outDir dist/esm --module ES2020
 echo "Building type declarations..."
 npx tsc --emitDeclarationOnly --declaration --outDir dist/types
 
-echo "Copying templates and Python files..."
+echo "Copying templates..."
 sh scripts/move-templates.sh
+
+echo "Copying Python files..."
 sh scripts/move-python.sh
 
 echo "Copying dot files..."

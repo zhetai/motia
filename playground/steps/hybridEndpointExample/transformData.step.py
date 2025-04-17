@@ -1,9 +1,20 @@
+from pydantic import BaseModel
+from typing import List
+
+class Item(BaseModel):
+    id: int
+    value: float
+
+class InputSchema(BaseModel):
+    items: List[Item]
+    timestamp: str 
+
 config = {
     "type": "event",
     "name": "Transform Data", 
     "subscribes": ["hybrid.validated"],
     "emits": ["hybrid.transformed"],
-    "input": None,  # No schema validation in Python version
+    "input": InputSchema.model_json_schema(),
     "flows": ["hybrid-example"]
 }
 

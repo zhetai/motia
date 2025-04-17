@@ -5,8 +5,18 @@ config = {
     "path": "{{PATH}}",
     "method": "{{METHOD}}",
     "emits": {{EMITS}},
-    "flows": {{FLOWS}}
+    "flows": {{FLOWS}},
+    "bodySchema": None,  # Replace with Pydantic model for validation
 }
+
+# Example of using Pydantic for request body validation:
+# from pydantic import BaseModel
+# 
+# class RequestBody(BaseModel):
+#     message: str
+#     count: int = 0
+# 
+# config["bodySchema"] = RequestBody
 
 async def handler(req, context):
     context.logger.info("Processing {{STEP_NAME}}", req)

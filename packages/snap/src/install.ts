@@ -1,12 +1,12 @@
 import path from 'path'
 import fs from 'fs'
 import { executeCommand } from './utils/executeCommand'
+import { activatePythonVenv } from '@motiadev/core'
 
 export const install = async (isVerbose: boolean = false): Promise<void> => {
   const baseDir = process.cwd()
   const venvPath = path.join(baseDir, 'python_modules')
-  const isWindows = process.platform === 'win32'
-  const venvBinPath = path.join(venvPath, isWindows ? 'Scripts' : 'bin')
+  console.log('📦 Installing Python dependencies...', venvPath)
 
   try {
     // Check if virtual environment exists
@@ -15,17 +15,43 @@ export const install = async (isVerbose: boolean = false): Promise<void> => {
       await executeCommand('python3 -m venv python_modules', baseDir)
     }
 
+    activatePythonVenv({ baseDir, isVerbose })
+
     // Install requirements
     console.log('📥 Installing Python dependencies...')
-    const pipPath = path.join(venvBinPath, isWindows ? 'pip.exe' : 'pip')
-    await executeCommand(`${pipPath} install -r requirements.txt`, baseDir)
 
-    console.log('✅ Installation completed successfully!')
-
-    if (isVerbose) {
-      const pythonPath = path.join(venvBinPath, isWindows ? 'python.exe' : 'python')
-      console.log('🐍 Using Python from:', pythonPath)
+    // Core requirements
+    const coreRequirementsPath = path.join(baseDir, 'node_modules', 'motia', 'dist', 'requirements-core.txt')
+    if (fs.existsSync(coreRequirementsPath)) {
+      if (isVerbose) {
+        console.log('📄 Using core requirements from:', coreRequirementsPath)
+      }
+      await executeCommand(`pip install -r "${coreRequirementsPath}"`, baseDir)
+    } else {
+      console.warn(`⚠️ Core requirements not found at: ${coreRequirementsPath}`)
     }
+
+    // Snap requirements
+    const snapRequirementsPath = path.join(baseDir, 'node_modules', 'motia', 'dist', 'requirements-snap.txt')
+    if (fs.existsSync(snapRequirementsPath)) {
+      if (isVerbose) {
+        console.log('📄 Using snap requirements from:', snapRequirementsPath)
+      }
+      await executeCommand(`pip install -r "${snapRequirementsPath}"`, baseDir)
+    } else {
+      console.warn(`⚠️ Snap requirements not found at: ${snapRequirementsPath}`)
+    }
+
+    // Project-specific requirements
+    const localRequirements = path.join(baseDir, 'requirements.txt')
+    if (fs.existsSync(localRequirements)) {
+      if (isVerbose) {
+        console.log('📄 Using project requirements from:', localRequirements)
+      }
+      await executeCommand(`pip install -r "${localRequirements}"`, baseDir)
+    }
+
+    console.info('✅ Installation completed successfully!')
   } catch (error) {
     console.error('❌ Installation failed:', error)
     process.exit(1)

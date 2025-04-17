@@ -4,116 +4,102 @@ import importlib.util
 import os
 import asyncio
 import traceback
-from logger import Logger
-from rpc import RpcSender, serialize_for_json
-from rpc_state_manager import RpcStateManager
-from typing import Any, Optional
-import functools
+from typing import Optional, Any, Callable, List
+from types import SimpleNamespace
 
-def parse_args(arg: str) -> Any:
-    from types import SimpleNamespace
-    
+from rpc import RpcSender, serialize_for_json
+from type_definitions import HandlerArgs, FlowConfig, ApiResponse
+from context import Context
+from validation import validate_with_jsonschema
+from middleware import compose_middleware
+
+def parse_args(arg: str) -> HandlerArgs:
+    """Parse command line arguments into HandlerArgs"""
     try:
         return json.loads(arg, object_hook=lambda d: SimpleNamespace(**d))
     except json.JSONDecodeError:
         print('Error parsing args:', arg)
         return arg
 
-class Context:
-    def __init__(self, args: Any, rpc: RpcSender, is_api_handler: bool = False):
-        self.trace_id = args.traceId
-        self.traceId = args.traceId
-        self.flows = args.flows
-        self.rpc = rpc
-        self.state = RpcStateManager(rpc)
-        self.logger = Logger(self.trace_id, self.flows, rpc)
-        try:
-            self._loop = asyncio.get_running_loop()
-        except RuntimeError:
-            self._loop = asyncio.new_event_loop()
-        asyncio.set_event_loop(self._loop)
-        self.is_api_handler = is_api_handler
-        self._pending_tasks = []
+async def validate_handler_input(
+    module: Any,
+    args: HandlerArgs,
+    context: Context
+) -> Optional[ApiResponse]:
+    """Validate handler input based on module configuration"""
+    if not hasattr(args, 'contextInFirstArg') or hasattr(module, 'config'):
+        return None
 
-    async def emit(self, event: Any):
-        if self.is_api_handler:
-            self.rpc.send_no_wait('emit', event)
+    config: FlowConfig = module.config
+    input_data = args.data
+
+    if context.is_api_handler and hasattr(input_data, 'body') and hasattr(config, 'bodySchema'):
+        validation_result = validate_with_jsonschema(input_data.body, config.bodySchema)
+        if not validation_result['success']:
+            return ApiResponse(
+                status=400,
+                body={'message': f'Input validation error: {validation_result["error"]}'}
+            )
+        input_data.body = validation_result['data']
+    
+    elif not context.is_api_handler and config.input is not None:
+        validation_result = validate_with_jsonschema(input_data, config.input)
+        if not validation_result['success']:
+            context.logger.info(f'Input Validation Error: {validation_result["error"]}', validation_result['details'])
             return None
-        else:
-            return await self.rpc.send('emit', event)
         
-    # Add wrapper to handle non-awaited emit coroutine
-    def __getattribute__(self, name):
-        attr = super().__getattribute__(name)
-        if name == 'emit' and asyncio.iscoroutinefunction(attr):
-            @functools.wraps(attr)
-            def wrapper(*args, **kwargs):
-                coro = attr(*args, **kwargs)
-                # Check if this is being awaited
-                frame = sys._getframe(1)
-                if frame.f_code.co_name != '__await__':
-                    task = asyncio.create_task(coro)
-                    def handle_exception(t):
-                        if t.done() and not t.cancelled() and t.exception():
-                            print(f"Unhandled exception in background task: {t.exception()}", file=sys.stderr)
-                    task.add_done_callback(handle_exception)
-                    return task
-                return coro
-            return wrapper
-        return attr
+        input_data = validation_result['data']
 
-async def run_python_module(file_path: str, rpc: RpcSender, args: Any) -> None:
+    return None
+
+async def run_python_module(file_path: str, rpc: RpcSender, args: HandlerArgs) -> None:
+    """Execute a Python module with the given arguments"""
     try:
-        # Get the directory containing the module file
         module_dir = os.path.dirname(os.path.abspath(file_path))
-        
-        # Add module directory to Python path
-        if module_dir not in sys.path:
-            sys.path.insert(0, module_dir)
-            
-        # Get the flows directory (parent of steps)
         flows_dir = os.path.dirname(module_dir)
-        if flows_dir not in sys.path:
-            sys.path.insert(0, flows_dir)
+        
+        for path in [module_dir, flows_dir]:
+            if path not in sys.path:
+                sys.path.insert(0, path)
 
-        contextInFirstArg = args.contextInFirstArg
-
-        # Load the module dynamically
         spec = importlib.util.spec_from_file_location("dynamic_module", file_path)
         if spec is None or spec.loader is None:
             raise ImportError(f"Could not load module from {file_path}")
             
         module = importlib.util.module_from_spec(spec)
-        # Add module's directory as its __package__
         module.__package__ = os.path.basename(module_dir)
         spec.loader.exec_module(module)
 
-        # Check if the handler function exists
         if not hasattr(module, 'handler'):
             raise AttributeError(f"Function 'handler' not found in module {file_path}")
 
-        context = Context(args, rpc)
+        config = getattr(module, 'config', {})
+        is_api_handler = (
+            module.config and
+            config.get('type') == 'api'
+        )
 
-        # Check if this is an API handler
-        is_api_handler = False
-        if hasattr(module, 'config'):
-            if isinstance(module.config, dict) and module.config.get('type') == 'api':
-                is_api_handler = True
-            elif hasattr(module.config, 'type') and module.config.type == 'api':
-                is_api_handler = True
+        context = Context(args.traceId, args.flows, rpc, is_api_handler)
 
-        # Create context with is_api_handler flag
-        context = Context(args, rpc, is_api_handler)
+        validation_result = await validate_handler_input(module, args, context)
+        if validation_result:
+            await rpc.send('result', validation_result)
+            return
 
-        if contextInFirstArg:
-            result = await module.handler(context)
-        else:
-            if hasattr(args.data, 'body'):
-                args.data.body = serialize_for_json(args.data.body)
-            result = await module.handler(args.data, context)
+    
+        middlewares: List[Callable] = config.get('middleware', [])
+        composed_middleware = compose_middleware(*middlewares)
+        
+        async def handler_fn():
+            if args.contextInFirstArg:
+                return await module.handler(context)
+            else:
+                if hasattr(args.data, 'body'):
+                    args.data.body = serialize_for_json(args.data.body)
+                return await module.handler(args.data, context)
 
-        # For API handlers, we want to return immediately without waiting for background tasks
-        # This prevents the API from getting stuck
+        result = await composed_middleware(args.data, context, handler_fn)
+
         if not is_api_handler:
             pending = asyncio.all_tasks() - {asyncio.current_task()}
             if pending:
@@ -121,12 +107,6 @@ async def run_python_module(file_path: str, rpc: RpcSender, args: Any) -> None:
 
         if result:
             await rpc.send('result', result)
-
-        # For non-API handlers, ensure all pending tasks are completed before closing
-        if not is_api_handler:
-            pending = asyncio.all_tasks() - {asyncio.current_task()}
-            if pending:
-                await asyncio.gather(*pending)
 
         rpc.close()
         rpc.send_no_wait('close', None)
@@ -150,5 +130,7 @@ if __name__ == "__main__":
     except RuntimeError:
         loop = asyncio.new_event_loop()
     asyncio.set_event_loop(loop)
-    tasks = asyncio.gather(rpc.init(), run_python_module(file_path, rpc, parse_args(arg)))
+
+    args = parse_args(arg) if arg else None
+    tasks = asyncio.gather(rpc.init(), run_python_module(file_path, rpc, args))
     loop.run_until_complete(tasks)

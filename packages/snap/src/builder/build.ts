@@ -1,4 +1,4 @@
-import { Step, StepConfig } from '@motiadev/core'
+import { Step, StepConfig, activatePythonVenv } from '@motiadev/core'
 import { LockedData } from '@motiadev/core/dist/src/locked-data'
 import { NoPrinter } from '@motiadev/core/dist/src/printer'
 import colors from 'colors'
@@ -51,24 +51,6 @@ const includeStaticFiles = (step: Step, builder: Builder, archive: archiver.Arch
       })
     })
   }
-}
-
-const installModulegraph = async (builder: Builder): Promise<void> => {
-  return new Promise<void>((resolve, reject) => {
-    const child = spawn('python', ['-m', 'pip', 'install', 'modulegraph'], {
-      cwd: builder.projectDir,
-      stdio: 'pipe',
-    })
-
-    child.on('close', (code) => {
-      if (code !== 0) {
-        reject(new Error('Failed to install modulegraph'))
-      } else {
-        builder.modulegraphInstalled = true
-        resolve()
-      }
-    })
-  })
 }
 
 const loadEsbuildConfig = async (projectDir: string): Promise<esbuild.BuildOptions | null> => {
@@ -189,19 +171,21 @@ const buildNode = async (step: Step, builder: Builder) => {
   }
 }
 
-export const build = async (): Promise<void> => {
-  const projectDir = process.cwd()
-  const builder = new Builder(projectDir)
-  const stepsConfigPath = path.join(projectDir, 'dist', 'motia.steps.json')
-  const lockedData = new LockedData(projectDir)
+export const build = async (isVerbose: boolean): Promise<void> => {
+  const baseDir = process.cwd()
+  const builder = new Builder(baseDir)
+  const stepsConfigPath = path.join(baseDir, 'dist', 'motia.steps.json')
+  const lockedData = new LockedData(baseDir)
   const promises: Promise<unknown>[] = []
 
-  const distDir = path.join(projectDir, 'dist')
+  const distDir = path.join(baseDir, 'dist')
 
-  lockedData.printer = new NoPrinter(projectDir) // let's make it not print anything
+  lockedData.printer = new NoPrinter(baseDir) // let's make it not print anything
 
   fs.rmSync(distDir, { recursive: true, force: true })
   fs.mkdirSync(distDir, { recursive: true })
+
+  activatePythonVenv({ baseDir, isVerbose })
 
   lockedData.onStep('step-created', (step) => {
     if (step.config.type === 'noop') {
@@ -209,15 +193,13 @@ export const build = async (): Promise<void> => {
     } else if (step.filePath.endsWith('.ts') || step.filePath.endsWith('.js')) {
       return promises.push(buildNode(step, builder))
     } else if (step.filePath.endsWith('.py')) {
-      const setupPromise = !builder.modulegraphInstalled ? installModulegraph(builder) : Promise.resolve()
-
-      setupPromise.then(() => promises.push(buildPython(step, builder)))
+      return promises.push(buildPython(step, builder))
     } else {
       return builder.printer.printStepSkipped(step, 'File not supported')
     }
   })
 
-  await collectFlows(path.join(projectDir, 'steps'), lockedData)
+  await collectFlows(path.join(baseDir, 'steps'), lockedData)
   await Promise.all(promises)
 
   fs.writeFileSync(stepsConfigPath, JSON.stringify(builder.stepsConfig, null, 2))

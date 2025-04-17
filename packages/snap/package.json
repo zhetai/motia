@@ -38,6 +38,7 @@
   "dependencies": {
     "@motiadev/core": "workspace:*",
     "@motiadev/workbench": "workspace:*",
+    "motia": "workspace:*",
     "archiver": "^7.0.1",
     "axios": "^1.8.2",
     "chokidar": "^4.0.3",
@@ -46,8 +47,8 @@
     "dotenv": "^16.4.7",
     "esbuild": "^0.25.0",
     "figlet": "^1.8.0",
-    "glob": "^11.0.1",
     "form-data": "^4.0.0",
+    "glob": "^11.0.1",
     "inquirer": "^8.2.5",
     "ts-node": "^10.9.2",
     "yaml": "^2.7.0"

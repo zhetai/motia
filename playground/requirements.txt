@@ -1,2 +1,2 @@
+pydantic>=2.6.1 
 anthropic==0.31.2
-vision-agent==0.2.222

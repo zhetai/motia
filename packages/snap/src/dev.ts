@@ -6,10 +6,10 @@ import {
   globalLogger,
   createStateAdapter,
   createMermaidGenerator,
+  activatePythonVenv,
 } from '@motiadev/core'
 import { generateLockedData } from './generate-locked-data'
 import path from 'path'
-import fs from 'fs'
 import { FileStateAdapter } from '@motiadev/core/dist/src/state/adapters/default-state-adapter'
 import { createDevWatchers } from './dev-watchers'
 import { stateEndpoints } from './dev/state-endpoints'
@@ -23,28 +23,7 @@ require('ts-node').register({
 export const dev = async (port: number, isVerbose: boolean, enableMermaid: boolean): Promise<void> => {
   const baseDir = process.cwd()
 
-  // Set the virtual environment path
-  const venvPath = path.join(baseDir, 'python_modules')
-  const venvBinPath = path.join(venvPath, process.platform === 'win32' ? 'Scripts' : 'bin')
-
-  // Verify that the virtual environment exists
-  if (fs.existsSync(venvPath)) {
-    // Add virtual environment to PATH
-    process.env.PATH = `${venvBinPath}${path.delimiter}${process.env.PATH}`
-    // Set VIRTUAL_ENV environment variable
-    process.env.VIRTUAL_ENV = venvPath
-    // Remove PYTHONHOME if it exists as it can interfere with venv
-    delete process.env.PYTHONHOME
-
-    // Log Python environment information if verbose mode is enabled
-    if (isVerbose) {
-      const pythonPath =
-        process.platform === 'win32' ? path.join(venvBinPath, 'python.exe') : path.join(venvBinPath, 'python')
-      console.log('🐍 Using Python from:', pythonPath)
-    }
-  } else {
-    console.warn('❌ Python virtual environment not found in python_modules/')
-  }
+  activatePythonVenv({ baseDir, isVerbose })
 
   const lockedData = await generateLockedData(baseDir)
   const eventManager = createEventManager()

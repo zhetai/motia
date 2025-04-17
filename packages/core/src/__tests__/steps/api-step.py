@@ -17,5 +17,5 @@ async def handler(_, ctx: Any) -> Dict:
     
     return {
         "status": 200,
-        "body": {"traceId": ctx.traceId}
+        "body": {"traceId": ctx.trace_id}
     }

@@ -126,7 +126,6 @@ Options:
   -v, --verbose         Enable verbose logging
   -d, --debug          Enable debug logging
   -m, --mermaid        Enable mermaid diagram generation
-  -c, --cursor         Enable cursor support for enhanced development
 ```
 
 ## Visualizing Workflows

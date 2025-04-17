@@ -1,0 +1,24 @@
+{
+  "hybrid-example": {
+    "steps/hybridEndpointExample/analyzeData.step.py": {
+      "x": 27.696948614548134,
+      "y": 13.799059943989668
+    },
+    "steps/hybridEndpointExample/enrichData.step.ts": {
+      "x": 32.865104921231676,
+      "y": -131.7558085265963
+    },
+    "steps/hybridEndpointExample/finalizeData.step.ts": {
+      "x": 26.401623288588056,
+      "y": 160.92613360295385
+    },
+    "steps/hybridEndpointExample/hybridApi.step.ts": {
+      "x": -65.10437519895308,
+      "y": -538.1952215895021
+    },
+    "steps/hybridEndpointExample/transformData.step.py": {
+      "x": 20.257701329554266,
+      "y": -282.0065410359207
+    }
+  }
+}

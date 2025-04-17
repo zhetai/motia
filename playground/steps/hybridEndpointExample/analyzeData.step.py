@@ -1,9 +1,23 @@
+from pydantic import BaseModel
+from typing import List, Any
+from datetime import datetime
+
+class EnrichedItem(BaseModel):
+    enriched_by: str
+    processed_at: str
+    # Include other fields that might be in the item
+    value: float  # Based on the usage in the analysis
+
+class InputSchema(BaseModel):
+    items: List[EnrichedItem]
+    timestamp: str
+
 config = {
     "type": "event",
     "name": "Analyze Data",
     "subscribes": ["hybrid.enriched"],
     "emits": ["hybrid.analyzed"],
-    "input": None,  # No schema validation in Python version
+    "input": InputSchema.model_json_schema(),
     "flows": ["hybrid-example"]
 }
 

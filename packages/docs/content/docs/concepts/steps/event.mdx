@@ -12,7 +12,7 @@ The following properties are specific to the Event Step, in addition to the [com
   type={{
     input: {
       description:
-        'This is only required for TS or JS steps that use zod for their input schema, this is used when processing the step to validate the input before executing the step handler.',
+        'This is used for input validation. For TypeScript/JavaScript steps, it uses zod schemas. For Python steps, it uses Pydantic models. This validates the input before executing the step handler.',
       type: 'string[]',
     },
   }}
@@ -90,12 +90,18 @@ The following examples showcase how to configure an **Event Step**
   </Tab>
   <Tab value="Python">
     ```python
+    from pydantic import BaseModel
+    
+    # Define a Pydantic model for input validation
+    class InputModel(BaseModel):
+        message: str
+    
     config = {
         "type": "event",
         "name": "Call OpenAI",
         "subscribes": ["call-openai"], 
         "emits": ["openai-response"],
-        "input": None,  # No schema validation in Python version
+        "input": InputModel.model_json_schema(), # We use jsonschema to validate
         "flows": ["openai"]
     }
 
