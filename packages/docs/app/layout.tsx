@@ -8,7 +8,7 @@ import type { Metadata } from 'next'
 import { Analytics } from '@vercel/analytics/react'
 import { RouteTracker } from './utils/RouteTracker'
 
-const GTM_ID = 'GTM-P6672CSW'
+const GTM_ID = process.env.NEXT_PUBLIC_GTM_ID ?? 'GTM-P6672CSW'
 
 const inter = Inter({
   subsets: ['latin'],
@@ -26,6 +26,11 @@ const dmSans = DM_Sans({
   subsets: ['latin'],
   variable: '--font-dm-sans',
 })
+
+const SLACK_APP_ID = process.env.NEXT_PUBLIC_SLACK_APP_ID ?? 'YOUR_SLACK_APP_ID'
+const YANDEX_VERIFICATION = process.env.NEXT_PUBLIC_YANDEX_VERIFICATION ?? 'YOUR_YANDEX_VERIFICATION'
+const BING_VERIFICATION = process.env.NEXT_PUBLIC_BING_VERIFICATION ?? 'YOUR_BING_VERIFICATION'
+const GOOGLE_VERIFICATION = process.env.NEXT_PUBLIC_GOOGLE_VERIFICATION ?? 'YOUR_GOOGLE_VERIFICATION'
 
 export const metadata: Metadata = {
   title: {
@@ -105,7 +110,7 @@ export const metadata: Metadata = {
     'linkedin:image': 'https://motia.dev/og-image.png',
 
     // Slack
-    'slack-app-id': 'YOUR_SLACK_APP_ID', // If you have a Slack app
+    'slack-app-id': SLACK_APP_ID,
 
     // PWA related
     'theme-color': '#18181b',
@@ -119,9 +124,9 @@ export const metadata: Metadata = {
     'format-detection': 'telephone=no',
 
     // Search Engine
-    'google-site-verification': 'YOUR_GOOGLE_VERIFICATION', // If you have Google Search Console
-    'yandex-verification': 'YOUR_YANDEX_VERIFICATION', // If you target Yandex
-    'bing-verification': 'YOUR_BING_VERIFICATION', // If you target Bing
+    'google-site-verification': GOOGLE_VERIFICATION,
+    'yandex-verification': YANDEX_VERIFICATION,
+    'bing-verification': BING_VERIFICATION,
 
     // Canonical URL (important for SEO)
     canonical: 'https://motia.dev',
@@ -142,7 +147,7 @@ export const metadata: Metadata = {
 
   // Verification for webmaster tools
   verification: {
-    google: 'YOUR_GOOGLE_VERIFICATION',
+    google: GOOGLE_VERIFICATION,
   },
 }
 

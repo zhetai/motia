@@ -1,9 +1,7 @@
-'use client';
-
 import { HomeLayout } from 'fumadocs-ui/layouts/home';
 import { baseOptions } from '@/app/layout.config';
 import { PAGE_CONTENT } from './constants';
-import { FormspreeProvider } from '@formspree/react';
+import type { Metadata } from 'next'
 
 // Components
 import { PageHeader } from './components/PageHeader';
@@ -18,7 +16,6 @@ export default function ContactPage() {
         {...baseOptions} 
         className="flex-1 pb-4 lg:pt-32 sm:pt-20 bg-gradient-to-b from-[#0E002D] to-[#2F0093]"
       >
-        <FormspreeProvider project="mqaerbdp">
           <div className="container mx-auto px-4 py-16 max-w-5xl">
             <PageHeader 
               title={PAGE_CONTENT.TITLE}
@@ -31,8 +28,32 @@ export default function ContactPage() {
           </div>
 
           <Footer />
-        </FormspreeProvider>
       </HomeLayout>
     </div>
   );
+}
+
+export const metadata: Metadata = {
+  title: {
+    template: '%s | motia',
+    default: 'Contact Motia – Get in Touch with Our Team',
+  },
+  description:
+    "Have questions about Motia's AI Agent Framework? Reach out through our contact form or join our community – we're here to help.",
+  alternates: {
+    canonical: '/contact',
+  },
+  openGraph: {
+    title: 'Contact Motia – Get in Touch with Our Team',
+    description:
+      "Have questions about Motia's AI Agent Framework? Reach out through our contact form or join our community – we're here to help.",
+    url: 'https://motia.dev/contact',
+    type: 'website',
+  },
+  twitter: {
+    card: 'summary_large_image',
+    title: 'Contact Motia – Get in Touch with Our Team',
+    description:
+      "Have questions about Motia's AI Agent Framework? Reach out through our contact form or join our community – we're here to help.",
+  },
 } 

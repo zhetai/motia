@@ -1,4 +1,5 @@
 module.exports = {
     siteUrl: 'https://motia.dev',
-    generateRobotsTxt: true, // (optional)
-  };
+    generateRobotsTxt: true,
+    generateIndexSitemap: false,
+};

@@ -98,8 +98,9 @@ npx motia create [options]
 ```
 
 Options:
-- `-n, --name <project name>`: The name for your project, used to create a directory. Use `.` or `./` to create it under the existing directory.
+- `-n, --name <project name>`: The name for your project, used to create a directory. Use `.` or `./` to create it in the current directory.
 - `-t, --template <template name>`: The Motia template to use for your project. Run `npx motia templates` to see available templates.
+- `-c, --cursor`: Enable Cursor IDE integration by adding `.cursor` configuration folder
 
 ### `templates`
 
@@ -108,6 +109,45 @@ Print the list of available project templates.
 ```bash
 npx motia templates
 ```
+
+### `build`
+
+Build your project, generating zip files for each step and creating a configuration file.
+
+```bash
+npx motia build
+```
+
+This command:
+1. Compiles all your steps (both Node.js and Python)
+2. Bundles each step into a zip file
+3. Generates a `motia.steps.json` configuration file in the `dist` directory
+4. Organizes the output in the `dist` directory
+
+### `deploy`
+
+Deploy your built steps to the Motia deployment service.
+
+```bash
+npx motia deploy [options]
+```
+
+Options:
+- `-k, --api-key <key>` (required): Your API key for authentication
+- `-e, --env <environment>`: The environment to deploy to (default: `dev`)
+- `-v, --version <version>`: The version to deploy (default: `latest`)
+
+Example:
+```bash
+npx motia deploy --api-key your-api-key-here --env production --version 1.0.0
+```
+
+The deployment process:
+1. Uploads each zip file individually with its path information
+2. Uploads the steps configuration from `motia.steps.json`
+3. Starts the deployment process on the server
+4. Generates deployment results in `dist/motia.deployments.json`
+5. Creates a human-readable summary in `dist/motia.deployments.summary.json`
 
 ### `dev`
 
@@ -172,7 +212,6 @@ List the current file state.
 ```bash
 npx motia state list
 ```
-
 ## Debugging
 
 You can enable debug logging by passing the `-d` or `--debug` flag to the `dev` command:
@@ -188,6 +227,118 @@ This will set the `LOG_LEVEL` environment variable to `'debug'`, providing more 
 - Explore the [Core Concepts](/docs/core) to learn more about Steps, Flows, Events, and Topics.
 - Check out the [Examples](/docs/examples) for common patterns and use cases.
 - Join our [Community](/community) for help and discussions. 
+
+-   [deployment](/docs/concepts/deployment.md): Documentation for deployment.
+---
+title: Deployment
+description: Learn how to deploy your Motia workflows to production
+---
+
+# Deployment
+
+Motia provides a robust deployment system that allows you to deploy your workflows to various environments. This guide explains the deployment architecture, process, and how to use the Motia CLI for deployments.
+
+## Deployment Architecture
+
+The Motia deployment system follows a three-step process:
+
+1. **Upload Files**: Each zip file is uploaded individually with its relative path information
+2. **Upload Configuration**: The `motia.steps.json` configuration is uploaded
+3. **Start Deployment**: A request is sent to start the deployment process with the uploaded files and configuration
+
+This approach provides several benefits:
+- Better tracking of individual file uploads
+- Separation of configuration from files
+- Ability to retry specific parts of the deployment if needed
+- More efficient server-side processing
+- Ensures all files are successfully uploaded before proceeding
+
+## Using the Motia CLI for Deployment
+
+The simplest way to deploy your Motia workflows is using the CLI command:
+
+```bash
+motia deploy --api-key <api-key> --environment <environment> --version <version>
+```
+
+### Command Options
+
+| Option | Alias | Description | Default |
+|--------|-------|-------------|---------|
+| `--environment` | `-e` | Target environment for deployment | `development` |
+| `--version` | `-v` | Version tag for the deployment | Current timestamp |
+| `--api-key` | `-k` | API key for authentication (required) | None |
+
+### Examples
+
+Deploy to the development environment with an auto-generated version:
+
+```bash
+motia deploy --api-key your-api-key-here
+```
+
+Deploy to production with a specific version:
+
+```bash
+motia deploy --environment production --version 1.2.3 --api-key your-api-key-here
+```
+
+## Deployment Results
+
+After deployment, two files are generated in your project directory:
+
+### 1. motia.deployments.json
+
+Contains detailed information about each deployment attempt, including:
+- Bundle path
+- Deployment ID
+- Step type
+- Step name
+- Step path
+- Flow name
+- Environment
+- Version
+- Success status
+- Error message (if any)
+
+### 2. motia.deployments.summary.json
+
+A more human-readable summary organized by flows:
+- Total steps deployed
+- Successful deployments count
+- Failed deployments count
+- Deployment timestamp
+- Environment
+- Version
+- List of flows with their steps and deployment status
+
+## Deployment Process
+
+When you run `motia deploy`, the CLI performs the following actions:
+
+1. **Preparation**: Validates your project structure and configuration
+2. **File Collection**: Gathers all workflow step zip files from your project
+3. **File Upload**: Uploads each zip file to the Motia platform
+4. **Configuration Upload**: Uploads your workflow configuration
+5. **Deployment Initiation**: Starts the deployment process on the server
+6. **Status Reporting**: Provides feedback on deployment progress and results
+
+The CLI will display progress information during deployment and a summary when complete.
+
+## Troubleshooting Deployments
+
+If you encounter issues during deployment, try these steps:
+
+1. Check the generated deployment files for specific error messages
+2. Ensure your API key has the correct permissions
+3. Verify your project structure follows Motia's requirements
+4. Check that all required files are present and correctly formatted
+
+## Next Steps
+
+- Learn about [Environment Variables](/docs/concepts/environment-variables) for configuring your deployments
+- Explore [CI/CD Integration](/docs/concepts/ci-cd) for automating your deployment process
+- Check out [Deployment Strategies](/docs/concepts/deployment-strategies) for advanced deployment patterns 
 
 -   [Flows](/docs/concepts/flows-and-visualization.md): Documentation for Flows.
 ---
@@ -1111,12 +1262,12 @@ state:
 | Persistence     | - Memory adapter: State is lost on process restart\n- File adapter: Check file write permissions\n- Redis: Verify connection and persistence settings                                                                                                                    |
 | Concurrent Access | - Memory/File: Limited concurrent flow support\n- Redis: Use atomic operations and implement retry logic                                                                                                                                                                  |
 
--   [Api Step](/docs/concepts/steps/api.md): Documentation for Api Step.
+-   [API Step](/docs/concepts/steps/api.md): Documentation for API Step.
 ---
-title: Api Step
+title: API Step
 ---
 
-An API step is exposed as an HTTP endpoint that acts as an entry point into your sequence of steps, or **flow**. It allows external systems or clients to trigger and interact with your flows through a REST API interface. Like any Motia Step, an API Step can be configured to emit events or wait for events to occur.
+An **API step** is exposed as an HTTP endpoint that acts as an entry point into your sequence of steps, or **flow**. It allows external systems or clients to trigger and interact with your flows through a REST API interface. Like any Motia Step, an API Step can be configured to emit events or wait for events to occur.
 
 ## Config
 
@@ -1125,22 +1276,20 @@ The following properties are specific to the API Step, in addition to the [commo
 <DescriptionTable
   type={{
     path: {
-      description: 'The development server api path to expose your api step handler',
+      description: 'The HTTP path for the API endpoint',
       type: 'string',
     },
     method: {
-      description: 'The HTTP method to use for the development server api endpoint',
-      type: 'GET | POST',
+      description: 'The HTTP method for the API endpoint (GET, POST, PUT, DELETE, etc.)',
+      type: 'string',
     },
     bodySchema: {
-      description:
-        'In TS/JS we use zod to validate the request body, in Python/Ruby we use json schema to validate the request body.',
-      type: 'JSON Schema',
+      description: 'Schema for validating the request body. For TypeScript/JavaScript steps, it uses zod schemas. For Python steps, it uses Pydantic models.',
+      type: 'object',
     },
     middleware: {
-      description:
-        'An array of middleware functions to be applied to the request before it reaches the handler. Middleware functions can perform tasks like authentication, logging, rate limiting, etc.',
-      type: 'ApiMiddleware[]',
+      description: 'Optional middleware functions to run before the handler',
+      type: 'array',
     },
   }}
 />
@@ -1379,6 +1528,82 @@ const rateLimiterMiddleware: ApiMiddleware = (() => {
 
   <Tab value="Python">
     ```python
+    from typing import Any, Dict, Callable
+    from motia import ApiMiddleware
+    from datetime import datetime
+    import time
+
+    from pydantic import BaseModel
+    
+    # Define a Pydantic model for request body validation
+    class RequestBody(BaseModel):
+        message: str
+
+    # Request modification middleware
+    async def request_modifier_middleware(data: Dict[str, Any], ctx: Any, next_fn: Callable):
+        # Modify the request before passing it to the next middleware
+        data['headers']['x-modified-by'] = 'middleware'
+        data['body']['timestamp'] = int(time.time() * 1000)
+        
+        # Call the next middleware in the chain
+        return await next_fn()
+
+    # Response modification middleware
+    async def response_modifier_middleware(data: Dict[str, Any], ctx: Any, next_fn: Callable):
+        # Call the next middleware in the chain
+        response = await next_fn()
+        
+        # Modify the response before returning it
+        response['headers'] = {
+            **response.get('headers', {}),
+            'x-powered-by': 'Motia'
+        }
+        
+        return response
+
+    # Error handling middleware
+    async def error_handling_middleware(data: Dict[str, Any], ctx: Any, next_fn: Callable):
+        try:
+            # Call the next middleware in the chain
+            return await next_fn()
+        except Exception as error:
+            ctx.logger.error('Error in handler', {'error': str(error)})
+            return {
+                'status': 500,
+                'body': {'error': 'Internal server error'}
+            }
+
+    # Rate limiter middleware with state using a closure
+    def create_rate_limiter_middleware():
+        # Closure to maintain state between requests
+        requests: Dict[str, list] = {}
+        limit = 100
+        window_ms = 60000  # 1 minute
+        
+        async def rate_limiter_middleware(data: Dict[str, Any], ctx: Any, next_fn: Callable):
+            ip = data['headers'].get('x-forwarded-for', ['unknown-ip'])
+            ip_str = ip[0] if isinstance(ip, list) else ip
+            
+            now = int(time.time() * 1000)
+            if ip_str not in requests:
+                requests[ip_str] = []
+            
+            # Remove old requests outside the time window
+            requests[ip_str] = [t for t in requests[ip_str] if now - t < window_ms]
+            
+            if len(requests[ip_str]) >= limit:
+                return {
+                    'status': 429,
+                    'body': {'error': 'Too many requests, please try again later'}
+                }
+            
+            # Add current request
+            requests[ip_str].append(now)
+            
+            return await next_fn()
+        
+        return rate_limiter_middleware
+
     config = {
         'type': 'api',
         'name': 'Test state api trigger',
@@ -1386,7 +1611,14 @@ const rateLimiterMiddleware: ApiMiddleware = (() => {
         'path': '/test-state',
         'method': 'POST',
         'emits': ['test-state'],
-        'flows': ['test-state']
+        'flows': ['test-state'],
+        'bodySchema': RequestBody.model_json_schema(), # We use jsonschema to validate
+        'middleware': [
+            request_modifier_middleware,
+            response_modifier_middleware,
+            error_handling_middleware,
+            create_rate_limiter_middleware()
+        ]
     }
 
     async def handler(req, context):
@@ -1712,7 +1944,7 @@ The following properties are specific to the Event Step, in addition to the [com
   type={{
     input: {
       description:
-        'This is only required for TS or JS steps that use zod for their input schema, this is used when processing the step to validate the input before executing the step handler.',
+        'This is used for input validation. For TypeScript/JavaScript steps, it uses zod schemas. For Python steps, it uses Pydantic models. This validates the input before executing the step handler.',
       type: 'string[]',
     },
   }}
@@ -1790,12 +2022,18 @@ The following examples showcase how to configure an **Event Step**
   </Tab>
   <Tab value="Python">
     ```python
+    from pydantic import BaseModel
+    
+    # Define a Pydantic model for input validation
+    class InputModel(BaseModel):
+        message: str
+    
     config = {
         "type": "event",
         "name": "Call OpenAI",
         "subscribes": ["call-openai"], 
         "emits": ["openai-response"],
-        "input": None,  # No schema validation in Python version
+        "input": InputModel.model_json_schema(), # We use jsonschema to validate
         "flows": ["openai"]
     }
 
@@ -2724,7 +2962,7 @@ Let's create a new Motia project in a dedicated folder. This is the recommended 
       <Tabs items={['npx']}>
         <Tab value="npx">
           ```bash
-          npx motia create -n <your-project-name>
+          npx motia@latest create -n <your-project-name>
           ```
         </Tab>
       </Tabs>
@@ -3066,6 +3304,426 @@ Become part of a growing community of developers and automation enthusiasts!
 We're excited to see what you'll build with Motia!
 
 
+-   [ai-deep-research-agent](/docs/real-world-use-cases/ai-deep-research-agent.md): Documentation for ai-deep-research-agent.
+---
+title: AI Deep Research Agent
+description: A powerful research assistant that leverages the Motia Framework to perform comprehensive web research on any topic and any question.
+---
+
+import { CodeFetcher } from '../../../components/CodeFetcher'
+
+## Let's build a finance agent that:
+
+- **Deep Web Research**: Automatically searches the web, extracts content, and synthesizes findings
+- **Iterative Research Process**: Supports multiple layers of research depth for comprehensive exploration
+- **Event-Driven Architecture**: Built using Motia Framework's event system for robust workflow management
+- **Parallel Processing**: Efficiently processes search results and content extraction
+- **API Endpoints**: REST API access for initiating research and retrieving reports
+- **Stateful Processing**: Maintains research state throughout the entire process
+
+## The Steps
+
+<Folder name="steps" defaultOpen>
+  <File name="analyze-content.step.ts" />
+  <File name="compile-report.step.ts" />
+  <File name="extract-content.step.ts" />
+  <File name="follow-up-research.step.ts" />
+  <File name="generate-queries.step.ts" />
+  <File name="report-api.step.ts" />
+  <File name="research-api.step.ts" />
+  <File name="search-web.step.ts" />
+  <File name="status-api.step.ts" />
+</Folder>
+
+<Tabs items={['analyze-content', 'compile-report', 'extract-content', 'follow-up-research', 'generate-queries', 'report-api', 'research-api', 'search-web', 'status-api']}>
+  <CodeFetcher path="examples/ai-deep-research-agent/steps" tab="analyze-content" value="analyze-content" />
+  <CodeFetcher path="examples/ai-deep-research-agent/steps" tab="compile-report" value="compile-report" />
+  <CodeFetcher path="examples/ai-deep-research-agent/steps" tab="extract-content" value="extract-content" />
+  <CodeFetcher path="examples/ai-deep-research-agent/steps" tab="follow-up-research" value="follow-up-research" />
+  <CodeFetcher path="examples/ai-deep-research-agent/steps" tab="generate-queries" value="generate-queries" />
+  <CodeFetcher path="examples/ai-deep-research-agent/steps" tab="report-api" value="report-api" />
+  <CodeFetcher path="examples/ai-deep-research-agent/steps" tab="research-api" value="research-api" />
+  <CodeFetcher path="examples/ai-deep-research-agent/steps" tab="search-web" value="search-web" />
+  <CodeFetcher path="examples/ai-deep-research-agent/steps" tab="status-api" value="status-api" />
+</Tabs>
+
+## 🚀 Features
+
+- **Deep Web Research**: Automatically searches the web, extracts content, and synthesizes findings
+- **Iterative Research Process**: Supports multiple layers of research depth for comprehensive exploration
+- **Event-Driven Architecture**: Built using Motia Framework's event system for robust workflow management
+- **Parallel Processing**: Efficiently processes search results and content extraction
+- **API Endpoints**: REST API access for initiating research and retrieving reports
+- **Stateful Processing**: Maintains research state throughout the entire process
+
+## 📋 Prerequisites
+
+- Node.js v18 or later
+- npm or pnpm
+- API keys for:
+  - [OpenAI](https://platform.openai.com/) (AI analysis)
+  - [Firecrawl](https://www.firecrawl.dev/) (Web Crawler)
+
+## 🛠️ Installation
+
+1. Clone the repository:
+   ```bash
+   git clone https://github.com/MotiaDev/motia-examples
+   cd examples/ai-deep-research-agent
+   ```
+
+2. Install dependencies:
+   ```bash
+   pnpm install
+   # or
+   npm install
+   ```
+
+3. Configure environment variables:
+   ```bash
+   cp .env.example .env
+   ```
+
+   Update `.env` with your API keys:
+   ```env
+   # Required
+   OPENAI_API_KEY=your-openai-api-key-here
+   FIRECRAWL_API_KEY=your-firecrawl-api-key-here
+
+   # Optional
+   # OPENAI_MODEL=gpt-4o
+   # FIRECRAWL_BASE_URL=http://your-firecrawl-instance-url
+   ```
+
+## 🏗️ Architecture
+
+![AI Deep Research Agent](../img/ai-deep-research-agent.png)
+
+
+## 🚦 API Endpoints
+
+### Start Research
+
+```
+POST /research
+Content-Type: application/json
+
+{
+  "query": "The research topic or question",
+  "breadth": 4,  // Number of search queries to generate (1-10)
+  "depth": 2     // Depth of research iterations (1-5)
+}
+```
+
+Response:
+```json
+{
+  "message": "Research process started",
+  "requestId": "unique-trace-id"
+}
+```
+
+### Check Research Status
+
+```
+GET /research/status?requestId=unique-trace-id
+```
+
+Response:
+```json
+{
+  "message": "Research status retrieved successfully",
+  "requestId": "unique-trace-id",
+  "originalQuery": "The research topic or question",
+  "status": "in-progress",
+  "progress": {
+    "currentDepth": 1,
+    "totalDepth": 2,
+    "percentComplete": 50
+  },
+  "reportAvailable": false
+}
+```
+
+### Get Research Report
+
+```
+GET /research/report?requestId=unique-trace-id
+```
+
+Response:
+```json
+{
+  "message": "Research report retrieved successfully",
+  "report": {
+    "title": "Research Report Title",
+    "overview": "Executive summary...",
+    "sections": [
+      {
+        "title": "Section Title",
+        "content": "Section content..."
+      }
+    ],
+    "keyTakeaways": [
+      "Key takeaway 1",
+      "Key takeaway 2"
+    ],
+    "sources": [
+      {
+        "title": "Source Title",
+        "url": "Source URL"
+      }
+    ],
+    "originalQuery": "The research topic or question",
+    "metadata": {
+      "depthUsed": 2,
+      "completedAt": "2025-03-18T16:45:30Z"
+    }
+  },
+  "requestId": "unique-trace-id"
+}
+```
+
+## 🏃‍♂️ Running the Application
+
+1. Start the development server:
+   ```bash
+   pnpm dev
+   ```
+
+2. Access the Motia Workbench:
+   ```
+   http://localhost:3000
+   ```
+
+3. Make a test request:
+   ```bash
+   curl --request POST \
+   --url http://localhost:3000/research \
+   --header 'Content-Type: application/json' \
+   --data '{
+      "query": "Advancements in renewable energy storage",
+      "depth": 1,
+      "breadth": 1
+   }'
+   ```
+## 🙏 Acknowledgments
+
+- [Motia Framework](https://motia.dev) for the event-driven workflow engine
+- [OpenAI](https://platform.openai.com/) for AI analysis 
+- [Firecrawl](https://www.firecrawl.dev/) for Web search and content extraction API
+
+
+## Use Cases
+[ai-deep-research-agent](/docs/real-world-use-cases/ai-deep-research-agent.md): Real world use case
+---
+title: AI Deep Research Agent
+description: A powerful research assistant that leverages the Motia Framework to perform comprehensive web research on any topic and any question.
+---
+
+import { CodeFetcher } from '../../../components/CodeFetcher'
+
+## Let's build a finance agent that:
+
+- **Deep Web Research**: Automatically searches the web, extracts content, and synthesizes findings
+- **Iterative Research Process**: Supports multiple layers of research depth for comprehensive exploration
+- **Event-Driven Architecture**: Built using Motia Framework's event system for robust workflow management
+- **Parallel Processing**: Efficiently processes search results and content extraction
+- **API Endpoints**: REST API access for initiating research and retrieving reports
+- **Stateful Processing**: Maintains research state throughout the entire process
+
+## The Steps
+
+<Folder name="steps" defaultOpen>
+  <File name="analyze-content.step.ts" />
+  <File name="compile-report.step.ts" />
+  <File name="extract-content.step.ts" />
+  <File name="follow-up-research.step.ts" />
+  <File name="generate-queries.step.ts" />
+  <File name="report-api.step.ts" />
+  <File name="research-api.step.ts" />
+  <File name="search-web.step.ts" />
+  <File name="status-api.step.ts" />
+</Folder>
+
+<Tabs items={['analyze-content', 'compile-report', 'extract-content', 'follow-up-research', 'generate-queries', 'report-api', 'research-api', 'search-web', 'status-api']}>
+  <CodeFetcher path="examples/ai-deep-research-agent/steps" tab="analyze-content" value="analyze-content" />
+  <CodeFetcher path="examples/ai-deep-research-agent/steps" tab="compile-report" value="compile-report" />
+  <CodeFetcher path="examples/ai-deep-research-agent/steps" tab="extract-content" value="extract-content" />
+  <CodeFetcher path="examples/ai-deep-research-agent/steps" tab="follow-up-research" value="follow-up-research" />
+  <CodeFetcher path="examples/ai-deep-research-agent/steps" tab="generate-queries" value="generate-queries" />
+  <CodeFetcher path="examples/ai-deep-research-agent/steps" tab="report-api" value="report-api" />
+  <CodeFetcher path="examples/ai-deep-research-agent/steps" tab="research-api" value="research-api" />
+  <CodeFetcher path="examples/ai-deep-research-agent/steps" tab="search-web" value="search-web" />
+  <CodeFetcher path="examples/ai-deep-research-agent/steps" tab="status-api" value="status-api" />
+</Tabs>
+
+## 🚀 Features
+
+- **Deep Web Research**: Automatically searches the web, extracts content, and synthesizes findings
+- **Iterative Research Process**: Supports multiple layers of research depth for comprehensive exploration
+- **Event-Driven Architecture**: Built using Motia Framework's event system for robust workflow management
+- **Parallel Processing**: Efficiently processes search results and content extraction
+- **API Endpoints**: REST API access for initiating research and retrieving reports
+- **Stateful Processing**: Maintains research state throughout the entire process
+
+## 📋 Prerequisites
+
+- Node.js v18 or later
+- npm or pnpm
+- API keys for:
+  - [OpenAI](https://platform.openai.com/) (AI analysis)
+  - [Firecrawl](https://www.firecrawl.dev/) (Web Crawler)
+
+## 🛠️ Installation
+
+1. Clone the repository:
+   ```bash
+   git clone https://github.com/MotiaDev/motia-examples
+   cd examples/ai-deep-research-agent
+   ```
+
+2. Install dependencies:
+   ```bash
+   pnpm install
+   # or
+   npm install
+   ```
+
+3. Configure environment variables:
+   ```bash
+   cp .env.example .env
+   ```
+
+   Update `.env` with your API keys:
+   ```env
+   # Required
+   OPENAI_API_KEY=your-openai-api-key-here
+   FIRECRAWL_API_KEY=your-firecrawl-api-key-here
+
+   # Optional
+   # OPENAI_MODEL=gpt-4o
+   # FIRECRAWL_BASE_URL=http://your-firecrawl-instance-url
+   ```
+
+## 🏗️ Architecture
+
+![AI Deep Research Agent](../img/ai-deep-research-agent.png)
+
+
+## 🚦 API Endpoints
+
+### Start Research
+
+```
+POST /research
+Content-Type: application/json
+
+{
+  "query": "The research topic or question",
+  "breadth": 4,  // Number of search queries to generate (1-10)
+  "depth": 2     // Depth of research iterations (1-5)
+}
+```
+
+Response:
+```json
+{
+  "message": "Research process started",
+  "requestId": "unique-trace-id"
+}
+```
+
+### Check Research Status
+
+```
+GET /research/status?requestId=unique-trace-id
+```
+
+Response:
+```json
+{
+  "message": "Research status retrieved successfully",
+  "requestId": "unique-trace-id",
+  "originalQuery": "The research topic or question",
+  "status": "in-progress",
+  "progress": {
+    "currentDepth": 1,
+    "totalDepth": 2,
+    "percentComplete": 50
+  },
+  "reportAvailable": false
+}
+```
+
+### Get Research Report
+
+```
+GET /research/report?requestId=unique-trace-id
+```
+
+Response:
+```json
+{
+  "message": "Research report retrieved successfully",
+  "report": {
+    "title": "Research Report Title",
+    "overview": "Executive summary...",
+    "sections": [
+      {
+        "title": "Section Title",
+        "content": "Section content..."
+      }
+    ],
+    "keyTakeaways": [
+      "Key takeaway 1",
+      "Key takeaway 2"
+    ],
+    "sources": [
+      {
+        "title": "Source Title",
+        "url": "Source URL"
+      }
+    ],
+    "originalQuery": "The research topic or question",
+    "metadata": {
+      "depthUsed": 2,
+      "completedAt": "2025-03-18T16:45:30Z"
+    }
+  },
+  "requestId": "unique-trace-id"
+}
+```
+
+## 🏃‍♂️ Running the Application
+
+1. Start the development server:
+   ```bash
+   pnpm dev
+   ```
+
+2. Access the Motia Workbench:
+   ```
+   http://localhost:3000
+   ```
+
+3. Make a test request:
+   ```bash
+   curl --request POST \
+   --url http://localhost:3000/research \
+   --header 'Content-Type: application/json' \
+   --data '{
+      "query": "Advancements in renewable energy storage",
+      "depth": 1,
+      "breadth": 1
+   }'
+   ```
+## 🙏 Acknowledgments
+
+- [Motia Framework](https://motia.dev) for the event-driven workflow engine
+- [OpenAI](https://platform.openai.com/) for AI analysis 
+- [Firecrawl](https://www.firecrawl.dev/) for Web search and content extraction API
+
 -   [finance-agent](/docs/real-world-use-cases/finance-agent.md): Documentation for finance-agent.
 ---
 title: Finance Agent
@@ -3073,12 +3731,6 @@ description: A powerful event-driven financial analysis workflow that combines w
 ---
 
 import { CodeFetcher } from '../../../components/CodeFetcher'
-
-## Live Example
-
-Try out the code directly in your browser:
-
-<CodeSandbox repo="MotiaDev/motia-examples/tree/main/examples/finance-agent" path="/steps" />
 
 ## Let's build a finance agent that:
 
@@ -3239,12 +3891,6 @@ description: A powerful event-driven financial analysis workflow that combines w
 
 import { CodeFetcher } from '../../../components/CodeFetcher'
 
-## Live Example
-
-Try out the code directly in your browser:
-
-<CodeSandbox repo="MotiaDev/motia-examples/tree/main/examples/finance-agent" path="/steps" />
-
 ## Let's build a finance agent that:
 
 - Real-time Financial Analysis: Combines multiple data sources for comprehensive insights
@@ -3400,12 +4046,6 @@ title: GitHub Integration Workflow
 description: Build an automated GitHub issue and PR management system with AI-powered classification and routing
 ---
 
-## Live Example
-
-Try out the code directly in your browser:
-
-<CodeSandbox repo="MotiaDev/motia-examples/tree/main/examples/github-integration-workflow" path="/steps" />
-
 ## Let's build a GitHub automation system that:
 
 1. Automatically triages and classifies new issues
@@ -3546,12 +4186,6 @@ title: GitHub Integration Workflow
 description: Build an automated GitHub issue and PR management system with AI-powered classification and routing
 ---
 
-## Live Example
-
-Try out the code directly in your browser:
-
-<CodeSandbox repo="MotiaDev/motia-examples/tree/main/examples/github-integration-workflow" path="/steps" />
-
 ## Let's build a GitHub automation system that:
 
 1. Automatically triages and classifies new issues
@@ -3691,12 +4325,6 @@ description: Build an automated email system with smart labeling, auto-responses
 ---
 
 import { GmailTab } from '../../../components/GmailCodeFetcher'
-
-## Live Example
-
-Try out the code directly in your browser:
-
-<CodeSandbox repo="MotiaDev/motia-examples/tree/main/examples/gmail-workflow" path="/steps" />
 
 ## Let's build a Gmail automation system that:
 
@@ -4036,12 +4664,6 @@ description: Build an automated email system with smart labeling, auto-responses
 ---
 
 import { GmailTab } from '../../../components/GmailCodeFetcher'
-
-## Live Example
-
-Try out the code directly in your browser:
-
-<CodeSandbox repo="MotiaDev/motia-examples/tree/main/examples/gmail-workflow" path="/steps" />
 
 ## Let's build a Gmail automation system that:
 
@@ -4383,7 +5005,11 @@ description: See how Motia is used to solve real problems
 Explore these practical examples of Motia in action:
 
 - [Trello Card Automation](./real-world-use-cases/trello-automation) - Build an automated card progression system for Trello boards with AI-powered summaries
-- More examples coming soon!
+- [Gmail Automation](./real-world-use-cases/gmail-automation) - Build an automated email system with smart labeling, auto-responses, and AI-powered filtering
+- [GitHub Integration Workflow](./real-world-use-cases/github-integration-workflow) - Build an automated GitHub issue and PR management system with AI-powered classification and routing
+- [Finance Agent](./real-world-use-cases/finance-agent) - A powerful event-driven financial analysis workflow that combines web search, financial data, and AI analysis
+- [AI Deep Research Agent](./real-world-use-cases/ai-deep-research-agent) - A powerful research assistant that leverages the Motia Framework to perform comprehensive web research
+- [RAG Agent with Docling & Weaviate](./real-world-use-cases/rag-docling-weaviate-agent) - An LLM chat-like question-answering system with RAG for accurate answers from PDF documents
 
 Have a great use case to share? [Contribute it here](https://github.com/MotiaDev/motia-examples/tree/main/examples). 
 
@@ -4400,9 +5026,393 @@ description: See how Motia is used to solve real problems
 Explore these practical examples of Motia in action:
 
 - [Trello Card Automation](./real-world-use-cases/trello-automation) - Build an automated card progression system for Trello boards with AI-powered summaries
-- More examples coming soon!
+- [Gmail Automation](./real-world-use-cases/gmail-automation) - Build an automated email system with smart labeling, auto-responses, and AI-powered filtering
+- [GitHub Integration Workflow](./real-world-use-cases/github-integration-workflow) - Build an automated GitHub issue and PR management system with AI-powered classification and routing
+- [Finance Agent](./real-world-use-cases/finance-agent) - A powerful event-driven financial analysis workflow that combines web search, financial data, and AI analysis
+- [AI Deep Research Agent](./real-world-use-cases/ai-deep-research-agent) - A powerful research assistant that leverages the Motia Framework to perform comprehensive web research
+- [RAG Agent with Docling & Weaviate](./real-world-use-cases/rag-docling-weaviate-agent) - An LLM chat-like question-answering system with RAG for accurate answers from PDF documents
 
 Have a great use case to share? [Contribute it here](https://github.com/MotiaDev/motia-examples/tree/main/examples). 
+
+-   [rag-docling-weaviate-agent](/docs/real-world-use-cases/rag-docling-weaviate-agent.md): Documentation for rag-docling-weaviate-agent.
+---
+title: RAG Agent using Docling and Weaviate
+description: An LLM chat-like question-answering system with RAG (Retrieval-Augmented Generation) to provide accurate answers from PDF documents. The system leverages Docling to parse and intelligently chunk PDF documents, Weaviate as a vector database to store vectorized chunks, and OpenAI for embeddings and text generation.
+---
+
+import { CodeFetcher } from '../../../components/CodeFetcher'
+
+## Let's build a PDF RAG Agent with:
+
+- **PDF Document Processing**: Efficiently parses and chunks PDF documents for analysis.
+- **Vector Storage with Weaviate**: Stores and manages vectorized document chunks.
+- **Docling for Advanced Parsing**: Utilizes Docling for intelligent PDF parsing and hybrid chunking.
+- **OpenAI Integration**: Leverages OpenAI for creating embeddings and generating text.
+- **RAG Pattern for Q&A**: Implements Retrieval-Augmented Generation for accurate question answering.
+
+## The Steps
+
+<Folder name="steps" defaultOpen>
+  <File name="api-process-pdfs.step.ts" />
+  <File name="api-query-rag.step.ts" />
+  <File name="init-weaviate.step.ts" />
+  <File name="load-weaviate.step.ts" />
+  <File name="process-pdfs.step.py" />
+</Folder>
+
+<Tabs items={['api-process-pdfs', 'api-query-rag', 'init-weaviate', 'load-weaviate', 'process-pdfs']}>
+  <CodeFetcher path="examples/rag-docling-weaviate-agent/steps/api-steps" tab="api-process-pdfs" value="api-process-pdfs" />
+  <CodeFetcher path="examples/rag-docling-weaviate-agent/steps/api-steps" tab="api-query-rag" value="api-query-rag" />
+  <CodeFetcher path="examples/rag-docling-weaviate-agent/steps/event-steps" tab="init-weaviate" value="init-weaviate" />
+  <CodeFetcher path="examples/rag-docling-weaviate-agent/steps/event-steps" tab="load-weaviate" value="load-weaviate" />
+  <CodeFetcher path="examples/rag-docling-weaviate-agent/steps/event-steps" tab="process-pdfs" value="process-pdfs" fileExtension="py" />
+</Tabs>
+
+## 🚀 Features
+
+- **PDF document processing and chunking**: Efficiently parse and chunk PDF documents.
+- **Vector storage using Weaviate**: Store and manage vectorized document chunks.
+- **Docling for PDF parsing and hybrid chunking**: Uses Docling for advanced document chunking.
+- **OpenAI integration for embeddings and text generation**: Leverage OpenAI for creating embeddings and generating text.
+- **Question answering using RAG pattern**: Retrieval-Augmented Generation for accurate question answering.
+
+## 📋 Prerequisites
+
+- Node.js v18 or later
+- npm or pnpm
+- API keys for:
+  - [OpenAI](https://platform.openai.com/) (Embeddings and text generation)
+  - [Weaviate](https://weaviate.io/) (Vector database)
+
+## 🛠️ Installation
+
+1. Clone the repository:
+   ```bash
+   git clone https://github.com/MotiaDev/motia-examples
+   cd examples/rag-docling-weaviate-agent
+   ```
+
+2. Install dependencies:
+   ```bash
+   pnpm install
+   # or
+   npm install
+   ```
+
+3. Configure environment variables:
+   ```bash
+   cp .env.example .env
+   ```
+
+   Update `.env` with your API keys:
+   ```env
+   # Required
+   OPENAI_API_KEY=your-openai-api-key-here
+   WEAVIATE_API_KEY=your-weaviate-api-key-here
+   WEAVIATE_URL=your-weaviate-url-here
+   ```
+
+## 🏗️ Architecture
+
+![RAG Docling Weaviate Agent](../img/rag-docling-weaviate-workbench.png)
+
+## 🏗️ Technologies
+
+- **TypeScript**
+- **Python**
+- **Docling**
+- **Weaviate**
+- **OpenAI**
+
+## 🚦 API Endpoints
+
+### Process PDFs
+
+```
+POST /api/rag/process-pdfs
+Content-Type: application/json
+
+{
+  "folderPath": "path/to/pdf/folder"
+}
+```
+
+Response:
+```json
+{
+  "message": "PDF processing workflow started",
+  "folderPath": "path/to/pdf/folder"
+}
+```
+
+### Query RAG System
+
+```
+POST /api/rag/query
+Content-Type: application/json
+
+{
+  "query": "Your question about the PDF content",
+  "limit": 5  // Optional, defaults to 5
+}
+```
+
+Response:
+```json
+{
+  "query": "Your question about the PDF content",
+  "answer": "Generated answer based on the PDF content",
+  "chunks": [
+    {
+      "text": "Relevant text chunk from the document",
+      "title": "Document title",
+      "metadata": {
+        "source": "Document source",
+        "page": 1
+      }
+    }
+    // ... additional chunks up to the specified limit
+  ]
+}
+```
+
+Error Response:
+```json
+{
+  "error": "Failed to process RAG query",
+  "message": "Error details"
+}
+```
+
+## 🏃‍♂️ Running the Application
+
+1. Start the development server:
+   ```bash
+   pnpm dev
+   ```
+
+2. Access the Motia Workbench:
+   ```
+   http://localhost:3000
+   ```
+
+3. Make test requests:
+   ```bash
+   # Process PDFs
+   curl --request POST \
+   --url http://localhost:3000/api/rag/process-pdfs \
+   --header 'Content-Type: application/json' \
+   --data '{
+      "folderPath": "path/to/pdf/folder"
+   }'
+
+   # Query the RAG system
+   curl --request POST \
+   --url http://localhost:3000/api/rag/query \
+   --header 'Content-Type: application/json' \
+   --data '{
+      "query": "Your question about the PDF content",
+      "limit": 5
+   }'
+   ```
+## 🙏 Acknowledgments
+
+- [Motia Framework](https://motia.dev) for the event-driven workflow engine
+- [Docling](https://github.com/MotiaDev/docling) for PDF parsing and hybrid chunking
+- [Weaviate](https://www.weaviate.io/) for Vector Database
+- [OpenAI](https://platform.openai.com/) for AI analysis 
+
+
+
+## Use Cases
+[rag-docling-weaviate-agent](/docs/real-world-use-cases/rag-docling-weaviate-agent.md): Real world use case
+---
+title: RAG Agent using Docling and Weaviate
+description: An LLM chat-like question-answering system with RAG (Retrieval-Augmented Generation) to provide accurate answers from PDF documents. The system leverages Docling to parse and intelligently chunk PDF documents, Weaviate as a vector database to store vectorized chunks, and OpenAI for embeddings and text generation.
+---
+
+import { CodeFetcher } from '../../../components/CodeFetcher'
+
+## Let's build a PDF RAG Agent with:
+
+- **PDF Document Processing**: Efficiently parses and chunks PDF documents for analysis.
+- **Vector Storage with Weaviate**: Stores and manages vectorized document chunks.
+- **Docling for Advanced Parsing**: Utilizes Docling for intelligent PDF parsing and hybrid chunking.
+- **OpenAI Integration**: Leverages OpenAI for creating embeddings and generating text.
+- **RAG Pattern for Q&A**: Implements Retrieval-Augmented Generation for accurate question answering.
+
+## The Steps
+
+<Folder name="steps" defaultOpen>
+  <File name="api-process-pdfs.step.ts" />
+  <File name="api-query-rag.step.ts" />
+  <File name="init-weaviate.step.ts" />
+  <File name="load-weaviate.step.ts" />
+  <File name="process-pdfs.step.py" />
+</Folder>
+
+<Tabs items={['api-process-pdfs', 'api-query-rag', 'init-weaviate', 'load-weaviate', 'process-pdfs']}>
+  <CodeFetcher path="examples/rag-docling-weaviate-agent/steps/api-steps" tab="api-process-pdfs" value="api-process-pdfs" />
+  <CodeFetcher path="examples/rag-docling-weaviate-agent/steps/api-steps" tab="api-query-rag" value="api-query-rag" />
+  <CodeFetcher path="examples/rag-docling-weaviate-agent/steps/event-steps" tab="init-weaviate" value="init-weaviate" />
+  <CodeFetcher path="examples/rag-docling-weaviate-agent/steps/event-steps" tab="load-weaviate" value="load-weaviate" />
+  <CodeFetcher path="examples/rag-docling-weaviate-agent/steps/event-steps" tab="process-pdfs" value="process-pdfs" fileExtension="py" />
+</Tabs>
+
+## 🚀 Features
+
+- **PDF document processing and chunking**: Efficiently parse and chunk PDF documents.
+- **Vector storage using Weaviate**: Store and manage vectorized document chunks.
+- **Docling for PDF parsing and hybrid chunking**: Uses Docling for advanced document chunking.
+- **OpenAI integration for embeddings and text generation**: Leverage OpenAI for creating embeddings and generating text.
+- **Question answering using RAG pattern**: Retrieval-Augmented Generation for accurate question answering.
+
+## 📋 Prerequisites
+
+- Node.js v18 or later
+- npm or pnpm
+- API keys for:
+  - [OpenAI](https://platform.openai.com/) (Embeddings and text generation)
+  - [Weaviate](https://weaviate.io/) (Vector database)
+
+## 🛠️ Installation
+
+1. Clone the repository:
+   ```bash
+   git clone https://github.com/MotiaDev/motia-examples
+   cd examples/rag-docling-weaviate-agent
+   ```
+
+2. Install dependencies:
+   ```bash
+   pnpm install
+   # or
+   npm install
+   ```
+
+3. Configure environment variables:
+   ```bash
+   cp .env.example .env
+   ```
+
+   Update `.env` with your API keys:
+   ```env
+   # Required
+   OPENAI_API_KEY=your-openai-api-key-here
+   WEAVIATE_API_KEY=your-weaviate-api-key-here
+   WEAVIATE_URL=your-weaviate-url-here
+   ```
+
+## 🏗️ Architecture
+
+![RAG Docling Weaviate Agent](../img/rag-docling-weaviate-workbench.png)
+
+## 🏗️ Technologies
+
+- **TypeScript**
+- **Python**
+- **Docling**
+- **Weaviate**
+- **OpenAI**
+
+## 🚦 API Endpoints
+
+### Process PDFs
+
+```
+POST /api/rag/process-pdfs
+Content-Type: application/json
+
+{
+  "folderPath": "path/to/pdf/folder"
+}
+```
+
+Response:
+```json
+{
+  "message": "PDF processing workflow started",
+  "folderPath": "path/to/pdf/folder"
+}
+```
+
+### Query RAG System
+
+```
+POST /api/rag/query
+Content-Type: application/json
+
+{
+  "query": "Your question about the PDF content",
+  "limit": 5  // Optional, defaults to 5
+}
+```
+
+Response:
+```json
+{
+  "query": "Your question about the PDF content",
+  "answer": "Generated answer based on the PDF content",
+  "chunks": [
+    {
+      "text": "Relevant text chunk from the document",
+      "title": "Document title",
+      "metadata": {
+        "source": "Document source",
+        "page": 1
+      }
+    }
+    // ... additional chunks up to the specified limit
+  ]
+}
+```
+
+Error Response:
+```json
+{
+  "error": "Failed to process RAG query",
+  "message": "Error details"
+}
+```
+
+## 🏃‍♂️ Running the Application
+
+1. Start the development server:
+   ```bash
+   pnpm dev
+   ```
+
+2. Access the Motia Workbench:
+   ```
+   http://localhost:3000
+   ```
+
+3. Make test requests:
+   ```bash
+   # Process PDFs
+   curl --request POST \
+   --url http://localhost:3000/api/rag/process-pdfs \
+   --header 'Content-Type: application/json' \
+   --data '{
+      "folderPath": "path/to/pdf/folder"
+   }'
+
+   # Query the RAG system
+   curl --request POST \
+   --url http://localhost:3000/api/rag/query \
+   --header 'Content-Type: application/json' \
+   --data '{
+      "query": "Your question about the PDF content",
+      "limit": 5
+   }'
+   ```
+## 🙏 Acknowledgments
+
+- [Motia Framework](https://motia.dev) for the event-driven workflow engine
+- [Docling](https://github.com/MotiaDev/docling) for PDF parsing and hybrid chunking
+- [Weaviate](https://www.weaviate.io/) for Vector Database
+- [OpenAI](https://platform.openai.com/) for AI analysis 
+
 
 -   [trello-automation](/docs/real-world-use-cases/trello-automation.md): Documentation for trello-automation.
 ---
@@ -4411,12 +5421,6 @@ description: Build an automated card progression system for Trello boards with A
 ---
 
 import { TrelloTab, TrelloCodeContent } from '../../../components/TrelloCodeFetcher'
-
-## Live Example
-
-Try out the code directly in your browser:
-
-<CodeSandbox repo="MotiaDev/motia-examples/tree/main/examples/trello-flow" path="/steps" />
 
 ## Let's build a Trello automation system that:
 
@@ -4563,12 +5567,6 @@ description: Build an automated card progression system for Trello boards with A
 ---
 
 import { TrelloTab, TrelloCodeContent } from '../../../components/TrelloCodeFetcher'
-
-## Live Example
-
-Try out the code directly in your browser:
-
-<CodeSandbox repo="MotiaDev/motia-examples/tree/main/examples/trello-flow" path="/steps" />
 
 ## Let's build a Trello automation system that:
 
