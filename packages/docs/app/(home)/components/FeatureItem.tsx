@@ -20,6 +20,7 @@ export default function FeatureItem({ icon, title, description, className = "" }
             width={24} 
             height={24} 
             className="opacity-80"
+            sizes="24px"
           />
         ) : (
           icon

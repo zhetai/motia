@@ -3,7 +3,7 @@ import GitHubStarButton from '../components/GitHubStarButton';
 import GitHubIcon from '../components/GitHubIcon';
 import DiscordIcon from '../components/DiscordIcon';
 import MotiaHubButton from '@/components/MotiaHubButton'
-
+import Image from 'next/image';
 /**
  * Shared layout configurations
  *
@@ -16,8 +16,20 @@ export const baseOptions: BaseLayoutProps = {
     transparentMode: 'none',
     title: (
       <div className="inline-flex items-center gap-1">
-        <img src="/logos/logo-black.svg" alt="Motia Icon" className="h-5 dark:hidden" />
-        <img src="/logos/logo-white.svg" alt="Motia Icon" className="h-5 hidden dark:block" />
+        <Image 
+          src="/logos/logo-black.svg" 
+          alt="Motia Icon" 
+          className="dark:hidden"
+          width={100}
+          height={30}
+        />
+        <Image 
+          src="/logos/logo-white.svg" 
+          alt="Motia Icon" 
+          className="hidden dark:block"
+          width={100}
+          height={30}
+        />
       </div>
     ),
   },

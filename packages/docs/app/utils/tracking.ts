@@ -12,10 +12,3 @@ export function trackGTMEvent(eventName: string, eventParameters: Record<string,
     });
   }
 }
-
-declare global {
-  interface Window {
-    twq: (command: string, ...args: unknown[]) => void;
-    dataLayer: Array<Record<string, unknown>>;
-  }
-} 

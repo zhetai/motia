@@ -1,5 +1,3 @@
-'use client';
-
 import Image from 'next/image';
 import FeatureItem from '@/app/(home)/components/FeatureItem';
 import Typography from '@/components/Typography';
@@ -11,7 +9,7 @@ import {
   SynchronizeRefreshIcon,
   PinLocationIcon
 } from '@/components/icons';
-
+import flow from './images/flow.png'
 export default function WorkbenchSection() {
   const workbenchFeatures = [
     {
@@ -74,13 +72,13 @@ export default function WorkbenchSection() {
 
         <div className="relative rounded-xl overflow-hidden mb-16 flex justify-center">
           <Image 
-            src="/images/flow.png" 
+            src={flow} 
+            placeholder="blur"
             alt="Motia Workbench Interface" 
-            width={2400} 
-            height={1200}
-            quality={100}
+            quality={90}
             priority
             className="w-full rounded-xl shadow-lg"
+            sizes="(max-width: 768px) 100vw, (max-width: 1200px) 90vw, 75vw"
           />
         </div>
 
