@@ -19,7 +19,7 @@ export default function CardSection() {
                   width={600}
                   height={400}
                   className="rounded-2xl shadow-2xl"
-                  sizes="(max-width: 640px) 95vw, (max-width: 768px) 90vw, 600px"
+                  sizes="(max-width: 768px) 100vw, (max-width: 1024px) 50vw, 33vw"
                   priority
                   quality={85}
                   loading="eager"

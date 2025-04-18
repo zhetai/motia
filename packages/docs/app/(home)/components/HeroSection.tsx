@@ -18,7 +18,7 @@ export default function HeroSection() {
         src={illustration}
         placeholder="blur"
         fill
-        sizes="(max-width: 640px) 100vw, (max-width: 768px) 85vw, (max-width: 1024px) 75vw, 1280px"
+        sizes="(max-width: 768px) 100vw, (max-width: 1024px) 50vw, 33vw"
         priority
         style={{
           objectFit: 'cover',
