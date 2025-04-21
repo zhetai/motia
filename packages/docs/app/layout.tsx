@@ -8,6 +8,7 @@ import type { Metadata } from 'next'
 import { Analytics } from '@vercel/analytics/react'
 import { RouteTracker } from './utils/RouteTracker'
 import { GoogleTagManager } from '@next/third-parties/google'
+import type { WithContext, Organization } from 'schema-dts'
 
 const GTM_ID = process.env.NEXT_PUBLIC_GTM_ID ?? 'GTM-P6672CSW'
 
@@ -40,6 +41,7 @@ export const metadata: Metadata = {
   },
   description:
     'Write in any language. Automate anything. From AI agents to backend automation, motia runs event-driven workflows with zero overhead.',
+  keywords: ['AI', 'automation', 'event-driven workflows', 'software engineering', 'backend automation', 'developer tools'],
   metadataBase: new URL('https://motia.dev'),
 
   // Standard OpenGraph
@@ -152,6 +154,20 @@ export const metadata: Metadata = {
   },
 }
 
+// Define typed JSON-LD structured data using schema-dts Organization type
+const structuredData: WithContext<Organization> = {
+  '@context': 'https://schema.org',
+  '@type': 'Organization',
+  name: 'Motia',
+  url: 'https://motia.dev',
+  logo: 'https://motia.dev/logos/logo-black.svg',
+  sameAs: [
+    'https://twitter.com/motiadev',
+    'https://github.com/MotiaDev/motia',
+    'https://discord.gg/nJFfsH5d6v',
+  ],
+}
+
 export default function Layout({ children }: { children: ReactNode }) {
   return (
     <html lang="en" className={`${inter.variable} ${dmMono.variable} ${dmSans.variable}`} suppressHydrationWarning>
@@ -159,6 +175,12 @@ export default function Layout({ children }: { children: ReactNode }) {
         <GoogleTagManager gtmId={GTM_ID} />
         <Script src="https://buttons.github.io/buttons.js" strategy="afterInteractive" async defer />
         <Script src="/twitter-pixel.js" id="twitter-pixel" strategy="lazyOnload" />
+        <Script
+          id="structured-data"
+          type="application/ld+json"
+          strategy="lazyOnload"
+          dangerouslySetInnerHTML={{ __html: JSON.stringify(structuredData) }}
+        />
       </head>
       <body
         className="flex flex-col h-full min-h-dvh w-dvw landscape:min-h-screen landscape:h-full landscape:w-full p-0 m-0 gap-0"

@@ -6,7 +6,7 @@
     "prepare-docs": "node scripts/prepare-docs.js",
     "build": "fumadocs-mdx && next build  && npm run prepare-docs",
     "postbuild": "next-sitemap",
-    "dev": "next dev --turbopack",
+    "dev": "next dev",
     "start": "next start",
     "postinstall": "fumadocs-mdx",
     "generate-images": "node scripts/generate-images.js"
@@ -30,6 +30,7 @@
     "react-dom": "^19.1.0",
     "react-icons": "^5.5.0",
     "react-syntax-highlighter": "^15.6.1",
+    "schema-dts": "^1.1.5",
     "tailwind-merge": "^2.6.0",
     "tailwindcss-animate": "^1.0.7"
   },

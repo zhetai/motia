@@ -79,16 +79,20 @@ export async function generateMetadata(props: {
   const page = source.getPage(params.slug);
   if (!page) notFound();
 
+  const slugPath = (params.slug ?? []).join('/');
+  const baseURL = 'https://motia.dev';
+  const canonicalUrl = slugPath ? `${baseURL}/docs/${slugPath}` : `${baseURL}/docs`;
+
   return {
     title: page.data.title,
     description: page.data.description,
     alternates: {
-      canonical: `/docs/${(params.slug ?? []).join('/')}` || '/docs',
+      canonical: canonicalUrl,
     },
     openGraph: {
       title: page.data.title,
       description: page.data.description,
-      url: `/docs/${(params.slug ?? []).join('/')}` || '/docs',
+      url: canonicalUrl,
       type: 'article',
     },
     twitter: {
