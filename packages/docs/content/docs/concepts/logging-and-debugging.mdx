@@ -109,7 +109,7 @@ Motia supports four standard log levels:
 
         # Logging with context
         ctx.logger.info('Operation completed', {
-            'operation_id': input.id,
+            'operation_id': input.get("id"),
             'duration': 1500
         })
 
@@ -131,7 +131,7 @@ Motia supports four standard log levels:
         # Warning logging
         if input.amount > 1000:
             ctx.logger.warn('Large operation detected', {
-                'amount': input.amount,
+                'amount': input.get("amount"),
                 'threshold': 1000
             })
     ```
@@ -313,4 +313,4 @@ logger.debug('Operation details', {
 
 <Callout>
 Remember to stop your development server with Ctrl + C (or Cmd + C on macOS) when you're done debugging.
-</Callout> 
+</Callout>

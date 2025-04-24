@@ -7,10 +7,10 @@ config = {
     "flows": ["openai"]
 }
 
-async def handler(args, ctx):
-    ctx.logger.info('[Call Python OpenAI] Received call_ai event', args)
+async def handler(args, context):
+    context.logger.info("[Call Python OpenAI] Received call_ai event", args)
 
-    await ctx.emit({
+    await context.emit({
         "topic": "openai-response",
-        "data": { "message": args.message },
+        "data": { "message": args.get("message") },
     })

@@ -1,6 +1,6 @@
 import time
 from typing import Any, Dict, Optional
-from rpc import RpcSender, serialize_for_json
+from rpc import RpcSender
 
 class Logger:
     def __init__(self, trace_id: str, flows: list[str], rpc: RpcSender):

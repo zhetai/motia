@@ -1,4 +1,4 @@
-from typing import Any, Dict
+from typing import Dict
 
 config = {
     "type": "api",
@@ -9,13 +9,13 @@ config = {
 }
 
 
-async def handler(_, ctx: Any) -> Dict:
-    await ctx.emit({
+async def handler(_, context) -> Dict:
+    await context.emit({
         "data": {"test": "data"},
         "topic": "TEST_EVENT"
     })
     
     return {
         "status": 200,
-        "body": {"traceId": ctx.trace_id}
+        "body": {"traceId": context.trace_id}
     }

@@ -5,38 +5,38 @@ description: Learn how to manage state within your Motia.dev workflows for persi
 
 State management is fundamental to building robust and dynamic workflows in Motia.dev. Our system is designed to be powerful yet simple, providing you with everything you need to maintain state across your flows and steps:
 
-✨ **Zero Configuration (Default):**  In-memory storage out of the box for quick setup. <br />
-🔌 **Flexible Storage Options:**  Choose from Memory, File, and Redis adapters to suit your persistence needs. <br />
-🧹 **Automatic State Cleanup:**  Optional Time-To-Live (TTL) support for automatic state expiration (Redis). <br />
-🔒 **Built-in Isolation:**  Each flow execution can use its own isolated state, ensuring data separation and security. <br />
+✨ **Zero Configuration (Default):** In-memory storage out of the box for quick setup. <br />
+🔌 **Flexible Storage Options:** Choose from Memory, File, and Redis adapters to suit your persistence needs. <br />
+🧹 **Automatic State Cleanup:** Optional Time-To-Live (TTL) support for automatic state expiration (Redis). <br />
+🔒 **Built-in Isolation:** Each flow execution can use its own isolated state, ensuring data separation and security. <br />
 
 ## Core Concepts: State Manager Methods
 
 The `state` object, accessible within your step handlers via the `ctx` context, provides the following methods for state management:
 
-| Method   | Parameters                                 | Return Type        | Description                                                                                                                                                                                              |
-| -------- | ------------------------------------------ | ------------------ | -------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
-| `get`    | `scope: string, key: string`             | `Promise<T \| null>` | Retrieves a value associated with the given `key` and `scope` from the state store. Returns `null` if the key is not found. The type `T` is inferred based on how you use the returned value. |
-| `set`    | `scope: string, key: string, value: T`    | `Promise<void>`    | Stores a `value` associated with the given `key` and `scope` in the state store. The type `T` can be any serializable JavaScript/JSON value.                                                        |
-| `delete` | `scope: string, key: string`             | `Promise<void>`    | Removes the key-value pair associated with the given `key` and `scope` from the state store.                                                                                                          |
-| `clear`  | `scope: string`                             | `Promise<void>`    | Removes **all** state data associated with the provided `scope`. This is useful for cleaning up state for a specific scope.                                        |
-| `cleanup`| *(None)*                                   | `Promise<void>`    | Performs periodic maintenance tasks, such as removing expired state data (TTL cleanup). The actual implementation depends on the configured state adapter.                                                 |
+| Method    | Parameters                             | Return Type          | Description                                                                                                                                                                                   |
+| --------- | -------------------------------------- | -------------------- | --------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| `get`     | `scope: string, key: string`           | `Promise<T \| null>` | Retrieves a value associated with the given `key` and `scope` from the state store. Returns `null` if the key is not found. The type `T` is inferred based on how you use the returned value. |
+| `set`     | `scope: string, key: string, value: T` | `Promise<void>`      | Stores a `value` associated with the given `key` and `scope` in the state store. The type `T` can be any serializable JavaScript/JSON value.                                                  |
+| `delete`  | `scope: string, key: string`           | `Promise<void>`      | Removes the key-value pair associated with the given `key` and `scope` from the state store.                                                                                                  |
+| `clear`   | `scope: string`                        | `Promise<void>`      | Removes **all** state data associated with the provided `scope`. This is useful for cleaning up state for a specific scope.                                                                   |
+| `cleanup` | _(None)_                               | `Promise<void>`      | Performs periodic maintenance tasks, such as removing expired state data (TTL cleanup). The actual implementation depends on the configured state adapter.                                    |
 
 **Important:** State manager methods (`get`, `set`, `delete`, `clear`) **require a `scope` string as the first parameter.** While in most cases, you will use the `traceId` (automatically provided in `ctx.traceId`) as the scope to ensure flow-level isolation, **you can technically use any string value as the scope** to group and manage state data as needed. Using `traceId` is the recommended and most common practice for flow-isolated state.
 
 ### State Scope and Isolation
 
-Each flow execution in Motia.dev is assigned a unique `traceId` (a UUID).  Using this `traceId` as the **scope** for state management provides automatic isolation, ensuring: *(Revised to clarify `traceId` as scope)*
+Each flow execution in Motia.dev is assigned a unique `traceId` (a UUID). Using this `traceId` as the **scope** for state management provides automatic isolation, ensuring: _(Revised to clarify `traceId` as scope)_
 
-| Feature     | Description                                                                        |
-| ----------- | ---------------------------------------------------------------------------------- |
-| **Isolation** | Each flow execution operates within its own isolated state space when using `traceId` as the scope.                   |
+| Feature        | Description                                                                                                         |
+| -------------- | ------------------------------------------------------------------------------------------------------------------- |
+| **Isolation**  | Each flow execution operates within its own isolated state space when using `traceId` as the scope.                 |
 | **Boundaries** | Clear separation of state data between different flow executions when scoped by `traceId`, preventing interference. |
-| **Cleanup**   | State data scoped by `traceId` can be easily cleared using `state.clear(traceId)`. |
+| **Cleanup**    | State data scoped by `traceId` can be easily cleared using `state.clear(traceId)`.                                  |
 
 ### State Structure Example
 
-State data is stored as key-value pairs, namespaced under a scope string.  When using `traceId` as the scope, the internal structure might look like this:
+State data is stored as key-value pairs, namespaced under a scope string. When using `traceId` as the scope, the internal structure might look like this:
 
 ```typescript
 // Example state structure (internal representation) - using traceId as scope
@@ -88,6 +88,7 @@ State data is stored as key-value pairs, namespaced under a scope string.  When 
       await state.clear(traceId);
     }
     ```
+
   </Tab>
 
   <Tab label="JavaScript">
@@ -111,6 +112,7 @@ State data is stored as key-value pairs, namespaced under a scope string.  When 
       await state.clear(traceId);
     }
     ```
+
   </Tab>
 
   <Tab label="Python">
@@ -119,20 +121,21 @@ State data is stored as key-value pairs, namespaced under a scope string.  When 
         trace_id = ctx.trace_id # Access traceId from context
 
         # Store state (using traceId as scope)
-        await ctx.state.set(trace_id, 'booking', { 
-            'customer': input.customer,
-            'venue': input.venue
+        await ctx.state.set(trace_id, 'booking', {
+            'customer': input.get("customer"),
+            'venue': input.get("venue")
         })
 
         # Retrieve state (using traceId as scope)
-        booking = await ctx.state.get(trace_id, 'booking') 
+        booking = await ctx.state.get(trace_id, 'booking')
 
         # Delete specific state (using traceId as scope)
-        await ctx.state.delete(trace_id, 'booking') 
+        await ctx.state.delete(trace_id, 'booking')
 
         # Clear all state (using traceId as scope)
-        await ctx.state.clear(trace_id) 
+        await ctx.state.clear(trace_id)
     ```
+
   </Tab>
 
   <Tab label="Ruby">
@@ -141,21 +144,22 @@ State data is stored as key-value pairs, namespaced under a scope string.  When 
       trace_id = context.trace_id # Access traceId from context
 
       # Store state (using traceId as scope)
-      context.state.set(trace_id, 'booking', { 
+      context.state.set(trace_id, 'booking', {
         customer: input.customer,
         venue: input.venue
       })
 
       # Retrieve state (using traceId as scope)
-      booking = context.state.get(trace_id, 'booking') 
+      booking = context.state.get(trace_id, 'booking')
 
       # Delete specific state
-      context.state.delete(trace_id, 'booking') 
+      context.state.delete(trace_id, 'booking')
 
       # Clear all state (using traceId as scope)
-      context.state.clear(trace_id) 
+      context.state.clear(trace_id)
     end
     ```
+
   </Tab>
 </Tabs>
 
@@ -176,6 +180,7 @@ State data is stored as key-value pairs, namespaced under a scope string.  When 
     ```
 
     This command will output the entire state file (motia.state.json) content in JSON format to your console, allowing you to examine the stored state data.
+
   </Tab>
   <Tab label="Redis">
     To inspect state stored in **Redis Adapter**, you can use the `redis-cli` command-line tool to interact with your Redis server:
@@ -185,9 +190,10 @@ State data is stored as key-value pairs, namespaced under a scope string.  When 
     redis-cli KEYS "motia:state:*"
 
     # Get specific state for a given traceId and key
-    redis-cli GET "motia:state:{traceId}:booking" 
+    redis-cli GET "motia:state:{traceId}:booking"
     ```
     **Note:** Replace `{traceId}` in the `redis-cli GET` command with the actual `traceId` of the flow execution you are debugging. Replace `booking` with the specific `key` you want to inspect.
+
   </Tab>
 </Tabs>
 
@@ -210,6 +216,7 @@ Use dot notation to organize related state data hierarchically:
     await state.set(traceId, 'venue', venueData)
     await state.set(traceId, 'paymentStatus', 'pending')
     ```
+
   </Tab>
 
   <Tab label="JavaScript">
@@ -224,6 +231,7 @@ Use dot notation to organize related state data hierarchically:
     await state.set(traceId, 'venue', venueData)
     await state.set(traceId, 'paymentStatus', 'pending')
     ```
+
   </Tab>
 
   <Tab label="Python">
@@ -238,6 +246,7 @@ Use dot notation to organize related state data hierarchically:
     await ctx.state.set(trace_id, 'venue', venue_data)
     await ctx.state.set(trace_id, 'payment_status', 'pending')
     ```
+
   </Tab>
 
   <Tab label="Ruby">
@@ -252,6 +261,7 @@ Use dot notation to organize related state data hierarchically:
     state.set(trace_id, 'venue', venue_data)
     state.set('payment_status', 'pending')
     ```
+
   </Tab>
 </Tabs>
 
@@ -280,14 +290,14 @@ Define types for your state data to ensure consistency:
 
     const booking = await state.get<BookingState>(traceId, 'booking')
     ```
+
   </Tab>
 
-  <Tab label="JavaScript">
-    ```javascript
-    // Define types or interfaces as needed for documentation clarity (optional in JS)
-    const booking = await state.get(traceId, 'booking') // No type casting in JS example
-    ```
-  </Tab>
+{' '}
+<Tab label="JavaScript">
+  ```javascript // Define types or interfaces as needed for documentation clarity (optional in JS) const booking = await
+  state.get(traceId, 'booking') // No type casting in JS example ```
+</Tab>
 
   <Tab label="Python">
     ```python
@@ -312,6 +322,7 @@ Define types for your state data to ensure consistency:
 
     booking = await state.get(traceId, 'booking')
     ```
+
   </Tab>
 
   <Tab label="Ruby">
@@ -335,6 +346,7 @@ Define types for your state data to ensure consistency:
 
     booking = state.get(traceId, 'booking')
     ```
+
   </Tab>
 </Tabs>
 
@@ -407,16 +419,16 @@ Always clean up state when you're done with it:
       end
       ```
       </Tab>
+
 </Tabs>
 
 ### Performance Considerations
 
-| Consideration     | Description                                                                     |
-| ----------------- | ------------------------------------------------------------------------------- |
-| Batch Operations  | Group related state updates and use atomic operations when possible              |
-| State Size        | Keep state data minimal and consider access patterns                             |
-| TTL Management    | Set appropriate TTLs based on flow duration and error recovery needs             |
-
+| Consideration    | Description                                                          |
+| ---------------- | -------------------------------------------------------------------- |
+| Batch Operations | Group related state updates and use atomic operations when possible  |
+| State Size       | Keep state data minimal and consider access patterns                 |
+| TTL Management   | Set appropriate TTLs based on flow duration and error recovery needs |
 
 ### Custom State Adapters
 
@@ -424,20 +436,20 @@ Always clean up state when you're done with it:
 import { StateAdapter } from 'motia'
 
 class CustomStateAdapter extends StateAdapter {
-  async get<T>(traceId: string, key: string): Promise<T | null> { 
+  async get<T>(traceId: string, key: string): Promise<T | null> {
     // Implementation
     return null
   }
 
-  async set<T>(traceId: string, key: string, value: T): Promise<void> { 
+  async set<T>(traceId: string, key: string, value: T): Promise<void> {
     // Implementation
   }
 
-  async delete(traceId: string, key: string): Promise<void> { 
+  async delete(traceId: string, key: string): Promise<void> {
     // Implementation
   }
 
-  async clear(traceId: string): Promise<void> { 
+  async clear(traceId: string): Promise<void> {
     // Implementation
   }
 
@@ -451,9 +463,9 @@ class CustomStateAdapter extends StateAdapter {
 
 Motia.dev offers three built-in storage adapters:
 
-- 📁 **File (Default):**  Persists state to a JSON file in your project (`.motia/motia.state.json`). No configuration needed for basic use.
+- 📁 **File (Default):** Persists state to a JSON file in your project (`.motia/motia.state.json`). No configuration needed for basic use.
 - 💾 **Memory:** Stores state in-memory. Fastest option, but state is not persistent across server restarts. Useful for development and non-critical data.
-- ⚡ **Redis:**  Leverages Redis for persistent and scalable state storage. Ideal for production environments and flows requiring high availability and data durability.
+- ⚡ **Redis:** Leverages Redis for persistent and scalable state storage. Ideal for production environments and flows requiring high availability and data durability.
 
 To configure a different state adapter, modify the `config.yml` file in your project root:
 
@@ -484,20 +496,19 @@ state:
 ```yaml title="config.yml"
 state:
   adapter: redis
-  host: localhost        # Redis server host (e.g., 'localhost' or IP address)
-  port: 6379           # Redis server port (default: 6379)
-  password: optional    # Redis password (if required)
-  ttl: 3600            # Optional: State Time-To-Live in seconds (e.g., 3600 seconds = 1 hour)
+  host: localhost # Redis server host (e.g., 'localhost' or IP address)
+  port: 6379 # Redis server port (default: 6379)
+  password: optional # Redis password (if required)
+  ttl: 3600 # Optional: State Time-To-Live in seconds (e.g., 3600 seconds = 1 hour)
 ```
 
 > **Info: Redis Adapter**
-> Recommended for production environments. Requires a running Redis server.  The `ttl` (Time-To-Live) option is available to automatically expire state data after a specified number of seconds, helping to manage Redis storage.
-
+> Recommended for production environments. Requires a running Redis server. The `ttl` (Time-To-Live) option is available to automatically expire state data after a specified number of seconds, helping to manage Redis storage.
 
 ### Common Issues
 
-| Issue           | Troubleshooting Steps                                                                                                                                                                                                                                                           |
-| --------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
-| State Not Found | - Verify state adapter configuration\n- Check TTL expiration (Redis)\n- Ensure file permissions (File adapter)\n- **Ensure correct `traceId` is being used in `state.get(traceId, key)` calls.**                                      |
-| Persistence     | - Memory adapter: State is lost on process restart\n- File adapter: Check file write permissions\n- Redis: Verify connection and persistence settings                                                                                                                    |
-| Concurrent Access | - Memory/File: Limited concurrent flow support\n- Redis: Use atomic operations and implement retry logic                                                                                                                                                                  |
+| Issue             | Troubleshooting Steps                                                                                                                                                                            |
+| ----------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------ |
+| State Not Found   | - Verify state adapter configuration\n- Check TTL expiration (Redis)\n- Ensure file permissions (File adapter)\n- **Ensure correct `traceId` is being used in `state.get(traceId, key)` calls.** |
+| Persistence       | - Memory adapter: State is lost on process restart\n- File adapter: Check file write permissions\n- Redis: Verify connection and persistence settings                                            |
+| Concurrent Access | - Memory/File: Limited concurrent flow support\n- Redis: Use atomic operations and implement retry logic                                                                                         |

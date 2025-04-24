@@ -1,6 +1,6 @@
 // Code examples for different languages
 export const codeExamples = {
-    typescript: `import { OpenAI } from 'openai';
+  typescript: `import { OpenAI } from 'openai';
 import { z } from 'zod';
 import type { EventConfig, StepHandler } from 'motia';
 
@@ -35,7 +35,7 @@ export const handler: StepHandler<typeof config> = async (inputData, context) =>
         data: { from, subject, body, sentiment },
     });
 };`,
-    javascript: `import { OpenAI } from 'openai';
+  javascript: `import { OpenAI } from 'openai';
 import { z } from 'zod';
 
 const openai = new OpenAI({
@@ -73,12 +73,12 @@ export const handler = async (inputData, context) => {
         data: { from, subject, body, sentiment },
     });
 };`,
-    python: `import os
+  python: `import os
 from openai import OpenAI
 
 openai = OpenAI(api_key=os.getenv('OPENAI_API_KEY'))
 
-CONFIG = {
+config = {
     'type': 'event',
     'name': 'Auto-Reply to Support Emails',
     'subscribes': ['email.received'],
@@ -87,11 +87,9 @@ CONFIG = {
 }
 
 async def handler(input_data, context):
-    subject = input_data['subject']
-    body = input_data['body']
-    from_ = input_data['from']
-    emit = context['emit']
-    logger = context['logger']
+    subject = input_data.get('subject')
+    body = input_data.get('body')
+    from_ = input_data.get('from')
 
     sentiment_response = await openai.chat.completions.create(
         model="gpt-4o",
@@ -100,13 +98,13 @@ async def handler(input_data, context):
 
     sentiment = sentiment_response['choices'][0]['message']['content']
 
-    logger.info('[EmailAutoReply] Sentiment analysis', {'sentiment': sentiment})
+    context.logger.info('[EmailAutoReply] Sentiment analysis', {'sentiment': sentiment})
 
-    emit({
+    await context.emit({
         'type': 'email.send',
         'data': {'from': from_, 'subject': subject, 'body': body, 'sentiment': sentiment}
     })`,
-    ruby: `require 'openai'
+  ruby: `require 'openai'
 
 openai = OpenAI::Client.new(api_key: ENV['OPENAI_API_KEY'])
 
@@ -139,7 +137,7 @@ def handler(input_data, context)
     data: { from: from, subject: subject, body: body, sentiment: sentiment }
   })
 end`,
-    java: `import com.theokanning.openai.OpenAiService;
+  java: `import com.theokanning.openai.OpenAiService;
 import com.theokanning.openai.completion.chat.ChatCompletionRequest;
 import com.theokanning.openai.completion.chat.ChatMessage;
 import com.theokanning.openai.completion.chat.ChatMessageRole;
@@ -200,7 +198,7 @@ public class EmailAutoReply {
     interface Logger {
         void info(String message, Map<String, Object> data);
     }
-}`
-};
+}`,
+}
 
-export type CodeLanguage = keyof typeof codeExamples; 
+export type CodeLanguage = keyof typeof codeExamples

@@ -1,10 +1,9 @@
 import time
-from typing import Dict, Any
 
 # Python equivalent of zod schema validation would need to be implemented
 # For now using simple dict for config
 
-config: Dict[str, Any] = {
+config = {
     "type": "event",
     "name": "stepB", 
     "description": "Hello from Step B",

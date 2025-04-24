@@ -551,7 +551,7 @@ Motia supports four standard log levels:
 
         # Logging with context
         ctx.logger.info('Operation completed', {
-            'operation_id': input.id,
+            'operation_id': input.get("id"),
             'duration': 1500
         })
 
@@ -571,9 +571,9 @@ Motia supports four standard log levels:
         })
 
         # Warning logging
-        if input.amount > 1000:
+        if input.get("amount") > 1000:
             ctx.logger.warn('Large operation detected', {
-                'amount': input.amount,
+                'amount': input.get("amount"),
                 'threshold': 1000
             })
     ```
@@ -880,8 +880,8 @@ State data is stored as key-value pairs, namespaced under a scope string.  When 
 
         # Store state (using traceId as scope)
         await ctx.state.set(trace_id, 'booking', { 
-            'customer': input.customer,
-            'venue': input.venue
+            'customer': input.get("customer"),
+            'venue': input.get("venue")
         })
 
         # Retrieve state (using traceId as scope)
