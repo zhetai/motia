@@ -2,7 +2,7 @@
 
 <div align="center">
   <img src="assets/PNGs/icon.png" alt="Logo" width="180">
-  <h1 align="center"> AI Agent Framework Built for Software Engineers </h1>
+  <h1 align="center"> Unified Backend for APIs, Queues, Events, and Agents </h1>
 </div>
 
 <div align="center">
@@ -11,246 +11,133 @@
   <a href="https://motia.dev/docs"><img src="https://img.shields.io/badge/DOCS-READ%20NOW-000000?style=for-the-badge&labelColor=555555" alt="Documentation"></a>
   <a href="https://www.npmjs.com/package/motia"><img src="https://img.shields.io/npm/v/motia?style=for-the-badge&label=NPM&labelColor=555555&color=CB3837" alt="NPM Version"></a>
   <a href="https://www.npmjs.com/package/motia"><img src="https://img.shields.io/npm/dt/motia?style=for-the-badge&label=DOWNLOADS&labelColor=555555&color=CB3837" alt="NPM Downloads"></a>
+  <a href="#"><img src="https://img.shields.io/badge/STATUS-BETA-FFE165?style=for-the-badge&labelColor=555555" alt="Status Beta"></a>
   <hr>
 </div>
 
-Motia lets developers create, test, and deploy production-ready AI agents in minutes, in a framework that will feel familar to software engineering teams. Write your agent logic in the languages and package you know and love. Visualize execution in real-time, and deploy without DevOps headaches.
+---
 
-*Motia is currently in Beta. This means we're actively developing, iterating quickly, and looking for feedback from early adopters like you!*
+Motia is a modern backend framework that combines APIs, background jobs, event systems, and AI agents into one unified, observable runtime. Stop context-switching between multiple runtimes—build your entire backend with event-driven steps, mixing JavaScript, TypeScript, and Python freely, while keeping shared state, tracing, and deployment simplicity.
 
-## Start Building Now
-```bash
-npx motia@latest create -n new-project
-cd new-project && npm run dev
-```
+---
 
-## The Problem Motia Solves
+## 🚧 The Problem: Fragmented Runtimes
 
-Building production-grade AI agents is tough. You're usually forced to choose:
+Backend engineering teams often juggle multiple fragmented runtimes:
 
-- No-code/Low-code tools: Quick to start, but can't handle real-world complexity at scale.
-- Fully-agentic Frameworks: Great for creative tasks but difficult to manage and control consistent outputs
-- ML-focused Frameworks: Designed for model training and optimization, not for orchestrating complex business workflows.
-- Custom code: Quickly becomes unmanageable as agents grow in complexity and span across teams.
+| Runtime Layer            | Common Tools                                                        |
+| ------------------------ | ------------------------------------------------------------------- |
+| 🖥️ **API Servers**       | Express, FastAPI, Rails, Django, Laravel, Spring, .NET, Flask, Nest |
+| 📬 **Job Queues/Events** | Sidekiq, Temporal, BullMQ, Kafka, RabbitMQ, AWS SQS, Redis Streams  |
+| 🤖 **AI & Agents**       | LangGraph, CrewAI, Mastra, LangChain, AutoGPT, Agnu, AgentGPT       |
 
-Motia gives you full, code-first control of your agents and automations with the simplicity of a visual interface, letting you focus on what truly matters: your business logic, not your infrastructure.
+**Common issues caused by fragmentation:**
 
-![Motia Example](assets/flow.png)
+- **Deployment Complexity:** Multiple scaling models and deployment targets
+- **Debugging Difficulty:** Fragmented observability, incomplete traces
+- **Developer Constraints:** Language lock-in, limited flexibility
+- **Cognitive Overhead:** Context-switching across frameworks
+- **Redundant Boilerplate:** Duplicated logic and complex code-sharing
 
-## Why Choose Motia?
+---
 
-Motia is built for developers who want to build agentic and intelligent, event-driven systems rapidly and reliably. Here's what makes Motia the ideal choice:
+## ✅ Motia’s Unified Solution
 
-- **🚀 Zero Infrastructure Headaches** - No Kubernetes expertise required. Deploy agents with a single command.
-- **💻 True Code-First Development** - Write agent logic in familiar languages, not proprietary DSLs.
-- **🔀 Unique Multi-Language Support** - Mix Python for ML, TypeScript for type safety, and Ruby for APIs in the same agent.
-- **🧩 Composable Steps with Runtime Validation** - Build agents from modular, reusable components with automatic input/output validation.
-- **📊 Built-in Observability** - Debug agent behavior with visual execution graphs and real-time logging.
-- **⚡️ Instant APIs & Webhooks** - Expose agent functionality via HTTP endpoints without extra code.
-- **🧠 Full Control Over AI Logic** - Use any LLM, vector store, or reasoning pattern without restrictions.
-- **🤸‍♀️ Flexible Control** - Easilty switch between agentic and deterministic control within the same flow.
+Motia solves this fragmentation by unifying your backend into a single runtime:
 
-## Ideal for Agents & Intelligent Automations
+| Runtime Layer            | Motia's Approach                                                |
+| ------------------------ | --------------------------------------------------------------- |
+| 🖥️ **API Servers**       | ✅ Expose workflow steps instantly as APIs/webhooks             |
+| 📬 **Job Queues/Events** | ✅ Unified runtime with built-in queuing, retries, and state    |
+| 🤖 **AI & Agents**       | ✅ Seamlessly combine deterministic logic & AI-driven workflows |
 
-Motia's event-driven architecture and modular steps are perfectly suited for building sophisticated agents and intelligent automations. Whether you're creating GenAI-powered workflows, complex decision-making systems, or data processing pipelines, Motia provides the ideal foundation.
+**Benefits of Unifying with Motia:**
 
-- **Create Agent Components as Steps:** Encapsulate agent logic, tool integrations, and decision-making processes within individual steps, leveraging the rich ecosystems of JavaScript, Python, and Ruby.
-- **Orchestrate Agent Interactions with Flows:** Design complex agentic workflows by connecting steps to create sophisticated sequences of actions and reactions, easily integrating steps written in different languages.
-- **Test and Evaluate Agent Behavior Visually:** The Motia Workbench provides real-time visualization and testing tools to observe and refine your agents' behavior and ensure they perform as expected, regardless of the underlying step language.
-- **Iterate and Evolve Agents Rapidly:** Motia's modularity and observability make it easy to iterate on agent logic, experiment with different approaches, and continuously improve your intelligent systems, taking advantage of the strengths of each supported language.
+- 🎯 **Unified Deployment:** Single consistent scaling model
+- 🔍 **Enhanced Observability:** Simplified end-to-end tracing
+- ⚙️ **Full Language Flexibility:** JavaScript, TypeScript, Python
+- 🧠 **Lower Cognitive Load:** Single intuitive backend model
+- ♻️ **Simplified Error Handling:** Automatic retries & error management
+- 🛡️ **Resilient Architecture:** Fault-tolerant event-based system
 
-## Motia Workbench: Your Visual Control Center
+---
 
-The Motia Workbench is your browser-based development environment.
+## 🎯 Key Motia Features
 
-![Motia Workbench Interface](./assets/gmail-example.png)
+Motia is engineered to scale seamlessly from early prototypes into robust, maintainable systems, providing a structured foundation for building reliable, production-ready applications.
 
-- **Interactive Flow Visualization:** See your steps connected in a dynamic, visual graph. Understand event flow and step interactions at a glance.
-- **Real-time Testing:** Trigger API endpoints and emit events directly from the UI to test your flows and agents in real-time.
-- **Live Log Streaming:** Monitor logs in real-time within the Workbench, making debugging and observing execution a breeze.
-- **Step Customization:** Create custom UI components for your steps to enhance visualization and tailor the Workbench to your workflows.
+| Features                             | Description                                                                                                                                                                                                                                       |
+| ------------------------------------ | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| 📦 **Full PyPi & NPM Support**       | Seamlessly integrate and leverage packages from the vast ecosystems of PyPi and NPM in your workflows.                                                                                                                                            |
+| 🚏 **Built-in Routing**              | Motia provides out-of-the-box routing capabilities, allowing instant setup of APIs and webhooks with no additional configuration required.                                                                                                        |
+| 🧪 **Fully Testable**                | Integrates effortlessly with your existing test suite, enabling comprehensive testing of workflows and steps using your preferred testing tools.                                                                                                  |
+| 👤 **Human-in-the-Loop**             | Built-in mechanisms for human intervention, making it easy to integrate review or approval steps directly into automated workflows.                                                                                                               |
+| 📜 **Minimal DSL**                   | Motia uses a minimal and intuitive domain-specific language (DSL), reducing learning curves and enabling quicker adoption.                                                                                                                        |
+| 🚀 **API Steps (APIs/Webhooks)**     | Quickly expose workflow steps as APIs or webhooks without additional server setup, ideal for integrating into existing web infrastructure.                                                                                                        |
+| 🖥️ **Motia Workbench**               | Provides a visual interface for workflow management, debugging, and monitoring, allowing easy visualization and manipulation of workflow execution.                                                                                               |
+| 🔎 **Trace IDs & Logging**           | Integrated trace IDs and structured logging enable end-to-end observability, simplifying debugging and improving reliability.                                                                                                                     |
+| 🔄 **Middleware & CLI**              | Easily extend workflow capabilities with middleware, and rapidly create, manage, and deploy projects through a powerful CLI tool.                                                                                                                 |
+| ⚡ **Hot-Reloading**                 | Real-time development experience allowing you to instantly see changes without restarting your workflows, significantly speeding up the development cycle.                                                                                        |
+| 📊 **Mermaid Diagrams**              | Automatic generation of Mermaid diagrams for each workflow, offering clear visualization of flow logic and dependencies.                                                                                                                          |
+| 🌐 **Motia Cursor & IDE Extensions** | Enhance productivity with Motia-specific rules in Cursor and VS-Code extensions, integrating workflow management directly into your preferred IDE environment.                                                                                    |
+| ☁️ **Motia Cloud**                   | One-command deployments, integrated observability tools, centralized logging, secret management, and environment-specific configurations including canary and rollback deployments, enabling robust and reliable workflow hosting and management. |
 
 ## 🗂 Examples
 
-### Finance Agent
+| [Finance Agent](https://github.com/MotiaDev/motia-examples/tree/main/examples/finance-agent) | [GitHub Agent](https://github.com/MotiaDev/motia-examples/tree/main/examples/github-integration-workflow) | [Gmail Manager](https://github.com/MotiaDev/motia-examples/tree/main/examples/gmail-workflow) |
+| -------------------------------------------------------------------------------------------- | --------------------------------------------------------------------------------------------------------- | --------------------------------------------------------------------------------------------- |
+| ![Finance](assets/examples/finance-agent.png)<br>Financial insights                          | ![GitHub](assets/examples/github-pr-management.png)<br>PR automation                                      | ![Gmail](assets/examples/gmail-flow.png)<br>Email automation                                  |
 
-A powerful event-driven financial analysis workflow built with Motia that combines web search, financial data, and AI analysis to provide comprehensive investment insights.
+| [Trello Automation](https://github.com/MotiaDev/motia-examples/tree/main/examples/trello-flow) | [RAG Agent](https://github.com/MotiaDev/motia-examples/tree/main/examples/rag_example) | [AI Image Gen](https://github.com/MotiaDev/motia-examples/tree/main/examples/vision-example) |
+| ---------------------------------------------------------------------------------------------- | -------------------------------------------------------------------------------------- | -------------------------------------------------------------------------------------------- |
+| ![Trello](assets/examples/trello-manager.png)<br>Task automation                               | ![RAG](assets/examples/parse-embed-rag.png)<br>Knowledge retrieval                     | ![AI Image](assets/examples/generate-image.png)<br>Generate images                           |
 
-![Finance Agent](assets/examples/finance-agent.png)
+---
 
-**Key Features:**
+## 🚀 Quick Start
 
-- Real-time Financial Analysis: Combines multiple data sources for comprehensive insights
-- AI-Powered Insights: Leverages OpenAI GPT-4 for intelligent market analysis
-- Web Search Integration: Aggregates latest market news and analysis
-- Financial Data Integration: Real-time stock and company information
+Get your first Motia workflow running in minutes:
 
-**Technologies:** TypeScript, Alpha Vantage API, SerperDev, OpenAI
+**1. Create a Project**
 
-[View Example →](https://github.com/MotiaDev/motia-examples/tree/main/examples/finance-agent)
+Create a new project with the Motia CLI:
 
-<hr/>
+```bash
+npx motia create -n my-first-agent
+```
 
-### GitHub Integration Agent
+_This sets up a starter project in the `my-first-agent` folder._
 
-A comprehensive agent for automating GitHub issue and pull request management using AI-powered classification and routing.
+**2. Launch the Dev Server**
 
-<div style="display: flex; gap: 10px;">
-  <img src="assets/examples/github-pr-management.png" width="49%" alt="GitHub PR Integration Agent" />
-  <img src="assets/examples/github-issue-management.png" width="49%" alt="GitHub Issue Integration Agent" />
-</div>
+Navigate into your project and start the server:
 
-**Key Features:**
+```bash
+cd my-first-agent
+pnpm run dev
+```
 
-- AI-powered issue and PR classification
-- Automatic label assignment based on content
-- Smart reviewer suggestions based on expertise
-- Automatic movement between stages in the development lifecycle
+**3. Open the Workbench**
 
-**Technologies:** TypeScript, OpenAI, GitHub API
+Open [http://localhost:3000](http://localhost:3000) to see your workflow visualized in the Motia Workbench.
 
-[View Example →](https://github.com/MotiaDev/motia-examples/tree/main/examples/github-integration-workflow)
+**4. Trigger Your Workflow**
 
-<hr/>
+Trigger your API Step:
 
-### Gmail Account Manager
+```bash
+curl -X POST http://localhost:3000/default -H "Content-Type: application/json" -d '{}'
+```
 
-An intelligent Gmail agent that monitors, analyzes, and automatically responds to incoming emails.
+Trigger your Event Step (directly):
 
-![Gmail Agent](assets/examples/gmail-flow.png)
+```bash
+npx motia emit --topic test-state --message '{}'
+```
 
-**Key Features:**
+🎉 **That's it!** You're ready to build with Motia.
 
-- Email classification and urgency detection
-- Automated responses based on content analysis
-- Smart email organization
-- Daily summaries via Discord
-
-**Technologies:** TypeScript, Python, Google APIs, Discord, Hugging Face
-
-[View Example →](https://github.com/MotiaDev/motia-examples/tree/main/examples/gmail-workflow)
-
-<hr/>
-
-### Trello Task Automation
-
-Streamline development processes with an intelligent task progression agent for Trello boards.
-
-![Trello Agent](assets/examples/trello-manager.png)
-
-**Key Features:**
-
-- Automated card movement between lists
-- Task validation and requirement checking
-- AI-generated task summaries
-- Slack integration for notifications
-
-**Technologies:** TypeScript, Trello API, OpenAI, Slack
-
-[View Example →](https://github.com/MotiaDev/motia-examples/tree/main/examples/trello-flow)
-
-<hr/>
-
-### Retrieval-Augmented Generation (RAG)
-
-A complete RAG agent implementation for building knowledge-based AI applications.
-
-![RAG Agent](assets/examples/parse-embed-rag.png)
-
-**Key Features:**
-
-- Web page content extraction and parsing
-- Text chunking and embedding
-- Vector database integration
-- AI-powered question answering
-
-**Technologies:** Python, TypeScript, FAISS, Google's Generative AI
-
-[View Example →](https://github.com/MotiaDev/motia-examples/tree/main/examples/rag_example)
-
-<hr/>
-
-### AI Image Generation and Evaluation
-
-An agent that generates and evaluates AI images with feedback loops and quality metrics.
-
-<div style="display: flex; gap: 10px;">
-  <img src="assets/examples/generate-image.png" width="49%" alt="Vision Agent" />
-  <img src="assets/examples/eval-agent.png" width="49%" alt="Evaluation Results" />
-</div>
-
-**Key Features:**
-
-- Prompt enhancement with AI
-- Image generation with Flux
-- Evaluation of generated images
-- Dataset reports with quality metrics
-
-**Technologies:** TypeScript, Python, Claude, Flux, OpenAI
-
-[View Example →](https://github.com/MotiaDev/motia-examples/tree/main/examples/vision-example)
-
-## 🚀 Getting Started
-
-Each example includes its own README with detailed setup instructions. Generally, you'll need:
-
-1. Clone this repository
-2. Navigate to the example directory
-3. Install dependencies
-4. Configure environment variables
-5. Run the agent with Motia
-
-## Quick Start
-
-Ready to get started in minutes? Follow these simple steps using **pnpm** and the automated project creation:
-
-1.  **Create a new project using the Motia CLI:**
-
-    ```bash
-    npx motia create -n my-first-agent
-    ```
-
-    _(Replace `my-first-agent` with your desired project name)_
-
-    This command will:
-
-    - Create a new folder `my-first-agent`
-    - Set up a basic Motia project with example steps
-    - Install dependencies using pnpm
-
-2.  **Navigate into your new project directory:**
-
-    ```bash
-    cd my-first-agent
-    ```
-
-3.  **Start the Motia development server:**
-
-    ```bash
-    pnpm run dev
-    ```
-
-4.  **Open the Motia Workbench in your browser (usually `http://localhost:3000`)**. You should see a pre-built flow named "default" with example steps visualized.
-
-5.  **Test an example API Step:** In your terminal, use `curl` to trigger the example API endpoint (often `/default` in the default template):
-
-    ```bash
-    curl -X POST http://localhost:3000/default \
-    -H "Content-Type: application/json" \
-    -d '{}'
-    ```
-
-    Alternatively, use the Motia CLI to emit an event (for event-based steps in the template):
-
-    ```bash
-    npx motia emit --topic test-state --message '{}'
-    ```
-
-    Check the Workbench logs – you should see logs indicating the step execution and event flow!
-
-**Congratulations! You've just created and run your first Motia workflow using the automated project setup.**
-
-## Start building your AI powered agents with simple steps
+## Start building your APIs, agents and automations with simple steps
 
 - Configure a simple to emit/subscribe, assign to a flow and inculde runtime validation
 - Define a function to handle when the step is triggered
