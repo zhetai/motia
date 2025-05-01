@@ -224,7 +224,7 @@ This will set the `LOG_LEVEL` environment variable to `'debug'`, providing more 
 
 ## Next Steps
 
-- Explore the [Core Concepts](/docs/core) to learn more about Steps, Flows, Events, and Topics.
+- Explore the [Core Concepts](/docs/getting-started/core-concepts) to learn more about Steps, Flows, Events, and Topics.
 - Check out the [Examples](/docs/examples) for common patterns and use cases.
 - Join our [Community](/community) for help and discussions. 
 
@@ -345,15 +345,15 @@ If you encounter issues during deployment, try these steps:
 title: Flows
 ---
 
-A **Flow** allows you to group [**steps**](/docs/core/steps/defining-steps), making it seamless to visually map out how events move through a sequence of [steps](/docs/core/steps/defining-steps). While flows are technically optional, they're invaluable for:
+A **Flow** allows you to group [**steps**](/docs/concepts/steps/defining-steps), making it seamless to visually map out how events move through a sequence of [steps](/docs/concepts/steps/defining-steps). While flows are technically optional, they're invaluable for:
 
-- **Clarity**: Understand how [**steps**](/docs/core/steps/defining-steps) interact with each other at a glance
-- **Visualization**: Get a visual representation of event flow across your [**steps**](/docs/core/steps/defining-steps)
+- **Clarity**: Understand how [**steps**](/docs/concepts/steps/defining-steps) interact with each other at a glance
+- **Visualization**: Get a visual representation of event flow across your [**steps**](/docs/concepts/steps/defining-steps)
 - **Observability**: Group logs and events by flow name for easier debugging
 
 ### Creating and Tagging Steps with a Flow
 
-Flows are defined by tagging your [steps](/docs/core/steps/defining-steps) with a flow name. Here's how to associate [steps](/docs/core/steps/defining-steps) with a flow:
+Flows are defined by tagging your [steps](/docs/concepts/steps/defining-steps) with a flow name. Here's how to associate [steps](/docs/concepts/steps/defining-steps) with a flow:
 
 ```js
 // addNumbers.step.js
@@ -368,7 +368,7 @@ exports.config = {
 // ... handler definition
 ```
 
-You can create complex workflows by connecting multiple [steps](/docs/core/steps/defining-steps) within the same flow:
+You can create complex workflows by connecting multiple [steps](/docs/concepts/steps/defining-steps) within the same flow:
 
 ```js
 // validateNumbers.step.js
@@ -386,7 +386,7 @@ exports.config = {
 <Callout type="info">
   💡 Best Practices:
   - Use descriptive flow names that reflect their purpose (e.g., 'user-registration-flow', 'payment-processing-flow')
-  - A [step](/docs/core/steps/defining-steps) can belong to multiple flows: `flows: ['billing-flow', 'analytics-flow']`
+  - A [step](/docs/concepts/steps/defining-steps) can belong to multiple flows: `flows: ['billing-flow', 'analytics-flow']`
   - Keep flows focused on specific business processes for better organization
 </Callout>
 
@@ -426,17 +426,17 @@ After you've defined your flows, you can visualize them in [Motia Workbench](/do
     ![Flow Visualization in Workbench](./../img/demo-workbench.png)
   </Step>
   <Step>
-    **Navigate** to your flow name on the left sidebar and click it. You'll see a visual graph where each [**step**](/docs/core/steps/defining-steps) is represented as a node, with connecting lines showing event flow patterns.
+    **Navigate** to your flow name on the left sidebar and click it. You'll see a visual graph where each [**step**](/docs/concepts/steps/defining-steps) is represented as a node, with connecting lines showing event flow patterns.
   </Step>
   <Step>
-    **Click** on any [**step**](/docs/core/steps/defining-steps) node to inspect its configuration details, including name, emits, subscribes, and other properties.
+    **Click** on any [**step**](/docs/concepts/steps/defining-steps) node to inspect its configuration details, including name, emits, subscribes, and other properties.
   </Step>
 </Steps>
 
 Checkout the [Motia Workbench](/docs/workbench/overview) docs for more information.
 
 <Callout>
-New to Motia? Follow the **[quick start](/docs/quick-start)** guide to get set up.
+New to Motia? Follow the **[quick start](/docs/getting-started/quick-start)** guide to get set up.
 </Callout>
 
 -   [Logging & Debugging](/docs/concepts/logging-and-debugging.md): Documentation for Logging & Debugging.
@@ -657,7 +657,7 @@ Motia supports four standard log levels:
   <Step>
   ### Trigger and Monitor Flows
 
-    You can trigger flows using either the CLI or an [API step](/docs/core/steps/api):
+    You can trigger flows using either the CLI or an [API step](/docs/concepts/steps/api):
 
     <Tabs items={['cli', 'api']}>
       <Tab value='cli'>
@@ -817,7 +817,7 @@ State data is stored as key-value pairs, namespaced under a scope string.  When 
 }
 ```
 
-> **Info:** You can access the `state` manager within any step through the `ctx` (context) argument, which is automatically injected into your [step handler](/docs/core/steps/defining-steps#handler). While **`traceId` from `ctx.traceId` is the recommended scope for flow isolation**, remember that **you can use any string as the scope** parameter in `state` methods for more advanced state management scenarios.
+> **Info:** You can access the `state` manager within any step through the `ctx` (context) argument, which is automatically injected into your [step handler](/docs/concepts/steps/defining-steps#handler). While **`traceId` from `ctx.traceId` is the recommended scope for flow isolation**, remember that **you can use any string as the scope** parameter in `state` methods for more advanced state management scenarios.
 
 ## Using State in Steps
 
@@ -1271,7 +1271,7 @@ An **API step** is exposed as an HTTP endpoint that acts as an entry point into 
 
 ## Config
 
-The following properties are specific to the API Step, in addition to the [common step config](/docs/core/steps/defining-steps#config).
+The following properties are specific to the API Step, in addition to the [common step config](/docs/concepts/steps/defining-steps#config).
 
 <DescriptionTable
   type={{
@@ -1676,7 +1676,7 @@ The **Cron Step** allows you to schedule your steps to run at specified interval
 
 ## Config
 
-The following properties are specific to the Cron Step, in addition to the [common step config](/docs/core/steps/defining-steps#config).
+The following properties are specific to the Cron Step, in addition to the [common step config](/docs/concepts/steps/defining-steps#config).
 
 <DescriptionTable
   type={{
@@ -1800,7 +1800,7 @@ This modular approach allows you to:
 - Maintain clear separation of concerns
 - Scale and modify parts of your system independently
 
-Steps can be defined in any language that Motia supports, such as TypeScript, JavaScript, Python, and Ruby. Steps can be of type [`event`](/docs/core/steps/event), [`api`](/docs/core/steps/api), or [`cron`](/docs/core/steps/cron). Steps are composed of a `config` object and a `handler` function.
+Steps can be defined in any language that Motia supports, such as TypeScript, JavaScript, Python, and Ruby. Steps can be of type [`event`](/docs/concepts/steps/event), [`api`](/docs/concepts/steps/api), or [`cron`](/docs/concepts/steps/cron). Steps are composed of a `config` object and a `handler` function.
 
 ## Config
 
@@ -1925,7 +1925,7 @@ Here're examples of how to define a handler in the Motia supported languages:
 </Tabs>
 
 <Callout>
-Follow the **[quick start](/docs/quick-start)** guide if you haven't set up Motia yet.
+Follow the **[quick start](/docs/getting-started/quick-start)** guide if you haven't set up Motia yet.
 </Callout>
 
 
@@ -1938,7 +1938,7 @@ The **Event Step** lets you define custom logic in response to subscribed events
 
 ## Config
 
-The following properties are specific to the Event Step, in addition to the [common step config](/docs/core/steps/defining-steps#config).
+The following properties are specific to the Event Step, in addition to the [common step config](/docs/concepts/steps/defining-steps#config).
 
 <DescriptionTable
   type={{
@@ -5829,7 +5829,7 @@ Motia is versatile and can be applied across various industries and use cases, s
 
 Embark on your Motia journey and start building powerful workflows today:
 
-1.  **Quick Start Guide:** Follow our [Quick Start](/docs/quick-start) to set up your first Motia project and create a minimal workflow.
+1.  **Quick Start Guide:** Follow our [Quick Start](/docs/getting-started/quick-start) to set up your first Motia project and create a minimal workflow.
 2.  **Explore Examples:** Dive into practical [Examples](/docs/examples) to understand common patterns and real-world use cases.
 3.  **Dive into Concepts:**  Delve deeper into Motia's [Core Concepts](/docs/concepts) to gain a solid understanding of the framework's architecture and principles.
 
@@ -6375,7 +6375,7 @@ UI steps allow you to customize how your steps appear in the Workbench visualiza
 }]} />
 
 <Callout>
-New to Motia? Follow the **[quick start](/docs/quick-start)** guide to get set up.
+New to Motia? Follow the **[quick start](/docs/getting-started/quick-start)** guide to get set up.
 </Callout>
 
 

@@ -139,7 +139,7 @@ npx motia emit --topic test-state --message '{}'
 
 ## Start building your APIs, agents and automations with simple steps
 
-- Configure a simple to emit/subscribe, assign to a flow and inculde runtime validation
+- Configure a simple step to emit/subscribe, assign to a flow and include runtime validation
 - Define a function to handle when the step is triggered
 - Import any package
 
