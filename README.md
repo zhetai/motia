@@ -2,7 +2,7 @@
 
 <div align="center">
   <img src="assets/PNGs/icon.png" alt="Logo" width="180">
-  <h1 align="center"> Unified Backend for APIs, Queues, Events, and Agents </h1>
+  <h1 align="center"> Unified Backend for APIs, Events, and Agents </h1>
 </div>
 
 <div align="center">
