@@ -1,9 +1,15 @@
 import path from 'path'
 import fs from 'fs'
 import { executeCommand } from './utils/executeCommand'
-import { activatePythonVenv } from '@motiadev/core'
+import { activatePythonVenv } from './utils/activatePythonEnv'
+import { installLambdaPythonPackages } from './utils/installLambdaPythonPackages'
 
-export const install = async (isVerbose: boolean = false): Promise<void> => {
+interface InstallConfig {
+  isVerbose?: boolean
+  pythonVersion?: string
+}
+
+export const install = async ({ isVerbose = false, pythonVersion = '3.13' }: InstallConfig): Promise<void> => {
   const baseDir = process.cwd()
   const venvPath = path.join(baseDir, 'python_modules')
   console.log('📦 Installing Python dependencies...', venvPath)
@@ -12,10 +18,11 @@ export const install = async (isVerbose: boolean = false): Promise<void> => {
     // Check if virtual environment exists
     if (!fs.existsSync(venvPath)) {
       console.log('📦 Creating Python virtual environment...')
-      await executeCommand('python3 -m venv python_modules', baseDir)
+      await executeCommand(`python${pythonVersion} -m venv python_modules`, baseDir)
     }
 
-    activatePythonVenv({ baseDir, isVerbose })
+    activatePythonVenv({ baseDir, isVerbose, pythonVersion })
+    installLambdaPythonPackages({ baseDir, isVerbose })
 
     // Install requirements
     console.log('📥 Installing Python dependencies...')
@@ -26,7 +33,7 @@ export const install = async (isVerbose: boolean = false): Promise<void> => {
       if (isVerbose) {
         console.log('📄 Using core requirements from:', coreRequirementsPath)
       }
-      await executeCommand(`pip install -r "${coreRequirementsPath}"`, baseDir)
+      await executeCommand(`pip install -r "${coreRequirementsPath}" --only-binary=:all:`, baseDir)
     } else {
       console.warn(`⚠️ Core requirements not found at: ${coreRequirementsPath}`)
     }
@@ -37,7 +44,7 @@ export const install = async (isVerbose: boolean = false): Promise<void> => {
       if (isVerbose) {
         console.log('📄 Using snap requirements from:', snapRequirementsPath)
       }
-      await executeCommand(`pip install -r "${snapRequirementsPath}"`, baseDir)
+      await executeCommand(`pip install -r "${snapRequirementsPath}" --only-binary=:all:`, baseDir)
     } else {
       console.warn(`⚠️ Snap requirements not found at: ${snapRequirementsPath}`)
     }
@@ -48,7 +55,7 @@ export const install = async (isVerbose: boolean = false): Promise<void> => {
       if (isVerbose) {
         console.log('📄 Using project requirements from:', localRequirements)
       }
-      await executeCommand(`pip install -r "${localRequirements}"`, baseDir)
+      await executeCommand(`pip install -r "${localRequirements}" --only-binary=:all:`, baseDir)
     }
 
     console.info('✅ Installation completed successfully!')

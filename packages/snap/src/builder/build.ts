@@ -1,4 +1,4 @@
-import { Step, StepConfig, activatePythonVenv } from '@motiadev/core'
+import { Step, StepConfig } from '@motiadev/core'
 import { LockedData } from '@motiadev/core/dist/src/locked-data'
 import { NoPrinter } from '@motiadev/core/dist/src/printer'
 import colors from 'colors'
@@ -10,6 +10,7 @@ import { collectFlows } from '../generate-locked-data'
 import { BuildPrinter } from './build-printer'
 import { spawn } from 'child_process'
 import archiver from 'archiver'
+import { activatePythonVenv } from '@/utils/activatePythonEnv'
 
 type StepType = 'node' | 'python'
 

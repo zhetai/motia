@@ -56,7 +56,7 @@ program
   .option('-v, --verbose', 'Enable verbose logging')
   .action(async (options) => {
     const { install } = require('./install')
-    await install(options.verbose)
+    await install({ isVerbose: options.verbose })
   })
 
 program
