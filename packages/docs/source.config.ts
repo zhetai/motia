@@ -1,9 +1,9 @@
-import { defineDocs, defineConfig } from 'fumadocs-mdx/config';
-import { remarkInstall } from 'fumadocs-docgen';
+import { defineDocs, defineConfig } from 'fumadocs-mdx/config'
+import { remarkInstall } from 'fumadocs-docgen'
 
 export const { docs, meta } = defineDocs({
   dir: 'content/docs',
-});
+})
 
 export default defineConfig({
   mdxOptions: {
@@ -27,10 +27,10 @@ export default defineConfig({
             {
               name: 'bun',
               command: (cmd: string) => cmd.replace('npm install', 'bun add').replace('-D', '--dev'),
-            }
-          ]
+            },
+          ],
         },
       ],
     ],
-  }
-});
+  },
+})

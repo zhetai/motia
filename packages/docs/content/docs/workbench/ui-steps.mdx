@@ -2,7 +2,7 @@
 title: UI Steps
 ---
 
-UI Steps provide a powerful way to create custom, visually appealing representations of your workflow steps in the Workbench flow visualization tool. 
+UI Steps provide a powerful way to create custom, visually appealing representations of your workflow steps in the Workbench flow visualization tool.
 
 With UI Steps, you can enhance the user experience by designing intuitive, context-aware visual components that clearly communicate your flow's sequencing and events.
 
@@ -12,9 +12,9 @@ To create a custom UI for a step, create a `.tsx` or `.jsx` file next to your st
 
 <Tabs items={['tsx', 'jsx']}>
   <Tab value="tsx">
-    ```
-    steps/
-      └── myStep/
+    ``` 
+    steps/ 
+    └── myStep/ 
       ├── myStep.step.ts      # Step definition
       └── myStep.step.tsx     # Visual override
     ```
@@ -31,43 +31,59 @@ To create a custom UI for a step, create a `.tsx` or `.jsx` file next to your st
 
 ## Basic Usage
 
+Let's override an EventNode but keeping the same look. Like the image below.
+We're going to add an image on the side and show the description.
+
+![Custom Event Node](./../img/custom-event-node.png)
+
 <Tabs items={['TypeScript', 'JavaScript']}>
   <Tab>
-    ```typescript
+    ```tsx
     // myStep.step.tsx
 
+    import { EventNode, EventNodeProps } from '@motiadev/workbench'
     import React from 'react'
-    import { EventNode } from 'motia/workbench'
-    import type { EventNodeProps } from 'motia/workbench'
 
-    export default function MyStep({ data }: EventNodeProps) {
+    export const Node: React.FC<EventNodeProps> = (props) => {
       return (
-        <EventNode
-          data={data}
-          variant="white"
-          className="py-2 px-4"
-        />
+        <EventNode {...props}>
+          <div className="flex flex-row items-start gap-2">
+            <div className="text-sm text-gray-400 font-mono">{props.data.description}</div>
+            <img
+              style={{ width: '64px', height: '64px' }}
+              src="https://www.motia.dev/icon.png"
+            />
+          </div>
+        </EventNode>
       )
     }
     ```
+
   </Tab>
   <Tab>
-    ```javascript
+    ```jsx
     // myStep.step.jsx
 
+    import { EventNode } from '@motiadev/workbench'
     import React from 'react'
-    import { EventNode } from 'motia/workbench'
 
-    export default function MyStep({ data }) {
+    export const Node = (props) => {
       return (
-        <EventNode
-          data={data}
-          variant="white"
-          className="py-2 px-4"
-        />
+        <EventNode {...props}>
+          <div className="flex flex-row items-start gap-2">
+            <div className="text-sm text-gray-400 font-mono">{props.data.description}</div>
+            <img
+              style={{ width: '64px', height: '64px' }}
+              src="https://www.motia.dev/icon.png"
+            />
+          </div>
+        </EventNode>
       )
     }
     ```
+
+    
+
   </Tab>
 </Tabs>
 
@@ -75,162 +91,109 @@ To create a custom UI for a step, create a `.tsx` or `.jsx` file next to your st
 
 Motia Workbench provides out of the box components that you can use to create custom UI steps, which apply to different types of steps.
 
-### EventNode
 
-The main component for general-purpose steps.
+| Component   | Props Type     | Description                                                                    |
+| ----------- | -------------- | ------------------------------------------------------------------------------ |
+| EventNode   | EventNodeProps | Base component for Event Steps, with built-in styling and connection points    |
+| ApiNode     | ApiNodeProps   | Component for API Steps, includes request/response visualization capabilities  |
+| CronNode    | CronNodeProps  | Base component for Cron Steps, displays timing information                     |
+| NoopNode    | NoopNodeProps  | Base component for NoopNodes with a different color to comply workbench legend |
 
-| Prop | Type | Description |
-|------|------|-------------|
-| data | `EventNodeProps['data']` | Step data passed from Workbench |
-| variant | `'white' \| 'ghost' \| 'noop'` | Visual style variant |
-| shape | `'rounded' \| 'square' \| 'noop'` | Node shape style |
-| className | `string` | Additional CSS classes |
+## Customizing completely
 
-<Tabs items={['TypeScript', 'JavaScript']}>
-  <Tab>
-    ```typescript
-    // customStep.step.tsx
+You can also fully customize your node making it look completely different from the result.
+Let's draw the following node.
 
-    import React from 'react'
-    import { EventNode } from 'motia/workbench'
-    import type { EventNodeProps } from 'motia/workbench'
+![Custom Ideator Agent Node](./../img/custom-ideator-agent-node.png)
 
-    export default function CustomStep({ data }: EventNodeProps) {
-      return (
-        <EventNode
-          data={data}
-          variant="white"
-          shape="rounded"
-          className="py-2 px-4"
-        >
-          <div>Custom content</div>
-        </EventNode>
-      )
-    }
-    ```
-  </Tab>
-  <Tab>
-    ```javascript
-    // customStep.step.jsx
+```tsx
+import { BaseHandle, EventNodeProps, Position } from '@motiadev/workbench'
+import React from 'react'
 
-    import React from 'react'
-    import { EventNode } from 'motia/workbench'
+export const Node: React.FC<EventNodeProps> = (props) => {
+  return (
+    <div className="w-80 bg-black text-white rounded-xl p-4">
+      <div className="group relative">
+        <BaseHandle type="target" position={Position.Top} variant="event" />
 
-    export default function CustomStep({ data }) {
-      return (
-        <EventNode
-          data={data}
-          variant="white"
-          shape="rounded"
-          className="py-2 px-4"
-        >
-          <div>Custom content</div>
-        </EventNode>
-      )
-    }
-    ```
-  </Tab>
-</Tabs>
+        <div className="flex items-center space-x-3">
+          <img className="w-8 h-8" src="https://cdn-icons-png.flaticon.com/512/12222/12222588.png" />
+          <div className="text-lg font-semibold">{props.data.name}</div>
+        </div>
 
-<Callout type="info">
-The `EventNodeProps` type provides essential information about your step. Here are the key properties:
+        <div className="mt-2 text-sm font-medium text-gray-300">{props.data.description}</div>
 
-| Property | Type | Description |
-|----------|------|-------------|
-| type | `string` | The type of the step |
-| name | `string` | The name of the step |
-| description | `string` | A detailed description of the step |
-| subscribes | `string[]` | List of topics this step listens to |
-| emits | `string[]` | List of topics this step emits |
-| language | `string` | The programming language used |
+        <div className="mt-3 flex flex-col gap-2 border border-gray-800 border-solid p-2 rounded-md w-full">
+          <div className="flex items-center text-xs text-gray-400 space-x-2">Input</div>
+          <div className="flex flex-col gap-2 whitespace-pre-wrap font-mono">
+            <div className="flex items-center gap-2">
+              <div className="">contentIdea:</div>
+              <div className="text-orange-500">string</div>
+            </div>
+            <div className="flex items-center gap-2">
+              <div className="">contentType:</div>
+              <div className="text-orange-500">string</div>
+            </div>
+          </div>
+        </div>
 
-</Callout>
+        <div className="mt-3 flex flex-col gap-2 border border-gray-800 border-solid p-2 rounded-md w-full">
+          <div className="flex items-center text-xs text-gray-400 space-x-2">Output</div>
+          <div className="flex flex-col gap-2 whitespace-pre-wrap font-mono">
+            <div className="flex items-center gap-2">
+              <div className="">topic:</div>
+              <div className="text-orange-500">string</div>
+            </div>
+            <div className="flex items-center gap-2">
+              <div className="">subtopics:</div>
+              <div className="text-orange-500">string[]</div>
+            </div>
+            <div className="flex items-center gap-2">
+              <div className="">keywords:</div>
+              <div className="text-orange-500">string[]</div>
+            </div>
+            <div className="flex items-center gap-2">
+              <div className="">tone:</div>
+              <div className="text-orange-500">string</div>
+            </div>
+            <div className="flex items-center gap-2">
+              <div className="">audience:</div>
+              <div className="text-orange-500">string</div>
+            </div>
+          </div>
+        </div>
 
-### ApiNode
+        <BaseHandle type="source" position={Position.Bottom} variant="event" />
+      </div>
+    </div>
+  )
+}
+```
 
-Specialized component for API-related steps.
+### Important Notes
 
-| Prop | Type | Description |
-|------|------|-------------|
-| data | `ApiNodeProps['data']` | API step data |
-| className | `string` | Additional CSS classes |
+- You will need to add `<BaseHandle>` to your node, otherwize it won't show the connectors.
+- If your node has padding, make sure to add a group inside your node with class `group relative` so the handles can be correctly positioned.
 
-<Tabs items={['TypeScript', 'JavaScript']}>
-  <Tab>
-    ```typescript
-    // apiStep.step.tsx
-
-    import React from 'react'
-    import { ApiNode } from 'motia/workbench'
-    import type { ApiNodeProps } from 'motia/workbench'
-
-    export default function ApiStep({ data }: ApiNodeProps) {
-      return (
-        <ApiNode
-          data={data}
-          className="border-blue-500"
-        >
-          <div>API endpoint: {data.name}</div>
-        </ApiNode>
-      )
-    }
-    ```
-  </Tab>
-  <Tab>
-    ```javascript
-    // apiStep.step.jsx
-
-    import React from 'react'
-    import { ApiNode } from 'motia/workbench'
-
-    export default function ApiStep({ data }) {
-      return (
-        <ApiNode
-          data={data}
-          className="border-blue-500"
-        >
-          <div>API endpoint: {data.name}</div>
-        </ApiNode>
-      )
-    }
-    ```
-  </Tab>
-</Tabs>
-
-<Callout type="info">
-The `ApiNodeProps` type provides essential information about your step. Here are the key properties:
-
-| Property | Type | Description |
-|----------|------|-------------|
-| type | `string` | The type of the step |
-| name | `string` | The name of the step |
-| description | `string` | A detailed description of the step |
-| emits | `string[]` | List of topics this step emits |
-| subscribes | `string[]` | List of topics this step listens to |
-| webhookUrl | `string` | The URL of the webhook |
-| bodySchema | `JSONSchema7` | The schema of the body of the request |
-
-</Callout>
+<Callout type="info">Feel free to create your own custom components and reuse across multiple notes.</Callout>
 
 ## Styling Guidelines
 
-| Guideline | Description |
-|-----------|-------------|
-| Use Tailwind's utility classes only | Stick to Tailwind CSS utilities for consistent styling |
-| Avoid arbitrary values | Use predefined scales from the design system |
-| Keep components responsive | Ensure UI elements adapt well to different screen sizes |
-| Follow Motia's design system | Maintain consistency with Motia's established design patterns |
+| Guideline                           | Description                                                   |
+| ----------------------------------- | ------------------------------------------------------------- |
+| Use Tailwind's utility classes only | Stick to Tailwind CSS utilities for consistent styling        |
+| Avoid arbitrary values              | Use predefined scales from the design system                  |
+| Keep components responsive          | Ensure UI elements adapt well to different screen sizes       |
+| Follow Motia's design system        | Maintain consistency with Motia's established design patterns |
 
-<Callout type="info">
-  Custom styles should be minimal and consistent with the overall Workbench UI.
-</Callout>
+
 
 ## Best Practices
 
-| Practice | Description |
-|----------|-------------|
-| Use base components | Use `EventNode` and `ApiNode` when possible |
-| Keep it simple | Maintain simple and clear visualizations |
-| Optimize performance | Minimize state and computations |
-| Documentation | Document custom components and patterns |
-| Style sharing | Share common styles through utility classes |
+| Practice             | Description                                 |
+| -------------------- | ------------------------------------------- |
+| Use base components  | Use `EventNode` and `ApiNode` when possible |
+| Keep it simple       | Maintain simple and clear visualizations    |
+| Optimize performance | Minimize state and computations             |
+| Documentation        | Document custom components and patterns     |
+| Style sharing        | Share common styles through utility classes |

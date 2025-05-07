@@ -19,7 +19,7 @@ exports.config = {
   name: 'AddNumbers',
   subscribes: ['add-numbers'],
   emits: ['numbers-added'],
-  flows: ['calculator-flow'] // <-- Flow association
+  flows: ['calculator-flow'], // <-- Flow association
 }
 
 // ... handler definition
@@ -34,17 +34,16 @@ exports.config = {
   name: 'ValidateNumbers',
   subscribes: ['numbers-added'],
   emits: ['numbers-validated'],
-  flows: ['calculator-flow'] // <-- Same flow name connects the steps
+  flows: ['calculator-flow'], // <-- Same flow name connects the steps
 }
 
 // ... handler definition
 ```
 
 <Callout type="info">
-  💡 Best Practices:
-  - Use descriptive flow names that reflect their purpose (e.g., 'user-registration-flow', 'payment-processing-flow')
-  - A [step](/docs/concepts/steps/defining-steps) can belong to multiple flows: `flows: ['billing-flow', 'analytics-flow']`
-  - Keep flows focused on specific business processes for better organization
+  💡 Best Practices: - Use descriptive flow names that reflect their purpose (e.g., 'user-registration-flow',
+  'payment-processing-flow') - A [step](/docs/concepts/steps/defining-steps) can belong to multiple flows: `flows:
+  ['billing-flow', 'analytics-flow']` - Keep flows focused on specific business processes for better organization
 </Callout>
 
 ### Visualizing Your Flows
@@ -55,28 +54,13 @@ After you've defined your flows, you can visualize them in [Motia Workbench](/do
   <Step>
     Start your development server:
 
-    <Tabs items={['pnpm', 'yarn', 'npm', 'bun']}>
-      <Tab value='pnpm'>
-      ```bash
-      pnpm run dev
-      ```
-      </Tab>
-      <Tab value='yarn'>
-      ```bash
-      yarn run dev
-      ```
-      </Tab>
-      <Tab value='npm'>
-      ```bash
-      npm run dev
-      ```
-      </Tab>
-      <Tab value='bun'>
-      ```bash
-      bun run dev
-      ```
-      </Tab>
+    <Tabs items={['npm', 'yarn', 'pnpm', 'bun']}>
+      <Tab value="yarn">```yarn run dev ```</Tab>
+      <Tab value="npm">```npm run dev ```</Tab>
+      <Tab value="pnpm">```pnpm run dev ```</Tab>
+      <Tab value="bun">```bun run dev ```</Tab>
     </Tabs>
+
   </Step>
   <Step>
     [Open](http://localhost:3000) Motia Workbench in your browser (typically at `http://localhost:3000` or `http://127.0.0.1:3000`).
@@ -92,6 +76,4 @@ After you've defined your flows, you can visualize them in [Motia Workbench](/do
 
 Checkout the [Motia Workbench](/docs/workbench/overview) docs for more information.
 
-<Callout>
-New to Motia? Follow the **[quick start](/docs/getting-started/quick-start)** guide to get set up.
-</Callout>
+<Callout>New to Motia? Follow the **[quick start](/docs/getting-started/quick-start)** guide to get set up.</Callout>

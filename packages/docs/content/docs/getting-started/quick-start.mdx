@@ -130,51 +130,48 @@ You should see a new folder created with the following files inside:
 
   </Step>
   <Step>
-  ### Minimal Step Example (Already Included!)
+  ### Minimal Step Example
 
-✨ **Good News!** If you used the automated project setup with the `default` template (as recommended above), you can **skip this step!**
+**The initial project comes with sample steps, but in this step we're going to walk you through on creating a new one**
 
-The `default` template already includes example steps in the `steps` folder, including `addNumbers.step.js` (or similar, depending on the template). These pre-built steps are ready for you to explore and run.
-
----
-
-**If you chose not to use the template or want to create a step from scratch manually,** follow these steps:
-
-1.  **Create a `steps` folder** in your project's root directory (if you haven't already).
-
-2.  **Create a new file** named `addNumbers.step.js` (or `addNumbers.step.ts` for TypeScript) inside the `steps` folder.
+1.  **Create a new file** named `hello-world.step.js` (or `hello-world.step.ts` for TypeScript) inside the `steps` folder.
 
     <Files>
       <Folder name="steps" defaultOpen>
-        <File name="addNumbers.step.js" />
+        <File name="hello-world.step.js" />
       </Folder>
     </Files>
 
-3.  **Paste the following code** into your `addNumbers.step.js` file:
+2.  **Paste the following code** into your `hello-world.step.js` file:
 
-    ```javascript
-    exports.config = {
-      type: 'event', // "event", "api", or "cron"
-      name: 'AddNumbers',
-      subscribes: ['add-numbers'],
-      emits: ['numbers-added'],
-      flows: ['numbers'],
-    }
+        ```javascript
+        exports.config = {
+          type: 'api', // "event", "api", or "cron"
+          path: '/hello-world',
+          method: 'GET',
+          name: 'HelloWorld',
+          emits: [],
+          flows: ['HelloWorld'],
+        }
 
-    exports.handler = async (input, { emit }) => {
-      const sum = (input.a || 0) + (input.b || 0)
-      await emit({
-        topic: 'numbers-added',
-        data: { result: sum },
-      })
-    }
-    ```
+        exports.handler = async () => {
+          return {
+            status: 200,
+            body: { message: 'Hello World' },
+          }
+        }
+        ```
+        This minimal API step creates a **GET** endpoint on `/hello-world` that returns a JSON
 
-    This minimal step **listens** for the event `"add-numbers"` and **emits** `"numbers-added"`. It's a basic example to get you started.
+        ```json
+        { "message": "Hello World" }
+        ```
 
   </Step>
-  <Step>
-  ### Start Motia Development Server & Workbench
+
+   <Step>
+
+### Start Motia Development Server & Workbench
 
 Now, let's start Motia and see your workflow in action!
 
@@ -182,11 +179,11 @@ Now, let's start Motia and see your workflow in action!
 
 2.  **Run the development server command:** Use the `dev` script that was set up in your `package.json`:
 
-    <Tabs items={['pnpm', 'yarn', 'npm', 'bun']}>
-      <Tab value="pnpm">```bash pnpm run dev ```</Tab>
-      <Tab value="yarn">```bash yarn run dev ```</Tab>
-      <Tab value="npm">```bash npm run dev ```</Tab>
-      <Tab value="bun">```bash bun run dev ```</Tab>
+    <Tabs items={['npm', 'yarn', 'pnpm', 'bun']}>
+      <Tab value="yarn">```yarn run dev ```</Tab>
+      <Tab value="npm">```npm run dev ```</Tab>
+      <Tab value="pnpm">```pnpm run dev ```</Tab>
+      <Tab value="bun">```bun run dev ```</Tab>
     </Tabs>
 
     Motia will:
@@ -209,13 +206,13 @@ Now, let's start Motia and see your workflow in action!
     2.  **Locate your Flow in the Sidebar:** On the left sidebar of the Workbench UI, you should see a list of Flows.
 
         *   **For the default template:**  You'll find a flow named "**default**".
-        *   **For the `addNumbers.step.js` example:** You'll find a flow named "**numbers**".
+        *   **For the `hello-world.step.js` example:** You'll find a flow named "**HelloWorld**".
 
     3.  **Select your Flow:** Click on the flow name in the sidebar.
 
     4.  **Observe the Visual Flow:** You should now see a visual representation of your flow in the main panel. This is the Motia Workbench visualizing the steps and event flow within your application!
 
-        ![Flow Visualization in Workbench](./../img/workbench-example.png)
+        ![Flow Visualization in Workbench](./../img/hello-world-workbench.png)
 
         <Callout type="info">
             You can click and drag the nodes in the visual editor to rearrange them for better clarity. Explore the UI to familiarize yourself with the Workbench!
@@ -225,42 +222,32 @@ Now, let's start Motia and see your workflow in action!
     <Step>
     ### Test your step
 
-    You can test your step using the **Motia** CLI:
+    Now you created the step `hello-world.js`, which creates a **GET** `/hello-world` endpoint, you can test by either opening http://localhost:3000/hello-world or
 
-    <Tabs items={['cli', 'curl']}>
-      <Tab value='cli'>
-      If you used the automated project setup with the default template, you can test your step by emitting the following event:
-      ```bash
-      npx motia emit --topic test-state --message '{}'
-      ```
+    ```bash
+    curl http://localhost:3000/hello-world
+    ```
 
-      If you used the add number example, you can test your step by emitting the following event:
+    This is a really simple example where you can have your first step running.
 
-      ```bash
-      npx motia emit --topic add-numbers --message '{"a": 5, "b": 3}'
-      ```
+    </Step>
 
-      </Tab>
-      <Tab value='curl'>
-        If you used the automated project setup with the default template, you can test your step by emitting the following event:
-        ```bash
-        curl -X POST http://localhost:3000/default \
-        -H "Content-Type: application/json" \
-        -d '{}'
-        ```
-        <Callout type="warn">You can't test the add number example using curl, you will need to use the CLI, using an api endpoint requires an api step.</Callout>
-      </Tab>
-    </Tabs>
+    <Step>
+    ### Understanding a flow with events
 
-    Motia will:
+    Now you already created an API Steps, let's check the flow that's already in the project, click on `default` flow on Workbench sidebar on the left. (Or navigate to http://localhost:3000/flow/default)
 
-    Emit a new event with the provided topic and message
+    You should see the page below
 
-    The event manager will detect the new event and match it against your registered step
+    ![Flow Visualization in Workbench](./../img/getting-started-workbench.png)
 
-    Execute your step with the provided input
+    This flow is a little bit more advanced, it has Noop steps (which we are going to talk about later), API steps, and Event steps.
 
-    Log the journey of the event, including the emitted numbers-added event
+    Event steps are code that can take some time to finish and can have errors (like LLM calls which are non-deterministic), in case they fail, they can rerun later.
+
+    In the flow represented by the image above you should see a node with a button to start it, go ahead an click it and check the logs that are generated.
+
+    Now let's dive deep on the flow you already executed. Let's jump in to [Core concepts](/docs/getting-started/core-concepts)
 
     </Step>
 

@@ -398,27 +398,11 @@ After you've defined your flows, you can visualize them in [Motia Workbench](/do
   <Step>
     Start your development server:
 
-    <Tabs items={['pnpm', 'yarn', 'npm', 'bun']}>
-      <Tab value='pnpm'>
-      ```bash
-      pnpm run dev
-      ```
-      </Tab>
-      <Tab value='yarn'>
-      ```bash
-      yarn run dev
-      ```
-      </Tab>
-      <Tab value='npm'>
-      ```bash
-      npm run dev
-      ```
-      </Tab>
-      <Tab value='bun'>
-      ```bash
-      bun run dev
-      ```
-      </Tab>
+    <Tabs items={['npm', 'yarn', 'pnpm', 'bun']}>
+      <Tab value="yarn">```yarn run dev ```</Tab>
+      <Tab value="npm">```npm run dev ```</Tab>
+      <Tab value="pnpm">```pnpm run dev ```</Tab>
+      <Tab value="bun">```bun run dev ```</Tab>
     </Tabs>
   </Step>
   <Step>
@@ -627,27 +611,11 @@ Motia supports four standard log levels:
     1. Navigate to your Motia project root folder
     2. Start the development server:
 
-    <Tabs items={['pnpm', 'yarn', 'npm', 'bun']}>
-      <Tab value='pnpm'>
-      ```bash
-      pnpm run dev
-      ```
-      </Tab>
-      <Tab value='yarn'>
-      ```bash
-      yarn run dev
-      ```
-      </Tab>
-      <Tab value='npm'>
-      ```bash
-      npm run dev
-      ```
-      </Tab>
-      <Tab value='bun'>
-      ```bash
-      bun run dev
-      ```
-      </Tab>
+    <Tabs items={['npm', 'yarn', 'pnpm', 'bun']}>
+      <Tab value="yarn">```yarn run dev ```</Tab>
+      <Tab value="npm">```npm run dev ```</Tab>
+      <Tab value="pnpm">```pnpm run dev ```</Tab>
+      <Tab value="bun">```bun run dev ```</Tab>
     </Tabs>
 
     3. You can monitor logs in two ways:
@@ -3125,11 +3093,11 @@ Now, let's start Motia and see your workflow in action!
 
 2.  **Run the development server command:** Use the `dev` script that was set up in your `package.json`:
 
-    <Tabs items={['pnpm', 'yarn', 'npm', 'bun']}>
-      <Tab value="pnpm">```bash pnpm run dev ```</Tab>
-      <Tab value="yarn">```bash yarn run dev ```</Tab>
-      <Tab value="npm">```bash npm run dev ```</Tab>
-      <Tab value="bun">```bash bun run dev ```</Tab>
+    <Tabs items={['npm', 'yarn', 'pnpm', 'bun']}>
+      <Tab value="yarn">```yarn run dev ```</Tab>
+      <Tab value="npm">```npm run dev ```</Tab>
+      <Tab value="pnpm">```pnpm run dev ```</Tab>
+      <Tab value="bun">```bun run dev ```</Tab>
     </Tabs>
 
     Motia will:
@@ -6276,27 +6244,11 @@ Motia Workbench is a development platform that helps you build and debug your Mo
 
 Start workbench by running:
 
-<Tabs items={['pnpm', 'yarn', 'npm', 'bun']}>
-   <Tab value='pnpm'>
-   ```bash
-   pnpm run dev
-   ```
-   </Tab>
-   <Tab value='yarn'>
-   ```bash
-   yarn run dev
-   ```
-   </Tab>
-   <Tab value='npm'>
-   ```bash
-   npm run dev
-   ```
-   </Tab>
-   <Tab value='bun'>
-   ```bash
-   bun run dev
-   ```
-   </Tab>
+<Tabs items={['npm', 'yarn', 'pnpm', 'bun']}>
+  <Tab value="yarn">```yarn run dev ```</Tab>
+  <Tab value="npm">```npm run dev ```</Tab>
+  <Tab value="pnpm">```pnpm run dev ```</Tab>
+  <Tab value="bun">```bun run dev ```</Tab>
 </Tabs>
 
 <Callout>
