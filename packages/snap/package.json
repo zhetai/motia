@@ -1,7 +1,7 @@
 {
   "name": "motia",
   "description": "Code-first framework for intelligent workflows",
-  "version": "0.1.0-beta.29",
+  "version": "0.1.0-beta.30",
   "license": "MIT",
   "repository": {
     "type": "git",
