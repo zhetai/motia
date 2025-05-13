@@ -1,11 +1,8 @@
 import { ApiRouteConfig, StepHandler } from '@motiadev/core'
 import { z } from 'zod'
 
-const inputSchema = z.object({
-  message: z.string({
-    description: 'The message to send to OpenAI',
-  }),
-})
+const inputSchema = z.object({ message: z.string({ description: 'The message to send to OpenAI' }) })
+const responseSchema = z.object({ message: z.string({ description: 'The message from OpenAI' }) })
 
 export const config: ApiRouteConfig = {
   type: 'api',
@@ -14,8 +11,13 @@ export const config: ApiRouteConfig = {
   path: '/openai',
   method: 'POST',
   emits: ['call-openai'],
-  bodySchema: inputSchema,
   flows: ['openai'],
+  queryParams: [
+    { name: 'model', description: 'The model to use' },
+    { name: 'temperature', description: 'The temperature to use' },
+  ],
+  bodySchema: inputSchema,
+  responseBody: responseSchema,
 }
 
 export const handler: StepHandler<typeof config> = async (req, { logger, emit }) => {

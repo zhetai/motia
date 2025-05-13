@@ -84,9 +84,11 @@ const apiSchema = z
     virtualEmits: emits.optional(),
     virtualSubscribes: z.array(z.string()).optional(),
     flows: z.array(z.string()).optional(),
-    bodySchema: z.union([jsonSchema, z.object({}), z.null()]).optional(),
     includeFiles: z.array(z.string()).optional(),
     middleware: z.array(z.any()).optional(),
+    queryParams: z.array(z.object({ name: z.string(), description: z.string().optional() })).optional(),
+    bodySchema: z.union([jsonSchema, z.object({}), z.null()]).optional(),
+    responseBody: z.union([jsonSchema, z.object({}), z.null()]).optional(),
   })
   .strict()
 

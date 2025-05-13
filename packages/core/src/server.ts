@@ -16,6 +16,7 @@ import { callStepFile } from './call-step-file'
 import { LoggerFactory } from './LoggerFactory'
 import { generateTraceId } from './generate-trace-id'
 import { flowsConfigEndpoint } from './flows-config-endpoint'
+import { apiEndpoints } from './api-endpoints'
 
 export type MotiaServer = {
   app: Express
@@ -143,6 +144,7 @@ export const createServer = async (
   app.use(cors())
   app.use(router)
 
+  apiEndpoints(lockedData, app, io)
   flowsEndpoint(lockedData, app)
   flowsConfigEndpoint(app, process.cwd())
 

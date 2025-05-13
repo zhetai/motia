@@ -41,6 +41,7 @@ describe('Middleware Management', () => {
       activeSteps: [],
       eventSteps: () => [],
       cronSteps: () => [],
+      onStep: () => {},
     } as unknown as LockedData
 
     const eventManager = createEventManager()

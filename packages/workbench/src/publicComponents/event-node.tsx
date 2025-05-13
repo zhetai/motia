@@ -16,6 +16,7 @@ export const EventNode = (props: Props) => {
       disableSourceHandle={!data.emits?.length && !data.virtualEmits?.length}
       disableTargetHandle={!data.subscribes?.length && !data.virtualSubscribes?.length}
     >
+      <div className="text-sm text-muted-foreground">{data.description}</div>
       {children}
 
       <NodeDetails

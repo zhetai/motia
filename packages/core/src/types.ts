@@ -57,6 +57,11 @@ export type ApiMiddleware = (
   next: () => Promise<ApiResponse>,
 ) => Promise<ApiResponse>
 
+type QueryParam = {
+  name: string
+  description: string
+}
+
 export type ApiRouteConfig = {
   type: 'api'
   name: string
@@ -68,8 +73,9 @@ export type ApiRouteConfig = {
   virtualSubscribes?: string[]
   flows?: string[]
   middleware?: ApiMiddleware[]
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  bodySchema?: ZodObject<any>
+  bodySchema?: ZodObject<any> // eslint-disable-line @typescript-eslint/no-explicit-any
+  responseBody?: ZodObject<any> // eslint-disable-line @typescript-eslint/no-explicit-any
+  queryParams?: QueryParam[]
   /**
    * Files to include in the step bundle.
    * Needs to be relative to the step file.

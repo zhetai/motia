@@ -26,7 +26,7 @@ export const Sidebar: React.FC<PropsWithChildren> = ({ children }) => {
 export const SidebarGroup: React.FC<PropsWithChildren<{ title: string }>> = ({ children, title }) => {
   return (
     <div className="flex flex-col">
-      <h2 className="text-lg text-white/60 px-4 py-2 uppercase">{title}</h2>
+      <h2 className="text-xs font-bold text-muted-foreground px-4 py-2 uppercase">{title}</h2>
       {children}
     </div>
   )
@@ -39,8 +39,8 @@ type SidebarButtonProps = PropsWithChildren<{
 
 export const SidebarButton: React.FC<SidebarButtonProps> = ({ children, isActive, icon }) => {
   return (
-    <div className={cn('flex items-center gap-2 px-4 py-3 ', isActive && 'bg-[#242036]')}>
-      <div className="text-gray-500">{icon}</div>
+    <div className={cn('flex text-sm font-medium items-center gap-2 px-4 py-3 ', isActive && 'bg-muted')}>
+      <div className="text-muted-foreground">{icon}</div>
       {children}
     </div>
   )

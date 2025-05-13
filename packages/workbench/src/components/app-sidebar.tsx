@@ -1,5 +1,5 @@
 import { useListFlows } from '@/hooks/use-list-flows'
-import { File, Logs, Workflow } from 'lucide-react'
+import { File, Link2, Logs, Workflow } from 'lucide-react'
 import { Link, useLocation } from 'react-router'
 import { Sidebar, SidebarButton, SidebarGroup } from './ui/sidebar'
 import { Badge } from './ui/badge'
@@ -23,6 +23,11 @@ export const AppSidebar = () => {
         <Link to="/states">
           <SidebarButton isActive={pathname === '/states'} icon={<File className="w-4 h-4" />}>
             States
+          </SidebarButton>
+        </Link>
+        <Link to="/endpoints">
+          <SidebarButton isActive={pathname === '/endpoints'} icon={<Link2 className="w-4 h-4" />}>
+            Endpoints
           </SidebarButton>
         </Link>
       </SidebarGroup>

@@ -53,13 +53,13 @@ export const BaseNode = (props: Props) => {
   const { title, variant, children, disableSourceHandle, disableTargetHandle, language } = props
 
   return (
-    <div
-      className="p-[1px] rounded-lg shadow-[0px_7px_14px_0px_rgba(7,0,23,0.98)] max-w-[350px] "
-      style={{
-        background: `linear-gradient(100.74deg, rgba(0, 71, 255, 0) -2.15%, ${colorMap[variant!]} 45.08%, rgba(0, 71, 255, 0) 96.79%)`,
-      }}
-    >
-      <div className="rounded-lg bg-[#060014] p-4">
+    <div className="p-[1px] rounded-lg max-w-[350px] ">
+      <div
+        className="rounded-lg bg-background p-4 border border-muted border-solid"
+        style={{
+          borderColor: colorMap[variant as keyof typeof colorMap],
+        }}
+      >
         <div className="group relative">
           {/* Main node content */}
           <HeaderBar text={title} variant={variant} children={<LanguageIndicator language={language} />} />
@@ -70,7 +70,7 @@ export const BaseNode = (props: Props) => {
           {!disableSourceHandle && <BaseHandle type="source" position={Position.Bottom} variant={variant} />}
 
           {/* Stacked card effect */}
-          <div className="absolute inset-0 -z-10 translate-y-1 translate-x-1 bg-black/20 rounded-md border border-white/5" />
+          <div className="absolute inset-0 -z-10 translate-y-1 translate-x-1 bg-background rounded-md border border-white/5" />
         </div>
       </div>
     </div>

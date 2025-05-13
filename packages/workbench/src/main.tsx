@@ -8,6 +8,7 @@ import { RouteWrapper } from './route-wrapper'
 import { LogsPage } from './routes/logs-page'
 import { RootMotia } from './components/root-motia'
 import { StatesPage } from './routes/states-page'
+import { EndpointsPage } from './routes/endpoints-page'
 
 // Render the app
 const rootElement = document.getElementById('root')!
@@ -24,6 +25,7 @@ if (!rootElement.innerHTML) {
               <Route path="/flow/:id" element={<Flow />} />
               <Route path="/logs" element={<LogsPage />} />
               <Route path="/states" element={<StatesPage />} />
+              <Route path="/endpoints" element={<EndpointsPage />} />
             </Routes>
           </RouteWrapper>
         </RootMotia>

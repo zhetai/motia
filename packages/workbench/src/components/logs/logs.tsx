@@ -1,8 +1,8 @@
-import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '@/components/ui/table'
+import { Table, TableBody, TableCell, TableRow } from '@/components/ui/table'
 import { Log, useLogs } from '@/stores/use-logs'
-import { LogLevelBadge } from './log-level-badge'
 import { useState } from 'react'
 import { LogDetail } from './log-detail'
+import { LogLevelDot } from './log-level-dot'
 
 const timestamp = (time: number) => {
   const date = new Date(Number(time))
@@ -21,31 +21,24 @@ export const Logs = () => {
     <div className="overflow-y-auto h-full text-bold p-4">
       <LogDetail log={selectedLog} onClose={() => setSelectedLog(undefined)} />
       <Table>
-        <TableHeader className="sticky top-0">
-          <TableRow>
-            <TableHead>Time</TableHead>
-            <TableHead>Level</TableHead>
-            <TableHead>Trace</TableHead>
-            <TableHead>Flow</TableHead>
-            <TableHead>Step</TableHead>
-            <TableHead>Message</TableHead>
-          </TableRow>
-        </TableHeader>
         <TableBody className="text-md font-mono">
           {logs.map((log, index) => (
             <TableRow
               key={index}
-              className="text-white border-b border-zinc-800/50"
+              className="cursor-pointer even:bg-muted/50 border-0"
               onClick={() => handleLogClick(log)}
             >
-              <TableCell className="whitespace-nowrap">{timestamp(log.time)}</TableCell>
-              <TableCell>
-                <LogLevelBadge level={log.level} />
+              <TableCell className="whitespace-nowrap flex items-center gap-2">
+                <LogLevelDot level={log.level} />
+                {timestamp(log.time)}
               </TableCell>
-              <TableCell>{log.traceId}</TableCell>
-              <TableCell>{log.flows?.join?.(', ')}</TableCell>
-              <TableCell>{log.step}</TableCell>
-              <TableCell>{log.msg}</TableCell>
+              <TableCell className="whitespace-nowrap text-md font-mono cursor-pointer hover:text-primary text-muted-foreground text-xs font-mono">
+                {log.traceId}
+              </TableCell>
+              <TableCell className="whitespace-nowrap text-md font-mono">{log.step}</TableCell>
+              <TableCell className="whitespace-nowrap text-md font-mono max-w-[500px] truncate w-full">
+                {log.msg}
+              </TableCell>
             </TableRow>
           ))}
         </TableBody>

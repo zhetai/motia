@@ -12,5 +12,45 @@
       "x": 15.5,
       "y": 428
     }
+  },
+  "openai": {
+    "steps/openAi/callOpenAi.step.ts": {
+      "x": 0,
+      "y": 238
+    },
+    "steps/openAi/callOpenAiApi.step.py": {
+      "x": 65.74166666666667,
+      "y": -27.516666666666666
+    },
+    "steps/openAi/callOpenAiApi.step.rb": {
+      "x": 311.86249999999995,
+      "y": -42.803703703703704
+    },
+    "steps/openAi/callOpenAiApi.step.ts": {
+      "x": 568.2069444444444,
+      "y": -27.516666666666673
+    },
+    "steps/openAi/call_ai.step.py": {
+      "x": 339.75,
+      "y": 238
+    },
+    "steps/openAi/call_ai_ruby.step.rb": {
+      "x": 679.5,
+      "y": 238
+    },
+    "steps/openAi/openAiResponse.step.ts": {
+      "x": 310.42824074074076,
+      "y": 396.9939814814815
+    }
+  },
+  "cron-example": {
+    "steps/cronExample/handlePeriodicJob.step.ts": {
+      "x": 36,
+      "y": 238
+    },
+    "steps/cronExample/periodicJob.step.ts": {
+      "x": 0,
+      "y": 0
+    }
   }
 }

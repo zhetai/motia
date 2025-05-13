@@ -45,7 +45,7 @@ export const FlowView: React.FC<Props> = ({ flow, flowConfig }) => {
 
     if (nodeType) {
       return nodeType === hoveredType
-        ? 'shadow-[0_0_15px_rgba(255,255,255,0.15)] border border-white/30 scale-[1.02] transition-all duration-300'
+        ? 'border border-white/30 scale-[1.02] transition-all duration-300'
         : 'opacity-30 transition-all duration-300'
     }
 
@@ -99,7 +99,7 @@ export const FlowView: React.FC<Props> = ({ flow, flowConfig }) => {
         onNodesChange={onNodesChangeHandler}
         onEdgesChange={onEdgesChange}
       >
-        <Background variant={BackgroundVariant.Dots} gap={20} size={1} color="#99a" bgColor="#1d1c2a" />
+        <Background variant={BackgroundVariant.Dots} gap={50} size={2} color="#222" bgColor="#000" />
         <NodeOrganizer onInitialized={onInitialized} />
         <svg>
           <defs>
