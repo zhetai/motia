@@ -4,14 +4,14 @@
   "main": "dist/index.js",
   "version": "0.1.0-beta.29",
   "scripts": {
-    "postinstall": "python3 -m venv python_modules && python_modules/bin/pip install -r requirements.txt",
+    "python-setup": "python3 -m venv python_modules && python_modules/bin/pip install -r requirements.txt",
     "move:python": "mkdir -p dist/src/python && cp src/python/*.py dist/src/python",
     "move:rb": "mkdir -p dist/src/ruby && cp src/ruby/*.rb dist/src/ruby",
     "move:steps": "cp src/steps/*.ts dist/src/steps",
     "build": "rm -rf dist && tsc && npm run move:python && npm run move:rb && npm run move:steps",
     "lint": "eslint --config ../../eslint.config.js",
     "watch": "tsc --watch",
-    "test": "PATH=python_modules/bin:$PATH jest",
+    "test": "jest",
     "clean": "rm -rf python_modules dist"
   },
   "dependencies": {

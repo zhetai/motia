@@ -25,7 +25,7 @@ jobs:
         run: pnpm lint
 
       - name: Run tests
-        run: pnpm -r run test
+        run: PATH=python_modules/bin:$PATH pnpm -r run test
 
   publish:
     runs-on: ubuntu-latest
