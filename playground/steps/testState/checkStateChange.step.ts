@@ -2,20 +2,16 @@ import { EventConfig, StepHandler } from '@motiadev/core'
 import { z } from 'zod'
 import equal from 'deep-equal'
 
-type Input = typeof inputSchema
-
-const inputSchema = z.object({
-  key: z.string(),
-  expected: z.optional(z.unknown()),
-})
-
-export const config: EventConfig<Input> = {
+export const config: EventConfig = {
   type: 'event',
   name: 'Check state change',
   description: 'check state change',
   subscribes: ['check-state-change'],
   emits: [],
-  input: inputSchema,
+  input: z.object({
+    key: z.string(),
+    expected: z.optional(z.unknown()),
+  }),
   flows: ['test-state'],
 }
 

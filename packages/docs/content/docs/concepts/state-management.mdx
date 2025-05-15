@@ -61,7 +61,7 @@ State data is stored as key-value pairs, namespaced under a scope string. When u
 
 ## Using State in Steps
 
-<Tabs items={['TypeScript', 'JavaScript', 'Python', 'Ruby']}>
+<Tabs items={['TypeScript', 'JavaScript', 'Python']}>
   <Tab label="TypeScript">
     ```typescript
     import { StepHandler } from 'motia'
@@ -135,31 +135,6 @@ State data is stored as key-value pairs, namespaced under a scope string. When u
         # Clear all state (using traceId as scope)
         await ctx.state.clear(trace_id)
     ```
-
-  </Tab>
-
-  <Tab label="Ruby">
-    ```ruby
-    def handler(input, context) # context is the context object
-      trace_id = context.trace_id # Access traceId from context
-
-      # Store state (using traceId as scope)
-      context.state.set(trace_id, 'booking', {
-        customer: input.customer,
-        venue: input.venue
-      })
-
-      # Retrieve state (using traceId as scope)
-      booking = context.state.get(trace_id, 'booking')
-
-      # Delete specific state
-      context.state.delete(trace_id, 'booking')
-
-      # Clear all state (using traceId as scope)
-      context.state.clear(trace_id)
-    end
-    ```
-
   </Tab>
 </Tabs>
 
@@ -203,7 +178,7 @@ State data is stored as key-value pairs, namespaced under a scope string. When u
 
 Use dot notation to organize related state data hierarchically:
 
-<Tabs items={['TypeScript', 'JavaScript', 'Python', 'Ruby']}>
+<Tabs items={['TypeScript', 'JavaScript', 'Python']}>
   <Tab label="TypeScript">
     ```typescript
     // Good - Organized hierarchically (using traceId scope)
@@ -248,28 +223,13 @@ Use dot notation to organize related state data hierarchically:
     ```
 
   </Tab>
-
-  <Tab label="Ruby">
-    ```ruby
-    # Good - Organized hierarchically (using traceId scope)
-    state.set(trace_id, 'booking.customer', customer_data)
-    state.set(trace_id, 'booking.venue', venue_data)
-    state.set(trace_id, 'payment.status', 'pending')
-
-    # Avoid - Flat structure
-    state.set(trace_id, 'customer', customer_data)
-    state.set(trace_id, 'venue', venue_data)
-    state.set('payment_status', 'pending')
-    ```
-
-  </Tab>
 </Tabs>
 
 ### Type Safety
 
 Define types for your state data to ensure consistency:
 
-<Tabs items={['TypeScript', 'JavaScript', 'Python', 'Ruby']}>
+<Tabs items={['TypeScript', 'JavaScript', 'Python']}>
   <Tab label="TypeScript">
     ```typescript
     interface CustomerData {
@@ -324,37 +284,13 @@ Define types for your state data to ensure consistency:
     ```
 
   </Tab>
-
-  <Tab label="Ruby">
-    ```ruby
-    # Using Sorbet for type checking
-    class CustomerData < T::Struct
-      const :name, String
-      const :email, String
-    end
-
-    class VenueData < T::Struct
-      const :id, String
-      const :capacity, Integer
-    end
-
-    class BookingState < T::Struct
-      const :customer, CustomerData
-      const :venue, VenueData
-      const :status, T.enum([:pending, :confirmed])
-    end
-
-    booking = state.get(traceId, 'booking')
-    ```
-
-  </Tab>
 </Tabs>
 
 ### Cleanup
 
 Always clean up state when you're done with it:
 
-<Tabs items={['TypeScript', 'JavaScript', 'Python', 'Ruby']}>
+<Tabs items={['TypeScript', 'JavaScript', 'Python']}>
     <Tab label="TypeScript">
       ```typescript
       export const handler: StepHandler<typeof config> = async (input, { state, traceId }) => {
@@ -402,24 +338,6 @@ Always clean up state when you're done with it:
               pass
       ```
     </Tab>
-
-    <Tab label="Ruby">
-      ```ruby
-      def handler(input, ctx)
-        trace_id = ctx.trace_id
-        begin
-          process_booking(input)
-          # Clean up specific keys
-          ctx.state.delete(trace_id, 'booking.customer')
-          # Or clean everything
-          ctx.state.clear(trace_id)
-        rescue => error
-          # Handle errors
-        end
-      end
-      ```
-      </Tab>
-
 </Tabs>
 
 ### Performance Considerations

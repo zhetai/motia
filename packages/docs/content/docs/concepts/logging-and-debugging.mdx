@@ -24,7 +24,7 @@ Motia supports four standard log levels:
 
 ### Example Usage
 
-<Tabs items={['TS', 'JS', 'Python', 'Ruby']}>
+<Tabs items={['TS', 'JS', 'Python']}>
   <Tab value='TS'>
     ```typescript
     export const handler: StepHandler<typeof config> = async (input, { logger }) => {
@@ -137,46 +137,6 @@ Motia supports four standard log levels:
                 'threshold': 1000
             })
     ```
-
-  </Tab>
-  <Tab value='Ruby'>
-    ```ruby
-    def handler(input, ctx)
-      # Basic logging
-      ctx.logger.info('Starting process')
-
-      # Logging with context
-      ctx.logger.info('Operation completed', {
-        operation_id: input.id,
-        duration: 1500
-      })
-
-      # Error handling
-      begin
-        risky_operation()
-      rescue StandardError => error
-        ctx.logger.error('Operation failed', {
-          error: error.message,
-          stack: error.backtrace.join("\n")
-        })
-      end
-
-      # Debug logging
-      ctx.logger.debug('Operation details', {
-        raw_input: input.to_h,
-        timestamp: Time.now.to_i
-      })
-
-      # Warning logging
-      if input.amount > 1000
-        ctx.logger.warn('Large operation detected', {
-          amount: input.amount,
-          threshold: 1000
-        })
-      end
-    end
-    ```
-
   </Tab>
 </Tabs>
 

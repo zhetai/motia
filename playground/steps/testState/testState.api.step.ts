@@ -1,8 +1,6 @@
 import { ApiRouteConfig, StepHandler } from '@motiadev/core'
 import { z } from 'zod'
 
-const inputSchema = z.object({})
-
 export const config: ApiRouteConfig = {
   type: 'api',
   name: 'Test state api trigger',
@@ -10,7 +8,7 @@ export const config: ApiRouteConfig = {
   path: '/test-state',
   method: 'POST',
   emits: ['test-state'],
-  bodySchema: inputSchema,
+  bodySchema: z.object({}),
   flows: ['test-state'],
 }
 

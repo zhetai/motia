@@ -3,6 +3,7 @@ import fs from 'fs'
 import { templates } from './templates'
 import figlet from 'figlet'
 import { executeCommand } from '../utils/executeCommand'
+import { generateTypes } from '../generate-types'
 
 // eslint-disable-next-line @typescript-eslint/no-require-imports
 require('ts-node').register({
@@ -38,13 +39,12 @@ const installRequiredDependencies = async (packageManager: string, rootDir: stri
   console.log('📦 Installing dependencies...')
 
   const installCommand = {
-    npm: 'npm install',
+    npm: 'npm install --save',
     yarn: 'yarn add',
     pnpm: 'pnpm add',
   }[packageManager]
 
-  const dependencies = ['@motiadev/core', 'motia', '@motiadev/workbench', 'zod', 'react@^19.0.0'].join(' ')
-
+  const dependencies = ['motia', 'zod'].join(' ')
   const devDependencies = ['ts-node@^10.9.2', 'typescript@^5.7.3', '@types/react@^18.3.18'].join(' ')
 
   try {
@@ -126,8 +126,8 @@ export const create = async ({ projectName, template, cursorEnabled }: Args): Pr
       scripts: {
         postinstall: 'motia install',
         dev: 'motia dev',
-        'dev:debug': 'motia dev --debug',
-        //'build': 'motia build', TODO: doesnt work at the moment
+        'dev:debug': 'motia dev --verbose',
+        build: 'motia build',
         clean: 'rm -rf dist node_modules python_modules .motia .mermaid',
         //'generate:config': 'motia get-config --output ./', TODO: doesnt work at the moment
       },
@@ -173,7 +173,7 @@ export const create = async ({ projectName, template, cursorEnabled }: Args): Pr
         baseUrl: '.',
         jsx: 'react-jsx',
       },
-      include: ['**/*.ts', '**/*.tsx', '**/*.js', '**/*.jsx'],
+      include: ['**/*.ts', '**/*.tsx', '**/*.js', '**/*.jsx', 'types.d.ts'],
       exclude: ['node_modules', 'dist', 'tests'],
     }
 
@@ -237,6 +237,7 @@ export const create = async ({ projectName, template, cursorEnabled }: Args): Pr
   await templates[template](stepsDir)
 
   await wrapUpSetup(rootDir)
+  await generateTypes(rootDir)
 
   process.exit(0)
 }

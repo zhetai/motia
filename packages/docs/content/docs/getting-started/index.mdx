@@ -19,7 +19,7 @@ Welcome to Motia!  Ready to build your first event-driven workflow? This guide w
 Before you begin, ensure you have the following installed:
 
 - **Node.js (v16.0 or later):** Motia runs on Node.js, so this is essential for running the development server and your workflows.
-- **Basic Understanding of programming:**  motia steps are written in Javascript, Typescript, Python and/or Ruby.
+- **Basic Understanding of programming:**  motia steps are written in Javascript, Typescript, and/or Python.
 - **Basic Understanding of React:**  While you don't need to be a React expert, a basic familiarity will be helpful for understanding the UI Workbench and customizing UI steps.
 
 ## Your Next Steps:

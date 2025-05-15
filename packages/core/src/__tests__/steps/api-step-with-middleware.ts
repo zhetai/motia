@@ -31,7 +31,7 @@ const corsMiddleware = (allowedOrigins: string[]): ApiMiddleware => {
   }
 }
 
-const jsonValidatorMiddleware: ApiMiddleware = async (req, ctx, next) => {
+const jsonValidatorMiddleware: ApiMiddleware<unknown, unknown, unknown> = async (req, ctx, next) => {
   try {
     if (typeof req.body === 'string') {
       req.body = JSON.parse(req.body)
@@ -46,7 +46,7 @@ const jsonValidatorMiddleware: ApiMiddleware = async (req, ctx, next) => {
   }
 }
 
-const rateLimiterMiddleware: ApiMiddleware = (() => {
+const rateLimiterMiddleware: ApiMiddleware<unknown, unknown, unknown> = (() => {
   const requests: Record<string, number[]> = {}
   const limit = 100
   const windowMs = 60000 // 1 minute

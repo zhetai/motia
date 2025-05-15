@@ -97,7 +97,7 @@ describe('Server', () => {
         path.join(baseDir, 'steps', 'api-step.ts'),
       )
 
-      lockedData.createStep(mockApiStep)
+      lockedData.createStep(mockApiStep, { disableTypeCreation: true })
 
       const server = await createServer(lockedData, eventManager, state, config)
 

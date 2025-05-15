@@ -1,23 +1,15 @@
 import { EventConfig, StepHandler } from '@motiadev/core'
 import { z } from 'zod'
 
-type Input = typeof inputSchema
-
 const stepSchema = z.object({ msg: z.string(), timestamp: z.number() })
-const inputSchema = z.object({
-  stepA: stepSchema,
-  stepB: stepSchema,
-  stepC: stepSchema,
-  mergedAt: z.string(),
-})
 
-export const config: EventConfig<Input> = {
+export const config: EventConfig = {
   type: 'event',
   name: 'Join Complete',
   description: 'Logs the merge',
   subscribes: ['pms.join.complete'],
   emits: [],
-  input: inputSchema,
+  input: z.object({ stepA: stepSchema, stepB: stepSchema, stepC: stepSchema, mergedAt: z.string() }),
   flows: ['parallel-merge'],
 }
 

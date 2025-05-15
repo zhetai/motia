@@ -18,14 +18,14 @@ const mockFlowSteps: Step[] = [
     name: 'Processor',
     subscribes: ['ws-server-example.start'],
     emits: ['ws-server-example.processed'],
-    input: zodToJsonSchema(z.object({})),
+    input: zodToJsonSchema(z.object({})) as never,
     flows: ['motia-server'],
   }),
   createEventStep({
     name: 'Finalizer',
     subscribes: ['ws-server-example.processed'],
     emits: [],
-    input: zodToJsonSchema(z.object({})),
+    input: zodToJsonSchema(z.object({})) as never,
     flows: ['motia-server'],
   }),
 ]
@@ -33,7 +33,7 @@ const mockFlowSteps: Step[] = [
 describe('generateFlowsList', () => {
   it('should generate a list of flows with steps', () => {
     const lockedData = new LockedData(process.cwd())
-    mockFlowSteps.forEach((step) => lockedData.createStep(step))
+    mockFlowSteps.forEach((step) => lockedData.createStep(step, { disableTypeCreation: true }))
 
     const result = generateFlowsList(lockedData)
 

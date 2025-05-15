@@ -1,33 +1,24 @@
-import { LockedData, Step, getStepConfig } from '@motiadev/core'
+import { LockedData, getStepConfig } from '@motiadev/core'
 import { randomUUID } from 'crypto'
-import fs from 'fs'
+import { globSync } from 'glob'
 import path from 'path'
 
 const version = `${randomUUID()}:${Math.floor(Date.now() / 1000)}`
 
 // Helper function to recursively collect flow data
-export const collectFlows = async (baseDir: string, lockedData: LockedData): Promise<Step[]> => {
-  const folderItems = fs.readdirSync(baseDir, { withFileTypes: true })
-  let steps: Step[] = []
+export const collectFlows = async (projectDir: string, lockedData: LockedData): Promise<void> => {
+  const files = globSync(path.join(projectDir, 'steps/**/*.step.{ts,js,py,rb}'))
 
-  for (const item of folderItems) {
-    const filePath = path.join(baseDir, item.name)
+  for (const filePath of files) {
+    const config = await getStepConfig(filePath)
 
-    if (item.isDirectory()) {
-      steps = steps.concat(await collectFlows(filePath, lockedData))
-    } else if (item.name.match(/\.step\.(ts|js|py|rb)$/)) {
-      const config = await getStepConfig(filePath)
-
-      if (!config) {
-        console.warn(`No config found in step ${filePath}, step skipped`)
-        continue
-      }
-
-      lockedData.createStep({ filePath, version, config })
+    if (!config) {
+      console.warn(`No config found in step ${filePath}, step skipped`)
+      continue
     }
-  }
 
-  return steps
+    lockedData.createStep({ filePath, version, config }, { disableTypeCreation: true })
+  }
 }
 
 export const generateLockedData = async (projectDir: string): Promise<LockedData> => {
@@ -38,7 +29,8 @@ export const generateLockedData = async (projectDir: string): Promise<LockedData
      */
     const lockedData = new LockedData(projectDir)
 
-    await collectFlows(path.join(projectDir, 'steps'), lockedData)
+    await collectFlows(projectDir, lockedData)
+    lockedData.saveTypes()
 
     return lockedData
   } catch (error) {

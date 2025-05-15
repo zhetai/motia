@@ -19,7 +19,7 @@ This modular approach allows you to:
 - Maintain clear separation of concerns
 - Scale and modify parts of your system independently
 
-Steps can be defined in any language that Motia supports, such as TypeScript, JavaScript, Python, and Ruby. Steps can be of type [`event`](/docs/concepts/steps/event), [`api`](/docs/concepts/steps/api), or [`cron`](/docs/concepts/steps/cron). Steps are composed of a `config` object and a `handler` function.
+Steps can be defined in any language that Motia supports, such as TypeScript, JavaScript, and Python. Steps can be of type [`event`](/docs/concepts/steps/event), [`api`](/docs/concepts/steps/api), or [`cron`](/docs/concepts/steps/cron). Steps are composed of a `config` object and a `handler` function.
 
 ## Config
 
@@ -81,7 +81,7 @@ A handler holds the business logic of a step. When an event occurs that matches 
 
 Here're examples of how to define a handler in the Motia supported languages:
 
-<Tabs items={['TS', 'JS', 'Python', 'Ruby']}>
+<Tabs items={['TS', 'JS', 'Python']}>
   <Tab value="TS">
     ```typescript
     import { EventConfig, StepHandler } from 'motia'
@@ -123,22 +123,6 @@ Here're examples of how to define a handler in the Motia supported languages:
 
     async def handler(args, ctx):
       await ctx.emit({'topic': 'done', 'data': {}})
-    ```
-  </Tab>
-  <Tab value="Ruby">
-    ```ruby
-    def config
-      {
-        type: 'event',
-        name: 'Minimal Step',
-        subscribes: ['start'],
-        emits: ['done'],
-      }
-    end
-
-    def handler(args, ctx)
-      ctx.emit({topic: 'done', data: {}})
-    end
     ```
   </Tab>
 </Tabs>

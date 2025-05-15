@@ -1,8 +1,10 @@
-import { ZodObject } from 'zod'
+import fs from 'fs'
+import path from 'path'
 import { ApiRouteConfig, CronConfig, EventConfig, Flow, Step } from './types'
 import { isApiStep, isCronStep, isEventStep } from './guards'
-import { validateStep } from './step-validator'
 import { Printer } from './printer'
+import { validateStep } from './step-validator'
+import { generateTypesString, generateTypesFromSteps } from './types/generate-types'
 
 type FlowEvent = 'flow-created' | 'flow-removed' | 'flow-updated'
 type StepEvent = 'step-created' | 'step-removed' | 'step-updated'
@@ -37,6 +39,12 @@ export class LockedData {
     }
   }
 
+  saveTypes() {
+    const types = generateTypesFromSteps(this.activeSteps, this.printer)
+    const typesString = generateTypesString(types)
+    fs.writeFileSync(path.join(this.baseDir, 'types.d.ts'), typesString)
+  }
+
   on(event: FlowEvent, handler: (flowName: string) => void) {
     this.handlers[event].push(handler)
   }
@@ -45,8 +53,7 @@ export class LockedData {
     this.stepHandlers[event].push(handler)
   }
 
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  eventSteps(): Step<EventConfig<ZodObject<any>>>[] {
+  eventSteps(): Step<EventConfig>[] {
     return this.activeSteps.filter(isEventStep)
   }
 
@@ -58,7 +65,7 @@ export class LockedData {
     return this.activeSteps.filter(isCronStep)
   }
 
-  updateStep(oldStep: Step, newStep: Step): boolean {
+  updateStep(oldStep: Step, newStep: Step, options: { disableTypeCreation?: boolean } = {}): boolean {
     if (!this.isValidStep(newStep)) {
       this.deleteStep(oldStep)
 
@@ -106,13 +113,17 @@ export class LockedData {
 
     savedStep.config = newStep.config
 
+    if (!options.disableTypeCreation) {
+      this.saveTypes()
+    }
+
     this.stepHandlers['step-updated'].forEach((handler) => handler(newStep))
     this.printer.printStepUpdated(newStep)
 
     return true
   }
 
-  createStep(step: Step): boolean {
+  createStep(step: Step, options: { disableTypeCreation?: boolean } = {}): boolean {
     if (!this.isValidStep(step)) {
       return false
     }
@@ -135,13 +146,17 @@ export class LockedData {
       }
     }
 
+    if (!options.disableTypeCreation) {
+      this.saveTypes()
+    }
+
     this.stepHandlers['step-created'].forEach((handler) => handler(step))
     this.printer.printStepCreated(step)
 
     return true
   }
 
-  deleteStep(step: Step): void {
+  deleteStep(step: Step, options: { disableTypeCreation?: boolean } = {}): void {
     // Remove step from active and dev steps
     this.activeSteps = this.activeSteps.filter(({ filePath }) => filePath !== step.filePath)
     this.devSteps = this.devSteps.filter(({ filePath }) => filePath !== step.filePath)
@@ -160,6 +175,10 @@ export class LockedData {
       } else {
         this.onFlowUpdated(flowName)
       }
+    }
+
+    if (!options.disableTypeCreation) {
+      this.saveTypes()
     }
 
     this.stepHandlers['step-removed'].forEach((handler) => handler(step))

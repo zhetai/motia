@@ -20,25 +20,19 @@ The following properties are specific to the Event Step, in addition to the [com
 
 The following examples showcase how to configure an **Event Step**
 
-<Tabs  items={['TS', 'JS', 'Python', 'Ruby']}>
+<Tabs  items={['TS', 'JS', 'Python']}>
   <Tab value="TS">
     ```typescript
     import { EventConfig, StepHandler } from 'motia'
     import { z } from 'zod'
 
-    const inputSchema = z.object({
-      message: z.string()
-    })
-
-    type Input = typeof inputSchema
-
-    export const config: EventConfig<Input> = {
+    export const config: EventConfig = {
       type: 'event',
       name: 'stepA',
       description: 'Hello from Step A',
       subscribes: ['pms.start'],
       emits: ['pms.stepA.done'],
-      input: inputSchema,
+      input: z.object({ message: z.string() }),
       flows: ['parallel-merge'],
     }
 
@@ -53,15 +47,10 @@ The following examples showcase how to configure an **Event Step**
       })
     }
     ```
-
   </Tab>
   <Tab value="JS">
     ```javascript
     const z = require('zod');
-
-    const inputSchema = z.object({
-      message: z.string()
-    });
 
     const config = {
       type: 'event',
@@ -69,7 +58,7 @@ The following examples showcase how to configure an **Event Step**
       description: 'Hello from Step A',
       subscribes: ['pms.start'],
       emits: ['pms.stepA.done'],
-      input: inputSchema,
+      input: z.object({ message: z.string() });,
       flows: ['parallel-merge'],
     };
 
@@ -86,66 +75,31 @@ The following examples showcase how to configure an **Event Step**
 
     module.exports = { config, handler };
     ```
-
   </Tab>
   <Tab value="Python">
     ```python
-    from pydantic import BaseModel
-    
-    # Define a Pydantic model for input validation
-    class InputModel(BaseModel):
-        message: str
-    
     config = {
-        "type": "event",
-        "name": "Call OpenAI",
-        "subscribes": ["call-openai"], 
-        "emits": ["openai-response"],
-        "input": InputModel.model_json_schema(), # We use jsonschema to validate
-        "flows": ["openai"]
+      "type": "event",
+      "name": "Call OpenAI",
+      "subscribes": ["call-openai"], 
+      "emits": ["openai-response"],
+      "input": {
+        "type": "object",
+        "properties": { "type": "string" },
+      },
+      "flows": ["openai"]
     }
 
     async def handler(input, context):
-        context.logger.info('Processing input:', input)
+      context.logger.info("Processing input:", { "input": input })
 
-        await context.emit({
-            "topic": "openai-response",
-            "data": {
-                "result": f"Processed: {input.get('message', '')}"
-            }
-        })
-    ```
-
-  </Tab>
-  <Tab value="Ruby">
-    ```ruby
-    class Config
-      attr_reader :type, :name, :subscribes, :emits, :input, :flows
-
-      def initialize
-        @type = "event"
-        @name = "Call OpenAI"
-        @subscribes = ["call-openai"]
-        @emits = ["openai-response"]
-        @input = nil # No schema validation
-        @flows = ["openai"]
-      end
-    end
-
-    config = Config.new
-
-    def handler(input, context)
-      context.logger.info("Processing input: #{input}")
-
-      context.emit({
-        topic: "openai-response",
-        data: {
-          result: "Processed: #{input[:message]}"
+      await context.emit({
+        "topic": "openai-response",
+        "data": {
+          "result": f"Processed: {input.get("message", "")}"
         }
       })
-    end
     ```
-
   </Tab>
 </Tabs>
 

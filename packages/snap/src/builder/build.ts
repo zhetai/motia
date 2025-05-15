@@ -200,7 +200,7 @@ export const build = async (isVerbose: boolean): Promise<void> => {
     }
   })
 
-  await collectFlows(path.join(baseDir, 'steps'), lockedData)
+  await collectFlows(baseDir, lockedData)
   await Promise.all(promises)
 
   fs.writeFileSync(stepsConfigPath, JSON.stringify(builder.stepsConfig, null, 2))

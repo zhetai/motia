@@ -43,6 +43,15 @@ program
   })
 
 program
+  .command('generate-types')
+  .description('Generate types.d.ts file for your project')
+  .action(async () => {
+    const { generateTypes } = require('./generate-types')
+    await generateTypes(process.cwd())
+    process.exit(0)
+  })
+
+program
   .command('templates')
   .description('Prints the list of available templates')
   .action(async () => {

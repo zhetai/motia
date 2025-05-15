@@ -1,22 +1,19 @@
 import { z } from 'zod'
-import { EventConfig, StepHandler } from '@motiadev/core'
+import { EventConfig } from '@motiadev/core'
 import { ParallelMergeStep } from './parallelMerge.types'
+import { Handlers } from 'motia'
 
-type Input = typeof inputSchema
-
-const inputSchema = z.object({ msg: z.string(), timestamp: z.number() })
-
-export const config: EventConfig<Input> = {
+export const config: EventConfig = {
   type: 'event',
   name: 'join-step',
   description: 'Merges the results of parallel steps',
   subscribes: ['pms.stepA.done', 'pms.stepB.done', 'pms.stepC.done'],
   emits: ['pms.join.complete'],
-  input: inputSchema,
+  input: z.object({ msg: z.string(), timestamp: z.number() }),
   flows: ['parallel-merge'],
 }
 
-export const handler: StepHandler<typeof config> = async (input, { emit, traceId, state, logger }) => {
+export const handler: Handlers['join-step'] = async (input, { emit, traceId, state, logger }) => {
   logger.info('[join-step] Handling Join Step', { input })
 
   const stepA = await state.get<ParallelMergeStep>(traceId, 'stepA')

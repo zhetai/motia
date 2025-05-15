@@ -8,7 +8,7 @@ description: A 3-minute overview of Motia’s core concepts with a business-read
 Got 3 minutes? Here’s the scoop on Motia—a code-first framework that powers event-driven workflows, perfect for Generative AI (GenAI). We’ll spotlight a real-world win: analyzing customer feedback.
 
 ## What’s Motia?
-Motia builds scalable, observable workflows without infrastructure headaches. Code in JS, TS, Python, or Ruby, chain it up, and track it live in a visual Workbench.
+Motia builds scalable, observable workflows without infrastructure headaches. Code in JS, TS, or Python, chain it up, and track it live in a visual Workbench.
 
 - **Why It’s Clutch**: No queue setup, instant APIs/scheduling, real-time insights.
 - **Who’s It For**: Businesses wanting intelligent workflows without the hassle.

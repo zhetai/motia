@@ -9,29 +9,28 @@ export type InternalStateManager = {
   clear(traceId: string): Promise<void>
 }
 
-export type EmitData = { topic: string; data: Record<string, unknown> }
-export type Emitter = (event: EmitData) => Promise<void>
-export type FlowContext = {
-  emit: Emitter
+export type EmitData = { topic: ''; data: unknown }
+export type Emitter<TData> = (event: TData) => Promise<void>
+
+export interface FlowContext<TEmitData = never> {
+  emit: Emitter<TEmitData>
   traceId: string
   state: InternalStateManager
   logger: Logger
 }
 
-// eslint-disable-next-line @typescript-eslint/no-explicit-any
-export type EventHandler<TInput extends ZodObject<any>> = (input: z.infer<TInput>, ctx: FlowContext) => Promise<void>
+export type EventHandler<TInput, TEmitData> = (input: TInput, ctx: FlowContext<TEmitData>) => Promise<void>
 
 export type Emit = string | { topic: string; label?: string; conditional?: boolean }
 
-// eslint-disable-next-line @typescript-eslint/no-explicit-any
-export type EventConfig<TInput extends ZodObject<any> = any> = {
+export type EventConfig = {
   type: 'event'
   name: string
   description?: string
   subscribes: string[]
   emits: Emit[]
   virtualEmits?: Emit[]
-  input: TInput
+  input: ZodObject<any> // eslint-disable-line @typescript-eslint/no-explicit-any
   flows?: string[]
   /**
    * Files to include in the step bundle.
@@ -51,11 +50,11 @@ export type NoopConfig = {
 
 export type ApiRouteMethod = 'GET' | 'POST' | 'PUT' | 'DELETE' | 'PATCH' | 'OPTIONS' | 'HEAD'
 
-export type ApiMiddleware = (
-  req: ApiRequest,
-  ctx: FlowContext,
-  next: () => Promise<ApiResponse>,
-) => Promise<ApiResponse>
+export type ApiMiddleware<TBody = unknown, TEmitData = never, TResult = unknown> = (
+  req: ApiRequest<TBody>,
+  ctx: FlowContext<TEmitData>,
+  next: () => Promise<ApiResponse<TResult>>,
+) => Promise<ApiResponse<TResult>>
 
 type QueryParam = {
   name: string
@@ -72,7 +71,7 @@ export type ApiRouteConfig = {
   virtualEmits?: Emit[]
   virtualSubscribes?: string[]
   flows?: string[]
-  middleware?: ApiMiddleware[]
+  middleware?: ApiMiddleware<any, any, any>[] // eslint-disable-line @typescript-eslint/no-explicit-any
   bodySchema?: ZodObject<any> // eslint-disable-line @typescript-eslint/no-explicit-any
   responseBody?: ZodObject<any> // eslint-disable-line @typescript-eslint/no-explicit-any
   queryParams?: QueryParam[]
@@ -83,11 +82,10 @@ export type ApiRouteConfig = {
   includeFiles?: string[]
 }
 
-export type ApiRequest = {
+export type ApiRequest<TBody = unknown> = {
   pathParams: Record<string, string>
   queryParams: Record<string, string | string[]>
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  body: Record<string, any>
+  body: TBody
   headers: Record<string, string | string[]>
   files?:
     | Express.Multer.File[]
@@ -96,14 +94,16 @@ export type ApiRequest = {
       }
 }
 
-export type ApiResponse = {
+export type ApiResponse<TBody = string | Buffer | Record<string, unknown>> = {
   status: number
   headers?: Record<string, string>
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  body: string | Buffer | Record<string, any>
+  body: TBody
 }
 
-export type ApiRouteHandler = (req: ApiRequest, ctx: FlowContext) => Promise<ApiResponse>
+export type ApiRouteHandler<TRequestBody = unknown, TResponseBody = unknown, TEmitData = never> = (
+  req: ApiRequest<TRequestBody>,
+  ctx: FlowContext<TEmitData>,
+) => Promise<ApiResponse<TResponseBody>>
 
 export type CronConfig = {
   type: 'cron'
@@ -120,17 +120,15 @@ export type CronConfig = {
   includeFiles?: string[]
 }
 
-export type CronHandler = (ctx: FlowContext) => Promise<void>
+export type CronHandler<TEmitData = never> = (ctx: FlowContext<TEmitData>) => Promise<void>
 
-export type StepHandler<T> =
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  T extends EventConfig<any>
-    ? EventHandler<T['input']>
-    : T extends ApiRouteConfig
-      ? ApiRouteHandler
-      : T extends CronConfig
-        ? CronHandler
-        : never
+export type StepHandler<T> = T extends EventConfig
+  ? EventHandler<z.infer<T['input']>, { topic: string; data: any }> // eslint-disable-line @typescript-eslint/no-explicit-any
+  : T extends ApiRouteConfig
+    ? ApiRouteHandler<any, any, { topic: string; data: any }> // eslint-disable-line @typescript-eslint/no-explicit-any
+    : T extends CronConfig
+      ? CronHandler<{ topic: string; data: any }> // eslint-disable-line @typescript-eslint/no-explicit-any
+      : never
 
 export type Event<TData = unknown> = {
   topic: string
@@ -160,8 +158,7 @@ export type EventManager = {
   unsubscribe: (config: UnsubscribeConfig) => void
 }
 
-// eslint-disable-next-line @typescript-eslint/no-explicit-any
-export type StepConfig = EventConfig<ZodObject<any>> | NoopConfig | ApiRouteConfig | CronConfig
+export type StepConfig = EventConfig | NoopConfig | ApiRouteConfig | CronConfig
 
 export type Step<TConfig extends StepConfig = StepConfig> = { filePath: string; version: string; config: TConfig }
 
@@ -169,4 +166,8 @@ export type Flow = {
   name: string
   description?: string
   steps: Step[]
+}
+
+export type Handlers = {
+  [key: string]: StepHandler<StepConfig>
 }

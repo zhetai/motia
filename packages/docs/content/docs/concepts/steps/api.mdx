@@ -75,6 +75,7 @@ The following properties are specific to the API Step, in addition to the [commo
       }
     }
     ```
+
   </Tab>
   <Tab value="JavaScript">
     ```typescript
@@ -108,6 +109,7 @@ The following properties are specific to the API Step, in addition to the [commo
       }
     }
     ```
+
   </Tab>
   <Tab value="Python">
     ```python
@@ -142,6 +144,7 @@ The following properties are specific to the API Step, in addition to the [commo
         "body": { "message": "OpenAI response sent" },
       }
     ```
+
   </Tab>
 </Tabs>
 
@@ -309,7 +312,7 @@ const rateLimiterMiddleware: ApiMiddleware = (() => {
 })()
 ```
 
-<Tabs items={['TypeScript', 'JavaScript', 'Python', 'Ruby']}>
+<Tabs items={['TypeScript', 'JavaScript', 'Python']}>
   <Tab value="TypeScript">
     ```typescript
       import { ApiRouteConfig, StepHandler } from 'motia'
@@ -481,34 +484,6 @@ const rateLimiterMiddleware: ApiMiddleware = (() => {
             'status': 200,
             'body': {'message': 'Success'}
         }
-    ```
-
-  </Tab>
-  <Tab value="Ruby">
-    ```ruby
-    def config
-      {
-        type: 'api',
-        name: 'Test state api trigger',
-        description: 'test state',
-        path: '/test-state',
-        method: 'POST',
-        emits: ['test-state'],
-        flows: ['test-state']
-      }
-    end
-
-    def handler(req, ctx)
-      ctx.emit({
-        "topic" => "test-state",
-        "data" => req.body
-      })
-
-      {
-        "status" => 200,
-        "body" => { "message" => "Success" }
-      }
-    end
     ```
 
   </Tab>

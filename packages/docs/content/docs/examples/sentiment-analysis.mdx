@@ -69,18 +69,13 @@ Sometimes you don't just want a **simple** "prompt => response." Instead, you wa
     // 1) Create an OpenAI client (newer syntax)
     const openai = new OpenAI({ apiKey: process.env.OPENAI_API_KEY })
 
-    // 2) Define the input schema for your step
-    const inputSchema = z.object({
-      text: z.string(),
-    })
-
-    export const config: EventConfig<typeof inputSchema> = {
+    export const config: EventConfig = {
       type: 'event',
       name: 'OpenAI Sentiment Analyzer',
       subscribes: ['openai.analyzeSentimentRequest'],
       // We'll emit different events: "openai.positiveSentiment" or "openai.negativeSentiment"
       emits: ['openai.positiveSentiment', 'openai.negativeSentiment'],
-      input: inputSchema,
+      input: z.object({ text: z.string() }),
       flows: ['sentiment-demo'],
     }
 
@@ -142,17 +137,15 @@ Sometimes you don't just want a **simple** "prompt => response." Instead, you wa
     import { EventConfig, StepHandler } from 'motia'
     import { z } from 'zod'
 
-    const positiveSchema = z.object({
-      sentiment: z.string(),
-      analysis: z.string().optional(),
-    })
-
-    export const config: EventConfig<typeof positiveSchema> = {
+    export const config: EventConfig = {
       type: 'event',
       name: 'Positive Sentiment Responder',
       subscribes: ['openai.positiveSentiment'],
       emits: [],
-      input: positiveSchema,
+      input: z.object({
+        sentiment: z.string(),
+        analysis: z.string().optional(),
+      }),
       flows: ['sentiment-demo'],
     }
 
@@ -169,17 +162,15 @@ Sometimes you don't just want a **simple** "prompt => response." Instead, you wa
     import { EventConfig, StepHandler } from 'motia'
     import { z } from 'zod'
 
-    const negativeSchema = z.object({
-      sentiment: z.string(),
-      analysis: z.string().optional(),
-    })
-
-    export const config: EventConfig<typeof negativeSchema> = {
+    export const config: EventConfig = {
       type: 'event',
       name: 'Negative Sentiment Responder',
       subscribes: ['openai.negativeSentiment'],
       emits: [],
-      input: negativeSchema,
+      input: z.object({
+        sentiment: z.string(),
+        analysis: z.string().optional(),
+      }),
       flows: ['sentiment-demo'],
     }
 
