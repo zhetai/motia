@@ -6,7 +6,7 @@ import React from 'react'
  */
 export const Node: React.FC<NoopNodeProps> = (data) => {
   const start = () => {
-    fetch('/default', { method: 'POST', body: JSON.stringify({ message: 'test' }) })
+    fetch('/test-state', { method: 'POST', body: JSON.stringify({ message: 'test' }) })
   }
 
   return (
