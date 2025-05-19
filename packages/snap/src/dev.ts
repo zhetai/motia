@@ -25,7 +25,6 @@ export const dev = async (port: number, isVerbose: boolean, enableMermaid: boole
   const lockedData = await generateLockedData(baseDir)
 
   if (lockedData.pythonSteps().length) {
-    globalLogger.info('🔍 Activating Python virtual environment...')
     activatePythonVenv({ baseDir, isVerbose })
   }
 
