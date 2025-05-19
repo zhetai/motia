@@ -1,11 +1,11 @@
 // packages/snap/src/dev.ts
 import {
-  createServer,
-  createStepHandlers,
   createEventManager,
-  globalLogger,
-  createStateAdapter,
   createMermaidGenerator,
+  createServer,
+  createStateAdapter,
+  createStepHandlers,
+  globalLogger,
 } from '@motiadev/core'
 import { generateLockedData } from './generate-locked-data'
 import path from 'path'
@@ -22,10 +22,13 @@ require('ts-node').register({
 
 export const dev = async (port: number, isVerbose: boolean, enableMermaid: boolean): Promise<void> => {
   const baseDir = process.cwd()
-
-  activatePythonVenv({ baseDir, isVerbose })
-
   const lockedData = await generateLockedData(baseDir)
+
+  if (lockedData.pythonSteps().length) {
+    globalLogger.info('🔍 Activating Python virtual environment...')
+    activatePythonVenv({ baseDir, isVerbose })
+  }
+
   const eventManager = createEventManager()
   const state = createStateAdapter({
     adapter: 'default',

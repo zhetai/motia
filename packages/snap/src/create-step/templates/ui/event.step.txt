@@ -1,5 +1,5 @@
 import React from 'react'
-import { BaseNode, Button, EventNodeProps } from '@motiadev/workbench'
+import { BaseNode, Button, EventNodeProps } from 'motia/workbench'
 
 export const Node: React.FC<EventNodeProps> = ({ data }) => {
   const doSomething = () => {

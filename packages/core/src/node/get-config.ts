@@ -1,5 +1,5 @@
 import path from 'path'
-import { ZodObject } from 'zod'
+import { z } from 'zod'
 import zodToJsonSchema from 'zod-to-json-schema'
 
 // Add ts-node registration before dynamic imports
@@ -9,25 +9,28 @@ require('ts-node').register({
   compilerOptions: { module: 'commonjs' },
 })
 
+function isZodSchema(value: unknown): value is z.ZodType {
+  return Boolean(value && typeof (value as z.ZodType).safeParse === 'function' && (value as z.ZodType)._def)
+}
+
 async function getConfig(filePath: string) {
   try {
     // eslint-disable-next-line @typescript-eslint/no-require-imports
     const module = require(path.resolve(filePath))
-
     // Check if the specified function exists in the module
     if (!module.config) {
       throw new Error(`Config not found in module ${filePath}`)
     }
 
-    if (module.config.input instanceof ZodObject) {
+    if (isZodSchema(module.config.input)) {
       module.config.input = zodToJsonSchema(module.config.input)
-    } else if (module.config.bodySchema instanceof ZodObject) {
+    } else if (isZodSchema(module.config.bodySchema)) {
       module.config.bodySchema = zodToJsonSchema(module.config.bodySchema)
     }
 
     if (module.config.responseSchema) {
       for (const [status, schema] of Object.entries(module.config.responseSchema)) {
-        if (schema instanceof ZodObject) {
+        if (isZodSchema(schema)) {
           module.config.responseSchema[status] = zodToJsonSchema(schema)
         }
       }

@@ -11,8 +11,8 @@ UI Steps provide custom step visualizations in the Motia Workbench.
 
 ```typescript
 import React from 'react'
-import { EventNode } from '@motiadev/workbench'
-import type { EventNodeProps } from '@motiadev/workbench'
+import { EventNode } from 'motia/workbench'
+import type { EventNodeProps } from 'motia/workbench'
  
 export default function CustomStep({ data }: EventNodeProps) {
   return (

@@ -1,5 +1,5 @@
 import React from 'react'
-import { BaseNode, Button, CronNodeProps } from '@motiadev/workbench'
+import { BaseNode, Button, CronNodeProps } from 'motia/workbench'
 
 export const Node: React.FC<CronNodeProps> = ({ data }) => {
   const doSomething = () => {

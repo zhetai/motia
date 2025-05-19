@@ -4580,7 +4580,7 @@ To receive daily email summaries in Discord, follow these steps to set up a webh
 ## 📦 Dependencies
 
 ### Node.js Dependencies
-- **@motiadev/core**, **@motiadev/workbench**, **motia**: Motia framework
+- **@motiadev/core**, **motia/workbench**, **motia**: Motia framework
 - **googleapis**, **google-auth-library**: Google API integration
 - **gmail-api-parse-message-ts**: Gmail message parsing
 - **axios**: HTTP client
@@ -4919,7 +4919,7 @@ To receive daily email summaries in Discord, follow these steps to set up a webh
 ## 📦 Dependencies
 
 ### Node.js Dependencies
-- **@motiadev/core**, **@motiadev/workbench**, **motia**: Motia framework
+- **@motiadev/core**, **motia/workbench**, **motia**: Motia framework
 - **googleapis**, **google-auth-library**: Google API integration
 - **gmail-api-parse-message-ts**: Gmail message parsing
 - **axios**: HTTP client

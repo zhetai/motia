@@ -33,5 +33,6 @@ export const activatePythonVenv = ({ baseDir, isVerbose = false, pythonVersion =
     }
   } else {
     console.warn('❌ Python virtual environment not found in python_modules/')
+    console.warn('Please run `motia install` to create a new virtual environment')
   }
 }

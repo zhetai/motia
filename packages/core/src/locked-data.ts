@@ -65,6 +65,14 @@ export class LockedData {
     return this.activeSteps.filter(isCronStep)
   }
 
+  pythonSteps(): Step[] {
+    return this.activeSteps.filter((step) => step.filePath.endsWith('.py'))
+  }
+
+  tsSteps(): Step[] {
+    return this.activeSteps.filter((step) => step.filePath.endsWith('.ts'))
+  }
+
   updateStep(oldStep: Step, newStep: Step, options: { disableTypeCreation?: boolean } = {}): boolean {
     if (!this.isValidStep(newStep)) {
       this.deleteStep(oldStep)

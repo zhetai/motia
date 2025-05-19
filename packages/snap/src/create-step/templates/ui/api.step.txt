@@ -1,5 +1,5 @@
 import React from 'react'
-import { ApiNode, Button, ApiNodeProps } from '@motiadev/workbench'
+import { ApiNode, Button, ApiNodeProps } from 'motia/workbench'
 
 export const Node: React.FC<ApiNodeProps> = ({ data }) => {
   const doSomething = () => {
