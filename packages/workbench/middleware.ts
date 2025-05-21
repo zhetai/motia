@@ -3,7 +3,6 @@ import fs from 'fs'
 import path from 'path'
 import { createServer as createViteServer } from 'vite'
 import react from '@vitejs/plugin-react'
-import tailwindcssPostcss from '@tailwindcss/postcss'
 
 export const applyMiddleware = async (app: Express) => {
   const vite = await createViteServer({
@@ -21,11 +20,6 @@ export const applyMiddleware = async (app: Express) => {
       alias: { '@': path.resolve(__dirname, './src') },
     },
     plugins: [react()],
-    css: {
-      postcss: {
-        plugins: [tailwindcssPostcss({ base: path.join(__dirname, './src') })],
-      },
-    },
   })
 
   app.use(vite.middlewares)
