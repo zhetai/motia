@@ -9,8 +9,8 @@
       "y": 252
     },
     "steps/simplePython/testedEvent.step.py": {
-      "x": 15.5,
-      "y": 428
+      "x": -236.79933481152995,
+      "y": 249.06430155210643
     }
   },
   "openai": {
@@ -55,11 +55,11 @@
   },
   "test-state": {
     "steps/testState/test_state.step.py": {
-      "x": 132.75,
-      "y": 195
+      "x": 129.5,
+      "y": 238
     },
     "steps/testState/testState.api.step.ts": {
-      "x": 137.75,
+      "x": 139.5,
       "y": 0
     },
     "steps/testState/check_state_change.step.rb": {
@@ -97,8 +97,18 @@
       "y": 704
     },
     "steps/parallelMergeState/joinComplete.step.ts": {
-      "x": 242.5,
+      "x": 244.5,
       "y": 914
+    }
+  },
+  "open-ai": {
+    "steps/open-ai/02-prompt.step.ts": {
+      "x": 0,
+      "y": 238
+    },
+    "steps/open-ai/01-prompt-api.step.ts": {
+      "x": 2,
+      "y": 0
     }
   }
 }
