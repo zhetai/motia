@@ -150,7 +150,7 @@ export const EndpointCall: React.FC<Props> = ({ endpoint, onClose }) => {
               Object is being streamed, this is not the actual response from the API Endpoint
             </span>
           )}
-          <span className="text-xs font-mono font-bold bg-black/50 p-2 rounded-lg whitespace-pre-wrap">
+          <span className="text-xs font-mono font-bold dark:bg-black/50 bg-white/50 p-2 rounded-lg whitespace-pre-wrap">
             {JSON.stringify(responseBodyData, null, 2)}
           </span>
         </div>
