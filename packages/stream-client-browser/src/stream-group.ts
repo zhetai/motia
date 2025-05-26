@@ -17,7 +17,7 @@ export class StreamGroupSubscription<TData extends { id: string }> extends Strea
     const listenerWrapper = (event: MessageEvent<string>) => {
       const message: GroupEventMessage<TData> = JSON.parse(event.data)
       const isStreamName = message.streamName === this.sub.streamName
-      const isGroupId = 'groupId' in message && message.groupId === this.sub.groupId
+      const isGroupId = message.groupId === this.sub.groupId
 
       if (isStreamName && isGroupId) {
         if (message.event.type === 'sync') {

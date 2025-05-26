@@ -41,29 +41,16 @@ class ApiEndpointsStream extends StateStream<ApiEndpoint> {
     return endpoint ? mapEndpoint(endpoint) : null
   }
 
-  async update(_: string, data: ApiEndpoint): Promise<ApiEndpoint> {
-    return data
-  }
-
   async delete(id: string): Promise<ApiEndpoint> {
     return { id } as never
   }
 
-  async create(_: string, data: ApiEndpoint): Promise<ApiEndpoint> {
+  async set(_: string, __: string, data: ApiEndpoint): Promise<ApiEndpoint> {
     return data
   }
 
-  async getList(): Promise<ApiEndpoint[]> {
+  async getGroup(): Promise<ApiEndpoint[]> {
     return this.lockedData.apiSteps().map(mapEndpoint)
-  }
-
-  getGroupId(): string {
-    /**
-     * We're making it static to default because we only have one group of api endpoints
-     *
-     * In the future, we might want to have group of endpoints by Flows
-     */
-    return 'default'
   }
 }
 
@@ -80,7 +67,7 @@ export const apiEndpoints = (lockedData: LockedData) => {
 
   const apiStepCreated = (step: Step) => {
     if (isApiStep(step)) {
-      stream.create(step.filePath, {
+      stream.set('default', step.filePath, {
         id: step.filePath,
         method: step.config.method,
         path: step.config.path,
@@ -92,13 +79,13 @@ export const apiEndpoints = (lockedData: LockedData) => {
 
   const apiStepUpdated = (step: Step) => {
     if (isApiStep(step)) {
-      stream.update(step.filePath, mapEndpoint(step))
+      stream.set('default', step.filePath, mapEndpoint(step))
     }
   }
 
   const apiStepRemoved = (step: Step) => {
     if (isApiStep(step)) {
-      stream.delete(step.filePath)
+      stream.delete('default', step.filePath)
     }
   }
 

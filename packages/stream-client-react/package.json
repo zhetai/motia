@@ -16,6 +16,7 @@
     "@motiadev/stream-client-browser": "workspace:*"
   },
   "devDependencies": {
-    "@types/react": "^19.0.7"
+    "@types/react": "^19.0.7",
+    "typescript": "^5.7.2"
   }
 }

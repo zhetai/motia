@@ -259,8 +259,7 @@ export class LockedData {
     let factory: StateStreamFactory<TData>
 
     if (stream.config.baseConfig.storageType === 'state') {
-      const property = stream.config.baseConfig.property
-      factory = this.createFactoryWrapper(stream, () => new InternalStateStream<TData>(this.state!, property))
+      factory = this.createFactoryWrapper(stream, () => new InternalStateStream<TData>(this.state!))
     } else {
       factory = this.createFactoryWrapper(stream, stream.config.baseConfig.factory)
     }
@@ -305,8 +304,7 @@ export class LockedData {
     let factory: StateStreamFactory<any>
 
     if (stream.config.baseConfig.storageType === 'state') {
-      const property = stream.config.baseConfig.property
-      factory = this.createFactoryWrapper(stream, () => new InternalStateStream(this.state!, property))
+      factory = this.createFactoryWrapper(stream, () => new InternalStateStream(this.state!))
     } else {
       factory = this.createFactoryWrapper(stream, stream.config.baseConfig.factory)
     }

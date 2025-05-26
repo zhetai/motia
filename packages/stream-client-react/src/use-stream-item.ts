@@ -2,8 +2,9 @@ import { StreamSubscription } from '@motiadev/stream-client-browser'
 import { useEffect, useState } from 'react'
 import { useMotiaStream } from './use-motia-stream'
 
-type Args = {
+export type StreamItemArgs = {
   streamName: string
+  groupId: string
   id: string
 }
 
@@ -12,31 +13,36 @@ type Args = {
  *
  * @example
  * ```tsx
- * const { data } = useStreamItem<{ id:string; name: string }>({ streamName: 'my-stream', id: '123' })
+ * const { data } = useStreamItem<{ id:string; name: string }>({
+ *   streamName: 'my-stream',
+ *   groupId: '123',
+ *   id: '123',
+ * })
  *
  * return (
  *   <div>{data?.name}</div>
  * )
  * ```
  */
-export const useStreamItem = <TData>(args?: Args) => {
+export const useStreamItem = <TData>(args?: StreamItemArgs) => {
   const { stream } = useMotiaStream()
   const [data, setData] = useState<TData | null>(null)
   const [event, setEvent] = useState<StreamSubscription | null>(null)
 
   useEffect(() => {
-    if (!args?.id || !args?.streamName) return
+    if (!args?.streamName || !args?.groupId || !args?.id) return
 
-    const subscription = stream.subscribeItem(args.streamName, args.id)
+    const subscription = stream.subscribeItem(args.streamName, args.groupId, args.id)
 
     subscription.addChangeListener((data) => setData(data as TData))
     setEvent(subscription)
 
     return () => {
       setData(null)
+      setEvent(null)
       subscription.close()
     }
-  }, [stream, args?.streamName, args?.id])
+  }, [stream, args?.streamName, args?.groupId, args?.id])
 
   return { data, event }
 }

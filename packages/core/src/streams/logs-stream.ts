@@ -17,12 +17,10 @@ export type Log = {
  */
 export class LogsStream extends StateStream<Log> {
   get = async () => null
-  update = async () => null
   delete = async () => null
-  getList = async () => []
-  getGroupId = () => null
+  getGroup = async () => []
 
-  async create(_: string, data: Log): Promise<Log> {
+  async set(_: string, __: string, data: Log): Promise<Log> {
     await this.send({ groupId: 'default' }, { type: 'log', data })
     return data
   }

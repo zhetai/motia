@@ -29,6 +29,14 @@ export class FileStateAdapter implements StateAdapter {
     }
   }
 
+  async getGroup<T>(groupId: string): Promise<T[]> {
+    const data = this._readFile()
+
+    return Object.entries(data)
+      .filter(([key]) => key.startsWith(groupId))
+      .map(([, value]) => JSON.parse(value) as T)
+  }
+
   async get<T>(traceId: string, key: string): Promise<T | null> {
     const data = this._readFile()
     const fullKey = this._makeKey(traceId, key)

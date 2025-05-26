@@ -12,8 +12,8 @@ type StateSetInput = { traceId: string; key: string; value: unknown }
 type StateDeleteInput = { traceId: string; key: string }
 type StateClearInput = { traceId: string }
 
-type StateStreamGetInput = { id: string }
-type StateStreamMutateInput = { id: string; data: BaseStreamItem }
+type StateStreamGetInput = { groupId: string; id: string }
+type StateStreamMutateInput = { groupId: string; id: string; data: BaseStreamItem }
 
 const getLanguageBasedRunner = (
   stepFilePath = '',
@@ -91,6 +91,7 @@ export const callStepFile = <TData>(options: CallStepFileOptions): Promise<TData
           state.delete(input.traceId, input.key),
         )
         processManager.handler<StateClearInput, void>('state.clear', (input) => state.clear(input.traceId))
+        processManager.handler<StateStreamGetInput>(`state.getGroup`, (input) => state.getGroup(input.groupId))
         processManager.handler<TData, void>('result', async (input) => {
           result = input
         })
@@ -105,13 +106,17 @@ export const callStepFile = <TData>(options: CallStepFileOptions): Promise<TData
         Object.entries(streamConfig).forEach(([name, streamFactory]) => {
           const stateStream = streamFactory()
 
-          processManager.handler<StateStreamGetInput>(`streams.${name}.get`, (input) => stateStream.get(input.id))
-          processManager.handler<StateStreamMutateInput>(`streams.${name}.update`, (input) =>
-            stateStream.update(input.id, input.data),
+          processManager.handler<StateStreamGetInput>(`streams.${name}.get`, (input) =>
+            stateStream.get(input.groupId, input.id),
           )
-          processManager.handler<StateStreamGetInput>(`streams.${name}.delete`, (input) => stateStream.delete(input.id))
-          processManager.handler<StateStreamMutateInput>(`streams.${name}.create`, (input) =>
-            stateStream.create(input.id, input.data),
+          processManager.handler<StateStreamMutateInput>(`streams.${name}.set`, (input) =>
+            stateStream.set(input.groupId, input.id, input.data),
+          )
+          processManager.handler<StateStreamGetInput>(`streams.${name}.delete`, (input) =>
+            stateStream.delete(input.groupId, input.id),
+          )
+          processManager.handler<StateStreamGetInput>(`streams.${name}.getGroup`, (input) =>
+            stateStream.getGroup(input.groupId),
           )
         })
 

@@ -44,7 +44,7 @@ describe('Middleware Management', () => {
       cronSteps: () => [],
       onStep: () => {},
       applyStreamWrapper: () => {},
-      createStream: () => (state: InternalStateManager) => new InternalStateStream(state, 'test'),
+      createStream: () => (state: InternalStateManager) => new InternalStateStream(state),
       on: () => {},
     } as unknown as LockedData
 

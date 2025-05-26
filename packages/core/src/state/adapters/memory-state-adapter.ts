@@ -7,6 +7,12 @@ export class MemoryStateAdapter implements StateAdapter {
     this.state = {}
   }
 
+  async getGroup<T>(groupId: string): Promise<T[]> {
+    return Object.entries(this.state)
+      .filter(([key]) => key.startsWith(groupId))
+      .map(([, value]) => value as T)
+  }
+
   async get<T>(traceId: string, key: string): Promise<T | null> {
     const fullKey = this._makeKey(traceId, key)
 

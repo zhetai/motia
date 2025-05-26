@@ -19,4 +19,8 @@ export class RpcStateManager implements InternalStateManager {
   async clear(traceId: string) {
     await this.sender.send('state.clear', { traceId })
   }
+
+  async getGroup<T>(groupId: string): Promise<T[]> {
+    return this.sender.send<T[]>('state.getGroup', { groupId })
+  }
 }

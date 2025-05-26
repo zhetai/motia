@@ -1,16 +1,16 @@
 import {
-  isApiStep,
-  LockedData,
-  MotiaServer,
-  MotiaEventManager,
-  isEventStep,
-  isCronStep,
   CronManager,
-  Stream,
+  isApiStep,
+  isCronStep,
+  isEventStep,
+  LockedData,
+  MotiaEventManager,
+  MotiaServer,
+  Step,
 } from '@motiadev/core'
-import { Step } from '@motiadev/core'
-import { Watcher } from './watcher'
+import type { Stream } from '@motiadev/core/dist/src/types-stream'
 import path from 'path'
+import { Watcher } from './watcher'
 
 export const createDevWatchers = (
   lockedData: LockedData,

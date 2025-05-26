@@ -10,32 +10,57 @@ export const config: EventConfig = {
   emits: [],
   input: z.object({
     message: z.string({ description: 'The message to send to OpenAI' }),
+    assistantMessageId: z.string({ description: 'The assistant message ID' }),
+    threadId: z.string({ description: 'The thread ID' }),
   }),
   flows: ['open-ai'],
 }
 
 export const handler: Handlers['CallOpenAi'] = async (input, context) => {
-  const { logger, traceId } = context
+  const { logger } = context
+  const { message, assistantMessageId, threadId } = input
   const openai = new OpenAI({ apiKey: process.env.OPENAI_API_KEY_ })
+  const assistantId = 'asst_bYwnoUmhK87FRqhQKDJZSkZQ'
 
-  logger.info('[Call OpenAI] Received callOpenAi event', input)
+  logger.info('Starting OpenAI response')
 
-  const result = await openai.chat.completions.create({
-    messages: [{ role: 'system', content: input.message }],
-    model: 'gpt-4o-mini',
-    stream: true,
-  })
+  let openAiThreadId = await context.state.get<string>('openai-thread-id', threadId)
+  const messageResult: string[] = []
 
-  const messages: string[] = []
-
-  for await (const chunk of result) {
-    messages.push(chunk.choices[0].delta.content ?? '')
-
-    /**
-     * Now we're populating a previously created message with the streamed data from OpenAI
-     */
-    await context.streams.openai.update(traceId, { message: messages.join('') })
+  if (!openAiThreadId) {
+    const thread = await openai.beta.threads.create()
+    openAiThreadId = thread.id
+    await context.state.set('openai-thread-id', threadId, openAiThreadId)
   }
 
-  logger.info('[Call OpenAI] OpenAI response', result)
+  await openai.beta.threads.messages.create(openAiThreadId, { content: message, role: 'user' })
+
+  const threadStream = openai.beta.threads.runs.stream(openAiThreadId, {
+    assistant_id: assistantId,
+    model: 'gpt-4o-mini',
+  })
+
+  for await (const chunk of threadStream) {
+    if (chunk.event === 'thread.message.delta') {
+      const delta = chunk.data.delta.content?.[0]
+
+      if (delta?.type === 'text') {
+        messageResult.push(delta.text?.value || '')
+
+        await context.streams.message.set(threadId, assistantMessageId, {
+          message: messageResult.join(''),
+          from: 'assistant',
+          status: 'pending',
+        })
+      }
+    }
+  }
+
+  await context.streams.message.set(threadId, assistantMessageId, {
+    message: messageResult.join(''),
+    from: 'assistant',
+    status: 'completed',
+  })
+
+  logger.info('OpenAI response completed')
 }

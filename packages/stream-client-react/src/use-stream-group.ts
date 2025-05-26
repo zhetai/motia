@@ -2,7 +2,7 @@ import { useEffect, useState } from 'react'
 import { useMotiaStream } from './use-motia-stream'
 import { StreamSubscription } from '@motiadev/stream-client-browser'
 
-type Args = {
+export type StreamGroupArgs = {
   streamName: string
   groupId: string
 }
@@ -12,7 +12,10 @@ type Args = {
  *
  * @example
  * ```tsx
- * const { data } = useStreamGroup<{ id:string; name: string }>({ streamName: 'my-stream', groupId: '123' })
+ * const { data } = useStreamGroup<{ id:string; name: string }>({
+ *   streamName: 'my-stream',
+ *   groupId: '123',
+ * })
  *
  * return (
  *   <div>
@@ -23,12 +26,14 @@ type Args = {
  * )
  * ```
  */
-export const useStreamGroup = <TData>(args: Args) => {
+export const useStreamGroup = <TData>(args?: StreamGroupArgs) => {
   const { stream } = useMotiaStream()
   const [data, setData] = useState<TData[]>([])
   const [event, setEvent] = useState<StreamSubscription | null>(null)
 
   useEffect(() => {
+    if (!args?.streamName || !args?.groupId) return
+
     const subscription = stream.subscribeGroup(args.streamName, args.groupId)
 
     subscription.addChangeListener((data) => setData(data as TData[]))
@@ -36,9 +41,10 @@ export const useStreamGroup = <TData>(args: Args) => {
 
     return () => {
       setData([])
+      setEvent(null)
       subscription.close()
     }
-  }, [stream, args.streamName, args.groupId])
+  }, [stream, args?.streamName, args?.groupId])
 
   return { data, event }
 }

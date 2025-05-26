@@ -43,16 +43,15 @@ async function runTypescriptModule(filePath: string, event: Record<string, unkno
     const streams = (streamsConfig ?? []).reduce(
       (acc, streams) => {
         acc[streams.name] = {
-          get: (id: string) => sender.send(`streams.${streams.name}.get`, { id }),
-          // eslint-disable-next-line @typescript-eslint/no-explicit-any
-          update: (id: string, data: any) => sender.send(`streams.${streams.name}.update`, { id, data }),
-          delete: (id: string) => sender.send(`streams.${streams.name}.delete`, { id }),
-          // eslint-disable-next-line @typescript-eslint/no-explicit-any
-          create: (id: string, data: any) => sender.send(`streams.${streams.name}.create`, { id, data }),
+          get: (groupId: string, id: string) => sender.send(`streams.${streams.name}.get`, { groupId, id }),
+          set: (groupId: string, id: string, data: unknown) =>
+            sender.send(`streams.${streams.name}.set`, { groupId, id, data }),
+          delete: (groupId: string, id: string) => sender.send(`streams.${streams.name}.delete`, { groupId, id }),
+          getGroup: (groupId: string) => sender.send(`streams.${streams.name}.getGroup`, { groupId }),
         }
         return acc
       },
-      {} as Record<string, any>, // eslint-disable-line @typescript-eslint/no-explicit-any
+      {} as Record<string, unknown>,
     )
 
     const context = { traceId, flows, logger, state, emit, streams }

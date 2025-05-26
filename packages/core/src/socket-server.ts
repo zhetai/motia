@@ -1,7 +1,7 @@
 import { WebSocket, Server as WsServer } from 'ws'
 import http from 'http'
 
-type BaseMessage = { streamName: string } & ({ id: string } | { groupId: string })
+type BaseMessage = { streamName: string; groupId: string; id?: string }
 type JoinMessage = BaseMessage & { subscriptionId: string }
 type StreamEvent<TData> =
   | { type: 'sync'; data: TData }
@@ -16,7 +16,7 @@ type Message = { type: 'join' | 'leave'; data: JoinMessage }
 
 type Props = {
   server: http.Server
-  onJoin: <TData>(streamName: string, id: string) => Promise<TData>
+  onJoin: <TData>(streamName: string, groupId: string, id: string) => Promise<TData>
   onJoinGroup: <TData>(streamName: string, groupId: string) => Promise<TData[] | undefined>
 }
 
@@ -26,9 +26,7 @@ export const createSocketServer = ({ server, onJoin, onJoinGroup }: Props) => {
   const subscriptions: Map<WebSocket, Set<[string, string]>> = new Map()
 
   const getRoom = (message: BaseMessage): string => {
-    return 'id' in message
-      ? `${message.streamName}:id:${message.id}`
-      : `${message.streamName}:group-id:${message.groupId}`
+    return message.id ? `${message.streamName}:id:${message.id}` : `${message.streamName}:group-id:${message.groupId}`
   }
 
   socketServer.on('connection', (socket) => {
@@ -44,12 +42,13 @@ export const createSocketServer = ({ server, onJoin, onJoinGroup }: Props) => {
           rooms[room] = new Map()
         }
 
-        if ('id' in message.data) {
-          const item = await onJoin(message.data.streamName, message.data.id)
+        if (message.data.id) {
+          const item = await onJoin(message.data.streamName, message.data.groupId, message.data.id)
 
           if (item) {
             const resultMessage: EventMessage<typeof item> = {
               streamName: message.data.streamName,
+              groupId: message.data.groupId,
               id: message.data.id,
               event: { type: 'sync', data: item },
             }
@@ -90,10 +89,19 @@ export const createSocketServer = ({ server, onJoin, onJoinGroup }: Props) => {
   })
 
   const pushEvent = <TData>(message: EventMessage<TData>) => {
-    const room = getRoom(message)
+    const { groupId, streamName, id } = message
+    const groupRoom = getRoom({ streamName, groupId })
 
-    if (rooms[room]) {
-      rooms[room].forEach((socket) => socket.send(JSON.stringify(message)))
+    if (rooms[groupRoom]) {
+      rooms[groupRoom].forEach((socket) => socket.send(JSON.stringify(message)))
+    }
+
+    if (id) {
+      const itemRoom = getRoom({ groupId, streamName, id })
+
+      if (rooms[itemRoom]) {
+        rooms[itemRoom].forEach((socket) => socket.send(JSON.stringify(message)))
+      }
     }
   }
 

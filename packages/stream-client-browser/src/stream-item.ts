@@ -16,7 +16,7 @@ export class StreamItemSubscription<TData extends { id: string }> extends Stream
     const listenerWrapper = (event: MessageEvent<string>) => {
       const message: ItemEventMessage<TData> = JSON.parse(event.data)
       const isStreamName = message.streamName === this.sub.streamName
-      const isId = 'id' in message && message.id === this.sub.id
+      const isId = message.id === this.sub.id
 
       if (isStreamName && isId) {
         if (message.event.type === 'sync' || message.event.type === 'create' || message.event.type === 'update') {

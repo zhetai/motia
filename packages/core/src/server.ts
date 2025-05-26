@@ -3,7 +3,6 @@ import bodyParser from 'body-parser'
 import express, { Express, Request, Response } from 'express'
 import http from 'http'
 import { Server as WsServer } from 'ws'
-import multer from 'multer'
 import cors from 'cors'
 import { flowsEndpoint } from './flows-endpoint'
 import { isApiStep } from './guards'
@@ -51,16 +50,15 @@ export const createServer = async (
   const printer = lockedData.printer
   const app = express()
   const server = http.createServer(app)
-  const upload = multer()
 
   const { pushEvent, socketServer } = createSocketServer({
     server,
-    onJoin: async (streamName: string, id: string) => {
+    onJoin: async (streamName: string, groupId: string, id: string) => {
       const streams = lockedData.getStreams()
       const stream = streams[streamName]
 
       if (stream) {
-        const result = await stream().get(id)
+        const result = await stream().get(groupId, id)
         delete result.__motia // deleting because we don't need it in the socket
         return result
       }
@@ -70,7 +68,7 @@ export const createServer = async (
       const stream = streams[streamName]
 
       if (stream) {
-        const result = stream ? await stream().getList(groupId) : []
+        const result = stream ? await stream().getGroup(groupId) : []
         // eslint-disable-next-line @typescript-eslint/no-unused-vars
         return result.map(({ __motia, ...rest }) => rest)
       }
@@ -93,60 +91,37 @@ export const createServer = async (
           pushEvent({ streamName, ...channel, event: { type: 'event', event } })
         },
 
-        async get(id: string) {
-          const result = await suuper.get.apply(wrapper, [id])
+        async get(groupId: string, id: string) {
+          const result = await suuper.get.apply(wrapper, [groupId, id])
           return wrapObject(id, result)
         },
 
-        async update(id: string, data: BaseStreamItem) {
+        async set(groupId: string, id: string, data: BaseStreamItem) {
           if (!data) {
             return null
           }
 
-          const updated = await suuper.update.apply(wrapper, [id, data])
+          const exists = await suuper.get(groupId, id)
+          const updated = await suuper.set.apply(wrapper, [groupId, id, data])
           const result = updated ?? data
           const wrappedResult = wrapObject(id, result)
-          const groupId = suuper.getGroupId(result)
 
-          pushEvent({ streamName, id, event: { type: 'update', data: result } })
-
-          if (groupId) {
-            pushEvent({ streamName, groupId, event: { type: 'update', data: result } })
-          }
+          const type = exists ? 'update' : 'create'
+          pushEvent({ streamName, groupId, id, event: { type, data: result } })
 
           return wrappedResult
         },
 
-        async delete(id: string) {
-          const result = await suuper.delete.apply(wrapper, [id])
-          const groupId = result && suuper.getGroupId(result)
+        async delete(groupId: string, id: string) {
+          const result = await suuper.delete.apply(wrapper, [groupId, id])
 
-          pushEvent({ streamName, id, event: { type: 'delete', data: result } })
-
-          if (groupId) {
-            pushEvent({ streamName, groupId, event: { type: 'delete', data: result } })
-          }
+          pushEvent({ streamName, groupId, id, event: { type: 'delete', data: result } })
 
           return wrapObject(id, result)
         },
 
-        async create(id: string, data: BaseStreamItem) {
-          const created = await suuper.create.apply(wrapper, [id, data])
-          const result = created ?? data
-          const wrappedResult = wrapObject(id, result)
-          const groupId = suuper.getGroupId(result)
-
-          pushEvent({ streamName, id, event: { type: 'create', data: result } })
-
-          if (groupId) {
-            pushEvent({ streamName, groupId, event: { type: 'create', data: result } })
-          }
-
-          return wrappedResult
-        },
-
-        getList: async (groupId: string) => {
-          const list = await suuper.getList.apply(wrapper, [groupId])
+        async getGroup(groupId: string) {
+          const list = await suuper.getGroup.apply(wrapper, [groupId])
           return list.map((object: BaseStreamItem) => wrapObject(object.id, object))
         },
       }
@@ -182,7 +157,6 @@ export const createServer = async (
         headers: req.headers as Record<string, string | string[]>,
         pathParams: req.params,
         queryParams: req.query as Record<string, string | string[]>,
-        files: req.files,
       }
 
       try {
@@ -230,10 +204,10 @@ export const createServer = async (
     const handler = asyncHandler(step)
     const methods: Record<ApiRouteMethod, () => void> = {
       GET: () => router.get(path, handler),
-      POST: () => router.post(path, upload.any(), handler),
-      PUT: () => router.put(path, upload.any(), handler),
+      POST: () => router.post(path, handler),
+      PUT: () => router.put(path, handler),
       DELETE: () => router.delete(path, handler),
-      PATCH: () => router.patch(path, upload.any(), handler),
+      PATCH: () => router.patch(path, handler),
       OPTIONS: () => router.options(path, handler),
       HEAD: () => router.head(path, handler),
     }

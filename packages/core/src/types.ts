@@ -1,12 +1,12 @@
 import { z, ZodObject } from 'zod'
-import type { Express } from 'express'
 import { BaseLogger, Logger } from './logger'
 
 export type InternalStateManager = {
-  get<T>(traceId: string, key: string): Promise<T | null>
-  set<T>(traceId: string, key: string, value: T): Promise<T>
-  delete<T>(traceId: string, key: string): Promise<T | null>
-  clear(traceId: string): Promise<void>
+  get<T>(groupId: string, key: string): Promise<T | null>
+  set<T>(groupId: string, key: string, value: T): Promise<T>
+  delete<T>(groupId: string, key: string): Promise<T | null>
+  getGroup<T>(groupId: string): Promise<T[]>
+  clear(groupId: string): Promise<void>
 }
 
 export type EmitData = { topic: ''; data: unknown }
@@ -91,11 +91,6 @@ export type ApiRequest<TBody = unknown> = {
   queryParams: Record<string, string | string[]>
   body: TBody
   headers: Record<string, string | string[]>
-  files?:
-    | Express.Multer.File[]
-    | {
-        [fieldname: string]: Express.Multer.File[]
-      }
 }
 
 export type ApiResponse<TStatus extends number = number, TBody = string | Buffer | Record<string, unknown>> = {

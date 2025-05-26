@@ -42,14 +42,6 @@ export const config: StateStreamConfig = {
      * the StateStream class.
      */
     storageType: 'state',
-
-    /**
-     * When storageType is state, this will be the property saved 
-     * to the state, similarly to using:
-     * 
-     * context.state.set(traceId, 'message', { ...data })
-     */
-    property: 'message',
   },
 }
 ```
@@ -82,7 +74,7 @@ export const handler: Handlers['OpenAiApi'] = async (req, { traceId, logger, emi
   /**
    * This creates a record with empty message string to be populated in the next step
    */
-  const result = await streams.openai.create(traceId, { message: '' })
+  const result = await streams.openai.set(traceId, 'message', { message: '' })
 
   await emit({
     topic: 'openai-prompt',
@@ -132,7 +124,9 @@ export const handler: Handlers['CallOpenAi'] = async (input, context) => {
     /**
      * Now we're populating a previously created message with the streamed data from OpenAI
      */
-    await context.streams.openai.update(traceId, { message: messages.join('') })
+    await context.streams.openai.set(traceId, 'message', { 
+      message: messages.join(''),
+    })
   }
 
   logger.info('[Call OpenAI] OpenAI response', result)
@@ -154,7 +148,7 @@ export const handler: Handlers['OpenAiApi'] = async (req, { traceId, logger, emi
   /**
    * This creates a record with empty message string to be populated in the next step
    */
-  const result = await streams.openai.create(traceId, { message: '' })
+  const result = await streams.openai.set(traceId, 'message', { message: '' })
 
   await emit({
     topic: 'openai-prompt',
@@ -192,7 +186,12 @@ Then add the provider to the root of your project
 then on your component or hook, just use
 
 ```typescript
-const id = '' // get the id back from the API call
+const messageId = '' // get the id back from the API call
+
 // data below will be updated whenever it's updated in the server
-const { data } = useStreamItem({ streamName: 'openai', id })
+const { data } = useStreamItem({ 
+  streamName: 'openai',
+  groupId: messageId,
+  id: 'message'
+})
 ```

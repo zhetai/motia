@@ -67,7 +67,7 @@ export class Logger extends BaseLogger {
 
     this.emitLog = (level: string, msg: string, args?: unknown) => {
       const id = randomUUID()
-      this.logStream?.create(id, {
+      this.logStream?.set('default', id, {
         id,
         step: this.step,
         ...(args ?? {}),

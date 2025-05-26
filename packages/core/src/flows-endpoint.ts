@@ -62,9 +62,9 @@ export const flowsEndpoint = (lockedData: LockedData, app: Express) => {
     { disableTypeCreation: true },
   )()
 
-  lockedData.on('flow-created', (flow) => flowsStream.create(flow, { id: flow, name: flow }))
-  lockedData.on('flow-updated', (flow) => flowsStream.update(flow, { id: flow, name: flow }))
-  lockedData.on('flow-removed', (flow) => flowsStream.delete(flow))
+  lockedData.on('flow-created', (flow) => flowsStream.set('default', flow, { id: flow, name: flow }))
+  lockedData.on('flow-updated', (flow) => flowsStream.set('default', flow, { id: flow, name: flow }))
+  lockedData.on('flow-removed', (flow) => flowsStream.delete('default', flow))
 
   app.get('/flows/:id', async (req, res) => {
     const flowId = req.params.id
