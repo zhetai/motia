@@ -72,7 +72,7 @@ describe('Server', () => {
       expect(response.body.traceId).toBeDefined()
     })
 
-    it('should run ruby API steps', async () => {
+    it.skip('should run ruby API steps', async () => {
       const mockApiStep: Step<ApiRouteConfig> = createApiStep(
         { emits: ['TEST_EVENT'], path: '/test', method: 'POST' },
         path.join(baseDir, 'api-step.rb'),

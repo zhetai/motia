@@ -3,22 +3,35 @@ import fs from 'fs'
 import { executeCommand } from './utils/executeCommand'
 import { activatePythonVenv } from './utils/activatePythonEnv'
 import { installLambdaPythonPackages } from './utils/installLambdaPythonPackages'
+import { getStepFiles } from './generate-locked-data'
+import { getPythonCommand } from './utils/pythonVersionUtils'
 
 interface InstallConfig {
   isVerbose?: boolean
   pythonVersion?: string
 }
 
-export const install = async ({ isVerbose = false, pythonVersion = '3.13' }: InstallConfig): Promise<void> => {
-  const baseDir = process.cwd()
+type PythonInstallConfig = InstallConfig & { baseDir: string }
+
+export const pythonInstall = async ({
+  baseDir,
+  isVerbose = false,
+  pythonVersion = '3.13',
+}: PythonInstallConfig): Promise<void> => {
   const venvPath = path.join(baseDir, 'python_modules')
   console.log('📦 Installing Python dependencies...', venvPath)
 
   try {
+    // Get the appropriate Python command
+    const pythonCmd = await getPythonCommand(pythonVersion, baseDir)
+    if (isVerbose) {
+      console.log(`🐍 Using Python command: ${pythonCmd}`)
+    }
+
     // Check if virtual environment exists
     if (!fs.existsSync(venvPath)) {
       console.log('📦 Creating Python virtual environment...')
-      await executeCommand(`python${pythonVersion} -m venv python_modules`, baseDir)
+      await executeCommand(`${pythonCmd} -m venv python_modules`, baseDir)
     }
 
     activatePythonVenv({ baseDir, isVerbose, pythonVersion })
@@ -57,12 +70,21 @@ export const install = async ({ isVerbose = false, pythonVersion = '3.13' }: Ins
       }
       await executeCommand(`pip install -r "${localRequirements}" --only-binary=:all:`, baseDir)
     }
-
-    console.info('✅ Installation completed successfully!')
   } catch (error) {
-    console.error('❌ Installation failed:', error)
+    const errorMessage = error instanceof Error ? error.message : String(error)
+    console.error('❌ Installation failed:', errorMessage)
     process.exit(1)
-  } finally {
-    process.exit(0)
   }
+}
+
+export const install = async ({ isVerbose = false, pythonVersion = '3.13' }: InstallConfig): Promise<void> => {
+  const baseDir = process.cwd()
+  const steps = getStepFiles(baseDir)
+  if (steps.some((file) => file.endsWith('.py'))) {
+    await pythonInstall({ baseDir, isVerbose, pythonVersion })
+  }
+
+  console.info('✅ Installation completed successfully!')
+
+  process.exit(0)
 }

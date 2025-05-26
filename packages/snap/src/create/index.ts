@@ -3,6 +3,8 @@ import fs from 'fs'
 import { templates } from './templates'
 import figlet from 'figlet'
 import { executeCommand } from '../utils/executeCommand'
+import { pythonInstall } from '../install'
+import { generateTypes } from '../generate-types'
 
 // eslint-disable-next-line @typescript-eslint/no-require-imports
 require('ts-node').register({
@@ -43,7 +45,8 @@ const installRequiredDependencies = async (packageManager: string, rootDir: stri
     pnpm: 'pnpm add',
   }[packageManager]
 
-  const dependencies = ['motia', 'zod@^3.24.4'].join(' ')
+  //TODO: remove @next once the release is out
+  const dependencies = ['motia@next', 'zod@^3.24.4'].join(' ')
   const devDependencies = ['ts-node@^10.9.2', 'typescript@^5.7.3', '@types/react@^18.3.18'].join(' ')
 
   try {
@@ -101,7 +104,7 @@ export const create = async ({ projectName, template, cursorEnabled }: Args): Pr
       '\n\n',
   )
 
-  const isCurrentDir = !!projectName.match(/\.\/?/)
+  const isCurrentDir = projectName === '.' || projectName === './' || projectName === '.\\'
   const rootDir = isCurrentDir ? process.cwd() : path.join(process.cwd(), projectName)
   console.log(`🛠️ Welcome to motia! Let's get you setup.`)
 
@@ -231,11 +234,12 @@ export const create = async ({ projectName, template, cursorEnabled }: Args): Pr
   await templates[template](stepsDir)
 
   await wrapUpSetup(rootDir)
-  await executeCommand(`npm run generate-types`, rootDir)
 
   if (template === 'python') {
-    await executeCommand('motia install', rootDir)
+    await pythonInstall({ baseDir: rootDir })
   }
 
-  process.exit(0)
+  await generateTypes(rootDir)
+
+  return
 }

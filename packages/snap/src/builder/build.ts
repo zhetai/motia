@@ -44,8 +44,7 @@ const includeStaticFiles = (step: Step, builder: Builder, archive: archiver.Arch
     }
 
     staticFiles.forEach((file) => {
-      const globPattern = path.join(path.dirname(step.filePath), file)
-      const matches = globSync(globPattern)
+      const matches = globSync(file, { absolute: true, cwd: path.dirname(step.filePath) })
       matches.forEach((filePath: string) => {
         const relativeFilePath = path.dirname(filePath.replace(builder.projectDir, ''))
         archive.append(fs.createReadStream(filePath), { name: path.resolve(relativeFilePath, path.basename(filePath)) })
