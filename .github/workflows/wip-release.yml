@@ -58,22 +58,3 @@ jobs:
           pnpm publish -r --filter @motiadev/stream-client-react --no-git-checks --tag ${{ github.event.inputs.tag }}
           pnpm publish -r --filter motia --no-git-checks --tag ${{ github.event.inputs.tag }}
           pnpm publish -r --filter @motiadev/test --no-git-checks --tag ${{ github.event.inputs.tag }}
-
-      - name: Create git tag
-        run: |
-          git config user.name "GitHub Actions"
-          git config user.email "actions@github.com"
-          git tag -a v${{ github.event.inputs.version }} -m "WIP release v${{ github.event.inputs.version }} (${{ github.event.inputs.tag }})"
-          git push origin v${{ github.event.inputs.version }}
-        env:
-          GITHUB_TOKEN: ${{ steps.generate_token.outputs.token }}
-
-      - name: Commit version changes
-        run: |
-          git config user.name "GitHub Actions"
-          git config user.email "actions@github.com"
-          git add .
-          git commit -m "chore: wip release v${{ github.event.inputs.version }} (${{ github.event.inputs.tag }})" || echo "No changes to commit"
-          git push origin ${{ github.event.inputs.branch }}
-        env:
-          GITHUB_TOKEN: ${{ steps.generate_token.outputs.token }}
