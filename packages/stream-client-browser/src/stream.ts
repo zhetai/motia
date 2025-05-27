@@ -81,7 +81,16 @@ export class Stream {
     const message: BaseMessage = JSON.parse(event.data)
     const room = this.roomName(message)
 
-    this.listeners[room]?.forEach((listener) => listener.listener(message as unknown))
+    this.listeners[room]?.forEach((listener) => listener.listener(message))
+
+    if (message.id) {
+      const groupRoom = this.roomName({
+        streamName: message.streamName,
+        groupId: message.groupId,
+      })
+
+      this.listeners[groupRoom]?.forEach((listener) => listener.listener(message))
+    }
   }
 
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
