@@ -45,8 +45,7 @@ const installRequiredDependencies = async (packageManager: string, rootDir: stri
     pnpm: 'pnpm add',
   }[packageManager]
 
-  //TODO: remove @next once the release is out
-  const dependencies = ['motia@next', 'zod@^3.24.4'].join(' ')
+  const dependencies = ['motia', 'zod@^3.24.4'].join(' ')
   const devDependencies = ['ts-node@^10.9.2', 'typescript@^5.7.3', '@types/react@^18.3.18'].join(' ')
 
   try {
