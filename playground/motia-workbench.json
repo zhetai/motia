@@ -1,16 +1,16 @@
 {
   "simple-python": {
     "steps/simplePython/apiEndpoint.step.py": {
-      "x": -80,
-      "y": 7
+      "x": -430.5,
+      "y": 6.5
     },
     "steps/simplePython/testEvent.step.py": {
-      "x": 65.56508690378956,
-      "y": 267.7900969021475
+      "x": -104.43491309621044,
+      "y": 77.79009690214755
     },
     "steps/simplePython/testedEvent.step.py": {
-      "x": -346.79933481152995,
-      "y": 278.06430155210643
+      "x": 140.70066518847005,
+      "y": 60.06430155210646
     }
   },
   "openai": {
@@ -55,20 +55,20 @@
   },
   "test-state": {
     "steps/testState/test_state.step.py": {
-      "x": 129.5,
-      "y": 238
+      "x": 118.73341292203025,
+      "y": 28.82059391373022
     },
     "steps/testState/testState.api.step.ts": {
       "x": 129.46609766882642,
       "y": -195.66109545788373
     },
     "steps/testState/check_state_change.step.rb": {
-      "x": -10.508301404853128,
-      "y": 429.9642401021711
+      "x": -123.55746572353567,
+      "y": 271.5416016691874
     },
     "steps/testState/checkStateChange.step.ts": {
-      "x": 277,
-      "y": 428
+      "x": 375.43736757000926,
+      "y": 267.2702357645942
     },
     "steps/simplePython/testedEvent.step.py": {
       "x": 15.5,
@@ -89,34 +89,38 @@
       "y": 476.5542600896862
     },
     "steps/parallelMergeState/stepB.step.py": {
-      "x": 217.4905829596412,
-      "y": 446.9363228699551
+      "x": 218.55588908209018,
+      "y": 426.6955065434245
     },
     "steps/parallelMergeState/stepA.step.ts": {
-      "x": 639.2125560538117,
-      "y": 461.5730941704036
+      "x": 541.2043927885055,
+      "y": 440.266971721424
     },
     "steps/parallelMergeState/startParallelMerge.step.ts": {
-      "x": 155,
-      "y": 188
+      "x": 162.45714285714286,
+      "y": 186.934693877551
     },
     "steps/parallelMergeState/noopStartButton.step.ts": {
-      "x": 262.5,
-      "y": 0
+      "x": 269.95714285714286,
+      "y": 25.567346938775508
     },
     "steps/parallelMergeState/joinStep.step.ts": {
-      "x": 198.5,
-      "y": 704
+      "x": 207.02244897959184,
+      "y": 674.1714285714286
     },
     "steps/parallelMergeState/joinComplete.step.ts": {
-      "x": 244.5,
-      "y": 914
+      "x": 254.0877551020409,
+      "y": 841.5591836734693
+    },
+    "steps/parallelMergeState/stepC.step.py": {
+      "x": -1.0653061224489875,
+      "y": 439.1061224489796
     }
   },
   "open-ai": {
     "steps/open-ai/02-prompt.step.ts": {
       "x": 0,
-      "y": 238
+      "y": 237.5
     },
     "steps/open-ai/01-prompt-api.step.ts": {
       "x": 2,

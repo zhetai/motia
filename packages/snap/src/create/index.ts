@@ -1,7 +1,6 @@
 import path from 'path'
 import fs from 'fs'
 import { templates } from './templates'
-import figlet from 'figlet'
 import { executeCommand } from '../utils/executeCommand'
 import { pythonInstall } from '../install'
 import { generateTypes } from '../generate-types'
@@ -93,13 +92,15 @@ type Args = {
 export const create = async ({ projectName, template, cursorEnabled }: Args): Promise<void> => {
   console.log(
     '\n\n' +
-      figlet.textSync('MOTIA', {
-        font: 'Larry 3D',
-        horizontalLayout: 'default',
-        verticalLayout: 'default',
-        width: 80,
-        whitespaceBreak: true,
-      }) +
+      `
+         _____   ______  ______   ______     
+ /'\\_/\`\\/\\  __\`\\/\\__  _\\/\\__  _\\ /\\  _  \\    
+/\\      \\ \\ \\/\\ \\/_/\\ \\/\\/_/\\ \\/ \\ \\ \\L\\ \\   
+\\ \\ \\__\\ \\ \\ \\ \\ \\ \\ \\ \\   \\ \\ \\  \\ \\  __ \\  
+ \\ \\ \\_/\\ \\ \\ \\_\\ \\ \\ \\ \\   \\_\\ \\__\\ \\ \\/\\ \\ 
+  \\ \\_\\\\ \\_\\ \\_____\\ \\ \\_\\  /\\_____\\\\ \\_\\ \\_\\
+   \\/_/ \\/_/\\/_____/  \\/_/  \\/_____/ \\/_/\\/_/
+      ` +
       '\n\n',
   )
 

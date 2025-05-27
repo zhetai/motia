@@ -27,7 +27,6 @@
     "class-variance-authority": "^0.7.1",
     "clsx": "^2.1.1",
     "dagre": "^0.8.5",
-    "framer-motion": "^12.11.4",
     "json-schema": "^0.4.0",
     "lucide-react": "^0.510.0",
     "postcss": "^8.5.3",

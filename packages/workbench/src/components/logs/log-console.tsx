@@ -1,5 +1,4 @@
 import { useLogs } from '@/stores/use-logs'
-import { motion, AnimatePresence } from 'framer-motion'
 import { ChevronDown, ChevronUp, Trash2 } from 'lucide-react'
 import React, { useState, useCallback, useRef, useEffect } from 'react'
 import { Button } from '../ui/button'
@@ -30,6 +29,7 @@ export const LogConsole = () => {
   const [height, setHeight] = useState(DEFAULT_HEIGHT)
   const dragRef = useRef<HTMLDivElement>(null)
   const [isDragging, setIsDragging] = useState(false)
+  const contentRef = useRef<HTMLDivElement>(null)
 
   const toggleExpand = () => setIsExpanded(!isExpanded)
 
@@ -64,6 +64,16 @@ export const LogConsole = () => {
     }
   }, [isDragging])
 
+  useEffect(() => {
+    if (contentRef.current) {
+      if (isExpanded) {
+        contentRef.current.style.height = `${height}px`
+      } else {
+        contentRef.current.style.height = '0px'
+      }
+    }
+  }, [isExpanded, height])
+
   return (
     <div className="absolute bottom-0 left-0 right-0 bg-background/80 border border-solid border-border m-4 rounded-lg">
       <div
@@ -81,20 +91,16 @@ export const LogConsole = () => {
           {isExpanded ? <ChevronDown className="w-4 h-4" /> : <ChevronUp className="w-4 h-4" />}
         </Button>
       </div>
-      <AnimatePresence>
-        {isExpanded && (
-          <motion.div
-            key="log-content"
-            initial={{ height: 0 }}
-            animate={{ height }}
-            exit={{ height: 0 }}
-            transition={{ duration: 0.2 }}
-            className="overflow-hidden"
-          >
-            <Logs />
-          </motion.div>
-        )}
-      </AnimatePresence>
+      <div
+        ref={contentRef}
+        style={{
+          overflow: 'hidden',
+          transition: 'height 0.2s ease-out',
+          height: isExpanded ? `${height}px` : '0px',
+        }}
+      >
+        <Logs />
+      </div>
     </div>
   )
 }

@@ -12,7 +12,7 @@ export const LogsPage = () => {
 
   return (
     <div className="w-full h-screen overflow-hidden bg-background text-foreground">
-      <header className="p-4 pb-0 border-b border-border">
+      <header className="p-4 border-b border-border">
         <h1 className="text-2xl font-bold text-foreground">Logs</h1>
         <span className="text-sm text-muted-foreground">Check all logs saved locally</span>
       </header>

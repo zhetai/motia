@@ -1,9 +1,8 @@
 import { Button } from '@/components/ui/button'
 import { cn } from '@/lib/utils'
-import { AnimatePresence, motion } from 'framer-motion'
 import { LayoutList, X } from 'lucide-react'
 import { FC, useState } from 'react'
-import { colorMap } from '../../publicComponents/colorMap'
+import { colorMap } from '@/publicComponents/colorMap'
 
 const EdgeSwatch: FC<{ color: string; dashed: boolean }> = ({ color, dashed }) => (
   <svg className="my-1" width="48" height="10" viewBox="0 0 48 10" xmlns="http://www.w3.org/2000/svg">
@@ -69,8 +68,9 @@ export const Legend: FC<{ onHover: (type: string | null) => void }> = ({ onHover
     <div className={'absolute right-4 top-4 z-10 max-w-[500px]'}>
       <div
         className={cn(
-          'rounded-lg border border-border bg-background/90 p-4 flex flex-col gap-4',
+          'rounded-lg border border-border bg-background/90 p-4 flex flex-col',
           !isExpanded && 'rounded-b-lg',
+          isExpanded && 'gap-4',
         )}
       >
         <div className="flex items-center gap-2">
@@ -82,15 +82,14 @@ export const Legend: FC<{ onHover: (type: string | null) => void }> = ({ onHover
           </div>
         </div>
 
-        <AnimatePresence>
+        <div
+          className={cn(
+            'overflow-hidden transition-all duration-200 ease-in-out',
+            isExpanded ? 'max-h-[600px] opacity-100' : 'max-h-0 opacity-0',
+          )}
+        >
           {isExpanded && (
-            <motion.div
-              initial={{ height: 0, opacity: 0 }}
-              animate={{ height: 'auto', opacity: 1 }}
-              exit={{ height: 0, opacity: 0 }}
-              transition={{ duration: 0.2 }}
-              className="overflow-hidden"
-            >
+            <>
               <div className="grid grid-cols-2 gap-3">
                 {legendItems.map((item) => (
                   <div
@@ -124,9 +123,9 @@ export const Legend: FC<{ onHover: (type: string | null) => void }> = ({ onHover
                   </div>
                 ))}
               </div>
-            </motion.div>
+            </>
           )}
-        </AnimatePresence>
+        </div>
       </div>
     </div>
   )

@@ -4,6 +4,7 @@
   "scripts": {
     "dev:docs": "pnpm -r --filter=docs start",
     "dev": "pnpm run build && pnpm -r --filter=playground dev",
+    "dev:workbench": "pnpm run build && pnpm -r --filter=playground dev:workbench",
     "build": "pnpm --filter=!docs run -r build",
     "lint": "pnpm run -r --no-bail lint",
     "lint:fix": "pnpm run -r --no-bail lint --fix",
