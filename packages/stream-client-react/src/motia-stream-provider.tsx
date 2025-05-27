@@ -19,7 +19,9 @@ export const MotiaStreamProvider: React.FC<Props> = ({ children, address }) => {
   const [stream, setStream] = useState<Stream | null>(null)
 
   useEffect(() => {
-    const stream = new Stream(address, () => setStream(stream))
+    const stream = new Stream(address)
+    setStream(stream)
+
     return () => stream.close()
   }, [address])
 

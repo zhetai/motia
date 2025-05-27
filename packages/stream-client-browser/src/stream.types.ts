@@ -1,7 +1,5 @@
 export type BaseMessage = { streamName: string; groupId: string; id?: string }
 export type JoinMessage = BaseMessage & { subscriptionId: string }
-export type ItemJoinMessage = { streamName: string; groupId: string; id: string; subscriptionId: string }
-export type GroupJoinMessage = { streamName: string; groupId: string; subscriptionId: string }
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
 export type CustomEvent = { type: string; data: any }
 export type StreamEvent<TData extends { id: string }> =
