@@ -29,6 +29,13 @@ export class LogsPage extends MotiaApplicationPage {
     return logElement
   }
 
+  async clickLogFromStep(stepName: string) {
+    const logElement = this.page.getByTestId(/step-\d+/).filter({ hasText: stepName }).first()
+    await logElement.waitFor({ timeout: 15000 })
+    await expect(logElement).toBeVisible()
+    await logElement.click()
+  }
+
   async waitForLogAtIndex(index: number, timeout: number = 15000) {
     const logElement = this.page.getByTestId(`msg-${index}`)
     await logElement.waitFor({ timeout })

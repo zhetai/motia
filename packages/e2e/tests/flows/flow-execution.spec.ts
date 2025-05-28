@@ -57,7 +57,7 @@ test.describe('Flow Execution Tests', () => {
     await test.step('Verify API triggered flow in workbench', async () => {
       await workbench.navigateToLogs()
       
-     ;(await logsPage.waitForLogFromStep('ApiTrigger')).click()
+      await logsPage.clickLogFromStep('ApiTrigger')
       await page.getByLabel('Test API trigger')
     })
   })

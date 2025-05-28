@@ -24,21 +24,29 @@ jobs:
       - name: Extract version from workflow run
         id: extract_version
         run: |
-          # Extract from the triggering workflow's tag
-          TAG_NAME="${{ github.event.workflow_run.head_branch }}"
-          if [[ $TAG_NAME =~ ^refs/tags/v(.+)$ ]]; then
+          # Extract from the triggering workflow's commit
+          git fetch --tags
+          
+          # Find the tag that points to the head_sha
+          TAG_NAME=$(git tag --points-at ${{ github.event.workflow_run.head_sha }} | grep '^v' | head -1)
+          
+          if [ -z "$TAG_NAME" ]; then
+            echo "❌ No version tag found for commit ${{ github.event.workflow_run.head_sha }}"
+            echo "Available tags pointing to this commit:"
+            git tag --points-at ${{ github.event.workflow_run.head_sha }} || echo "None"
+            exit 1
+          fi
+          
+          # Extract version from tag (remove 'v' prefix)
+          if [[ $TAG_NAME =~ ^v(.+)$ ]]; then
             VERSION="${BASH_REMATCH[1]}"
           else
-            # If not a tag, extract from the head_sha
-            git fetch --tags
-            TAG_NAME=$(git describe --tags --exact-match ${{ github.event.workflow_run.head_sha }} 2>/dev/null || echo "")
-            if [[ $TAG_NAME =~ ^v(.+)$ ]]; then
-              VERSION="${BASH_REMATCH[1]}"
-            else
-              echo "❌ Could not extract version from workflow run"
-              exit 1
-            fi
+            echo "❌ Tag $TAG_NAME does not match expected format (v*)"
+            exit 1
           fi
+          
+          echo "Found tag: $TAG_NAME"
+          echo "Extracted version: $VERSION"
           echo "version=$VERSION" >> $GITHUB_OUTPUT
           echo "tag_name=$TAG_NAME" >> $GITHUB_OUTPUT
           echo "triggered_by=${{ github.event.workflow_run.id }}" >> $GITHUB_OUTPUT

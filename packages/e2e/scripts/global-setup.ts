@@ -20,6 +20,7 @@ async function globalSetup() {
       stdio: 'pipe',
       cwd: process.cwd()
     })
+    execSync(`npm install --save motia@${motiaVersion}`, { cwd: TEST_PROJECT_PATH })
 
     console.log('🏗️  Building test project...')
 
