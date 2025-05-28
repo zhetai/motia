@@ -152,6 +152,7 @@ jobs:
           MOTIA_VERSION: ${{ needs.prepare.outputs.version }}
           MOTIA_API_URL: http://localhost:3000
         run: |
+          cd packages/e2e
           echo "Starting Release E2E tests with Motia version: $MOTIA_VERSION"
           pnpm test:release --reporter=line,html,github
         continue-on-error: true
