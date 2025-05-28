@@ -6,23 +6,48 @@ permissions:
   issues: write
 
 on:
-  workflow_dispatch:
-    inputs:
-      version:
-        description: 'Version to rollback'
-        required: true
-      tag_name:
-        description: 'Git tag name to rollback'
-        required: true
-      triggered_by:
-        description: 'Original run ID'
-        required: true
-      reason:
-        description: 'Reason for rollback'
-        required: true
+  workflow_run:
+    workflows: ["E2E Tests (Release)"]
+    types:
+      - completed
 
 jobs:
+  prepare:
+    runs-on: ubuntu-latest
+    if: github.event.workflow_run.conclusion == 'failure'
+    outputs:
+      version: ${{ steps.extract_version.outputs.version }}
+      tag_name: ${{ steps.extract_version.outputs.tag_name }}
+      triggered_by: ${{ steps.extract_version.outputs.triggered_by }}
+      reason: ${{ steps.extract_version.outputs.reason }}
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Extract version from workflow run
+        id: extract_version
+        run: |
+          # Extract from the triggering workflow's tag
+          TAG_NAME="${{ github.event.workflow_run.head_branch }}"
+          if [[ $TAG_NAME =~ ^refs/tags/v(.+)$ ]]; then
+            VERSION="${BASH_REMATCH[1]}"
+          else
+            # If not a tag, extract from the head_sha
+            git fetch --tags
+            TAG_NAME=$(git describe --tags --exact-match ${{ github.event.workflow_run.head_sha }} 2>/dev/null || echo "")
+            if [[ $TAG_NAME =~ ^v(.+)$ ]]; then
+              VERSION="${BASH_REMATCH[1]}"
+            else
+              echo "❌ Could not extract version from workflow run"
+              exit 1
+            fi
+          fi
+          echo "version=$VERSION" >> $GITHUB_OUTPUT
+          echo "tag_name=$TAG_NAME" >> $GITHUB_OUTPUT
+          echo "triggered_by=${{ github.event.workflow_run.id }}" >> $GITHUB_OUTPUT
+          echo "reason=E2E tests failed" >> $GITHUB_OUTPUT
+
   rollback:
+    needs: prepare
     runs-on: ubuntu-latest
     steps:
       - name: Generate token
@@ -47,12 +72,12 @@ jobs:
 
       - name: Remove pre-release packages from NPM
         run: |
-          npm unpublish @motiadev/core@${{ github.event.inputs.version }} --force || echo "Package not found or already removed"
-          npm unpublish @motiadev/workbench@${{ github.event.inputs.version }} --force || echo "Package not found or already removed"
-          npm unpublish @motiadev/stream-client-browser@${{ github.event.inputs.version }} --force || echo "Package not found or already removed"
-          npm unpublish @motiadev/stream-client-react@${{ github.event.inputs.version }} --force || echo "Package not found or already removed"
-          npm unpublish motia@${{ github.event.inputs.version }} --force || echo "Package not found or already removed"
-          npm unpublish @motiadev/test@${{ github.event.inputs.version }} --force || echo "Package not found or already removed"
+          npm unpublish @motiadev/core@${{ needs.prepare.outputs.version }} --force || echo "Package not found or already removed"
+          npm unpublish @motiadev/workbench@${{ needs.prepare.outputs.version }} --force || echo "Package not found or already removed"
+          npm unpublish @motiadev/stream-client-browser@${{ needs.prepare.outputs.version }} --force || echo "Package not found or already removed"
+          npm unpublish @motiadev/stream-client-react@${{ needs.prepare.outputs.version }} --force || echo "Package not found or already removed"
+          npm unpublish motia@${{ needs.prepare.outputs.version }} --force || echo "Package not found or already removed"
+          npm unpublish @motiadev/test@${{ needs.prepare.outputs.version }} --force || echo "Package not found or already removed"
 
       - name: Remove pre-release tags
         run: |
@@ -65,7 +90,7 @@ jobs:
 
       - name: Delete Git tag
         run: |
-          git push --delete origin ${{ github.event.inputs.tag_name }} || echo "Tag already deleted"
+          git push --delete origin ${{ needs.prepare.outputs.tag_name }} || echo "Tag already deleted"
         env:
           GITHUB_TOKEN: ${{ steps.generate_token.outputs.token }}
 
@@ -80,8 +105,9 @@ jobs:
       - name: Download E2E test artifacts
         uses: actions/download-artifact@v4
         with:
-          name: e2e-test-results-${{ github.event.inputs.version }}
+          pattern: e2e-test-results-${{ needs.prepare.outputs.version }}-*
           path: ./e2e-artifacts
+          merge-multiple: true
         continue-on-error: true
 
       - name: Create failure issue
@@ -101,18 +127,18 @@ jobs:
               testResults = '\n\n## Test Results\nNo test artifacts available.';
             }
             
-            const issueBody = `## Release Rollback: ${{ github.event.inputs.version }}
+            const issueBody = `## Release Rollback: ${{ needs.prepare.outputs.version }}
             
-            **Reason:** ${{ github.event.inputs.reason }}
+            **Reason:** ${{ needs.prepare.outputs.reason }}
             
             **Actions Taken:**
             - ❌ Pre-release packages removed from NPM
-            - ❌ Git tag \`${{ github.event.inputs.tag_name }}\` deleted
+            - ❌ Git tag \`${{ needs.prepare.outputs.tag_name }}\` deleted
             - ❌ Pre-release NPM tags cleaned up
             
             **Current Status:**
             - Latest stable release: \`${{ steps.latest_release.outputs.latest_tag }}\`
-            - Failed version: \`${{ github.event.inputs.version }}\`
+            - Failed version: \`${{ needs.prepare.outputs.version }}\`
             
             **Investigation Required:**
             - Review E2E test failures
@@ -121,14 +147,14 @@ jobs:
             
             ${testResults}
             
-            **Related Workflow Run:** https://github.com/${{ github.repository }}/actions/runs/${{ github.event.inputs.triggered_by }}
+            **Related Workflow Run:** https://github.com/${{ github.repository }}/actions/runs/${{ needs.prepare.outputs.triggered_by }}
             
             cc: @motiadev/core-team`;
             
             const issue = await github.rest.issues.create({
               owner: context.repo.owner,
               repo: context.repo.repo,
-              title: `🚨 Release Rollback: ${{ github.event.inputs.version }} - ${{ github.event.inputs.reason }}`,
+              title: `🚨 Release Rollback: ${{ needs.prepare.outputs.version }} - ${{ needs.prepare.outputs.reason }}`,
               body: issueBody,
               labels: ['release-failure', 'high-priority', 'bug']
             });
@@ -138,8 +164,8 @@ jobs:
       - name: Send notification
         run: |
           echo "🚨 RELEASE ROLLBACK COMPLETED"
-          echo "Version: ${{ github.event.inputs.version }}"
-          echo "Reason: ${{ github.event.inputs.reason }}"
+          echo "Version: ${{ needs.prepare.outputs.version }}"
+          echo "Reason: ${{ needs.prepare.outputs.reason }}"
           echo "Current stable: ${{ steps.latest_release.outputs.latest_tag }}"
           echo ""
           echo "Action items:"

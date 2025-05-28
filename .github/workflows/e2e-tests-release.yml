@@ -15,8 +15,6 @@ on:
     workflows: ["Deploy Release"]
     types:
       - completed
-    branches:
-      - main
   workflow_dispatch:
     inputs:
       version:
@@ -204,53 +202,4 @@ jobs:
             echo "result=failure" >> $GITHUB_OUTPUT
             echo "❌ E2E tests failed on one or more platforms"
             exit 1
-          fi
-
-  trigger-next-step:
-    needs: [prepare, check-results]
-    runs-on: ubuntu-latest
-    if: always()
-    steps:
-      - name: Generate token
-        id: generate_token
-        uses: actions/create-github-app-token@v1
-        with:
-          app-id: ${{ secrets.MOTIA_CI_APP_ID }}
-          private-key: ${{ secrets.MOTIA_CI_APP_PRIVATE_KEY }}
-
-      - name: Trigger finalize release (on success)
-        if: needs.check-results.outputs.result == 'success'
-        uses: actions/github-script@v7
-        with:
-          github-token: ${{ steps.generate_token.outputs.token }}
-          script: |
-            await github.rest.actions.createWorkflowDispatch({
-              owner: context.repo.owner,
-              repo: context.repo.repo,
-              workflow_id: 'finalize-release.yml',
-              ref: 'main',
-              inputs: {
-                version: '${{ needs.prepare.outputs.version }}',
-                tag_name: '${{ needs.prepare.outputs.tag_name }}',
-                triggered_by: '${{ needs.prepare.outputs.triggered_by }}'
-              }
-            });
-
-      - name: Trigger rollback (on failure)
-        if: needs.check-results.outputs.result == 'failure'
-        uses: actions/github-script@v7
-        with:
-          github-token: ${{ steps.generate_token.outputs.token }}
-          script: |
-            await github.rest.actions.createWorkflowDispatch({
-              owner: context.repo.owner,
-              repo: context.repo.repo,
-              workflow_id: 'rollback-release.yml',
-              ref: 'main',
-              inputs: {
-                version: '${{ needs.prepare.outputs.version }}',
-                tag_name: '${{ needs.prepare.outputs.tag_name }}',
-                triggered_by: '${{ needs.prepare.outputs.triggered_by }}',
-                reason: 'E2E tests failed'
-              }
-            }); 
+          fi 
