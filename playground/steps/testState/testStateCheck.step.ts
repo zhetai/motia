@@ -4,9 +4,9 @@ import equal from 'deep-equal'
 
 export const config: EventConfig = {
   type: 'event',
-  name: 'CheckStateChange',
+  name: 'TestStateCheck',
   description: 'check state change',
-  subscribes: ['check-state-change'],
+  subscribes: ['test-state-check'],
   emits: [],
   input: z.object({
     key: z.string(),
@@ -15,7 +15,7 @@ export const config: EventConfig = {
   flows: ['test-state'],
 }
 
-export const handler: Handlers['CheckStateChange'] = async (input, { traceId, logger, state }) => {
+export const handler: Handlers['TestStateCheck'] = async (input, { traceId, logger, state }) => {
   logger.info('[Test motia state with TS] received check-state-change event', input)
 
   // eslint-disable-next-line @typescript-eslint/no-explicit-any

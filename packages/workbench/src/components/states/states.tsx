@@ -33,7 +33,7 @@ export const States = () => {
           </TableHeader>
           <TableBody>
             {traces.map((trace) => (
-              <TableRow key={trace} onClick={() => handleTraceClick(trace)}>
+              <TableRow data-testid={`trace-${trace}`} key={trace} onClick={() => handleTraceClick(trace)}>
                 <TableCell
                   className={`rounded-lg font-mono font-semibold ${selectedTraceId === trace ? 'bg-indigo-900/50 hover:bg-indigo-900/30' : ''}`}
                 >
@@ -55,6 +55,7 @@ export const States = () => {
             {fields.map((field) => (
               <TableRow
                 key={field}
+                data-testid={`field-${field}`}
                 className={`font-semibold font-mono ${selectedState === field ? 'bg-indigo-900/50 hover:bg-indigo-900/30' : ''}`}
                 onClick={() => handleStateClick(field)}
               >

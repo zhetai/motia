@@ -22,27 +22,27 @@ export const AppSidebar = () => {
 
   return (
     <Sidebar>
-      <SidebarGroup title="Motia">
-        <Link to="/logs">
+      <SidebarGroup testId="motia-title" title="Motia">
+        <Link data-testid="logs-link" to="/logs">
           <SidebarButton isActive={pathname === '/logs'} icon={<Logs className="w-4 h-4" />}>
             Logs
             {pathname !== '/logs' && <BadgeCount />}
           </SidebarButton>
         </Link>
-        <Link to="/states">
+        <Link data-testid="states-link" to="/states">
           <SidebarButton isActive={pathname === '/states'} icon={<File className="w-4 h-4" />}>
             States
           </SidebarButton>
         </Link>
-        <Link to="/endpoints">
+        <Link data-testid="endpoints-link" to="/endpoints">
           <SidebarButton isActive={pathname === '/endpoints'} icon={<Link2 className="w-4 h-4" />}>
             Endpoints
           </SidebarButton>
         </Link>
       </SidebarGroup>
-      <SidebarGroup title="Flows">
+      <SidebarGroup testId="flows-title" title="Flows">
         {flows.map((flow) => (
-          <Link to={`/flow/${flow.id}`} key={flow.id}>
+          <Link data-testid={`flow-${flow.name}-link`} to={`/flow/${flow.id}`} key={flow.id}>
             <SidebarButton isActive={isActive(flow.id)} icon={<Workflow className="w-4 h-4" />}>
               {flow.name}
             </SidebarButton>

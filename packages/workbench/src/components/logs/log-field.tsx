@@ -10,7 +10,11 @@ type Props = {
 const Value: React.FC<{ value: unknown }> = ({ value }) => {
   const displayValue = typeof value === 'string' ? value : JSON.stringify(value)
 
-  return <div className="dark:text-gray-400 text-md">{displayValue}</div>
+  return (
+    <div className="dark:text-gray-400 text-md" aria-label={displayValue}>
+      {displayValue}
+    </div>
+  )
 }
 
 const LogValue: React.FC<{ value: unknown }> = ({ value }) => {

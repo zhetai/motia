@@ -28,15 +28,28 @@ export const Logs = () => {
               className="cursor-pointer even:bg-muted/50 border-0"
               onClick={() => handleLogClick(log)}
             >
-              <TableCell className="whitespace-nowrap flex items-center gap-2">
+              <TableCell data-testid={`time-${index}`} className="whitespace-nowrap flex items-center gap-2">
                 <LogLevelDot level={log.level} />
                 {timestamp(log.time)}
               </TableCell>
-              <TableCell className="whitespace-nowrap text-md cursor-pointer hover:text-primary text-muted-foreground text-xs font-mono">
+              <TableCell
+                data-testid={`trace-${log.traceId}`}
+                className="whitespace-nowrap text-md cursor-pointer hover:text-primary text-muted-foreground text-xs font-mono"
+              >
                 {log.traceId}
               </TableCell>
-              <TableCell className="whitespace-nowrap text-md font-mono">{log.step}</TableCell>
-              <TableCell className="whitespace-nowrap text-md font-mono max-w-[500px] truncate w-full">
+              <TableCell
+                data-testid={`step-${index}`}
+                aria-label={log.step}
+                className="whitespace-nowrap text-md font-mono"
+              >
+                {log.step}
+              </TableCell>
+              <TableCell
+                data-testid={`msg-${index}`}
+                aria-label={log.msg}
+                className="whitespace-nowrap text-md font-mono max-w-[500px] truncate w-full"
+              >
                 {log.msg}
               </TableCell>
             </TableRow>

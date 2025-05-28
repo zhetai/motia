@@ -12,7 +12,9 @@ export const Node: React.FC<ApiNodeProps> = (data) => {
 
   return (
     <ApiNode {...data}>
-      <Button onClick={start}>Start Flow</Button>
+      <Button data-testid="start-flow-button" onClick={start}>
+        Start Flow
+      </Button>
     </ApiNode>
   )
 }

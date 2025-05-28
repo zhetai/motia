@@ -26,10 +26,16 @@ export const Sidebar: React.FC<PropsWithChildren> = ({ children }) => {
   )
 }
 
-export const SidebarGroup: React.FC<PropsWithChildren<{ title: string }>> = ({ children, title }) => {
+export const SidebarGroup: React.FC<PropsWithChildren<{ title: string; testId?: string }>> = ({
+  children,
+  title,
+  testId,
+}) => {
   return (
     <div className="flex flex-col">
-      <h2 className="text-xs font-bold text-muted-foreground px-4 py-2 uppercase">{title}</h2>
+      <h2 className="text-xs font-bold text-muted-foreground px-4 py-2 uppercase" data-testid={testId}>
+        {title}
+      </h2>
       {children}
     </div>
   )

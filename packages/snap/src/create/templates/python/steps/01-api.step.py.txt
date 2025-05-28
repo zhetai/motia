@@ -3,7 +3,7 @@ config = {
   "name": "Test state api trigger",
   "description": "test state",
 
-  "path": "/test-state",
+  "path": "/default",
   "method": "POST",
 
   # This API Step emits events to topic `test-state`

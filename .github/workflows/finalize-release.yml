@@ -1,0 +1,152 @@
+name: Finalize Release
+
+permissions:
+  contents: write
+  packages: write
+
+on:
+  workflow_dispatch:
+    inputs:
+      version:
+        description: 'Version to finalize'
+        required: true
+      tag_name:
+        description: 'Git tag name'
+        required: true
+      triggered_by:
+        description: 'Original run ID'
+        required: true
+
+jobs:
+  promote-to-latest:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Setup
+        uses: ./.github/actions/setup
+
+      - name: Setup NPM authentication
+        env:
+          NPM_TOKEN: ${{ secrets.NPM_TOKEN }}
+        run: |
+          echo "//registry.npmjs.org/:_authToken=${NPM_TOKEN}" >> .npmrc
+
+      - name: Promote packages to latest
+        run: |
+          npm dist-tag add @motiadev/core@${{ github.event.inputs.version }} latest
+          npm dist-tag add @motiadev/workbench@${{ github.event.inputs.version }} latest
+          npm dist-tag add @motiadev/stream-client-browser@${{ github.event.inputs.version }} latest
+          npm dist-tag add @motiadev/stream-client-react@${{ github.event.inputs.version }} latest
+          npm dist-tag add motia@${{ github.event.inputs.version }} latest
+          npm dist-tag add @motiadev/test@${{ github.event.inputs.version }} latest
+
+      - name: Remove pre-release tag
+        run: |
+          npm dist-tag rm @motiadev/core pre-release || true
+          npm dist-tag rm @motiadev/workbench pre-release || true
+          npm dist-tag rm @motiadev/stream-client-browser pre-release || true
+          npm dist-tag rm @motiadev/stream-client-react pre-release || true
+          npm dist-tag rm motia pre-release || true
+          npm dist-tag rm @motiadev/test pre-release || true
+
+  create-github-release:
+    needs: promote-to-latest
+    runs-on: ubuntu-latest
+    steps:
+      - name: Generate token
+        id: generate_token
+        uses: actions/create-github-app-token@v1
+        with:
+          app-id: ${{ secrets.MOTIA_CI_APP_ID }}
+          private-key: ${{ secrets.MOTIA_CI_APP_PRIVATE_KEY }}
+
+      - uses: actions/checkout@v4
+        with:
+          token: ${{ steps.generate_token.outputs.token }}
+          fetch-depth: 0
+
+      - name: Generate changelog
+        id: changelog
+        run: |
+          # Get the previous tag
+          PREVIOUS_TAG=$(git describe --tags --abbrev=0 ${{ github.event.inputs.tag_name }}^)
+          echo "Previous tag: $PREVIOUS_TAG"
+          
+          # Generate changelog
+          CHANGELOG=$(git log $PREVIOUS_TAG..${{ github.event.inputs.tag_name }} --pretty=format:"* %s (%h)" --no-merges)
+          
+          # Create release notes
+          cat > release_notes.md << EOF
+          ## What's Changed
+          
+          $CHANGELOG
+          
+          ## Package Versions
+          - @motiadev/core@${{ github.event.inputs.version }}
+          - @motiadev/workbench@${{ github.event.inputs.version }}
+          - @motiadev/stream-client-browser@${{ github.event.inputs.version }}
+          - @motiadev/stream-client-react@${{ github.event.inputs.version }}
+          - motia@${{ github.event.inputs.version }}
+          - @motiadev/test@${{ github.event.inputs.version }}
+          
+          ## Installation
+          \`\`\`bash
+          npm install motia@${{ github.event.inputs.version }}
+          \`\`\`
+          
+          **Full Changelog**: https://github.com/${{ github.repository }}/compare/$PREVIOUS_TAG...${{ github.event.inputs.tag_name }}
+          EOF
+
+      - name: Create GitHub Release
+        uses: actions/github-script@v7
+        with:
+          github-token: ${{ steps.generate_token.outputs.token }}
+          script: |
+            const fs = require('fs');
+            const releaseNotes = fs.readFileSync('release_notes.md', 'utf8');
+            
+            const release = await github.rest.repos.createRelease({
+              owner: context.repo.owner,
+              repo: context.repo.repo,
+              tag_name: '${{ github.event.inputs.tag_name }}',
+              name: 'Motia ${{ github.event.inputs.version }}',
+              body: releaseNotes,
+              draft: false,
+              prerelease: false
+            });
+            
+            console.log('Release created:', release.data.html_url);
+
+  commit-version-changes:
+    needs: create-github-release
+    runs-on: ubuntu-latest
+    steps:
+      - name: Generate token
+        id: generate_token
+        uses: actions/create-github-app-token@v1
+        with:
+          app-id: ${{ secrets.MOTIA_CI_APP_ID }}
+          private-key: ${{ secrets.MOTIA_CI_APP_PRIVATE_KEY }}
+
+      - uses: actions/checkout@v4
+        with:
+          token: ${{ steps.generate_token.outputs.token }}
+
+      - name: Setup
+        uses: ./.github/actions/setup
+
+      - name: Set version on all packages
+        run: |
+          pnpm -r --filter "@motiadev/*" exec pnpm version ${{ github.event.inputs.version }} --no-git-tag-version
+          pnpm -r --filter motia exec pnpm version ${{ github.event.inputs.version }} --no-git-tag-version
+
+      - name: Commit version changes
+        run: |
+          git config user.name "GitHub Actions"
+          git config user.email "actions@github.com"
+          git add .
+          git commit -m "chore: release version ${{ github.event.inputs.version }}" || echo "No changes to commit"
+          git push origin main
+        env:
+          GITHUB_TOKEN: ${{ steps.generate_token.outputs.token }} 

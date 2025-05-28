@@ -56,6 +56,7 @@ export const BaseNode = (props: Props) => {
     <div className="p-[1px] rounded-lg max-w-[350px] ">
       <div
         className="rounded-lg bg-background p-4 border border-muted border-solid"
+        data-testid={`node-${title?.toLowerCase().replace(/ /g, '-')}`}
         style={{
           borderColor: colorMap[variant as keyof typeof colorMap],
         }}

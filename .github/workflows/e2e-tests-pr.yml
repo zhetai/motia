@@ -1,0 +1,97 @@
+name: E2E Tests (PR)
+
+on:
+  pull_request:
+    branches: [main]
+    paths:
+      - 'packages/**'
+      - 'playground/**'
+      - '.github/workflows/e2e-tests-pr.yml'
+
+permissions:
+  contents: read
+
+jobs:
+  e2e-pr-tests:
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    env:
+      CI: true
+      NODE_ENV: test
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Setup
+        uses: ./.github/actions/setup
+
+      - name: Get Playwright version
+        id: playwright-version
+        run: |
+          cd packages/e2e
+          echo "version=$(node -p "require('./package.json').dependencies['@playwright/test'] || require('./package.json').devDependencies['@playwright/test']")" >> $GITHUB_OUTPUT
+
+      - name: Cache Playwright browsers
+        uses: actions/cache@v4
+        id: playwright-cache
+        with:
+          path: ~/.cache/ms-playwright
+          key: playwright-browsers-${{ runner.os }}-${{ steps.playwright-version.outputs.version }}
+
+      - name: Install E2E dependencies and browsers
+        run: |
+          cd packages/e2e
+          pnpm exec playwright install chromium
+          pnpm exec playwright install-deps
+
+      - name: Clean previous test artifacts
+        run: |
+          cd packages/e2e
+          pnpm clean
+          
+      - name: Start playground
+        run: |
+          cd playground
+          pnpm run dev &
+          echo "Waiting for playground server to start..."
+          timeout 60 bash -c 'until curl -f http://localhost:3000 >/dev/null 2>&1; do sleep 2; done'
+          echo "Playground server is ready!"
+
+      - name: Run PR E2E tests
+        id: run_tests
+        env:
+          MOTIA_API_URL: http://localhost:3000
+        run: |
+          cd packages/e2e
+          echo "Starting PR E2E tests against playground"
+          pnpm test:e2e:trace --reporter=line,html,github
+        continue-on-error: true
+
+      - name: Set test result
+        id: test_result
+        run: |
+          echo "Test outcome: ${{ steps.run_tests.outcome }}"
+          if [ "${{ steps.run_tests.outcome }}" == "success" ]; then
+            echo "result=success" >> $GITHUB_OUTPUT
+            echo "✅ PR E2E tests passed successfully"
+          else
+            echo "result=failure" >> $GITHUB_OUTPUT
+            echo "❌ PR E2E tests failed"
+            echo "Check the test results and logs for details"
+            exit 1
+          fi
+
+      - name: Upload test results
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: e2e-pr-test-results-${{ github.event.number }}
+          path: |
+            packages/e2e/playwright-report/
+            packages/e2e/test-results/
+          retention-days: 7
+
+      - name: Stop playground server
+        if: always()
+        run: |
+          pkill -f "pnpm run dev" || true
+          pkill -f "node.*3000" || true 

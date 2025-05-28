@@ -1,0 +1,149 @@
+name: Rollback Release
+
+permissions:
+  contents: write
+  packages: write
+  issues: write
+
+on:
+  workflow_dispatch:
+    inputs:
+      version:
+        description: 'Version to rollback'
+        required: true
+      tag_name:
+        description: 'Git tag name to rollback'
+        required: true
+      triggered_by:
+        description: 'Original run ID'
+        required: true
+      reason:
+        description: 'Reason for rollback'
+        required: true
+
+jobs:
+  rollback:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Generate token
+        id: generate_token
+        uses: actions/create-github-app-token@v1
+        with:
+          app-id: ${{ secrets.MOTIA_CI_APP_ID }}
+          private-key: ${{ secrets.MOTIA_CI_APP_PRIVATE_KEY }}
+
+      - uses: actions/checkout@v4
+        with:
+          token: ${{ steps.generate_token.outputs.token }}
+
+      - name: Setup
+        uses: ./.github/actions/setup
+
+      - name: Setup NPM authentication
+        env:
+          NPM_TOKEN: ${{ secrets.NPM_TOKEN }}
+        run: |
+          echo "//registry.npmjs.org/:_authToken=${NPM_TOKEN}" >> .npmrc
+
+      - name: Remove pre-release packages from NPM
+        run: |
+          npm unpublish @motiadev/core@${{ github.event.inputs.version }} --force || echo "Package not found or already removed"
+          npm unpublish @motiadev/workbench@${{ github.event.inputs.version }} --force || echo "Package not found or already removed"
+          npm unpublish @motiadev/stream-client-browser@${{ github.event.inputs.version }} --force || echo "Package not found or already removed"
+          npm unpublish @motiadev/stream-client-react@${{ github.event.inputs.version }} --force || echo "Package not found or already removed"
+          npm unpublish motia@${{ github.event.inputs.version }} --force || echo "Package not found or already removed"
+          npm unpublish @motiadev/test@${{ github.event.inputs.version }} --force || echo "Package not found or already removed"
+
+      - name: Remove pre-release tags
+        run: |
+          npm dist-tag rm @motiadev/core pre-release || true
+          npm dist-tag rm @motiadev/workbench pre-release || true
+          npm dist-tag rm @motiadev/stream-client-browser pre-release || true
+          npm dist-tag rm @motiadev/stream-client-react pre-release || true
+          npm dist-tag rm motia pre-release || true
+          npm dist-tag rm @motiadev/test pre-release || true
+
+      - name: Delete Git tag
+        run: |
+          git push --delete origin ${{ github.event.inputs.tag_name }} || echo "Tag already deleted"
+        env:
+          GITHUB_TOKEN: ${{ steps.generate_token.outputs.token }}
+
+      - name: Get latest successful release
+        id: latest_release
+        run: |
+          LATEST_RELEASE=$(curl -s -H "Authorization: token ${{ steps.generate_token.outputs.token }}" \
+            "https://api.github.com/repos/${{ github.repository }}/releases/latest" | \
+            jq -r '.tag_name')
+          echo "latest_tag=$LATEST_RELEASE" >> $GITHUB_OUTPUT
+
+      - name: Download E2E test artifacts
+        uses: actions/download-artifact@v4
+        with:
+          name: e2e-test-results-${{ github.event.inputs.version }}
+          path: ./e2e-artifacts
+        continue-on-error: true
+
+      - name: Create failure issue
+        uses: actions/github-script@v7
+        with:
+          github-token: ${{ steps.generate_token.outputs.token }}
+          script: |
+            const fs = require('fs');
+            let testResults = '';
+            
+            try {
+              const artifactPath = './e2e-artifacts';
+              if (fs.existsSync(artifactPath)) {
+                testResults = '\n\n## Test Results Available\nE2E test artifacts have been uploaded and are available for analysis.';
+              }
+            } catch (error) {
+              testResults = '\n\n## Test Results\nNo test artifacts available.';
+            }
+            
+            const issueBody = `## Release Rollback: ${{ github.event.inputs.version }}
+            
+            **Reason:** ${{ github.event.inputs.reason }}
+            
+            **Actions Taken:**
+            - ❌ Pre-release packages removed from NPM
+            - ❌ Git tag \`${{ github.event.inputs.tag_name }}\` deleted
+            - ❌ Pre-release NPM tags cleaned up
+            
+            **Current Status:**
+            - Latest stable release: \`${{ steps.latest_release.outputs.latest_tag }}\`
+            - Failed version: \`${{ github.event.inputs.version }}\`
+            
+            **Investigation Required:**
+            - Review E2E test failures
+            - Fix underlying issues before next release attempt
+            - Consider hotfix if critical
+            
+            ${testResults}
+            
+            **Related Workflow Run:** https://github.com/${{ github.repository }}/actions/runs/${{ github.event.inputs.triggered_by }}
+            
+            cc: @motiadev/core-team`;
+            
+            const issue = await github.rest.issues.create({
+              owner: context.repo.owner,
+              repo: context.repo.repo,
+              title: `🚨 Release Rollback: ${{ github.event.inputs.version }} - ${{ github.event.inputs.reason }}`,
+              body: issueBody,
+              labels: ['release-failure', 'high-priority', 'bug']
+            });
+            
+            console.log('Issue created:', issue.data.html_url);
+
+      - name: Send notification
+        run: |
+          echo "🚨 RELEASE ROLLBACK COMPLETED"
+          echo "Version: ${{ github.event.inputs.version }}"
+          echo "Reason: ${{ github.event.inputs.reason }}"
+          echo "Current stable: ${{ steps.latest_release.outputs.latest_tag }}"
+          echo ""
+          echo "Action items:"
+          echo "1. Review test failures"
+          echo "2. Fix issues"
+          echo "3. Test locally"
+          echo "4. Create new release" 

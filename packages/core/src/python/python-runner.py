@@ -111,8 +111,8 @@ async def run_python_module(file_path: str, rpc: RpcSender, args: Dict) -> None:
         if result:
             await rpc.send('result', result)
 
-        rpc.close()
         rpc.send_no_wait("close", None)
+        rpc.close()
         
     except Exception as error:
         print(f'Error running Python module: {error}', file=sys.stderr)

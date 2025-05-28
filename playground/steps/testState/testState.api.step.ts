@@ -7,7 +7,7 @@ export const config: ApiRouteConfig = {
   description: 'test state',
   path: '/test-state',
   method: 'POST',
-  emits: ['test-state'],
+  emits: ['test-state-python'],
   bodySchema: z.object({}),
   flows: ['test-state'],
 }
@@ -16,7 +16,7 @@ export const handler: Handlers['TestStateApiTrigger'] = async (req, { logger, em
   logger.info('[Test motia state] triggering api step', req)
 
   await emit({
-    topic: 'test-state',
+    topic: 'test-state-python',
     data: {},
   })
 

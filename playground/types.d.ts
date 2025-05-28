@@ -12,10 +12,9 @@ declare module 'motia' {
   }
 
   type Handlers = {
-    'Test State With Python': EventHandler<unknown, { topic: 'check-state-change'; data: { key: string; expected?: unknown } }>
-    'TestStateApiTrigger': ApiRouteHandler<{}, unknown, { topic: 'test-state'; data: unknown }>
-    'Test State With Ruby': EventHandler<never, never>
-    'CheckStateChange': EventHandler<{ key: string; expected?: unknown }, never>
+    'Test State With Python': EventHandler<unknown, { topic: 'check-state-change'; data: { key: string; expected: string } }>
+    'TestStateCheck': EventHandler<{ key: string; expected?: unknown }, never>
+    'TestStateApiTrigger': ApiRouteHandler<{}, unknown, { topic: 'test-state-python'; data: unknown }>
     'Tested Event': EventHandler<never, never>
     'Test Event': EventHandler<never, never>
     'Test API Endpoint': ApiRouteHandler<Record<string, unknown>, unknown, never>
@@ -27,6 +26,9 @@ declare module 'motia' {
     'JoinComplete': EventHandler<{ stepA: { msg: string; timestamp: number }; stepB: unknown; stepC: unknown; mergedAt: string }, never>
     'CallOpenAi': EventHandler<{ message: string; assistantMessageId: string; threadId: string }, never>
     'OpenAiApi': ApiRouteHandler<{ message: string; threadId?: string }, ApiResponse<200, { threadId: string }>, { topic: 'openai-prompt'; data: { message: string; assistantMessageId: string; threadId: string } }>
+    'CheckStateChange': EventHandler<{ key: string; expected: string }, never>
+    'SetStateChange': EventHandler<{ message: string }, { topic: 'check-state-change'; data: { key: string; expected: string } }>
+    'ApiTrigger': ApiRouteHandler<{ message: string }, ApiResponse<200, { message: string }>, { topic: 'test-state'; data: { message: string } }>
     'HandlePeriodicJob': EventHandler<never, never>
   }
 }
