@@ -135,7 +135,7 @@ jobs:
       - name: Kill any existing processes (Windows)
         if: runner.os == 'Windows'
         run: |
-          taskkill /F /IM node.exe /T 2>nul || echo "No node processes to kill"
+          try { taskkill /F /IM node.exe /T 2>$null } catch { Write-Host "No node processes to kill" }
           Get-Process | Where-Object {$_.ProcessName -like "*motia*"} | Stop-Process -Force -ErrorAction SilentlyContinue
         shell: powershell
 
