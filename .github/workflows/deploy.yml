@@ -56,34 +56,4 @@ jobs:
           pnpm publish -r --filter @motiadev/stream-client-browser --no-git-checks --tag pre-release
           pnpm publish -r --filter @motiadev/stream-client-react --no-git-checks --tag pre-release
           pnpm publish -r --filter motia --no-git-checks --tag pre-release
-          pnpm publish -r --filter @motiadev/test --no-git-checks --tag pre-release
-
-  trigger-e2e:
-    needs: pre-release
-    runs-on: ubuntu-latest
-    steps:
-      - name: Generate token
-        id: generate_token
-        uses: actions/create-github-app-token@v1
-        with:
-          app-id: ${{ secrets.MOTIA_CI_APP_ID }}
-          private-key: ${{ secrets.MOTIA_CI_APP_PRIVATE_KEY }}
-
-      - name: Trigger E2E Tests
-        uses: actions/github-script@v7
-        with:
-          github-token: ${{ steps.generate_token.outputs.token }}
-          script: |
-            const workflow = await github.rest.actions.createWorkflowDispatch({
-              owner: context.repo.owner,
-              repo: context.repo.repo,
-              workflow_id: 'e2e-tests-release.yml',
-              ref: 'main',
-              inputs: {
-                version: '${{ needs.pre-release.outputs.version }}',
-                tag_name: '${{ needs.pre-release.outputs.tag_name }}',
-                triggered_by: context.runId.toString()
-              }
-            });
-            
-            console.log('E2E workflow triggered:', workflow.data); 
+          pnpm publish -r --filter @motiadev/test --no-git-checks --tag pre-release 

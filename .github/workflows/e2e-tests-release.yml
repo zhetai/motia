@@ -11,6 +11,12 @@ permissions:
   actions: write
 
 on:
+  workflow_run:
+    workflows: ["Deploy Release"]
+    types:
+      - completed
+    branches:
+      - main
   workflow_dispatch:
     inputs:
       version:
@@ -24,7 +30,45 @@ on:
         required: true
 
 jobs:
+  prepare:
+    runs-on: ubuntu-latest
+    if: github.event_name == 'workflow_dispatch' || github.event.workflow_run.conclusion == 'success'
+    outputs:
+      version: ${{ steps.extract_version.outputs.version }}
+      tag_name: ${{ steps.extract_version.outputs.tag_name }}
+      triggered_by: ${{ steps.extract_version.outputs.triggered_by }}
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Extract version from inputs or workflow run
+        id: extract_version
+        run: |
+          if [ "${{ github.event_name }}" == "workflow_dispatch" ]; then
+            echo "version=${{ github.event.inputs.version }}" >> $GITHUB_OUTPUT
+            echo "tag_name=${{ github.event.inputs.tag_name }}" >> $GITHUB_OUTPUT
+            echo "triggered_by=${{ github.event.inputs.triggered_by }}" >> $GITHUB_OUTPUT
+          else
+            # Extract from the triggering workflow's tag
+            TAG_NAME="${{ github.event.workflow_run.head_branch }}"
+            if [[ $TAG_NAME =~ ^refs/tags/v(.+)$ ]]; then
+              VERSION="${BASH_REMATCH[1]}"
+            else
+              # If not a tag, extract from the head_sha
+              git fetch --tags
+              TAG_NAME=$(git describe --tags --exact-match ${{ github.event.workflow_run.head_sha }} 2>/dev/null || echo "")
+              if [[ $TAG_NAME =~ ^v(.+)$ ]]; then
+                VERSION="${BASH_REMATCH[1]}"
+              else
+                echo "❌ Could not extract version from workflow run"
+                exit 1
+              fi
+            fi
+            echo "version=$VERSION" >> $GITHUB_OUTPUT
+            echo "tag_name=$TAG_NAME" >> $GITHUB_OUTPUT
+            echo "triggered_by=${{ github.event.workflow_run.id }}" >> $GITHUB_OUTPUT
+
   e2e-tests:
+    needs: prepare
     strategy:
       fail-fast: false
       matrix:
@@ -42,7 +86,7 @@ jobs:
 
       - name: Install pre-release packages globally
         run: |
-          npm install -g motia@${{ github.event.inputs.version }} --tag pre-release
+          npm install -g motia@${{ needs.prepare.outputs.version }} --tag pre-release
 
       - name: Get Playwright version
         id: playwright-version
@@ -106,7 +150,7 @@ jobs:
       - name: Run Release E2E tests
         id: run_tests
         env:
-          MOTIA_VERSION: ${{ github.event.inputs.version }}
+          MOTIA_VERSION: ${{ needs.prepare.outputs.version }}
           MOTIA_API_URL: http://localhost:3000
         run: |
           echo "Starting Release E2E tests with Motia version: $MOTIA_VERSION"
@@ -131,7 +175,7 @@ jobs:
         if: always()
         uses: actions/upload-artifact@v4
         with:
-          name: e2e-test-results-${{ github.event.inputs.version }}-${{ matrix.os }}
+          name: e2e-test-results-${{ needs.prepare.outputs.version }}-${{ matrix.os }}
           path: |
             packages/e2e/playwright-report/
             packages/e2e/test-results/
@@ -163,7 +207,7 @@ jobs:
           fi
 
   trigger-next-step:
-    needs: check-results
+    needs: [prepare, check-results]
     runs-on: ubuntu-latest
     if: always()
     steps:
@@ -186,9 +230,9 @@ jobs:
               workflow_id: 'finalize-release.yml',
               ref: 'main',
               inputs: {
-                version: '${{ github.event.inputs.version }}',
-                tag_name: '${{ github.event.inputs.tag_name }}',
-                triggered_by: '${{ github.event.inputs.triggered_by }}'
+                version: '${{ needs.prepare.outputs.version }}',
+                tag_name: '${{ needs.prepare.outputs.tag_name }}',
+                triggered_by: '${{ needs.prepare.outputs.triggered_by }}'
               }
             });
 
@@ -204,9 +248,9 @@ jobs:
               workflow_id: 'rollback-release.yml',
               ref: 'main',
               inputs: {
-                version: '${{ github.event.inputs.version }}',
-                tag_name: '${{ github.event.inputs.tag_name }}',
-                triggered_by: '${{ github.event.inputs.triggered_by }}',
+                version: '${{ needs.prepare.outputs.version }}',
+                tag_name: '${{ needs.prepare.outputs.tag_name }}',
+                triggered_by: '${{ needs.prepare.outputs.triggered_by }}',
                 reason: 'E2E tests failed'
               }
             }); 
