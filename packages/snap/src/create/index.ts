@@ -1,7 +1,7 @@
 import path from 'path'
 import fs from 'fs'
 import { templates } from './templates'
-import { executeCommand } from '../utils/executeCommand'
+import { executeCommand } from '../utils/execute-command'
 import { pythonInstall } from '../install'
 import { generateTypes } from '../generate-types'
 

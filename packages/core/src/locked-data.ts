@@ -1,7 +1,7 @@
 import fs from 'fs'
 import path from 'path'
 import { isApiStep, isCronStep, isEventStep } from './guards'
-import { Printer } from './printer'
+import { NoPrinter, Printer } from './printer'
 import { InternalStateStream, StateStreamFactory } from './state-stream'
 import { validateStep } from './step-validator'
 import { ApiRouteConfig, CronConfig, EventConfig, Flow, InternalStateManager, Step } from './types'
@@ -56,6 +56,10 @@ export class LockedData {
     }
 
     this.streams = {}
+  }
+
+  disablePrinter() {
+    this.printer = new NoPrinter(this.baseDir)
   }
 
   applyStreamWrapper<TData>(state: InternalStateManager, streamWrapper: StreamWrapper<TData>): void {

@@ -3,7 +3,7 @@
 import { program } from 'commander'
 import path from 'path'
 import fs from 'fs'
-import { getStage, Stage } from './infrastructure/config-utils'
+import './cloud'
 
 const defaultPort = 3000
 
@@ -89,14 +89,6 @@ program
   })
 
 program
-  .command('build')
-  .description('Build the project')
-  .action(async () => {
-    const { build } = require('./builder/build')
-    await build()
-  })
-
-program
   .command('get-config')
   .description('Get the generated config for your project')
   .option('-o, --output <port>', 'Path to write the generated config')
@@ -147,6 +139,7 @@ program
   })
 
 const generate = program.command('generate').description('Generate motia resources')
+
 generate
   .command('step')
   .description('Create a new step with interactive prompts')
@@ -176,223 +169,6 @@ state
       console.log(JSON.stringify(state, null, 2))
     } catch (error) {
       console.error('Error:', error instanceof Error ? error.message : 'Unknown error')
-      process.exit(1)
-    }
-  })
-
-const infrastructure = program
-  .command('infrastructure')
-  .description('Manage motia infrastructure deployment services')
-  .option('--verbose', 'Enable verbose logging')
-
-infrastructure
-  .command('init')
-  .description('Initialize a new Motia infrastructure deployment project')
-  .requiredOption(
-    '-k, --api-key <api key>',
-    'API key for authentication (not stored in config)',
-    process.env.MOTIA_API_KEY,
-  )
-  .option('-n, --name <project name>', 'The name for your infrastructure deployment project')
-  .option('-d, --description <description>', 'Description of the infrastructure deployment service')
-  .action(async (arg) => {
-    try {
-      const { initInfrastructure } = require('./infrastructure/init')
-      await initInfrastructure({
-        name: arg.name,
-        description: arg.description,
-        apiKey: arg.apiKey,
-      })
-    } catch (error) {
-      if (infrastructure.opts().verbose) {
-        console.error('❌ Infrastructure initialization failed:', error)
-      } else {
-        console.error('❌ Infrastructure initialization failed')
-      }
-      process.exit(1)
-    }
-  })
-
-infrastructure
-  .command('deploy')
-  .description('Deploy the project to the Motia deployment service')
-  .requiredOption('-k, --api-key <key>', 'The API key for authentication', process.env.MOTIA_API_KEY)
-  .option('-v, --version <version>', 'The version to deploy', 'latest')
-  .option('-s, --stage <stage>', 'Override the selected stage')
-  .option('-e, --env-file <path>', 'Path to environment file')
-  .action(async (arg) => {
-    try {
-      const { build } = require('./builder/build')
-      await build()
-
-      const { DeploymentManager } = require('./infrastructure/deploy/deploy')
-      const deploymentManager = new DeploymentManager()
-      await deploymentManager.deploy(arg.apiKey, process.cwd(), arg.version, {
-        stage: arg.stage,
-        envFile: arg.envFile,
-      })
-      process.exit(0)
-    } catch (error) {
-      if (infrastructure.opts().verbose) {
-        console.error('❌ Deployment failed:', error)
-      } else {
-        console.error('❌ Deployment failed')
-      }
-      process.exit(1)
-    }
-  })
-
-infrastructure
-  .command('list-projects')
-  .description('List all projects')
-  .requiredOption(
-    '-k, --api-key <api key>',
-    'API key for authentication (not stored in config)',
-    process.env.MOTIA_API_KEY,
-  )
-  .option(
-    '-u, --api-base-url <url>',
-    'Base URL for the API (defaults to MOTIA_API_URL env var or https://api.motia.io)',
-  )
-  .action(async (arg) => {
-    try {
-      const { listProjects } = require('./infrastructure/project')
-      await listProjects({
-        apiKey: arg.apiKey,
-        apiBaseUrl: arg.apiBaseUrl,
-      })
-    } catch (error) {
-      if (infrastructure.opts().verbose) {
-        console.error('❌ Failed to list projects:', error)
-      } else {
-        console.error('❌ Failed to list projects')
-      }
-      process.exit(1)
-    }
-  })
-
-infrastructure
-  .command('create-stage')
-  .description('Create a new deployment stage')
-  .requiredOption(
-    '-k, --api-key <api key>',
-    'API key for authentication (not stored in config)',
-    process.env.MOTIA_API_KEY,
-  )
-  .option('-n, --name <stage name>', 'The name for your deployment stage')
-  .option('-d, --description <description>', 'Description of the deployment stage')
-  .action(async (arg) => {
-    try {
-      const { createStage } = require('./infrastructure/stage')
-      await createStage({
-        name: arg.name,
-        description: arg.description,
-        apiKey: arg.apiKey,
-      })
-    } catch (error) {
-      if (infrastructure.opts().verbose) {
-        console.error('❌ Stage creation failed:', error)
-      } else {
-        console.error('❌ Stage creation failed')
-      }
-      process.exit(1)
-    }
-  })
-
-infrastructure
-  .command('select-stage')
-  .description('Select a deployment stage')
-  .option('-n, --name <stage name>', 'The name of the stage to select')
-  .action(async (arg) => {
-    try {
-      const inquirer = require('inquirer')
-      const { selectStage } = require('./infrastructure/stage')
-      const { readConfig } = require('./infrastructure/config-utils')
-
-      const config = readConfig()
-      if (!config || !config.stages || Object.keys(config.stages).length === 0) {
-        console.error('❌ No stages found. Create a stage first using create-stage command.')
-        process.exit(1)
-      }
-
-      let stageName = arg.name
-      if (!stageName) {
-        const stageChoices = Object.entries(config.stages as Record<string, Stage>).map(([name, stage]) => ({
-          name: `${name}${stage.description ? ` - ${stage.description}` : ''}`,
-          value: name,
-        }))
-
-        const answer = await inquirer.prompt([
-          {
-            type: 'list',
-            name: 'stage',
-            message: 'Select a deployment stage:',
-            choices: stageChoices,
-            default: config.selectedStage,
-          },
-        ])
-        stageName = answer.stage
-      }
-
-      await selectStage({
-        name: stageName,
-      })
-    } catch (error) {
-      if (infrastructure.opts().verbose) {
-        console.error('❌ Stage selection failed:', error)
-      } else {
-        console.error('❌ Stage selection failed')
-      }
-      process.exit(1)
-    }
-  })
-
-infrastructure
-  .command('list-stages')
-  .description('List all deployment stages')
-  .requiredOption('-k, --api-key <api key>', 'API key for authentication (when using API)', process.env.MOTIA_API_KEY)
-  .option('-a, --api', 'Fetch stages from API instead of local config')
-  .action(async (arg) => {
-    try {
-      const { listStages } = require('./infrastructure/stage')
-      await listStages({
-        useApi: arg.api,
-        apiKey: arg.apiKey,
-      })
-    } catch (error) {
-      if (infrastructure.opts().verbose) {
-        console.error('❌ Failed to list stages:', error)
-      } else {
-        console.error('❌ Failed to list stages')
-      }
-      process.exit(1)
-    }
-  })
-
-infrastructure
-  .command('update')
-  .description('Update a stage to a specific version')
-  .requiredOption('-k, --api-key <api key>', 'API key for authentication', process.env.MOTIA_API_KEY)
-  .requiredOption('-s, --stage <stage>', 'The stage to update')
-  .requiredOption('-v, --version <version>', 'The version to promote')
-  .action(async (arg) => {
-    try {
-      const stage = getStage(arg.stage)
-      if (!stage) {
-        throw new Error(`Stage "${arg.stage}" not found`)
-      }
-
-      const { DeploymentService } = require('./infrastructure/deploy/services/deployment-service')
-      const deploymentService = new DeploymentService(arg.apiKey)
-      await deploymentService.promoteVersion(stage.id, arg.version)
-      console.log(`✅ Version ${arg.version} promoted successfully to ${arg.stage}`)
-      process.exit(0)
-    } catch (error) {
-      if (infrastructure.opts().verbose) {
-        console.error('❌ Version promotion failed:', error)
-      } else {
-        console.error('❌ Version promotion failed')
-      }
       process.exit(1)
     }
   })

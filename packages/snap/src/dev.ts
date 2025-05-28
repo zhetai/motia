@@ -12,7 +12,7 @@ import path from 'path'
 import { FileStateAdapter } from '@motiadev/core/dist/src/state/adapters/default-state-adapter'
 import { createDevWatchers } from './dev-watchers'
 import { stateEndpoints } from './dev/state-endpoints'
-import { activatePythonVenv } from './utils/activatePythonEnv'
+import { activatePythonVenv } from './utils/activate-python-env'
 
 // eslint-disable-next-line @typescript-eslint/no-require-imports
 require('ts-node').register({
