@@ -80,9 +80,6 @@ jobs:
     steps:
       - uses: actions/checkout@v4
 
-      - name: Setup
-        uses: ./.github/actions/setup
-
       - name: Install pre-release packages globally
         run: |
           npm install -g motia@${{ needs.prepare.outputs.version }} --tag pre-release
