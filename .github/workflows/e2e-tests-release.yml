@@ -80,6 +80,19 @@ jobs:
     steps:
       - uses: actions/checkout@v4
 
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.13'
+      - uses: ruby/setup-ruby@v1
+        with:
+          ruby-version: '3.3.6'
+
+      - uses: pnpm/action-setup@v4
+      - uses: actions/setup-node@v3
+        with:
+          node-version: '20.11.1'
+          cache: 'pnpm'
+
       - name: Install pre-release packages globally
         run: |
           npm install -g motia@${{ needs.prepare.outputs.version }} --tag pre-release
