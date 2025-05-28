@@ -176,11 +176,6 @@ const CardStats: React.FC = () => {
   )
 }
 
-const backgroundStyle: React.CSSProperties = {
-  boxShadow:
-    '0px -345px 97px 0px rgba(0, 0, 0, 0.01), 0px -221px 88px 0px rgba(0, 0, 0, 0.12), 0px -124px 75px 0px rgba(0, 0, 0, 0.39), 0px -55px 55px 0px rgba(0, 0, 0, 0.66), 0px -14px 30px 0px rgba(0, 0, 0, 0.76)',
-}
-
 /***
  *
  * MAIN RETURN FUNCTION
@@ -198,7 +193,7 @@ export default function MotiaCloud() {
          * *Background
          *
          */}
-        <Image style={backgroundStyle} src={bgMotiaCloud} alt="bg explorer" className="absolute top-0 left-0 w-full" />
+        <Image src={bgMotiaCloud} alt="bg explorer" className="motia-cloud-shadow absolute top-0 left-0 w-full" />
         {/**
          *
          * Dashboard Layout

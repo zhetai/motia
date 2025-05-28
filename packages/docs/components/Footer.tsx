@@ -7,11 +7,13 @@ import footerWordmarkGlow from '@/public/images/landing/footerWordmarkGlow.svg'
 import { discordIcon, githubIcon, starIcon } from './Icons'
 import React from 'react'
 import Link from 'next/link'
-import { scrollToId } from '@/utils'
+
 import SectionAppearAnimation from './SectionAppearAnimation'
 import { GITHUB_LINK, DISCORD_HANDLE } from '@/utils/constants'
 import { useGithubStars } from '@/hooks/useGithubStars'
 import ModalCTA, { ModalCTAVariants } from './ModalCTA'
+import { usePathname, useRouter } from 'next/navigation'
+import { scrollToId } from '@/utils'
 
 const SocialLinks: React.FC = () => {
   const stars = useGithubStars()
@@ -56,10 +58,13 @@ const HomePageLinks: React.FC = () => {
     linkText: string
   }
   const SectionLink: React.FC<Props> = ({ sectionId, linkText }) => {
+    const router = useRouter()
+    const pathname = usePathname()
+    const smoothScroll = pathname === '/'
     return (
       <p
-        onClick={() => scrollToId(sectionId)}
-        className="cursor-pointer scroll-smooth text-[16px] text-white/60 transition-colors ease-in-out hover:text-white"
+        onClick={smoothScroll ? () => scrollToId(sectionId) : () => router.push(`/#${sectionId}`)}
+        className="cursor-pointer text-[16px] text-white/60 transition-colors ease-in-out hover:text-white"
       >
         {linkText}
       </p>

@@ -46,7 +46,7 @@ export default function ModalCTA({ variant, text, icon }: ModalCTA) {
           className="flex cursor-pointer gap-[4px] font-sans text-[16px] text-white/60 transition-colors ease-in-out hover:text-white"
         >
           <div className="rounded-[4px] bg-[#20ABFC]/12 px-[6px] text-[#088CFF]">Coming Soon</div>
-          <p>MotiaHub</p>
+          <p>Motia Cloud</p>
         </button>
       )}
       {variant === ModalCTAVariants.CLOUD_NAVBAR && (
@@ -55,7 +55,7 @@ export default function ModalCTA({ variant, text, icon }: ModalCTA) {
           className="flex cursor-pointer items-center gap-[4px] bg-linear-to-r from-[#53B4FF] to-white bg-clip-text font-sans text-[16px] font-medium text-transparent"
           aria-label="Click To Register For Motia Cloud "
         >
-          <p>MotiaHub</p> {twinkleStarsIcon}
+          <p>Motia Cloud</p> {twinkleStarsIcon}
         </button>
       )}
     </>

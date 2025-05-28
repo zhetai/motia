@@ -3,7 +3,7 @@ User-agent: *
 Allow: /
 
 # Host
-Host: https://motia-dev-website.vercel.app
+Host: https://motia.dev
 
 # Sitemaps
-Sitemap: https://motia-dev-website.vercel.app/sitemap.xml
+Sitemap: https://motia.dev/sitemap.xml

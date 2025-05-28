@@ -90,7 +90,7 @@ const ModalForm: FC<ModalFormProps> = ({ isOpen, onClose, title }) => {
                       Thanks for registering!
                     </DialogTitle>
                     <p className="mx-auto w-[270px] max-w-full pt-[20px] text-center text-[16px] text-white/60">
-                      MotiaHub is coming soon.
+                      Motia Cloud is coming soon.
                     </p>
                   </>
                 ) : (

@@ -15,16 +15,10 @@ export default function AgentsExplorer({ initialData }: Props) {
 
   return (
     <div id="use-cases" className="flex w-full max-w-[1200px] flex-col items-center pt-[180px] max-md:pt-[120px]">
-      <div className="px-[16px] sm:hidden">
-        <Title className="text-center text-white opacity-40">Building agents that work in production is hard,</Title>
-        <Title delay={0.4} className="text-center !font-medium text-white">
-          But not with Motia
-        </Title>
-      </div>
-      <div className="max-sm:hidden">
-        <Title className="text-center text-white opacity-40">Write AI Workflows Like</Title>
+      <div>
+        <Title className="text-center text-white opacity-40">Write AI Workflows like</Title>
         <Title delay={0.5} className="text-center !font-medium text-white">
-          Like You Write APIs
+          You Write APIs
         </Title>
       </div>
 

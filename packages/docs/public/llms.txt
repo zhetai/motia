@@ -340,7 +340,7 @@ If you encounter issues during deployment, try these steps:
 - Explore [CI/CD Integration](/docs/concepts/ci-cd) for automating your deployment process
 - Check out [Deployment Strategies](/docs/concepts/deployment-strategies) for advanced deployment patterns 
 
--   [Flows](/docs/concepts\flows-and-visualization.md): Documentation for Flows.
+-   [flows-and-visualization](/docs/concepts\flows-and-visualization.md): Documentation for flows-and-visualization.
 ---
 title: Flows
 ---
@@ -422,7 +422,7 @@ Checkout the [Motia Workbench](/docs/workbench/overview) docs for more informati
 <Callout>New to Motia? Follow the **[quick start](/docs/getting-started/quick-start)** guide to get set up.</Callout>
 
 
--   [Logging & Debugging](/docs/concepts\logging-and-debugging.md): Documentation for Logging & Debugging.
+-   [logging-and-debugging](/docs/concepts\logging-and-debugging.md): Documentation for logging-and-debugging.
 ---
 title: Logging & Debugging
 ---
@@ -1121,7 +1121,7 @@ state:
 | Concurrent Access | - Memory/File: Limited concurrent flow support\n- Redis: Use atomic operations and implement retry logic                                                                                         |
 
 
--   [API Step](/docs/concepts\steps\api.md): Documentation for API Step.
+-   [api](/docs/concepts\steps\api.md): Documentation for api.
 ---
 title: API Step
 ---
@@ -1622,7 +1622,7 @@ const rateLimiterMiddleware: ApiMiddleware = (() => {
 </Tabs>
 
 
--   [Cron Step](/docs/concepts\steps\cron.md): Documentation for Cron Step.
+-   [cron](/docs/concepts\steps\cron.md): Documentation for cron.
 ---
 title: Cron Step
 ---
@@ -1710,7 +1710,7 @@ The following examples showcase how to configure an **CRON Step**
 </Tabs>
 
 
--   [Defining Steps](/docs/concepts\steps\defining-steps.md): Documentation for Defining Steps.
+-   [defining-steps](/docs/concepts\steps\defining-steps.md): Documentation for defining-steps.
 ---
 title: Defining Steps
 ---
@@ -1845,7 +1845,7 @@ Follow the **[quick start](/docs/getting-started/quick-start)** guide if you hav
 </Callout>
 
 
--   [Event Step](/docs/concepts\steps\event.md): Documentation for Event Step.
+-   [event](/docs/concepts\steps\event.md): Documentation for event.
 ---
 title: Event Step
 ---
@@ -2293,7 +2293,7 @@ Help spread the word about Motia by sharing it with your friends, colleagues, an
 
 We appreciate all forms of contributions and look forward to collaborating with you to make Motia even better! 
 
--   [Examples](/docs/examples\index.md): Documentation for Examples.
+-   [index](/docs/examples\index.md): Documentation for index.
 ---
 title: Examples
 ---
@@ -2317,7 +2317,7 @@ We welcome contributions to the examples. Please submit a PR to the [examples re
 
 
 ## Examples
-[Examples](/docs/examples\index.md): Code example
+[index](/docs/examples\index.md): Code example
 ---
 title: Examples
 ---
@@ -2339,7 +2339,7 @@ We have curated a few examples to help you get started with Motia.
 We welcome contributions to the examples. Please submit a PR to the [examples repository](https://github.com/motiadev/motia-examples).
 
 
--   [Dynamic Sentiment Analysis](/docs/examples\sentiment-analysis.md): Documentation for Dynamic Sentiment Analysis.
+-   [sentiment-analysis](/docs/examples\sentiment-analysis.md): Documentation for sentiment-analysis.
 ---
 title: Dynamic Sentiment Analysis
 ---
@@ -2597,7 +2597,7 @@ Try it out, see the branching logic in action, and enjoy skipping all the boring
 
 
 ## Examples
-[Dynamic Sentiment Analysis](/docs/examples\sentiment-analysis.md): Code example
+[sentiment-analysis](/docs/examples\sentiment-analysis.md): Code example
 ---
 title: Dynamic Sentiment Analysis
 ---
@@ -2964,7 +2964,7 @@ Before you begin, ensure you have the following installed:
 1.  **Quick Start Guide:** [Build Your First Flow](/docs/getting-started/quick-start) -  Follow our step-by-step guide to create a minimal Motia workflow and see it in action.
 2.  **Core Concepts:** [Understand the Fundamentals](/docs/getting-started/core-concepts) -  Dive deeper into the essential concepts of Motia: Steps, Flows, Events, and Topics.
 
--   [Quick Start](/docs/getting-started\quick-start.md): Documentation for Quick Start.
+-   [quick-start](/docs/getting-started\quick-start.md): Documentation for quick-start.
 ---
 title: Quick Start
 ---
@@ -5840,7 +5840,7 @@ Become part of a growing community of developers and automation enthusiasts!
 
 We're excited to see what you'll build with Motia!
 
--   [NOOP Steps](/docs/workbench\noop-steps.md): Documentation for NOOP Steps.
+-   [noop-steps](/docs/workbench\noop-steps.md): Documentation for noop-steps.
 ---
 title: NOOP Steps
 ---
@@ -6255,7 +6255,7 @@ You can enhance your NOOP steps with custom React components for better visualiz
 | Design System | • Follow your project's design tokens<br/>• Maintain consistent spacing and padding<br/>• Use standard border radiuses<br/>• Ensure high contrast for readability<br/>• Use consistent font sizes (14px-16px) |
 
 
--   [Overview](/docs/workbench\overview.md): Documentation for Overview.
+-   [overview](/docs/workbench\overview.md): Documentation for overview.
 ---
 title: Overview
 ---
@@ -6355,7 +6355,7 @@ UI steps allow you to customize how your steps appear in the Workbench visualiza
 <Callout>New to Motia? Follow the **[quick start](/docs/getting-started/quick-start)** guide to get set up.</Callout>
 
 
--   [UI Steps](/docs/workbench\ui-steps.md): Documentation for UI Steps.
+-   [ui-steps](/docs/workbench\ui-steps.md): Documentation for ui-steps.
 ---
 title: UI Steps
 ---

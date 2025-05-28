@@ -5,6 +5,8 @@ import './globals.css'
 import { RootProvider } from 'fumadocs-ui/provider'
 import type { WithContext, Organization } from 'schema-dts'
 import { DOMAIN_URL } from '@/utils/constants'
+import { GoogleTagManager } from '@next/third-parties/google'
+import { Analytics } from '@vercel/analytics/react'
 
 const tasaExplorer = localFont({
   src: [
@@ -37,8 +39,8 @@ const GOOGLE_VERIFICATION = process.env.NEXT_PUBLIC_GOOGLE_VERIFICATION ?? 'YOUR
 const metaTitle = 'Motia - AI Agent Framework for Software Engineering Teams'
 const metaDescription =
   'Multi-language cloud functions runtime for API endpoints, background jobs, and agentic workflows using Motia Steps. Preview them in the Workbench, ship to zero-config infrastructure, and monitor in the Cloud.'
-const ogImagePath = '/public/og-image.webp'
-const hostedImagePath = DOMAIN_URL + ogImagePath
+
+const hostedImagePath = DOMAIN_URL + '/og-image.webp'
 export const metadata: Metadata = {
   title: {
     template: '%s | motia',
@@ -53,7 +55,7 @@ export const metadata: Metadata = {
     'backend automation',
     'developer tools',
   ],
-  metadataBase: new URL('https://motia.dev'),
+  metadataBase: new URL(DOMAIN_URL),
 
   // Standard OpenGraph
   openGraph: {
@@ -65,10 +67,11 @@ export const metadata: Metadata = {
     description: metaDescription,
     images: [
       {
-        url: ogImagePath,
+        url: hostedImagePath,
         width: 1200,
         height: 630,
         alt: metaTitle,
+        type: 'image/webp',
       },
     ],
   },
@@ -80,7 +83,7 @@ export const metadata: Metadata = {
     creator: '@motiadev',
     title: metaTitle,
     description: metaDescription,
-    images: [ogImagePath],
+    images: [hostedImagePath],
   },
 
   // Icons and PWA
@@ -105,7 +108,7 @@ export const metadata: Metadata = {
     'instagram:card': 'summary_large_image',
     'instagram:title': metaTitle,
     'instagram:description': metaDescription,
-    'instagram:image': 'https://motia.dev/og-image.png',
+    'instagram:image': hostedImagePath,
 
     // Reddit
     'reddit:title': metaTitle,
@@ -177,10 +180,16 @@ export default function RootLayout({
 }>) {
   return (
     <html lang="en" suppressHydrationWarning>
+      <head>
+        <GoogleTagManager gtmId={GTM_ID} />
+      </head>
       <body
         className={`${geistSans.variable} ${dmMono.variable} ${tasaExplorer.variable} w-screen overflow-x-hidden antialiased`}
       >
-        <RootProvider>{children}</RootProvider>
+        <RootProvider>
+          {children}
+          <Analytics />
+        </RootProvider>
       </body>
     </html>
   )
