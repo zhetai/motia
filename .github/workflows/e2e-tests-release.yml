@@ -132,13 +132,6 @@ jobs:
           pkill -f "npm run dev" || true
           pkill -f "node.*3000" || true
 
-      - name: Kill any existing processes (Windows)
-        if: runner.os == 'Windows'
-        run: |
-          try { taskkill /F /IM node.exe /T 2>$null } catch { Write-Host "No node processes to kill" }
-          Get-Process | Where-Object {$_.ProcessName -like "*motia*"} | Stop-Process -Force -ErrorAction SilentlyContinue
-        shell: powershell
-
       - name: Verify Motia CLI installation (Unix)
         if: runner.os != 'Windows'
         run: |
