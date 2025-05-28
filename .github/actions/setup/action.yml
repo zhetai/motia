@@ -18,7 +18,7 @@ runs:
 
     - name: Install dependencies
       shell: bash
-      run: pnpm install && pnpm -r --filter @motiadev/core exec pnpm python-setup
+      run: pnpm --filter=!playground install && pnpm -r --filter @motiadev/core exec pnpm python-setup
 
     - name: Build packages
       shell: bash
@@ -27,4 +27,4 @@ runs:
     # We need to run install again to set bin (from build)
     - name: Install dependencies
       shell: bash
-      run: pnpm install 
+      run: pnpm install
