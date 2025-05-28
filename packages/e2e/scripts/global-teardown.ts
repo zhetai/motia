@@ -17,12 +17,7 @@ async function globalTeardown() {
       }
     } else {
       try {
-        execSync('pkill -f "npm run dev"', { stdio: 'pipe' })
-      } catch (error) {
-      }
-
-      try {
-        execSync('pkill -f "motia"', { stdio: 'pipe' })
+        execSync('lsof -ti:3000 | xargs kill -9', { stdio: 'pipe' })
       } catch (error) {
       }
     }
