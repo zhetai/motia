@@ -17,7 +17,7 @@ cloudCli
   .action(
     handler(async (arg, context) => {
       const versionManager = new VersionManager()
-      const builder = await build()
+      const builder = await build(context)
       const { errors, warnings } = validateStepsConfig(builder)
 
       if (warnings.length > 0) {

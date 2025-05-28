@@ -5,8 +5,9 @@ import { collectFlows } from '../../generate-locked-data'
 import { Builder } from './builder'
 import { NodeBuilder } from './builders/node'
 import { PythonBuilder } from './builders/python'
+import { CliContext } from '../config-utils'
 
-export const build = async (): Promise<Builder> => {
+export const build = async (context: CliContext): Promise<Builder> => {
   const projectDir = process.cwd()
   const builder = new Builder(projectDir)
   const stepsConfigPath = path.join(projectDir, 'dist', 'motia.steps.json')
@@ -22,12 +23,15 @@ export const build = async (): Promise<Builder> => {
 
   lockedData.disablePrinter()
 
-  await collectFlows(projectDir, lockedData)
-
+  const invalidSteps = await collectFlows(projectDir, lockedData)
   const hasPythonSteps = lockedData.activeSteps.some((step) => step.filePath.endsWith('.py'))
 
   if (hasPythonSteps) {
     builder.registerBuilder('python', new PythonBuilder(builder))
+  }
+
+  if (invalidSteps.length > 0) {
+    context.exitWithError('Project contains invalid steps, please fix them before building')
   }
 
   await Promise.all(lockedData.activeSteps.map((step) => builder.buildStep(step)))

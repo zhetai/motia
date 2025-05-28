@@ -1,4 +1,4 @@
-import { LockedData, getStepConfig, getStreamConfig } from '@motiadev/core'
+import { LockedData, Step, getStepConfig, getStreamConfig } from '@motiadev/core'
 import { randomUUID } from 'crypto'
 import { globSync } from 'glob'
 import path from 'path'
@@ -11,7 +11,8 @@ export const getStepFiles = (projectDir: string): string[] => {
 }
 
 // Helper function to recursively collect flow data
-export const collectFlows = async (projectDir: string, lockedData: LockedData): Promise<void> => {
+export const collectFlows = async (projectDir: string, lockedData: LockedData): Promise<Step[]> => {
+  const invalidSteps: Step[] = []
   const stepFiles = getStepFiles(projectDir)
   const streamFiles = globSync(path.join(projectDir, '{steps,streams}/**/*.stream.{ts,js}'))
 
@@ -23,7 +24,11 @@ export const collectFlows = async (projectDir: string, lockedData: LockedData): 
       continue
     }
 
-    lockedData.createStep({ filePath, version, config }, { disableTypeCreation: true })
+    const result = lockedData.createStep({ filePath, version, config }, { disableTypeCreation: true })
+
+    if (!result) {
+      invalidSteps.push({ filePath, version, config })
+    }
   }
 
   for (const filePath of streamFiles) {
@@ -36,6 +41,8 @@ export const collectFlows = async (projectDir: string, lockedData: LockedData): 
 
     lockedData.createStream({ filePath, config }, { disableTypeCreation: true })
   }
+
+  return invalidSteps
 }
 
 export const generateLockedData = async (projectDir: string): Promise<LockedData> => {
