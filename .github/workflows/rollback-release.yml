@@ -87,12 +87,12 @@ jobs:
 
       - name: Remove pre-release packages from NPM
         run: |
-          npm unpublish @motiadev/core@${{ needs.prepare.outputs.version }} --force || echo "Package not found or already removed"
-          npm unpublish @motiadev/workbench@${{ needs.prepare.outputs.version }} --force || echo "Package not found or already removed"
-          npm unpublish @motiadev/stream-client-browser@${{ needs.prepare.outputs.version }} --force || echo "Package not found or already removed"
-          npm unpublish @motiadev/stream-client-react@${{ needs.prepare.outputs.version }} --force || echo "Package not found or already removed"
           npm unpublish motia@${{ needs.prepare.outputs.version }} --force || echo "Package not found or already removed"
           npm unpublish @motiadev/test@${{ needs.prepare.outputs.version }} --force || echo "Package not found or already removed"
+          npm unpublish @motiadev/stream-client-react@${{ needs.prepare.outputs.version }} --force || echo "Package not found or already removed"
+          npm unpublish @motiadev/stream-client-browser@${{ needs.prepare.outputs.version }} --force || echo "Package not found or already removed"
+          npm unpublish @motiadev/workbench@${{ needs.prepare.outputs.version }} --force || echo "Package not found or already removed"
+          npm unpublish @motiadev/core@${{ needs.prepare.outputs.version }} --force || echo "Package not found or already removed"
 
       - name: Remove pre-release tags
         run: |

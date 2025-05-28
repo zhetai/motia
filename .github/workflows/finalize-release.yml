@@ -94,6 +94,12 @@ jobs:
         with:
           app-id: ${{ secrets.MOTIA_CI_APP_ID }}
           private-key: ${{ secrets.MOTIA_CI_APP_PRIVATE_KEY }}
+          permissions: >-
+            {
+              "contents": "write",
+              "packages": "write",
+              "metadata": "read"
+            }
 
       - uses: actions/checkout@v4
         with:
@@ -162,6 +168,11 @@ jobs:
         with:
           app-id: ${{ secrets.MOTIA_CI_APP_ID }}
           private-key: ${{ secrets.MOTIA_CI_APP_PRIVATE_KEY }}
+          permissions: >-
+            {
+              "contents": "write",
+              "metadata": "read"
+            }
 
       - uses: actions/checkout@v4
         with:
