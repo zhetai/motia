@@ -30,8 +30,12 @@ export const LogConsole = () => {
   const dragRef = useRef<HTMLDivElement>(null)
   const [isDragging, setIsDragging] = useState(false)
   const contentRef = useRef<HTMLDivElement>(null)
+  const setUnreadLogsCount = useLogs((state) => state.setUnreadLogsCount)
 
-  const toggleExpand = () => setIsExpanded(!isExpanded)
+  const toggleExpand = useCallback(() => {
+    setIsExpanded((prev) => !prev)
+    setUnreadLogsCount(0)
+  }, [setUnreadLogsCount])
 
   const handleMouseDown = useCallback((e: React.MouseEvent) => {
     e.preventDefault()

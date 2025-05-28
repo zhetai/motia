@@ -90,3 +90,5 @@ agents/**/components/
 **/tsconfig.app.tsbuildinfo
 .motia/
 .mermaid/
+
+playground/motia-workbench.json

@@ -28,6 +28,7 @@ export type FlowResponse = {
   name: string
   steps: FlowStep[]
   edges: FlowEdge[]
+  error?: string
 }
 
 export type FlowConfigResponse = {
@@ -101,7 +102,7 @@ export const useGetFlowState = (flow: FlowResponse, flowConfig: FlowConfigRespon
   const [edges, setEdges, onEdgesChange] = useEdgesState<Edge<EdgeData>>([])
 
   useEffect(() => {
-    if (!flow) return
+    if (!flow || flow.error) return
 
     importFlow(flow, flowConfig).then(({ nodes, edges, nodeTypes }) => {
       setNodes(nodes)
