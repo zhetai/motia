@@ -162,6 +162,7 @@ jobs:
 
       - name: Set test result
         id: test_result
+        shell: bash
         run: |
           echo "Test outcome: ${{ steps.run_tests.outcome }}"
           if [ "${{ steps.run_tests.outcome }}" == "success" ]; then

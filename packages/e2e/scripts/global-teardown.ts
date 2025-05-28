@@ -10,14 +10,9 @@ async function globalTeardown() {
     
     const isWindows = platform() === 'win32'
     
-    if (isWindows) {
+    if (!isWindows) {
       try {
-        execSync('taskkill /F /IM node.exe /T', { stdio: 'pipe' })
-      } catch (error) {
-      }
-    } else {
-      try {
-        execSync('lsof -ti:3000 | xargs kill -9', { stdio: 'pipe' })
+        execSync('lsof -ti:3000 | xargs kill -9', { stdio: 'ignore' })
       } catch (error) {
       }
     }
