@@ -1,0 +1,161 @@
+name: Create Tag
+
+on:
+  workflow_dispatch:
+    inputs:
+      version_type:
+        description: 'Type of version bump'
+        required: true
+        default: 'patch'
+        type: choice
+        options:
+          - major
+          - minor
+          - patch
+      custom_version:
+        description: 'Custom version (optional, overrides version_type)'
+        required: false
+        type: string
+      dry_run:
+        description: 'Dry run - show what would be tagged without creating'
+        required: false
+        default: false
+        type: boolean
+
+permissions:
+  contents: write
+
+jobs:
+  create-tag:
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    
+    steps:
+      - name: Generate token
+        id: generate_token
+        uses: actions/create-github-app-token@v1
+        with:
+          app-id: ${{ secrets.MOTIA_CI_APP_ID }}
+          private-key: ${{ secrets.MOTIA_CI_APP_PRIVATE_KEY }}
+          permissions: >-
+            {
+              "contents": "write",
+              "metadata": "read"
+            }
+
+      - name: Checkout code
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+          token: ${{ steps.generate_token.outputs.token }}
+
+      - name: Setup Git
+        run: |
+          git config --global user.name "GitHub Actions"
+          git config --global user.email "actions@github.com"
+
+      - name: Get latest tag
+        id: latest_tag
+        run: |
+          latest_tag=$(git describe --tags --abbrev=0 2>/dev/null || echo "v0.0.0")
+          echo "Latest tag: $latest_tag"
+          echo "tag=$latest_tag" >> $GITHUB_OUTPUT
+
+      - name: Calculate new version
+        id: new_version
+        run: |
+          latest_tag="${{ steps.latest_tag.outputs.tag }}"
+          
+          if [[ "${{ github.event.inputs.custom_version }}" != "" ]]; then
+            new_version="${{ github.event.inputs.custom_version }}"
+            if [[ ! $new_version =~ ^v[0-9]+\.[0-9]+\.[0-9]+$ ]]; then
+              if [[ ! $new_version =~ ^[0-9]+\.[0-9]+\.[0-9]+$ ]]; then
+                echo "❌ Invalid version format. Use semantic versioning (e.g., 1.2.3 or v1.2.3)"
+                exit 1
+              fi
+              new_version="v$new_version"
+            fi
+          else
+            version_type="${{ github.event.inputs.version_type }}"
+            
+            version_number=$(echo $latest_tag | sed 's/^v//')
+            IFS='.' read -r major minor patch <<< "$version_number"
+            
+            major=${major:-0}
+            minor=${minor:-0}
+            patch=${patch:-0}
+            
+            case $version_type in
+              major)
+                major=$((major + 1))
+                minor=0
+                patch=0
+                ;;
+              minor)
+                minor=$((minor + 1))
+                patch=0
+                ;;
+              patch)
+                patch=$((patch + 1))
+                ;;
+            esac
+            
+            new_version="v${major}.${minor}.${patch}"
+          fi
+          
+          echo "New version: $new_version"
+          echo "version=$new_version" >> $GITHUB_OUTPUT
+
+      - name: Check if tag exists
+        id: check_tag
+        run: |
+          new_version="${{ steps.new_version.outputs.version }}"
+          if git rev-parse "$new_version" >/dev/null 2>&1; then
+            echo "❌ Tag $new_version already exists!"
+            echo "exists=true" >> $GITHUB_OUTPUT
+            exit 1
+          else
+            echo "✅ Tag $new_version is available"
+            echo "exists=false" >> $GITHUB_OUTPUT
+          fi
+
+      - name: Show tag information
+        run: |
+          echo "### Tag Information" >> $GITHUB_STEP_SUMMARY
+          echo "- **Current latest tag:** ${{ steps.latest_tag.outputs.tag }}" >> $GITHUB_STEP_SUMMARY
+          echo "- **New tag:** ${{ steps.new_version.outputs.version }}" >> $GITHUB_STEP_SUMMARY
+          echo "- **Version type:** ${{ github.event.inputs.version_type }}" >> $GITHUB_STEP_SUMMARY
+          echo "- **Dry run:** ${{ github.event.inputs.dry_run }}" >> $GITHUB_STEP_SUMMARY
+          echo "- **Commit SHA:** ${{ github.sha }}" >> $GITHUB_STEP_SUMMARY
+
+      - name: Create tag (dry run)
+        if: ${{ github.event.inputs.dry_run == 'true' }}
+        run: |
+          echo "🔍 DRY RUN MODE - No tag will be created"
+          echo "Would create tag: ${{ steps.new_version.outputs.version }}"
+          echo "On commit: ${{ github.sha }}"
+          echo "### 🔍 Dry Run Results" >> $GITHUB_STEP_SUMMARY
+          echo "✅ Tag ${{ steps.new_version.outputs.version }} would be created successfully" >> $GITHUB_STEP_SUMMARY
+
+      - name: Create and push tag
+        if: ${{ github.event.inputs.dry_run != 'true' }}
+        run: |
+          new_version="${{ steps.new_version.outputs.version }}"
+          echo "🏷️ Creating tag: $new_version"
+          
+          git tag -a "$new_version" -m "Release $new_version"
+          git push origin "$new_version"
+          
+          echo "✅ Tag $new_version created and pushed successfully!"
+          echo "### ✅ Tag Created Successfully" >> $GITHUB_STEP_SUMMARY
+          echo "- **Tag:** $new_version" >> $GITHUB_STEP_SUMMARY
+          echo "- **Commit:** ${{ github.sha }}" >> $GITHUB_STEP_SUMMARY
+          echo "- **View tag:** https://github.com/${{ github.repository }}/releases/tag/$new_version" >> $GITHUB_STEP_SUMMARY
+        env:
+          GITHUB_TOKEN: ${{ steps.generate_token.outputs.token }}
+
+      - name: Set outputs
+        id: outputs
+        run: |
+          echo "tag=${{ steps.new_version.outputs.version }}" >> $GITHUB_OUTPUT
+          echo "sha=${{ github.sha }}" >> $GITHUB_OUTPUT 
