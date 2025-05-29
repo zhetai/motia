@@ -61,9 +61,10 @@ export default function ManifestoPage() {
             <p>
               Now, a new, profound shift is occurring, driven by AI and LLMs. These technologies are automating tasks
               previously handled by humans, enabling an unprecedented transition of workflow
-              <span className={textBlue}> steps </span> from people to backend systems. While the vast majority of steps
+              <span className={textBlue}> steps </span> from people to backend systems. While the vast majority 
+              <span className={`${gradientText} !bg-linear-to-r`}>(80% to 90%)</span> of steps
               in an organization,
-              <span className={`${gradientText} !bg-linear-to-r`}> 80% to 90%, are still handled by humans,</span> AI's
+              <span className={`${gradientText} !bg-linear-to-r`}> are still handled by humans,</span> AI's
               reasoning and data manipulation capabilities are changing this. This creates a{' '}
               <span className={`${gradientText} !bg-linear-to-r from-[#5AC5FF] !to-20%`}>
                 {' '}
@@ -77,7 +78,7 @@ export default function ManifestoPage() {
             <p>
               History teaches us that such complexity necessitates the birth of{' '}
               <span className={gradientText}> new frameworks, paradigms, and platforms. </span> We saw it with the
-              transition from PHP spaghetti code to MVC frameworks like Rails, and again with the rise of front-end
+              transition from PHP spaghetti code era to MVC frameworks like Rails, and again with the rise of front-end
               frameworks like React to handle increasingly complex user interfaces.
             </p>
           </section>
@@ -85,19 +86,18 @@ export default function ManifestoPage() {
           <section className={normalText}>
             <p>
               Now, we are on the precipice of another, perhaps even larger, paradigm shift. Large Language Models/LLMs
-              and People using AI are becoming capable of performing tasks previously handled almost exclusively by
-              humans, like reasoning about data, combining it, updating it, and moving it through complex workflows.{' '}
+              and AI tools are becoming capable of performing tasks previously handled by humans, like reasoning about data, combining it, updating it, and moving it through complex workflows.{' '}
               <span className={gradientText}>
                 {' '}
-                This means a massive influx of workflow steps is moving from human operators to backend systems.{' '}
+                This means a significant shift is occurring, where workflow steps will move from human operators to backend systems.{' '}
               </span>
             </p>
           </section>
           <section className={normalText}>
             <p>
               Just as past complexity demanded new frameworks, this AI-driven influx requires a new solution. We've seen
-              the emergence of AI agent frameworks, prompted by this shift, but they are not designed for software
-              engineers. The current landscape offers disparate, ill-suited tools:
+              the emergence of AI agent frameworks, but they are not designed for software
+              engineering teams. The current landscape offers disparate, ill-suited tools:
             </p>
           </section>
           <section className={normalText}>
@@ -123,23 +123,22 @@ export default function ManifestoPage() {
           </section>
           <section className={normalText}>
             <p>
-              This leaves a <span className={gradientTextBlue}> giant, critical hole.</span> There has been
+              There has been
               <span className={gradientText}>
                 {' '}
                 no software engineering framework built specifically to handle the influx of AI-driven complexity{' '}
               </span>{' '}
               in backend systems. Furthermore, attempting to integrate existing AI agent frameworks with traditional API
               servers and background/queuing systems creates a broken setup needing{' '}
-              <span className={gradientText}>three very different ways to fix linked problems</span>, forcing teams to
+              <span className={gradientText}>three different ways to fix linked problems</span>, forcing teams to
               split up or making engineers learn too many things at once.
             </p>
           </section>
 
           <section className={normalText}>
             <p>
-              <span className={gradientTextBlue}>This is why Motia exists.</span> Motia is designed to fill that missing
-              piece, providing a <span className="font-medium text-white">software</span>{' '}
-              <span className={gradientTextBlue}> engineering framework specifically for this problem. </span> We looked
+            <span className={gradientTextBlue}>Motia is designed to fill that missing piece</span>, providing a 
+              <span className={gradientTextBlue}> software engineering framework specifically for this problem. </span> We looked
               at the lessons learned from past paradigm shifts, particularly React's success with its simple core
               primitive.
             </p>
@@ -191,7 +190,7 @@ export default function ManifestoPage() {
           <section className={normalText}>
             <p>
               Setting up powerful, resilient event-based microservice systems is incredibly difficult to do correctly.{' '}
-              <span className={gradientTextBlue}>Motia builds this foundation correctly for you</span>, providing the
+              <span className={gradientTextBlue}>Motia builds this foundation for you</span>, providing the
               necessary resiliency without requiring engineers to worry about the underlying complexity. They can focus
               on building workflows.
             </p>
@@ -200,26 +199,25 @@ export default function ManifestoPage() {
           <section className={normalText}>
             <p>
               We have <span className={gradientTextBlue}>25 years of knowledge</span> about event-based systems and
-              microservices. We don't need completely new ways to connect workflows when we have strong patterns already
-              created. Motia uses this knowledge to build a unified system that joins the functions previously spread
+              microservices. We don't need new ways to connect workflows when we have strong patterns already
+              established. Motia uses this knowledge to build a unified system that joins the functions previously spread
               across separate API servers, background systems, and AI agent frameworks.
             </p>
           </section>
 
           <section className={normalText}>
             <p>
-              <span className={gradientTextBlue}>Motia is built as a highly scalable enterprise solution.</span> Motia
-              solves key problems that other systems miss. It tackles the hidden, but important, challenges that appear
-              when growing large codebases and systems—issues that are hard to truly understand without seeing them
-              yourself.
+              <span className={gradientTextBlue}>Motia is built as a highly scalable enterprise solution</span>, solving
+              key problems that other systems miss. It tackles the hidden, but important, challenges that appear
+              when growing large codebases and system issues that are hard to truly understand without seeing them yourself.
             </p>
           </section>
 
           <section className={normalText}>
             <p>
-              A system like Motia is needed and will happen. Whether Motia or another tool finally becomes the main
+            A developer-focused event-driven system is needed and will become a tool of choice. Whether Motia or another tool finally becomes the main
               choice, a solution that brings these concerns together and gives a clear, developer-focused approach is
-              the natural next step in how software building will change with AI.{' '}
+              the natural next step in how software engineering will change with AI.{' '}
               <span className={gradientTextBlue}>Motia is that system.</span>
             </p>
           </section>
