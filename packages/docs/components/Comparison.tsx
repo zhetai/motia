@@ -111,9 +111,9 @@ export default function Comparison() {
   return (
     <div className="relative w-full max-w-[1248px] pt-[180px] max-md:pt-[120px]">
       <div className="w-full px-[16px] pb-[80px] text-center">
-        <Title>Unmatched benchmarks.</Title>
+        <Title>Production-ready reliability.</Title>
         <SectionAppearAnimation delay={0.35}>
-          <Title className="opacity-40">Relentless performance.</Title>
+          <Title className="opacity-40"> Developer-first design.</Title>
         </SectionAppearAnimation>
       </div>
 

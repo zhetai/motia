@@ -15,8 +15,8 @@ export default function AIReady() {
           </div>
         </div>
         <CardText
-          title="Make your own AI Agents"
-          subtitle="Leverage the existing PyPi and NPM ecosystem for AI Agents"
+          title="AI-Ready Workflows"
+          subtitle="Plug into 400k+ Python packages and 2M+ npm modules"
           textBoxWidth="w-[280px]"
         />
       </BentoCard>

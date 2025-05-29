@@ -77,10 +77,10 @@ export default function CTASection() {
         <Ray delay={1} />
       </SectionAppearAnimation>
       <div className="flex w-full flex-col items-center px-[16px] text-center">
-        <Title className="max-w-[792px]">Automate everything with Motia&apos;s framework</Title>
+        <Title className="max-w-[792px]">Code-first AI automation framework</Title>
         <p className="w-full max-w-[440px] pt-[20px] text-[20px] text-white/60">
-          Code in any language. Automate everything. From AI agents to backend ops, Motia runs event-driven workflows
-          with zero overhead.
+          Write in Python, TypeScript, JavaScript, or Ruby. Deploy with confidence using industry standard test
+          suites, evals and monitoring.
         </p>
       </div>
       {/* CTAs */}

@@ -24,12 +24,12 @@ export default function SuperchargeAI() {
 
       <div className="relative flex w-full flex-col items-center gap-[20px] px-[16px] pt-[180px] max-md:pt-0">
         <SectionAppearAnimation>
-          <Image src={superchargeAgentsIcon} alt="super charge your agents" className="w-[100px]" />
+          <Image src={superchargeAgentsIcon} alt="Build with the tools you know and love icon" className="w-[100px]" />
         </SectionAppearAnimation>
-        <Title className="text-center">Supercharge your agents</Title>
+        <Title className="text-center">Build with the tools you know and love</Title>
         <p className="w-[350px] max-w-full text-center text-[16px] font-light text-white opacity-60">
           <TextAppearBlur delay={0.25}>
-            Seamlessly integrate anything from the entire NPM and PyPi ecosystems
+            Integrate with the libraries you already use to build practical, scalable, and reliable solutions.
           </TextAppearBlur>
         </p>
         {superchargeAgentsHeaderGraphic}

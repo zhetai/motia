@@ -17,7 +17,7 @@ export default function ChooseLanguage() {
           />
         </div>
         <CardText
-          title="Choose any language"
+          title="Multi-Language Workflows"
           subtitle="Write and connect steps in Python, TypeScript, JavaScript or Ruby"
         />
       </BentoCard>
