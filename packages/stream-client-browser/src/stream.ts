@@ -105,7 +105,7 @@ export class Stream {
     this.join(subscription)
 
     subscription.onClose(() => {
-      this.listeners[room].delete(subscription)
+      this.listeners[room]?.delete(subscription)
       this.leave(subscription)
     })
   }
