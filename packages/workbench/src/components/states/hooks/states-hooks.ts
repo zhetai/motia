@@ -5,8 +5,17 @@ export const useGetTraces = () => {
 
   useEffect(() => {
     fetch('/motia/state')
-      .then((res) => res.json())
-      .then((data) => setTraces(data))
+      .then(async (res) => {
+        if (res.ok) {
+          return res.json()
+        } else {
+          throw await res.json()
+        }
+      })
+      .then(setTraces)
+      .catch((err) => {
+        console.error(err)
+      })
   }, [])
 
   return traces

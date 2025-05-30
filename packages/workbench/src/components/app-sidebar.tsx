@@ -2,18 +2,7 @@ import { useListFlows } from '@/hooks/use-list-flows'
 import { File, Link2, Logs, Workflow } from 'lucide-react'
 import { Link, useLocation } from 'react-router'
 import { Sidebar, SidebarButton, SidebarGroup } from './ui/sidebar'
-import { Badge } from './ui/badge'
-import { useLogs } from '@/stores/use-logs'
-
-const BadgeCount = () => {
-  const unreadLogsCount = useLogs((state) => state.unreadLogsCount)
-
-  if (!unreadLogsCount) {
-    return null
-  }
-
-  return <Badge variant="red-rounded">{unreadLogsCount}</Badge>
-}
+import { BadgeCount } from './ui/BadgeCount'
 
 export const AppSidebar = () => {
   const { flows } = useListFlows()

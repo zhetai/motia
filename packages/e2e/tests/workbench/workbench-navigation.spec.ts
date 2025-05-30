@@ -10,29 +10,29 @@ test.describe('CLI Generated Project - Workbench Navigation', () => {
     logsPage = new LogsPage(page)
   })
 
-  test('should load workbench page of CLI generated project', async ({ page }) => {
+  test('should load workbench page of CLI generated project', async () => {
     await workbench.gotoWorkbench()
-    
+
     await expect(workbench.body).toBeVisible()
-    await expect(workbench.title.first()).toBeVisible()
+    await expect(workbench.logoIcon.first()).toBeVisible()
   })
 
-  test('should display workbench interface elements', async ({ page }) => {
+  test('should display workbench interface elements', async () => {
     await workbench.gotoWorkbench()
-    
+
     await workbench.verifyWorkbenchInterface()
   })
 
-  test('should show created steps in the workbench', async ({ page }) => {
+  test('should show created steps in the workbench', async () => {
     await workbench.gotoWorkbench()
-    
+
     const expectedSteps = ['api-trigger', 'process-data', 'send-notification']
     await workbench.verifyStepsInWorkbench(expectedSteps)
   })
 
-  test('should navigate through workbench sections', async ({ page }) => {
+  test('should navigate through workbench sections', async () => {
     await workbench.gotoWorkbench()
-    
+
     await test.step('Navigate to Logs section', async () => {
       await workbench.navigateToLogs()
       await expect(workbench.body).toBeVisible()
@@ -49,14 +49,14 @@ test.describe('CLI Generated Project - Workbench Navigation', () => {
     })
   })
 
-  test('should navigate through flow sections in sidebar', async ({ page }) => {
+  test('should navigate through flow sections in sidebar', async () => {
     await workbench.gotoWorkbench()
-    
+
     const flowCount = await workbench.getFlowCount()
-    
+
     if (flowCount > 0) {
       const maxFlowsToTest = Math.min(flowCount, 3)
-      
+
       for (let i = 0; i < maxFlowsToTest; i++) {
         await test.step(`Navigate to flow ${i + 1}`, async () => {
           await workbench.navigateToFlowByIndex(i)
@@ -68,34 +68,34 @@ test.describe('CLI Generated Project - Workbench Navigation', () => {
     }
   })
 
-  test('should display project information correctly', async ({ page }) => {
+  test('should display project information correctly', async () => {
     await workbench.gotoWorkbench()
-    
+
     const hasProjectInfo = await workbench.verifyProjectInformation()
     expect(hasProjectInfo).toBeTruthy()
   })
 
-  test('should handle CLI project structure validation', async ({ page }) => {
+  test('should handle CLI project structure validation', async () => {
     await workbench.goto('/')
-    
+
     const healthEndpoint = workbench.page.getByText(/health|status/)
     const stepsSection = workbench.page.getByText(/steps|workflows/)
-    
+
     const hasHealthInfo = await healthEndpoint.first().isVisible({ timeout: 3000 })
     const hasStepsInfo = await stepsSection.first().isVisible({ timeout: 3000 })
-    
+
     expect(hasHealthInfo || hasStepsInfo).toBeTruthy()
   })
 
-  test('should execute default flow and verify logs', async ({ page }) => {
+  test('should execute default flow and verify logs', async () => {
     await workbench.gotoWorkbench()
-    
+
     await test.step('Execute default flow', async () => {
       await workbench.executeFlowAndNavigateToLogs('default')
     })
 
     const stepsExecuted = ['ApiTrigger', 'SetStateChange', 'CheckStateChange']
-    
+
     await test.step('Verify all expected logs are present', async () => {
       await logsPage.verifyStepsExecuted(stepsExecuted)
       console.log('✓ Found all expected logs')
@@ -106,7 +106,20 @@ test.describe('CLI Generated Project - Workbench Navigation', () => {
       await logsPage.verifyLogContainingText(stateValidationMessage)
       console.log(`✓ Found state validation message: ${stateValidationMessage}`)
     })
-    
+
     console.log('✅ Successfully executed default flow and verified all expected logs')
   })
-}) 
+
+  test('should toggle sidebar', async () => {
+    await workbench.gotoWorkbench()
+    await workbench.toggleSidebar()
+    await expect(workbench.title).toBeVisible()
+  })
+
+  test('should toggle sidebar and keep the state after refresh the page', async ({ page }) => {
+    await workbench.gotoWorkbench()
+    await workbench.toggleSidebar()
+    await page.reload()
+    await expect(workbench.title).toBeVisible()
+  })
+})

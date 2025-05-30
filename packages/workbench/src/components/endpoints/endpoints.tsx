@@ -37,8 +37,8 @@ export const Endpoints = () => {
   }, [endpoints])
 
   return (
-    <div className="flex flex-row w-full h-screen">
-      <div className="flex flex-col gap-2 flex-1 m-4 mr-2  max-h-full overflow-y-auto">
+    <div className="flex flex-row w-full h-full">
+      <div className="flex flex-col gap-2 flex-1 m-4 mr-2 overflow-y-auto">
         <header>
           <h1 className="text-2xl font-bold">API Endpoints</h1>
           <span className="text-sm text-zinc-400">Check all API endpoints</span>

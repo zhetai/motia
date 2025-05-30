@@ -1,8 +1,8 @@
-import { Button } from '../components/ui/button'
+import { Button } from '@/components/ui/button'
 
 export const Index = () => {
   return (
-    <div className="flex flex-col items-center justify-center w-full h-screen gap-10 bg-gradient-to-r from-background via-background to-muted">
+    <div className="flex flex-col items-center justify-center w-full h-full gap-10 bg-gradient-to-r from-background via-background to-muted">
       <h1 className="text-5xl font-extrabold max-w-[600px] text-center text-foreground">
         Code-first framework for intelligent workflows
       </h1>

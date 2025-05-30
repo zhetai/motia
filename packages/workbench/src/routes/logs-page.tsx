@@ -1,5 +1,5 @@
-import { Logs } from '../components/logs/logs'
-import { useLogs } from '../stores/use-logs'
+import { Logs } from '@/components/logs/logs'
+import { useLogs } from '@/stores/use-logs'
 import { useEffect } from 'react'
 
 export const LogsPage = () => {
@@ -11,7 +11,7 @@ export const LogsPage = () => {
   }, [setUnreadLogsCount])
 
   return (
-    <div className="w-full h-screen overflow-hidden bg-background text-foreground">
+    <div className="w-full h-full overflow-hidden bg-background text-foreground">
       <header className="p-4 border-b border-border">
         <h1 className="text-2xl font-bold text-foreground">Logs</h1>
         <span className="text-sm text-muted-foreground">Check all logs saved locally</span>
