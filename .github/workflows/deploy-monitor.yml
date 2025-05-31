@@ -1,7 +1,8 @@
 name: Deploy Monitor
 
 permissions:
-  contents: read
+  contents: write
+  packages: write
   actions: read
 
 on:
@@ -20,6 +21,12 @@ jobs:
         with:
           app-id: ${{ secrets.MOTIA_CI_APP_ID }}
           private-key: ${{ secrets.MOTIA_CI_APP_PRIVATE_KEY }}
+          permissions: >-
+            {
+              "contents": "write",
+              "packages": "write",
+              "actions": "read"
+            }
 
       - name: Get workflow details
         id: workflow_details

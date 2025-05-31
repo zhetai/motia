@@ -12,6 +12,17 @@ on:
           - major
           - minor
           - patch
+          - prerelease
+          - prerelease-bump
+      prerelease_identifier:
+        description: 'Pre-release identifier (alpha, beta, rc) - only used with prerelease type'
+        required: false
+        default: 'beta'
+        type: choice
+        options:
+          - alpha
+          - beta
+          - rc
       custom_version:
         description: 'Custom version (optional, overrides version_type)'
         required: false
@@ -68,39 +79,67 @@ jobs:
           
           if [[ "${{ github.event.inputs.custom_version }}" != "" ]]; then
             new_version="${{ github.event.inputs.custom_version }}"
-            if [[ ! $new_version =~ ^v[0-9]+\.[0-9]+\.[0-9]+$ ]]; then
-              if [[ ! $new_version =~ ^[0-9]+\.[0-9]+\.[0-9]+$ ]]; then
-                echo "❌ Invalid version format. Use semantic versioning (e.g., 1.2.3 or v1.2.3)"
-                exit 1
-              fi
+            if [[ ! $new_version =~ ^v?[0-9]+\.[0-9]+\.[0-9]+(-[a-zA-Z0-9]+(\.[0-9]+)?)?$ ]]; then
+              echo "❌ Invalid version format. Use semantic versioning (e.g., 1.2.3, v1.2.3, 1.2.3-beta.1)"
+              exit 1
+            fi
+            if [[ ! $new_version =~ ^v ]]; then
               new_version="v$new_version"
             fi
           else
             version_type="${{ github.event.inputs.version_type }}"
+            prerelease_id="${{ github.event.inputs.prerelease_identifier }}"
             
             version_number=$(echo $latest_tag | sed 's/^v//')
-            IFS='.' read -r major minor patch <<< "$version_number"
             
-            major=${major:-0}
-            minor=${minor:-0}
-            patch=${patch:-0}
+            if [[ $version_number =~ ^([0-9]+)\.([0-9]+)\.([0-9]+)(-([a-zA-Z0-9]+)\.?([0-9]+)?)?$ ]]; then
+              major=${BASH_REMATCH[1]:-0}
+              minor=${BASH_REMATCH[2]:-0}
+              patch=${BASH_REMATCH[3]:-0}
+              prerelease_part=${BASH_REMATCH[5]:-}
+              prerelease_num=${BASH_REMATCH[6]:-0}
+            else
+              major=0
+              minor=0
+              patch=0
+              prerelease_part=""
+              prerelease_num=0
+            fi
             
             case $version_type in
               major)
                 major=$((major + 1))
                 minor=0
                 patch=0
+                new_version="v${major}.${minor}.${patch}"
                 ;;
               minor)
                 minor=$((minor + 1))
                 patch=0
+                new_version="v${major}.${minor}.${patch}"
                 ;;
               patch)
                 patch=$((patch + 1))
+                new_version="v${major}.${minor}.${patch}"
+                ;;
+              prerelease)
+                if [[ -n "$prerelease_part" ]]; then
+                  new_version="v${major}.${minor}.${patch}-${prerelease_id}.1"
+                else
+                  patch=$((patch + 1))
+                  new_version="v${major}.${minor}.${patch}-${prerelease_id}.1"
+                fi
+                ;;
+              prerelease-bump)
+                if [[ -n "$prerelease_part" ]]; then
+                  prerelease_num=$((prerelease_num + 1))
+                  new_version="v${major}.${minor}.${patch}-${prerelease_part}.${prerelease_num}"
+                else
+                  echo "❌ Cannot bump pre-release on a stable version. Use 'prerelease' type instead."
+                  exit 1
+                fi
                 ;;
             esac
-            
-            new_version="v${major}.${minor}.${patch}"
           fi
           
           echo "New version: $new_version"
@@ -125,6 +164,9 @@ jobs:
           echo "- **Current latest tag:** ${{ steps.latest_tag.outputs.tag }}" >> $GITHUB_STEP_SUMMARY
           echo "- **New tag:** ${{ steps.new_version.outputs.version }}" >> $GITHUB_STEP_SUMMARY
           echo "- **Version type:** ${{ github.event.inputs.version_type }}" >> $GITHUB_STEP_SUMMARY
+          if [[ "${{ github.event.inputs.version_type }}" == "prerelease" ]]; then
+            echo "- **Pre-release identifier:** ${{ github.event.inputs.prerelease_identifier }}" >> $GITHUB_STEP_SUMMARY
+          fi
           echo "- **Dry run:** ${{ github.event.inputs.dry_run }}" >> $GITHUB_STEP_SUMMARY
           echo "- **Commit SHA:** ${{ github.sha }}" >> $GITHUB_STEP_SUMMARY
 
