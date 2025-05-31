@@ -7,6 +7,13 @@ on:
       - 'packages/**'
       - 'playground/**'
       - '.github/workflows/e2e-tests-pr.yml'
+  workflow_dispatch:
+    inputs:
+      branch:
+        description: 'Branch to run E2E tests against'
+        required: true
+        default: 'main'
+        type: string
 
 permissions:
   contents: read
@@ -20,6 +27,8 @@ jobs:
       NODE_ENV: test
     steps:
       - uses: actions/checkout@v4
+        with:
+          ref: ${{ github.event_name == 'workflow_dispatch' && github.event.inputs.branch || github.ref }}
 
       - name: Setup
         uses: ./.github/actions/setup

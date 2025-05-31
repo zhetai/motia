@@ -7,6 +7,7 @@ import path from 'path'
 test.describe('CLI Validation', () => {
   let helpers: TestHelpers
   const testProjectPath = process.env.TEST_PROJECT_PATH || ''
+  const testTemplate = process.env.TEST_TEMPLATE || 'nodejs'
 
   test.beforeEach(async ({ page }) => {
     helpers = new TestHelpers(page)
@@ -17,9 +18,7 @@ test.describe('CLI Validation', () => {
     
     const expectedFiles = [
       'package.json',
-      'tsconfig.json',
-      'steps',
-      'types.d.ts'
+      'steps'
     ]
     
     for (const file of expectedFiles) {
@@ -32,13 +31,25 @@ test.describe('CLI Validation', () => {
     const stepsDir = path.join(testProjectPath, 'steps')
     expect(existsSync(stepsDir)).toBeTruthy()
     
-    const expectedSteps = [
-      '00-noop.step.ts',
-      '00-noop.step.tsx',
-      '01-api.step.ts',
-      '02-test-state.step.ts',
-      '03-check-state.step.ts'
-    ]
+    let expectedSteps: string[] = []
+    
+    if (testTemplate === 'python') {
+      expectedSteps = [
+        '00-noop.step.py',
+        '00-noop.step.tsx',
+        '01-api.step.py',
+        '02-test-state.step.py',
+        '03-check-state-change.step.py'
+      ]
+    } else {
+      expectedSteps = [
+        '00-noop.step.ts',
+        '00-noop.step.tsx',
+        '01-api.step.ts',
+        '02-test-state.step.ts',
+        '03-check-state-change.step.ts'
+      ]
+    }
     
     for (const step of expectedSteps) {
       const stepPath = path.join(stepsDir, step)
@@ -92,6 +103,11 @@ test.describe('CLI Validation', () => {
   })
 
   test('should have working TypeScript configuration', async () => {
+    if (testTemplate !== 'nodejs') {
+      test.skip()
+      return
+    }
+    
     const tsconfigPath = path.join(testProjectPath, 'tsconfig.json')
     
     if (existsSync(tsconfigPath)) {

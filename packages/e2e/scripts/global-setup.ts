@@ -16,7 +16,14 @@ async function globalSetup() {
 
     console.log('📦 Creating test project with Motia CLI...')
     const motiaVersion = process.env.MOTIA_VERSION || 'next'
-    execSync(`npx motia@${motiaVersion} create -n ${TEST_PROJECT_NAME}`, {
+    const template = process.env.TEST_TEMPLATE || 'nodejs'
+    
+    let createCommand = `npx motia@${motiaVersion} create -n ${TEST_PROJECT_NAME}`
+    if (template === 'python') {
+      createCommand += ' -t python'
+    }
+    
+    execSync(createCommand, {
       stdio: 'pipe',
       cwd: process.cwd()
     })
@@ -34,6 +41,7 @@ async function globalSetup() {
 
     process.env.TEST_PROJECT_PATH = TEST_PROJECT_PATH
     process.env.TEST_PROJECT_NAME = TEST_PROJECT_NAME
+    process.env.TEST_TEMPLATE = template
 
   } catch (error) {
     console.error('❌ Failed to setup E2E test environment:', error)

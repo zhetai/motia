@@ -11,7 +11,7 @@ export const Node: React.FC<NoopNodeProps> = (data) => {
 
   return (
     <BaseNode title="Start" variant="noop" {...data} disableTargetHandle>
-      <Button onClick={start}>Start Flow</Button>
+      <Button data-testid="start-flow-button" onClick={start}>Start Flow</Button>
     </BaseNode>
   )
 }
