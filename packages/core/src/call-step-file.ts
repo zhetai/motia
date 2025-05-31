@@ -6,6 +6,7 @@ import { Printer } from './printer'
 import { isAllowedToEmit } from './utils'
 import { BaseStreamItem } from './types-stream'
 import { ProcessManager } from './process-communication/process-manager'
+import { trackEvent } from './analytics/utils'
 
 type StateGetInput = { traceId: string; key: string }
 type StateSetInput = { traceId: string; key: string; value: unknown }
@@ -77,6 +78,8 @@ export const callStepFile = <TData>(options: CallStepFileOptions): Promise<TData
       context: 'StepExecution',
     })
 
+    trackEvent('step_execution_started', { language: command, type: step.config.type, streams: streams.length })
+
     processManager
       .spawn()
       .then(() => {
@@ -136,6 +139,7 @@ export const callStepFile = <TData>(options: CallStepFileOptions): Promise<TData
         processManager.onProcessClose((code) => {
           processManager.close()
           if (code !== 0 && code !== null) {
+            trackEvent('step_execution_error', { stepName: step.config.name, traceId, code })
             reject(`Process exited with code ${code}`)
           } else {
             resolve(result)
@@ -146,6 +150,12 @@ export const callStepFile = <TData>(options: CallStepFileOptions): Promise<TData
         processManager.onProcessError((error) => {
           processManager.close()
           if (error.code === 'ENOENT') {
+            trackEvent('step_execution_error', {
+              stepName: step.config.name,
+              traceId,
+              code: error.code,
+              message: error.message,
+            })
             reject(`Executable ${command} not found`)
           } else {
             reject(error)
@@ -153,6 +163,12 @@ export const callStepFile = <TData>(options: CallStepFileOptions): Promise<TData
         })
       })
       .catch((error) => {
+        trackEvent('step_execution_error', {
+          stepName: step.config.name,
+          traceId,
+          code: error.code,
+          message: error.message,
+        })
         reject(`Failed to spawn process: ${error}`)
       })
   })

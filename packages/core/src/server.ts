@@ -26,6 +26,8 @@ import { apiEndpoints } from './streams/api-endpoints'
 import { createSocketServer } from './socket-server'
 import { Log, LogsStream } from './streams/logs-stream'
 import { BaseStreamItem, IStateStream, StateStreamEventChannel, StateStreamEvent } from './types-stream'
+import { analyticsEndpoint } from './analytics-endpoint'
+import { trackEvent } from './analytics/utils'
 
 export type MotiaServer = {
   app: Express
@@ -185,6 +187,11 @@ export const createServer = async (
         res.status(result.status)
         res.json(result.body)
       } catch (error) {
+        trackEvent('api_call_error', {
+          stepName,
+          traceId,
+          error: error instanceof Error ? error.message : 'Unknown error',
+        })
         logger.error('[API] Internal server error', { error })
         console.log(error)
         res.status(500).json({ error: 'Internal server error' })
@@ -243,6 +250,7 @@ export const createServer = async (
   apiEndpoints(lockedData)
   flowsEndpoint(lockedData, app)
   flowsConfigEndpoint(app, process.cwd())
+  analyticsEndpoint(app, process.cwd())
 
   server.on('error', (error) => {
     console.error('Server error:', error)

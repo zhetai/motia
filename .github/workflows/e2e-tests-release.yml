@@ -152,6 +152,7 @@ jobs:
       - name: Run Release E2E tests
         id: run_tests
         env:
+          MOTIA_ANALYTICS_DISABLED: true
           MOTIA_VERSION: ${{ needs.prepare.outputs.version }}
           MOTIA_API_URL: http://localhost:3000
         run: |

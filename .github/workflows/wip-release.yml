@@ -7,15 +7,12 @@ permissions:
 on:
   workflow_dispatch:
     inputs:
-      version:
-        description: 'Version to publish (e.g. 0.0.8-beta.1)'
-        required: true
       tag:
         description: 'NPM distribution tag (e.g. beta, alpha, next)'
         required: true
         default: 'next'
       branch:
-        description: 'Branch containing the WIP changes'
+        description: 'Branch containing the WIP changes (you can specify any branch name)'
         required: true
         default: 'main'
 
@@ -39,10 +36,39 @@ jobs:
       - name: Setup
         uses: ./.github/actions/setup
 
+      - name: Generate version with build number
+        id: version
+        run: |
+          CURRENT_VERSION=$(node -p "require('./packages/snap/package.json').version")
+          echo "Current version: ${CURRENT_VERSION}"
+          
+          NEW_VERSION=$(node -e "
+            const version = require('./packages/snap/package.json').version;
+            const parts = version.split('-');
+            const baseVersion = parts[0];
+            
+            if (parts.length > 1 && parts[1].startsWith('beta.')) {
+              const betaNumber = parseInt(parts[1].split('.')[1]);
+              const newBetaNumber = betaNumber + 1;
+              const timestamp = new Date().getTime().toString().slice(-6);
+              console.log(\`\${baseVersion}-beta.\${newBetaNumber}-\${timestamp}\`);
+            } else if (parts.length > 1 && parts[1].startsWith('alpha.')) {
+              const alphaNumber = parseInt(parts[1].split('.')[1]);
+              const newAlphaNumber = alphaNumber + 1;
+              console.log(\`\${baseVersion}-alpha.\${newAlphaNumber}\`);
+            } else {
+              const timestamp = new Date().toISOString().replace(/[-:T]/g, '').slice(0, 14);
+              console.log(\`\${baseVersion}-build.\${timestamp}\`);
+            }
+          ")
+          
+          echo "version=${NEW_VERSION}" >> $GITHUB_OUTPUT
+          echo "Generated version: ${NEW_VERSION}"
+
       - name: Set version on all packages
         run: |
-          pnpm -r --filter "@motiadev/*" exec pnpm version ${{ github.event.inputs.version }} --no-git-tag-version
-          pnpm -r --filter motia exec pnpm version ${{ github.event.inputs.version }} --no-git-tag-version
+          pnpm -r --filter "@motiadev/*" exec pnpm version ${{ steps.version.outputs.version }} --no-git-tag-version
+          pnpm -r --filter motia exec pnpm version ${{ steps.version.outputs.version }} --no-git-tag-version
 
       - name: Setup NPM authentication
         env:

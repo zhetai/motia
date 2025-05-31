@@ -59,6 +59,9 @@ importers:
 
   packages/core:
     dependencies:
+      '@amplitude/analytics-node':
+        specifier: ^1.3.8
+        version: 1.3.8
       body-parser:
         specifier: ^1.20.3
         version: 1.20.3
@@ -257,6 +260,9 @@ importers:
 
   packages/snap:
     dependencies:
+      '@amplitude/analytics-node':
+        specifier: ^1.3.8
+        version: 1.3.8
       '@motiadev/core':
         specifier: workspace:*
         version: link:../core
@@ -300,6 +306,9 @@ importers:
         specifier: ^10.9.2
         version: 10.9.2(@types/node@22.15.18)(typescript@5.8.3)
     devDependencies:
+      '@amplitude/analytics-types':
+        specifier: ^2.9.2
+        version: 2.9.2
       '@types/archiver':
         specifier: ^6.0.3
         version: 6.0.3
@@ -557,6 +566,18 @@ packages:
   '@alloc/quick-lru@5.2.0':
     resolution: {integrity: sha512-UrcABB+4bUrFABwbluTIBErXwvbsU/V7TZWfmbgJfbkwiBuziS9gxdODUyuiecfdGQ85jglMW6juS3+z5TsKLw==}
     engines: {node: '>=10'}
+
+  '@amplitude/analytics-core@1.2.7':
+    resolution: {integrity: sha512-SM9jdQ+l2q+hy+DdCQm5vtfOTiI+53c+alSSc7fwiuFnTExllXHf9RUK6kKhw3ky+N2o6yqbo+0OGoepLhNf6w==}
+
+  '@amplitude/analytics-node@1.3.8':
+    resolution: {integrity: sha512-Dwrh7bl5PTcHmnV8PtvHZTOlIfSfJDe+mf7l/XMiBdQR2kpdpsPAjo1so08Kze+aixWPwMAIDeFCub/QHBGhgA==}
+
+  '@amplitude/analytics-types@1.3.5':
+    resolution: {integrity: sha512-IpncCNTZZ6VoGe4fNwTTZtpi+ZNm3mtsocdbCHtIwmKg2wmOF2E09CAwvyF7mK5aRlMIrSAKQyR3GwraATghSw==}
+
+  '@amplitude/analytics-types@2.9.2':
+    resolution: {integrity: sha512-juhTz396dDP/jLJYP9zDOEAZBtJM0JVvP8G10p1OxUDBVwVIprpQL598F9GRQwVFyqV4CEhDmNyAY0HqqU5bhA==}
 
   '@ampproject/remapping@2.3.0':
     resolution: {integrity: sha512-30iZtAPgz+LTIYoeivqYo853f02jBYSd5uGnGpkFV0M3xOt9aN73erkgYAmZU43x4VfqcnLxW9Kpg3R5LC4YYw==}
@@ -6515,6 +6536,21 @@ snapshots:
 
   '@alloc/quick-lru@5.2.0': {}
 
+  '@amplitude/analytics-core@1.2.7':
+    dependencies:
+      '@amplitude/analytics-types': 1.3.5
+      tslib: 2.8.1
+
+  '@amplitude/analytics-node@1.3.8':
+    dependencies:
+      '@amplitude/analytics-core': 1.2.7
+      '@amplitude/analytics-types': 1.3.5
+      tslib: 2.8.1
+
+  '@amplitude/analytics-types@1.3.5': {}
+
+  '@amplitude/analytics-types@2.9.2': {}
+
   '@ampproject/remapping@2.3.0':
     dependencies:
       '@jridgewell/gen-mapping': 0.3.8
@@ -9680,7 +9716,7 @@ snapshots:
       eslint: 9.27.0(jiti@2.4.2)
       eslint-import-resolver-node: 0.3.9
       eslint-import-resolver-typescript: 3.10.1(eslint-plugin-import@2.31.0(@typescript-eslint/parser@8.32.1(eslint@9.27.0(jiti@2.4.2))(typescript@5.8.3))(eslint@9.27.0(jiti@2.4.2)))(eslint@9.27.0(jiti@2.4.2))
-      eslint-plugin-import: 2.31.0(@typescript-eslint/parser@8.32.1(eslint@9.27.0(jiti@2.4.2))(typescript@5.8.3))(eslint-import-resolver-typescript@3.10.1(eslint-plugin-import@2.31.0(@typescript-eslint/parser@8.32.1(eslint@9.27.0(jiti@2.4.2))(typescript@5.8.3))(eslint@9.27.0(jiti@2.4.2)))(eslint@9.27.0(jiti@2.4.2)))(eslint@9.27.0(jiti@2.4.2))
+      eslint-plugin-import: 2.31.0(@typescript-eslint/parser@8.32.1(eslint@9.27.0(jiti@2.4.2))(typescript@5.8.3))(eslint-import-resolver-typescript@3.10.1)(eslint@9.27.0(jiti@2.4.2))
       eslint-plugin-jsx-a11y: 6.10.2(eslint@9.27.0(jiti@2.4.2))
       eslint-plugin-react: 7.37.5(eslint@9.27.0(jiti@2.4.2))
       eslint-plugin-react-hooks: 5.2.0(eslint@9.27.0(jiti@2.4.2))
@@ -9714,7 +9750,7 @@ snapshots:
       tinyglobby: 0.2.13
       unrs-resolver: 1.7.2
     optionalDependencies:
-      eslint-plugin-import: 2.31.0(@typescript-eslint/parser@8.32.1(eslint@9.27.0(jiti@2.4.2))(typescript@5.8.3))(eslint-import-resolver-typescript@3.10.1(eslint-plugin-import@2.31.0(@typescript-eslint/parser@8.32.1(eslint@9.27.0(jiti@2.4.2))(typescript@5.8.3))(eslint@9.27.0(jiti@2.4.2)))(eslint@9.27.0(jiti@2.4.2)))(eslint@9.27.0(jiti@2.4.2))
+      eslint-plugin-import: 2.31.0(@typescript-eslint/parser@8.32.1(eslint@9.27.0(jiti@2.4.2))(typescript@5.8.3))(eslint-import-resolver-typescript@3.10.1)(eslint@9.27.0(jiti@2.4.2))
     transitivePeerDependencies:
       - supports-color
 
@@ -9729,7 +9765,7 @@ snapshots:
     transitivePeerDependencies:
       - supports-color
 
-  eslint-plugin-import@2.31.0(@typescript-eslint/parser@8.32.1(eslint@9.27.0(jiti@2.4.2))(typescript@5.8.3))(eslint-import-resolver-typescript@3.10.1(eslint-plugin-import@2.31.0(@typescript-eslint/parser@8.32.1(eslint@9.27.0(jiti@2.4.2))(typescript@5.8.3))(eslint@9.27.0(jiti@2.4.2)))(eslint@9.27.0(jiti@2.4.2)))(eslint@9.27.0(jiti@2.4.2)):
+  eslint-plugin-import@2.31.0(@typescript-eslint/parser@8.32.1(eslint@9.27.0(jiti@2.4.2))(typescript@5.8.3))(eslint-import-resolver-typescript@3.10.1)(eslint@9.27.0(jiti@2.4.2)):
     dependencies:
       '@rtsao/scc': 1.1.0
       array-includes: 3.1.8
