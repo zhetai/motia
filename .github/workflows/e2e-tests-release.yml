@@ -88,10 +88,21 @@ jobs:
           ruby-version: '3.3.6'
 
       - uses: pnpm/action-setup@v4
-      - uses: actions/setup-node@v3
+        with:
+          version: 8
+      - uses: actions/setup-node@v4  # Versão mais recente
         with:
           node-version: '20.11.1'
           cache: 'pnpm'
+
+      # Cache global do npm para melhor performance
+      - name: Cache global npm packages
+        uses: actions/cache@v4
+        with:
+          path: ~/.npm
+          key: npm-global-${{ runner.os }}-${{ hashFiles('**/package-lock.json') }}
+          restore-keys: |
+            npm-global-${{ runner.os }}-
 
       - name: Install pre-release packages globally
         run: |
@@ -124,13 +135,10 @@ jobs:
         run: |
           cd packages/e2e
           pnpm clean
-          
-      - name: Kill any existing processes (Unix)
-        if: runner.os != 'Windows'
-        run: |
-          pkill -f "motia" || true
-          pkill -f "npm run dev" || true
-          pkill -f "node.*3000" || true
+
+      # Clean up any existing processes before starting tests
+      - name: Kill existing processes on port 3000
+        uses: ./.github/actions/kill-port
 
       - name: Verify Motia CLI installation (Unix)
         if: runner.os != 'Windows'
@@ -148,7 +156,7 @@ jobs:
           node --version
           npm --version
         shell: cmd
-          
+
       - name: Run Release E2E tests
         id: run_tests
         env:
@@ -159,20 +167,47 @@ jobs:
           cd packages/e2e
           echo "Starting Release E2E tests with Motia version: $MOTIA_VERSION"
           pnpm test:release --reporter=line,html,github
+        continue-on-error: true
+
+      - name: Kill processes on port 3000 after first test
+        if: always()
+        uses: ./.github/actions/kill-port
+
+      - name: Run Release E2E tests for python
+        id: run_tests_python
+        env:
+          MOTIA_ANALYTICS_DISABLED: true
+          MOTIA_VERSION: ${{ needs.prepare.outputs.version }}
+          MOTIA_API_URL: http://localhost:3000
+        run: |
+          cd packages/e2e
+          echo "Starting Release E2E tests with Motia version: $MOTIA_VERSION"
           pnpm test:release:python --reporter=line,html,github
         continue-on-error: true
+
+      - name: Kill processes on port 3000 after tests
+        if: always()
+        uses: ./.github/actions/kill-port
 
       - name: Set test result
         id: test_result
         shell: bash
         run: |
-          echo "Test outcome: ${{ steps.run_tests.outcome }}"
-          if [ "${{ steps.run_tests.outcome }}" == "success" ]; then
+          echo "📊 Test Results Summary:"
+          echo "- Node.js tests outcome: ${{ steps.run_tests.outcome }}"
+          echo "- Python tests outcome: ${{ steps.run_tests_python.outcome }}"
+          
+          # Check both test outcomes
+          if [ "${{ steps.run_tests.outcome }}" == "success" ] && [ "${{ steps.run_tests_python.outcome }}" == "success" ]; then
             echo "result=success" >> $GITHUB_OUTPUT
-            echo "✅ E2E tests passed successfully"
+            echo "✅ All E2E tests passed successfully"
+          elif [ "${{ steps.run_tests.outcome }}" == "success" ] || [ "${{ steps.run_tests_python.outcome }}" == "success" ]; then
+            echo "result=partial" >> $GITHUB_OUTPUT
+            echo "⚠️ Some E2E tests passed, others failed"
+            exit 1
           else
             echo "result=failure" >> $GITHUB_OUTPUT
-            echo "❌ E2E tests failed"
+            echo "❌ All E2E tests failed"
             echo "Check the test results and logs for details"
             exit 1
           fi
@@ -211,4 +246,4 @@ jobs:
             echo "result=failure" >> $GITHUB_OUTPUT
             echo "❌ E2E tests failed on one or more platforms"
             exit 1
-          fi 
+          fi
