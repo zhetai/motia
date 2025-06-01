@@ -88,8 +88,6 @@ jobs:
           ruby-version: '3.3.6'
 
       - uses: pnpm/action-setup@v4
-        with:
-          version: 8
       - uses: actions/setup-node@v4  # Versão mais recente
         with:
           node-version: '20.11.1'

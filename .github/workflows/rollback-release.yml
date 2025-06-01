@@ -88,20 +88,20 @@ jobs:
       - name: Remove pre-release packages from NPM
         run: |
           npm unpublish motia@${{ needs.prepare.outputs.version }} --force || echo "Package not found or already removed"
-          npm unpublish @motiadev/test@${{ needs.prepare.outputs.version }} --force || echo "Package not found or already removed"
+          npm unpublish @motiadev/workbench@${{ needs.prepare.outputs.version }} --force || echo "Package not found or already removed"
           npm unpublish @motiadev/stream-client-react@${{ needs.prepare.outputs.version }} --force || echo "Package not found or already removed"
           npm unpublish @motiadev/stream-client-browser@${{ needs.prepare.outputs.version }} --force || echo "Package not found or already removed"
-          npm unpublish @motiadev/workbench@${{ needs.prepare.outputs.version }} --force || echo "Package not found or already removed"
+          npm unpublish @motiadev/test@${{ needs.prepare.outputs.version }} --force || echo "Package not found or already removed"
           npm unpublish @motiadev/core@${{ needs.prepare.outputs.version }} --force || echo "Package not found or already removed"
 
       - name: Remove pre-release tags
         run: |
-          npm dist-tag rm @motiadev/core pre-release || true
-          npm dist-tag rm @motiadev/workbench pre-release || true
-          npm dist-tag rm @motiadev/stream-client-browser pre-release || true
-          npm dist-tag rm @motiadev/stream-client-react pre-release || true
           npm dist-tag rm motia pre-release || true
+          npm dist-tag rm @motiadev/workbench pre-release || true
+          npm dist-tag rm @motiadev/stream-client-react pre-release || true
+          npm dist-tag rm @motiadev/stream-client-browser pre-release || true
           npm dist-tag rm @motiadev/test pre-release || true
+          npm dist-tag rm @motiadev/core pre-release || true
 
       - name: Delete Git tag
         run: |
