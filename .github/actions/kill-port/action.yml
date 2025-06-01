@@ -17,11 +17,9 @@ runs:
         PORT=${{ inputs.port }}
         echo "🔍 Checking for processes on port $PORT (Unix)..."
         
-        # Tenta com lsof primeiro
         if command -v lsof >/dev/null 2>&1; then
           PID=$(lsof -ti:$PORT 2>/dev/null)
         else
-          # Fallback para netstat
           PID=$(netstat -tlnp 2>/dev/null | grep :$PORT | awk '{print $7}' | cut -d'/' -f1)
         fi
         

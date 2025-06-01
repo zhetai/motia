@@ -134,10 +134,6 @@ jobs:
           cd packages/e2e
           pnpm clean
 
-      # Clean up any existing processes before starting tests
-      - name: Kill existing processes on port 3000
-        uses: ./.github/actions/kill-port
-
       - name: Verify Motia CLI installation (Unix)
         if: runner.os != 'Windows'
         run: |
@@ -167,10 +163,6 @@ jobs:
           pnpm test:release --reporter=line,html,github
         continue-on-error: true
 
-      - name: Kill processes on port 3000 after first test
-        if: always()
-        uses: ./.github/actions/kill-port
-
       - name: Run Release E2E tests for python
         id: run_tests_python
         env:
@@ -182,10 +174,6 @@ jobs:
           echo "Starting Release E2E tests with Motia version: $MOTIA_VERSION"
           pnpm test:release:python --reporter=line,html,github
         continue-on-error: true
-
-      - name: Kill processes on port 3000 after tests
-        if: always()
-        uses: ./.github/actions/kill-port
 
       - name: Set test result
         id: test_result
