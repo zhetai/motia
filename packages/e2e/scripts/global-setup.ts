@@ -15,7 +15,7 @@ async function globalSetup() {
     }
 
     console.log('📦 Creating test project with Motia CLI...')
-    const motiaVersion = process.env.MOTIA_VERSION || 'next'
+    const motiaVersion = process.env.MOTIA_VERSION || 'pre-release'
     const template = process.env.TEST_TEMPLATE || 'nodejs'
     
     let createCommand = `npx motia@${motiaVersion} create -n ${TEST_PROJECT_NAME}`
