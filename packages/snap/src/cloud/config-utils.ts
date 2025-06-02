@@ -129,7 +129,6 @@ export type CliHandler = <TArgs extends Record<string, any>>(args: TArgs, contex
 
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
 export function handler(handler: CliHandler): (args: Record<string, any>) => Promise<void> {
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
   return async (args: Record<string, unknown>) => {
     const context = new CliContext(args.apiKey as string)
 

@@ -2,7 +2,7 @@ import { LockedData } from '@motiadev/core'
 import fs from 'fs'
 import path from 'path'
 import { collectFlows } from '../../generate-locked-data'
-import { Builder } from './builder'
+import { Builder, StepsConfigFile } from './builder'
 import { NodeBuilder } from './builders/node'
 import { PythonBuilder } from './builders/python'
 import { CliContext } from '../config-utils'
@@ -36,7 +36,20 @@ export const build = async (context: CliContext): Promise<Builder> => {
 
   await Promise.all(lockedData.activeSteps.map((step) => builder.buildStep(step)))
 
-  fs.writeFileSync(stepsConfigPath, JSON.stringify(builder.stepsConfig, null, 2))
+  const streams = lockedData.listStreams()
+
+  for (const stream of streams) {
+    if (stream.config.baseConfig.storageType === 'state') {
+      builder.registerStateStream(stream)
+    } else {
+      context.log(stream.filePath, (message) =>
+        message.tag('warning').append('Custom streams are not supported yet in the cloud'),
+      )
+    }
+  }
+
+  const stepsFile: StepsConfigFile = { steps: builder.stepsConfig, streams: builder.streamsConfig }
+  fs.writeFileSync(stepsConfigPath, JSON.stringify(stepsFile, null, 2))
 
   return builder
 }
