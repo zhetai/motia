@@ -30,7 +30,7 @@ async function globalSetup() {
     execSync(`npm install --save motia@${motiaVersion}`, { cwd: TEST_PROJECT_PATH })
 
     console.log('🌟 Starting test project server...')
-    const serverProcess = exec('npm run dev', { cwd: TEST_PROJECT_PATH })
+    const serverProcess = exec('npm run dev', { cwd: TEST_PROJECT_PATH, env: process.env })
 
     console.log('⏳ Waiting for server to be ready...')
     await waitForServer('http://localhost:3000', 60000)
