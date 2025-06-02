@@ -8,6 +8,7 @@ import { EventHandler, ApiRouteHandler, ApiResponse, IStateStream } from 'motia'
 
 declare module 'motia' {
   interface FlowContextStateStreams {
+    'message_python': IStateStream<{ message: string }>
     'message': IStateStream<{ message: string; from: string; status: string }>
   }
 
@@ -24,6 +25,8 @@ declare module 'motia' {
     'Parallel Merge': ApiRouteHandler<Record<string, unknown>, unknown, { topic: 'pms.start'; data: {} }>
     'join-step': EventHandler<{ msg: string; timestamp: number }, { topic: 'pms.join.complete'; data: { stepA: { msg: string; timestamp: number }; stepB: unknown; stepC: unknown; mergedAt: string } }>
     'JoinComplete': EventHandler<{ stepA: { msg: string; timestamp: number }; stepB: unknown; stepC: unknown; mergedAt: string }, never>
+    'CallOpenAiPython': EventHandler<{ message: string; assistantMessageId: string; threadId: string }, never>
+    'OpenAiApiPython': ApiRouteHandler<{ message: string; threadId?: string }, ApiResponse<200, { threadId: string }>, { topic: 'openai-prompt-python'; data: { message: string; assistantMessageId: string; threadId: string } }>
     'CallOpenAi': EventHandler<{ message: string; assistantMessageId: string; threadId: string }, never>
     'OpenAiApi': ApiRouteHandler<{ message: string; threadId?: string }, ApiResponse<200, { threadId: string }>, { topic: 'openai-prompt'; data: { message: string; assistantMessageId: string; threadId: string } }>
     'CheckStateChange': EventHandler<{ key: string; expected: string }, never>

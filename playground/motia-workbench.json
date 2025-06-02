@@ -119,12 +119,20 @@
   },
   "open-ai": {
     "steps/open-ai/02-prompt.step.ts": {
-      "x": 0,
-      "y": 237.5
+      "x": -185.5,
+      "y": 201.5
     },
     "steps/open-ai/01-prompt-api.step.ts": {
-      "x": 2,
-      "y": 0
+      "x": -184,
+      "y": -8.5
+    },
+    "steps/open-ai-python/02-prompt.step.py": {
+      "x": -6.5,
+      "y": 199.5
+    },
+    "steps/open-ai-python/01-prompt-api.step.py": {
+      "x": -7.5,
+      "y": -8.5
     }
   }
 }

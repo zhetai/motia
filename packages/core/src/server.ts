@@ -81,9 +81,9 @@ export const createServer = async (
     return (): IStateStream<BaseStreamItem> => {
       const suuper = stream()
       // eslint-disable-next-line @typescript-eslint/no-explicit-any
-      const wrapObject = (id: string, object: any) => ({
+      const wrapObject = (groupId: string, id: string, object: any) => ({
         ...object,
-        __motia: { type: 'state-stream', streamName, id },
+        __motia: { type: 'state-stream', streamName, groupId, id },
       })
 
       const wrapper: IStateStream<BaseStreamItem> = {
@@ -95,7 +95,7 @@ export const createServer = async (
 
         async get(groupId: string, id: string) {
           const result = await suuper.get.apply(wrapper, [groupId, id])
-          return wrapObject(id, result)
+          return wrapObject(groupId, id, result)
         },
 
         async set(groupId: string, id: string, data: BaseStreamItem) {
@@ -106,7 +106,7 @@ export const createServer = async (
           const exists = await suuper.get(groupId, id)
           const updated = await suuper.set.apply(wrapper, [groupId, id, data])
           const result = updated ?? data
-          const wrappedResult = wrapObject(id, result)
+          const wrappedResult = wrapObject(groupId, id, result)
 
           const type = exists ? 'update' : 'create'
           pushEvent({ streamName, groupId, id, event: { type, data: result } })
@@ -119,12 +119,12 @@ export const createServer = async (
 
           pushEvent({ streamName, groupId, id, event: { type: 'delete', data: result } })
 
-          return wrapObject(id, result)
+          return wrapObject(groupId, id, result)
         },
 
         async getGroup(groupId: string) {
           const list = await suuper.getGroup.apply(wrapper, [groupId])
-          return list.map((object: BaseStreamItem) => wrapObject(object.id, object))
+          return list.map((object: BaseStreamItem) => wrapObject(groupId, object.id, object))
         },
       }
 

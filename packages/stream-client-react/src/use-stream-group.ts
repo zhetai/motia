@@ -2,9 +2,10 @@ import { useEffect, useState } from 'react'
 import { useMotiaStream } from './use-motia-stream'
 import { StreamSubscription } from '@motiadev/stream-client-browser'
 
-export type StreamGroupArgs = {
+export type StreamGroupArgs<TData extends { id: string }> = {
   streamName: string
   groupId: string
+  sortKey?: keyof TData
 }
 
 /**
@@ -26,7 +27,7 @@ export type StreamGroupArgs = {
  * )
  * ```
  */
-export const useStreamGroup = <TData>(args?: StreamGroupArgs) => {
+export const useStreamGroup = <TData extends { id: string }>(args?: StreamGroupArgs<TData>) => {
   const { stream } = useMotiaStream()
   const [data, setData] = useState<TData[]>([])
   const [event, setEvent] = useState<StreamSubscription | null>(null)
@@ -34,7 +35,7 @@ export const useStreamGroup = <TData>(args?: StreamGroupArgs) => {
   useEffect(() => {
     if (!args?.streamName || !args?.groupId) return
 
-    const subscription = stream.subscribeGroup(args.streamName, args.groupId)
+    const subscription = stream.subscribeGroup(args.streamName, args.groupId, args.sortKey)
 
     subscription.addChangeListener((data) => setData(data as TData[]))
     setEvent(subscription)
@@ -44,7 +45,7 @@ export const useStreamGroup = <TData>(args?: StreamGroupArgs) => {
       setEvent(null)
       subscription.close()
     }
-  }, [stream, args?.streamName, args?.groupId])
+  }, [stream, args?.streamName, args?.groupId, args?.sortKey])
 
   return { data, event }
 }

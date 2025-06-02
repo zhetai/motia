@@ -33,6 +33,7 @@ module.exports = [
       ...pluginTs.configs.recommended.rules,
       ...pluginJest.configs.recommended.rules,
       ...prettierConfig.rules,
+      'no-undef': 'off',
       'prettier/prettier': 'error',
       '@typescript-eslint/no-explicit-any': 'error',
       '@typescript-eslint/no-require-imports': 'error',

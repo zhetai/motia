@@ -48,10 +48,14 @@ export class Stream {
    * @argument streamName - The name of the stream to subscribe to.
    * @argument groupId - The id of the group to subscribe to.
    */
-  subscribeGroup<TData extends { id: string }>(streamName: string, groupId: string): StreamGroupSubscription<TData> {
+  subscribeGroup<TData extends { id: string }>(
+    streamName: string,
+    groupId: string,
+    sortKey?: keyof TData,
+  ): StreamGroupSubscription<TData> {
     const subscriptionId = uuidv4()
     const sub = { streamName, groupId, subscriptionId }
-    const subscription = new StreamGroupSubscription<TData>(sub)
+    const subscription = new StreamGroupSubscription<TData>(sub, sortKey)
 
     this.subscribe(subscription)
 
@@ -122,7 +126,7 @@ export class Stream {
     }
   }
 
-  private roomName(message: BaseMessage): string {
+  private roomName(message: Omit<BaseMessage, 'timestamp'>): string {
     return message.id
       ? `${message.streamName}:group:${message.groupId}:item:${message.id}`
       : `${message.streamName}:group:${message.groupId}`

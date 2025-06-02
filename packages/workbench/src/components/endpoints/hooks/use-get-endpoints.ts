@@ -4,6 +4,7 @@ type ApiRouteMethod = 'GET' | 'POST' | 'PUT' | 'DELETE' | 'PATCH' | 'OPTIONS' | 
 type QueryParam = { name: string; description: string }
 
 export type ApiEndpoint = {
+  id: string
   method: ApiRouteMethod
   path: string
   description?: string

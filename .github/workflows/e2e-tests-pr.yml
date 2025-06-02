@@ -61,6 +61,7 @@ jobs:
       - name: Start playground
         run: |
           cd playground
+          pnpm python-setup
           MOTIA_ANALYTICS_DISABLED=true pnpm run dev &
           echo "Waiting for playground server to start..."
           timeout 60 bash -c 'until curl -f http://localhost:3000 >/dev/null 2>&1; do sleep 2; done'

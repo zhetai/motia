@@ -5,12 +5,13 @@ import os
 import asyncio
 import traceback
 from typing import Optional, Any, Callable, List, Dict
-
 from rpc import RpcSender
 from type_definitions import FlowConfig, ApiResponse
 from context import Context
 from validation import validate_with_jsonschema
 from middleware import compose_middleware
+from rpc_stream_manager import RpcStreamManager
+from dot_dict import DotDict
 
 def parse_args(arg: str) -> Dict:
     """Parse command line arguments into HandlerArgs"""
@@ -84,7 +85,14 @@ async def run_python_module(file_path: str, rpc: RpcSender, args: Dict) -> None:
         flows = args.get("flows") or []
         data = args.get("data")
         context_in_first_arg = args.get("contextInFirstArg")
-        context = Context(trace_id, flows, rpc)
+        streams_config = args.get("streams") or []
+
+        streams = DotDict()
+        for item in streams_config:
+            name = item.get("name")
+            streams[name] = RpcStreamManager(name, rpc)
+        
+        context = Context(trace_id, flows, rpc, streams)
 
         validation_result = await validate_handler_input(module, args, context, is_api_handler)
         if validation_result:

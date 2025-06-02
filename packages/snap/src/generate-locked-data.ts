@@ -14,7 +14,7 @@ export const getStepFiles = (projectDir: string): string[] => {
 export const collectFlows = async (projectDir: string, lockedData: LockedData): Promise<Step[]> => {
   const invalidSteps: Step[] = []
   const stepFiles = getStepFiles(projectDir)
-  const streamFiles = globSync(path.join(projectDir, '{steps,streams}/**/*.stream.{ts,js}'))
+  const streamFiles = globSync(path.join(projectDir, '{steps,streams}/**/*.stream.{ts,js,py}'))
 
   for (const filePath of stepFiles) {
     const config = await getStepConfig(filePath)

@@ -10,7 +10,7 @@ type StreamEvent<TData> =
   | { type: 'delete'; data: TData }
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
   | { type: 'event'; event: { type: string; data: any } }
-type EventMessage<TData> = BaseMessage & { event: StreamEvent<TData> }
+type EventMessage<TData> = BaseMessage & { timestamp: number; event: StreamEvent<TData> }
 
 type Message = { type: 'join' | 'leave'; data: JoinMessage }
 
@@ -47,6 +47,7 @@ export const createSocketServer = ({ server, onJoin, onJoinGroup }: Props) => {
 
           if (item) {
             const resultMessage: EventMessage<typeof item> = {
+              timestamp: Date.now(),
               streamName: message.data.streamName,
               groupId: message.data.groupId,
               id: message.data.id,
@@ -60,6 +61,7 @@ export const createSocketServer = ({ server, onJoin, onJoinGroup }: Props) => {
 
           if (items) {
             const resultMessage: EventMessage<typeof items> = {
+              timestamp: Date.now(),
               streamName: message.data.streamName,
               groupId: message.data.groupId,
               event: { type: 'sync', data: items },
@@ -88,19 +90,20 @@ export const createSocketServer = ({ server, onJoin, onJoinGroup }: Props) => {
     })
   })
 
-  const pushEvent = <TData>(message: EventMessage<TData>) => {
+  const pushEvent = <TData>(message: Omit<EventMessage<TData>, 'timestamp'>) => {
     const { groupId, streamName, id } = message
     const groupRoom = getRoom({ streamName, groupId })
+    const eventMessage = JSON.stringify({ timestamp: Date.now(), ...message })
 
     if (rooms[groupRoom]) {
-      rooms[groupRoom].forEach((socket) => socket.send(JSON.stringify(message)))
+      rooms[groupRoom].forEach((socket) => socket.send(eventMessage))
     }
 
     if (id) {
       const itemRoom = getRoom({ groupId, streamName, id })
 
       if (rooms[itemRoom]) {
-        rooms[itemRoom].forEach((socket) => socket.send(JSON.stringify(message)))
+        rooms[itemRoom].forEach((socket) => socket.send(eventMessage))
       }
     }
   }

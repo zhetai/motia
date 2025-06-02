@@ -15,7 +15,7 @@
     "declaration": true,
     "lib": ["dom"]
   },
-  "include": ["src/*.ts", "index.ts"],
+  "include": ["src", "index.ts", "__tests__"],
   "exclude": [
     "node_modules",
     "dist"
