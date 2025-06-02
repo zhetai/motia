@@ -7,17 +7,21 @@ async function globalTeardown() {
 
   try {
     console.log('🛑 Stopping test project server...')
-    
+
     const isWindows = platform() === 'win32'
-    
+    const motiaTestPid = process.env.MOTIA_TEST_PID
+
     if (!isWindows) {
       try {
         execSync('lsof -ti:3000 | xargs kill -9', { stdio: 'ignore' })
-      } catch (error) {
-      }
+      } catch (error) {}
+    } else if (motiaTestPid) {
+      try {
+        execSync(`taskkill /f /pid ${motiaTestPid} 2>nul`, { stdio: 'ignore' })
+      } catch (error) {}
     }
 
-    await new Promise(resolve => setTimeout(resolve, 2000))
+    await new Promise((resolve) => setTimeout(resolve, 2000))
 
     const testProjectPath = process.env.TEST_PROJECT_PATH
     if (testProjectPath && existsSync(testProjectPath)) {
@@ -26,10 +30,9 @@ async function globalTeardown() {
     }
 
     console.log('✅ E2E test environment cleanup complete!')
-
   } catch (error) {
     console.error('❌ Failed to cleanup E2E test environment:', error)
   }
 }
 
-export default globalTeardown 
+export default globalTeardown

@@ -1,6 +1,6 @@
 config = {
   "type": "api",
-  "name": "Test state api trigger",
+  "name": "ApiTrigger",
   "description": "test state",
 
   "path": "/default",
