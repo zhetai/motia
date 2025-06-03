@@ -42,7 +42,19 @@ export default function Hero() {
             delay={0.5}
             className="absolute z-1 w-full max-lg:hidden max-sm:justify-center max-sm:mix-blend-plus-lighter sm:pl-[11.25%]"
           >
-            <RiveAnimation className="absolute top-0 left-[7.5%] -z-2 h-[200px] w-[150px] max-sm:right-auto max-sm:left-auto max-sm:h-[120px]" />
+            <video
+              autoPlay
+              playsInline
+              muted
+              className="absolute top-0 left-[7.5%] -z-2 h-[200px] w-[150px] max-sm:right-auto max-sm:left-auto max-sm:h-[120px]"
+            >
+              <source
+                src="/rive/beam_video.webm"
+                type="video/webm"
+                className="h-full w-full object-cover object-center"
+              />
+            </video>
+            {/* <RiveAnimation className="absolute top-0 left-[7.5%] -z-2 h-[200px] w-[150px] max-sm:right-auto max-sm:left-auto max-sm:h-[120px]" /> */}
             <ParticlesBackground />
           </SectionAppearAnimation>
           <div className="-z-0 grow bg-black">

@@ -40,7 +40,7 @@ const metaTitle = 'Motia - AI Agent Framework for Software Engineering Teams'
 const metaDescription =
   'Multi-language cloud functions runtime for API endpoints, background jobs, and agentic workflows using Motia Steps. Preview them in the Workbench, ship to zero-config infrastructure, and monitor in the Cloud.'
 
-const hostedImagePath = DOMAIN_URL + '/og-image.webp'
+const hostedImagePath = DOMAIN_URL + '/og-image-new.webp'
 export const metadata: Metadata = {
   title: {
     template: '%s | motia',

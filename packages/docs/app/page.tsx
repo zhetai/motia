@@ -1,9 +1,9 @@
 import dynamic from 'next/dynamic'
+import Hero from '@/components/Hero'
 const Navbar = dynamic(() => import('@/components/ui/Navbar'))
 const AgentsExplorer = dynamic(() => import('@/components/AgentsExplorer'))
 const Bento = dynamic(() => import('@/components/Bento'))
 const Footer = dynamic(() => import('@/components/Footer'))
-const Hero = dynamic(() => import('@/components/Hero'))
 const MotiaCloud = dynamic(() => import('@/components/MotiaCloud'))
 const SuperchargeAI = dynamic(() => import('@/components/SuperchargeAI'))
 const Comparison = dynamic(() => import('@/components/Comparison'))
