@@ -134,5 +134,23 @@
       "x": -7.5,
       "y": -8.5
     }
+  },
+  "default": {
+    "steps/default-node/03-check-state-change.step.ts": {
+      "x": 19.5,
+      "y": 636
+    },
+    "steps/default-node/02-test-state.step.ts": {
+      "x": 0,
+      "y": 426
+    },
+    "steps/default-node/01-api.step.ts": {
+      "x": 17,
+      "y": 188
+    },
+    "steps/default-node/00-noop.step.ts": {
+      "x": 55.5,
+      "y": 0
+    }
   }
 }

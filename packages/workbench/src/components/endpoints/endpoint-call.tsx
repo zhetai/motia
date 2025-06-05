@@ -1,4 +1,4 @@
-import React, { useMemo, useState } from 'react'
+import React, { useCallback, useMemo, useState, ChangeEvent } from 'react'
 import { Loader2, Play, X } from 'lucide-react'
 import { Button } from '../ui/button'
 import { Input } from '../ui/input'
@@ -18,6 +18,7 @@ export const EndpointCall: React.FC<Props> = ({ endpoint, onClose }) => {
   const [responseBody, setResponseBody] = useState<Record<string, unknown>>()
   const [executionTime, setExecutionTime] = useState<number>()
   const { body, setBody } = useJsonSchemaToJson(endpoint.bodySchema)
+  const [isJsonValid, setIsJsonValid] = useState(true)
   const pathParams = usePathParams(endpoint.path)
   const [pathParamsValues, setPathParamsValues] = useState<Record<string, string>>(
     pathParams?.reduce((acc, param) => ({ ...acc, [param]: '' }), {} as Record<string, string>),
@@ -29,9 +30,10 @@ export const EndpointCall: React.FC<Props> = ({ endpoint, onClose }) => {
 
   const isPlayEnabled = useMemo(() => {
     if (!pathParams) return true
+    if (shouldHaveBody && !isJsonValid) return false
 
     return pathParams?.every((param) => pathParamsValues[param])
-  }, [pathParams, pathParamsValues])
+  }, [pathParams, pathParamsValues, shouldHaveBody, isJsonValid])
 
   const onPathParamChange = (param: string, value: string) => {
     setPathParamsValues((prev) => ({ ...prev, [param]: value }))
@@ -40,6 +42,20 @@ export const EndpointCall: React.FC<Props> = ({ endpoint, onClose }) => {
   const onQueryParamChange = (param: string, value: string) => {
     setQueryParamsValues((prev) => ({ ...prev, [param]: value }))
   }
+
+  const handleBodyChange = useCallback(
+    (e: ChangeEvent<HTMLTextAreaElement>) => {
+      const value = e.target.value
+      setBody(value)
+      try {
+        JSON.parse(value)
+        setIsJsonValid(true)
+      } catch {
+        setIsJsonValid(false)
+      }
+    },
+    [setBody],
+  )
 
   const handleRequest = async () => {
     setIsRequestLoading(true)
@@ -124,19 +140,31 @@ export const EndpointCall: React.FC<Props> = ({ endpoint, onClose }) => {
         <div className="flex flex-col gap-2 rounded-lg bg-muted">
           <span className="text-xs font-bold">Body</span>
           <Textarea
-            className="w-full font-mono font-medium min-h-[200px]"
+            data-testid="endpoint-body-textarea"
+            className={`w-full font-mono font-medium min-h-[200px] ${!isJsonValid ? 'border-red-500' : ''}`}
             value={body}
-            onChange={(e) => setBody(e.target.value)}
+            onChange={handleBodyChange}
           />
+          <span
+            data-testid="endpoint-invalid-json-message"
+            className={`text-xs text-red-500 ${isJsonValid ? 'invisible' : ''}`}
+          >
+            Invalid JSON
+          </span>
         </div>
       )}
 
-      <Button className="w-fit" onClick={handleRequest} disabled={isRequestLoading || !isPlayEnabled}>
+      <Button
+        className="w-fit"
+        onClick={handleRequest}
+        data-testid="endpoint-play-button"
+        disabled={isRequestLoading || !isPlayEnabled}
+      >
         {isRequestLoading ? <Loader2 className="animate-spin" /> : <Play />} Play
       </Button>
 
       {responseCode !== undefined && (
-        <div className="flex flex-col gap-2 rounded-lg bg-muted">
+        <div className="flex flex-col gap-2 rounded-lg bg-muted" data-testid="endpoint-response-container">
           <span className="text-xs font-bold">
             <EndpointBadge variant={responseCode >= 400 ? 'DELETE' : 'GET'}>{responseCode}</EndpointBadge> Execution
             time: <span className="text-muted-foreground">{executionTime}ms</span>

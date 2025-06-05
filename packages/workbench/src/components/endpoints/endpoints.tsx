@@ -45,6 +45,7 @@ export const Endpoints = () => {
         </header>
         {endpoints.map((endpoint) => (
           <div
+            data-testid={`endpoint-${endpoint.method}-${endpoint.path}`}
             key={`${endpoint.method} ${endpoint.path}`}
             className={endpointVariants({ method: endpoint.method })}
             onClick={() => setSelectedEndpoint(endpoint)}
