@@ -1,9 +1,9 @@
 import React from 'react'
-import { cn } from '../../lib/utils'
+import { cn } from '@/lib/utils'
 
 type Props = {
   label: string
-  value: string | React.ReactNode
+  value: unknown
   className?: string
 }
 
@@ -22,7 +22,7 @@ const LogValue: React.FC<{ value: unknown }> = ({ value }) => {
     return value
   }
 
-  if (typeof value === 'object') {
+  if (value && typeof value === 'object') {
     const valueObject = value as object
 
     return (
