@@ -29,7 +29,7 @@ Backend engineering teams often juggle multiple fragmented runtimes:
 | ------------------------ | ------------------------------------------------------------------- |
 | 🖥️ **API Servers**       | Express, FastAPI, Rails, Django, Laravel, Spring, .NET, Flask, Nest |
 | 📬 **Job Queues/Events** | Sidekiq, Temporal, BullMQ, Kafka, RabbitMQ, AWS SQS, Redis Streams  |
-| 🤖 **AI & Agents**       | LangGraph, CrewAI, Mastra, LangChain, AutoGPT, Agnu, AgentGPT       |
+| 🤖 **AI & Agents**       | LangGraph, CrewAI, Mastra, LangChain, AutoGPT, Agno, AgentGPT       |
 
 **Common issues caused by fragmentation:**
 
