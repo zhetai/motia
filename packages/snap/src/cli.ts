@@ -32,15 +32,24 @@ program
     '-n, --name <project name>',
     'The name for your project, used to create a directory, use ./ or . to create it under the existing directory',
   )
-  .option('-t, --template <template name>', 'The motia template name to use for your project', 'default')
+  .option('-t, --template <template name>', 'The motia template name to use for your project')
   .option('-c, --cursor', 'Copy .cursor folder from template')
+  .option('-i, --interactive', 'Use interactive prompts to create project')
+  .option('-y, --skip-confirmation', 'Skip confirmation prompt')
   .action(async (arg) => {
-    const { create } = require('./create')
-    await create({
-      projectName: arg.name ?? '.',
-      template: arg.template ?? 'default',
-      cursorEnabled: arg.cursor,
-    })
+    if (arg.name || arg.template || arg.cursor) {
+      const { create } = require('./create')
+      await create({
+        projectName: arg.name ?? '.',
+        template: arg.template ?? 'default',
+        cursorEnabled: arg.cursor,
+      })
+    } else {
+      const { createInteractive } = require('./create/interactive')
+      await createInteractive({
+        skipConfirmation: arg.skipConfirmation,
+      })
+    }
     process.exit(0)
   })
 
