@@ -8,7 +8,7 @@ import path from 'path'
 export const createMotiaTester = (): MotiaTester => {
   const eventManager = createEventManager()
   const promise = (async () => {
-    const lockedData = await generateLockedData(path.join(process.cwd()))
+    const lockedData = await generateLockedData(path.join(process.cwd()), 'memory')
     const state = createStateAdapter({ adapter: 'memory' })
     const { server, socketServer, close } = await createServer(lockedData, eventManager, state, {
       isVerbose: true,

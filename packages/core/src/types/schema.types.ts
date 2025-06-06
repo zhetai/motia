@@ -1,4 +1,4 @@
-export type JsonSchemaType = 'string' | 'number' | 'boolean'
+export type JsonSchemaType = 'number' | 'boolean'
 
 export type JsonArray = {
   type: 'array'
@@ -13,12 +13,18 @@ export type JsonObject = {
   required?: string[]
 }
 
+export type JsonString = {
+  type: 'string'
+  description?: string
+  enum?: string[]
+}
+
 export type JsonProperty = {
   type: JsonSchemaType
   description?: string
 }
 
-export type JsonSchema = JsonArray | JsonObject | JsonProperty
+export type JsonSchema = JsonArray | JsonObject | JsonString | JsonProperty
 
 export class JsonSchemaError extends Error {
   constructor(message: string) {

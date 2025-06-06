@@ -15,10 +15,11 @@ import { StatesPage } from './routes/states-page'
 const rootElement = document.getElementById('root')!
 if (!rootElement.innerHTML) {
   const root = createRoot(rootElement)
+  const address = window.location.origin.replace('http', 'ws')
 
   root.render(
     <StrictMode>
-      <MotiaStreamProvider address="ws://localhost:3000">
+      <MotiaStreamProvider address={address}>
         <BrowserRouter>
           <RootMotia>
             <RouteWrapper>

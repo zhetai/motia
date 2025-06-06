@@ -51,7 +51,7 @@ eventManager.subscribe({
   filePath: '/path/to/handler.ts',
   handler: (event) => {
     // Handle the event
-  }
+  },
 })
 
 // Emit events
@@ -59,7 +59,7 @@ eventManager.emit({
   topic: 'user.created',
   data: { userId: '123' },
   traceId: 'trace-123',
-  logger: logger
+  logger: logger,
 })
 ```
 
@@ -83,7 +83,7 @@ import { createStateAdapter } from '@motiadev/core'
 const stateAdapter = createStateAdapter({
   adapter: 'redis',
   host: 'localhost',
-  port: 6379
+  port: 6379,
 })
 
 // Use state in your handlers
@@ -101,17 +101,6 @@ import { setupCronHandlers } from '@motiadev/core'
 const cronManager = setupCronHandlers(lockedData, eventManager, state, loggerFactory)
 ```
 
-### Logging
-
-Use the built-in logging system:
-
-```typescript
-import { globalLogger } from '@motiadev/core'
-
-globalLogger.info('Application started')
-globalLogger.error('Something went wrong', { error: err })
-```
-
 ## Multi-language Support
 
 Motia supports writing step handlers in multiple languages:
@@ -127,16 +116,9 @@ Each language has its own runner that communicates with the core framework.
 The package exports TypeScript types for all components:
 
 ```typescript
-import { 
-  Event, 
-  FlowContext, 
-  ApiRouteConfig, 
-  EventConfig, 
-  CronConfig 
-} from '@motiadev/core'
+import { Event, FlowContext, ApiRouteConfig, EventConfig, CronConfig } from '@motiadev/core'
 ```
 
 ## License
 
 This package is part of the Motia framework and is licensed under the same terms.
-```

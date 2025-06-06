@@ -1,8 +1,8 @@
 import { isApiStep } from '../guards'
 import { LockedData } from '../locked-data'
-import { StateStream } from '../state-stream'
 import { ApiRouteConfig, ApiRouteMethod, Step } from '../types'
 import { JsonSchema } from '../types/schema.types'
+import { StreamAdapter } from './adapters/stream-adapter'
 
 type QueryParam = {
   name: string
@@ -31,7 +31,7 @@ const mapEndpoint = (step: Step<ApiRouteConfig>): ApiEndpoint => {
   }
 }
 
-class ApiEndpointsStream extends StateStream<ApiEndpoint> {
+class ApiEndpointsStream extends StreamAdapter<ApiEndpoint> {
   constructor(private readonly lockedData: LockedData) {
     super()
   }

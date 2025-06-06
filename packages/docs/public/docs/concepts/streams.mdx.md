@@ -1,5 +1,5 @@
 ---
-title: Streams 
+title: Streams
 description: Motia Streams are a way to quickly push updates from your asynchronous workflows to the client without having to implement any sort of polling processes.
 ---
 
@@ -14,20 +14,20 @@ To be able to use Motia Sockets, you need to define a stream
 Create a file called `open-ai.stream.ts` under `steps/` folder
 
 ```typescript
-import { StateStreamConfig } from 'motia'
+import { StreamConfig } from 'motia'
 import { z } from 'zod'
 
-export const config: StateStreamConfig = {
+export const config: StreamConfig = {
   /**
    * This will be converted in the property on the FlowContext:
-   * 
+   *
    * context.streams.openai
    */
   name: 'openai',
   /**
    * Schema is important to define the type of the stream, the API
    * generated to interact with this stream will have the structure defined here
-   */  
+   */
   schema: z.object({ message: z.string() }),
 
   /**
@@ -35,13 +35,13 @@ export const config: StateStreamConfig = {
    */
   baseConfig: {
     /**
-     * There are two storage types: state and custom
-     * State will use the state manager to store the data.
-     * 
-     * Custom will use a custom storage, you need to implement 
+     * There are two storage types: default and custom
+     * Default will use the default storage to store the data.
+     *
+     * Custom will use a custom storage, you need to implement
      * the StateStream class.
      */
-    storageType: 'state',
+    storageType: 'default',
   },
 }
 ```
@@ -64,7 +64,7 @@ export const config: ApiRouteConfig = {
   flows: ['open-ai'],
   bodySchema: z.object({ message: z.string({ description: 'The message to send to OpenAI' }) }),
   responseSchema: {
-    200: z.object({ message: z.string({ description: 'The message from OpenAI' }) }) 
+    200: z.object({ message: z.string({ description: 'The message from OpenAI' }) }),
   },
 }
 
@@ -124,7 +124,7 @@ export const handler: Handlers['CallOpenAi'] = async (input, context) => {
     /**
      * Now we're populating a previously created message with the streamed data from OpenAI
      */
-    await context.streams.openai.set(traceId, 'message', { 
+    await context.streams.openai.set(traceId, 'message', {
       message: messages.join(''),
     })
   }
@@ -168,7 +168,6 @@ export const handler: Handlers['OpenAiApi'] = async (req, { traceId, logger, emi
 
 ![Stream Test in Workbench](./../img/streams-test-workbench.gif)
 
-
 ## Consuming stream on the browser
 
 ```
@@ -178,9 +177,7 @@ npm install @motiadev/stream-client-react
 Then add the provider to the root of your project
 
 ```tsx
-<MotiaStreamProvider address="ws://localhost:3000">
-  ...
-</MotiaStreamProvider>
+<MotiaStreamProvider address="ws://localhost:3000">...</MotiaStreamProvider>
 ```
 
 then on your component or hook, just use
@@ -189,9 +186,9 @@ then on your component or hook, just use
 const messageId = '' // get the id back from the API call
 
 // data below will be updated whenever it's updated in the server
-const { data } = useStreamItem({ 
+const { data } = useStreamItem({
   streamName: 'openai',
   groupId: messageId,
-  id: 'message'
+  id: 'message',
 })
 ```

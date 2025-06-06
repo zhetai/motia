@@ -15,9 +15,13 @@ export const generateTypeFromSchema = (schema: JsonSchema): string => {
     return props.length > 0 ? `{ ${props.join('; ')} }` : '{}'
   }
 
+  if (schema.type === 'string') {
+    return schema.enum && schema.enum.length > 0 // must have at least one enum value
+      ? schema.enum.map((value) => `'${value}'`).join(' | ')
+      : 'string'
+  }
+
   switch (schema.type) {
-    case 'string':
-      return 'string'
     case 'number':
       return 'number'
     case 'boolean':

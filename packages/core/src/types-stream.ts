@@ -1,13 +1,13 @@
 import { ZodObject } from 'zod'
-import { StateStreamFactory } from './state-stream'
+import { StreamFactory } from './streams/stream-factory'
 
-export interface StateStreamConfig {
+export interface StreamConfig {
   name: string
   schema: ZodObject<any> // eslint-disable-line @typescript-eslint/no-explicit-any
   baseConfig:
-    | { storageType: 'state' }
+    | { storageType: 'default' }
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
-    | { storageType: 'custom'; factory: () => IStateStream<any> }
+    | { storageType: 'custom'; factory: () => MotiaStream<any> }
 }
 
 export type StateStreamEventChannel = { groupId: string; id?: string }
@@ -15,16 +15,16 @@ export type StateStreamEvent<TData> = { type: string; data: TData }
 
 export type BaseStreamItem<TData = unknown> = TData & { id: string }
 
-export type Stream<TConfig extends StateStreamConfig = StateStreamConfig> = {
+export type Stream<TConfig extends StreamConfig = StreamConfig> = {
   filePath: string
   config: TConfig
   hidden?: boolean
-  factory: StateStreamFactory<unknown>
+  factory: StreamFactory<unknown>
 }
 
-export interface IStateStream<TData> {
+export interface MotiaStream<TData> {
   get(groupId: string, id: string): Promise<BaseStreamItem<TData> | null>
-  set(groupId: string, id: string, data: TData): Promise<BaseStreamItem<TData> | null>
+  set(groupId: string, id: string, data: TData): Promise<BaseStreamItem<TData>>
   delete(groupId: string, id: string): Promise<BaseStreamItem<TData> | null>
   getGroup(groupId: string): Promise<BaseStreamItem<TData>[]>
 

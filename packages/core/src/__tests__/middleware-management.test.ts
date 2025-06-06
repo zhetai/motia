@@ -4,9 +4,9 @@ import { createEventManager } from '../event-manager'
 import { LockedData } from '../locked-data'
 import { Printer } from '../printer'
 import { createServer } from '../server'
-import { InternalStateStream } from '../state-stream'
 import { MemoryStateAdapter } from '../state/adapters/memory-state-adapter'
-import { ApiMiddleware, ApiRouteConfig, InternalStateManager, Step } from '../types'
+import { MemoryStreamAdapter } from '../streams/adapters/memory-stream-adapter'
+import { ApiMiddleware, ApiRouteConfig, Step } from '../types'
 
 // Mock callStepFile to prevent actual file execution
 jest.mock('../call-step-file', () => ({
@@ -44,7 +44,7 @@ describe('Middleware Management', () => {
       cronSteps: () => [],
       onStep: () => {},
       applyStreamWrapper: () => {},
-      createStream: () => (state: InternalStateManager) => new InternalStateStream(state),
+      createStream: () => () => new MemoryStreamAdapter(),
       on: () => {},
     } as unknown as LockedData
 

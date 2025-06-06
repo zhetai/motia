@@ -21,4 +21,10 @@ describe('generateTypeFromSchema', () => {
     const type = generateTypeFromSchema(schema)
     expect(type).toEqual('{ name: string }[]')
   })
+
+  it('should generate a type from a schema with an enum', () => {
+    const schema = zodToJsonSchema(z.object({ status: z.enum(['open', 'closed']) })) as JsonSchema
+    const type = generateTypeFromSchema(schema)
+    expect(type).toEqual("{ status: 'open' | 'closed' }")
+  })
 })

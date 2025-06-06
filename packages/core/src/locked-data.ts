@@ -2,9 +2,12 @@ import fs from 'fs'
 import path from 'path'
 import { isApiStep, isCronStep, isEventStep } from './guards'
 import { NoPrinter, Printer } from './printer'
-import { InternalStateStream, StateStreamFactory } from './state-stream'
 import { validateStep } from './step-validator'
-import { ApiRouteConfig, CronConfig, EventConfig, Flow, InternalStateManager, Step } from './types'
+import { FileStreamAdapter } from './streams/adapters/file-stream-adapter'
+import { MemoryStreamAdapter } from './streams/adapters/memory-stream-adapter'
+import { StreamAdapter } from './streams/adapters/stream-adapter'
+import { StreamFactory } from './streams/stream-factory'
+import { ApiRouteConfig, CronConfig, EventConfig, Flow, Step } from './types'
 import { Stream } from './types-stream'
 import { generateTypesFromSteps, generateTypesFromStreams, generateTypesString } from './types/generate-types'
 
@@ -12,7 +15,7 @@ type FlowEvent = 'flow-created' | 'flow-removed' | 'flow-updated'
 type StepEvent = 'step-created' | 'step-removed' | 'step-updated'
 type StreamEvent = 'stream-created' | 'stream-removed' | 'stream-updated'
 
-type StreamWrapper<TData> = (streamName: string, factory: StateStreamFactory<TData>) => StateStreamFactory<TData>
+type StreamWrapper<TData> = (streamName: string, factory: StreamFactory<TData>) => StreamFactory<TData>
 
 export class LockedData {
   public flows: Record<string, Flow>
@@ -25,12 +28,14 @@ export class LockedData {
   private stepHandlers: Record<StepEvent, ((step: Step) => void)[]>
   private streamHandlers: Record<StreamEvent, ((stream: Stream) => void)[]>
   private streams: Record<string, Stream>
-  private state: InternalStateManager | null = null
 
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
   private streamWrapper?: StreamWrapper<any>
 
-  constructor(public readonly baseDir: string) {
+  constructor(
+    public readonly baseDir: string,
+    private readonly streamAdapter: 'file' | 'memory' = 'file',
+  ) {
     this.flows = {}
     this.activeSteps = []
     this.devSteps = []
@@ -62,9 +67,8 @@ export class LockedData {
     this.printer = new NoPrinter(this.baseDir)
   }
 
-  applyStreamWrapper<TData>(state: InternalStateManager, streamWrapper: StreamWrapper<TData>): void {
+  applyStreamWrapper<TData>(streamWrapper: StreamWrapper<TData>): void {
     this.streamWrapper = streamWrapper
-    this.state = state
   }
 
   saveTypes() {
@@ -107,9 +111,8 @@ export class LockedData {
   }
 
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  getStreams(): Record<string, StateStreamFactory<any>> {
-    // eslint-disable-next-line @typescript-eslint/no-explicit-any
-    const streams: Record<string, StateStreamFactory<any>> = {}
+  getStreams(): Record<string, StreamFactory<any>> {
+    const streams: Record<string, StreamFactory<unknown>> = {}
 
     for (const [key, value] of Object.entries(this.streams)) {
       streams[key] = value.factory
@@ -246,7 +249,7 @@ export class LockedData {
     this.printer.printStepRemoved(step)
   }
 
-  private createFactoryWrapper<TData>(stream: Stream, factory: StateStreamFactory<TData>): StateStreamFactory<TData> {
+  private createFactoryWrapper<TData>(stream: Stream, factory: StreamFactory<TData>): StreamFactory<TData> {
     return () => {
       const streamFactory = this.streamWrapper //
         ? this.streamWrapper(stream.config.name, factory)
@@ -258,14 +261,14 @@ export class LockedData {
   createStream<TData>(
     baseStream: Omit<Stream, 'factory'>,
     options: { disableTypeCreation?: boolean } = {},
-  ): StateStreamFactory<TData> {
+  ): StreamFactory<TData> {
     const stream = baseStream as Stream
 
     this.streams[stream.config.name] = stream
     this.streamHandlers['stream-created'].forEach((handler) => handler(stream))
 
-    if (stream.config.baseConfig.storageType === 'state') {
-      stream.factory = this.createFactoryWrapper(stream, () => new InternalStateStream<TData>(this.state!))
+    if (stream.config.baseConfig.storageType === 'default') {
+      stream.factory = this.createFactoryWrapper(stream, () => this.createStreamAdapter(stream.config.name))
     } else {
       stream.factory = this.createFactoryWrapper(stream, stream.config.baseConfig.factory)
     }
@@ -278,7 +281,7 @@ export class LockedData {
       }
     }
 
-    return stream.factory as StateStreamFactory<TData>
+    return stream.factory as StreamFactory<TData>
   }
 
   deleteStream(stream: Stream, options: { disableTypeCreation?: boolean } = {}): void {
@@ -304,8 +307,8 @@ export class LockedData {
       delete this.streams[oldStream.config.name]
     }
 
-    if (stream.config.baseConfig.storageType === 'state') {
-      stream.factory = this.createFactoryWrapper(stream, () => new InternalStateStream(this.state!))
+    if (stream.config.baseConfig.storageType === 'default') {
+      stream.factory = this.createFactoryWrapper(stream, () => this.createStreamAdapter(stream.config.name))
     } else {
       stream.factory = this.createFactoryWrapper(stream, stream.config.baseConfig.factory)
     }
@@ -349,5 +352,13 @@ export class LockedData {
     }
 
     return validationResult.success
+  }
+
+  private createStreamAdapter<TData>(streamName: string): StreamAdapter<TData> {
+    if (this.streamAdapter === 'file') {
+      return new FileStreamAdapter(this.baseDir, streamName)
+    }
+
+    return new MemoryStreamAdapter<TData>()
   }
 }

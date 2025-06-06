@@ -38,5 +38,5 @@ environmentCommand
   .alias('u')
   .description('Update a environment to a specific version')
   .requiredOption('-k, --api-key <api key>', 'API key for authentication', process.env.MOTIA_API_KEY)
-  .requiredOption('-v, --version <version>', 'The version to promote')
+  .requiredOption('-v, --version-name <version>', 'The version to promote')
   .action(handler(updateEnvironment))

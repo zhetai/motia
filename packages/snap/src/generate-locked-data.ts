@@ -45,13 +45,16 @@ export const collectFlows = async (projectDir: string, lockedData: LockedData): 
   return invalidSteps
 }
 
-export const generateLockedData = async (projectDir: string): Promise<LockedData> => {
+export const generateLockedData = async (
+  projectDir: string,
+  streamAdapter: 'file' | 'memory' = 'file',
+): Promise<LockedData> => {
   try {
     /*
      * NOTE: right now for performance and simplicity let's enforce a folder,
      * but we might want to remove this and scan the entire current directory
      */
-    const lockedData = new LockedData(projectDir)
+    const lockedData = new LockedData(projectDir, streamAdapter)
 
     await collectFlows(projectDir, lockedData)
     lockedData.saveTypes()

@@ -14,10 +14,10 @@ To be able to use Motia Sockets, you need to define a stream
 Create a file called `open-ai.stream.ts` under `steps/` folder
 
 ```typescript
-import { StateStreamConfig } from 'motia'
+import { StreamConfig } from 'motia'
 import { z } from 'zod'
 
-export const config: StateStreamConfig = {
+export const config: StreamConfig = {
   /**
    * This will be converted in the property on the FlowContext:
    * 
@@ -35,13 +35,13 @@ export const config: StateStreamConfig = {
    */
   baseConfig: {
     /**
-     * There are two storage types: state and custom
-     * State will use the state manager to store the data.
+     * There are two storage types: default and custom
+     * Default will use the default storage to store the data.
      * 
      * Custom will use a custom storage, you need to implement 
      * the StateStream class.
      */
-    storageType: 'state',
+    storageType: 'default',
   },
 }
 ```

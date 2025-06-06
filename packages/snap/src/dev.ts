@@ -6,7 +6,6 @@ import {
   createStateAdapter,
   createStepHandlers,
   getProjectIdentifier,
-  globalLogger,
   trackEvent,
 } from '@motiadev/core'
 import path from 'path'
@@ -92,7 +91,6 @@ export const dev = async (port: number, isVerbose: boolean, enableMermaid: boole
 
   // 6) Gracefully shut down on SIGTERM
   process.on('SIGTERM', async () => {
-    globalLogger.info('🛑 Shutting down...')
     trackEvent('dev_server_shutdown', { reason: 'SIGTERM' })
     motiaServer.server.close()
     await watcher.stop()
@@ -101,7 +99,6 @@ export const dev = async (port: number, isVerbose: boolean, enableMermaid: boole
   })
 
   process.on('SIGINT', async () => {
-    globalLogger.info('🛑 Shutting down...')
     trackEvent('dev_server_shutdown', { reason: 'SIGINT' })
     motiaServer.server.close()
     await watcher.stop()

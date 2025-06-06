@@ -1,7 +1,7 @@
 import path from 'path'
 import { StepConfig } from './types'
 import { globalLogger } from './logger'
-import { StateStreamConfig } from './types-stream'
+import { StreamConfig } from './types-stream'
 import { ProcessManager } from './process-communication/process-manager'
 
 const getLanguageBasedRunner = (
@@ -90,6 +90,6 @@ export const getStepConfig = (file: string): Promise<StepConfig | null> => {
   return getConfig<StepConfig>(file)
 }
 
-export const getStreamConfig = (file: string): Promise<StateStreamConfig | null> => {
-  return getConfig<StateStreamConfig>(file)
+export const getStreamConfig = (file: string): Promise<StreamConfig | null> => {
+  return getConfig<StreamConfig>(file)
 }

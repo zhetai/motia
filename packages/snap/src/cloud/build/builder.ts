@@ -14,7 +14,7 @@ export type BuildStepConfig = {
 
 export type BuildStreamConfig = {
   name: string
-  storageType: 'state' | 'custom'
+  storageType: 'default' | 'custom'
 }
 
 export type BuildStepsConfig = Record<string, BuildStepConfig>

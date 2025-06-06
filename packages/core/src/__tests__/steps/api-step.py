@@ -1,4 +1,3 @@
-from typing import Dict
 
 config = {
     "type": "api",
@@ -9,7 +8,7 @@ config = {
 }
 
 
-async def handler(_, context) -> Dict:
+async def handler(_, context):
     await context.emit({
         "data": {"test": "data"},
         "topic": "TEST_EVENT"

@@ -1,12 +1,23 @@
-import { CronManager, setupCronHandlers } from './cron-handler'
 import bodyParser from 'body-parser'
+import cors from 'cors'
 import express, { Express, Request, Response } from 'express'
 import http from 'http'
 import { Server as WsServer } from 'ws'
-import cors from 'cors'
+import { analyticsEndpoint } from './analytics-endpoint'
+import { trackEvent } from './analytics/utils'
+import { callStepFile } from './call-step-file'
+import { CronManager, setupCronHandlers } from './cron-handler'
+import { flowsConfigEndpoint } from './flows-config-endpoint'
 import { flowsEndpoint } from './flows-endpoint'
+import { generateTraceId } from './generate-trace-id'
 import { isApiStep } from './guards'
+import { LockedData } from './locked-data'
 import { globalLogger } from './logger'
+import { LoggerFactory } from './logger-factory'
+import { createSocketServer } from './socket-server'
+import { systemSteps } from './steps'
+import { apiEndpoints } from './streams/api-endpoints'
+import { Log, LogsStream } from './streams/logs-stream'
 import {
   ApiRequest,
   ApiResponse,
@@ -16,18 +27,7 @@ import {
   InternalStateManager,
   Step,
 } from './types'
-import { systemSteps } from './steps'
-import { LockedData } from './locked-data'
-import { callStepFile } from './call-step-file'
-import { LoggerFactory } from './logger-factory'
-import { generateTraceId } from './generate-trace-id'
-import { flowsConfigEndpoint } from './flows-config-endpoint'
-import { apiEndpoints } from './streams/api-endpoints'
-import { createSocketServer } from './socket-server'
-import { Log, LogsStream } from './streams/logs-stream'
-import { BaseStreamItem, IStateStream, StateStreamEventChannel, StateStreamEvent } from './types-stream'
-import { analyticsEndpoint } from './analytics-endpoint'
-import { trackEvent } from './analytics/utils'
+import { BaseStreamItem, MotiaStream, StateStreamEvent, StateStreamEventChannel } from './types-stream'
 
 export type MotiaServer = {
   app: Express
@@ -77,58 +77,65 @@ export const createServer = async (
     },
   })
 
-  lockedData.applyStreamWrapper(state, (streamName, stream) => {
-    return (): IStateStream<BaseStreamItem> => {
-      const suuper = stream()
+  lockedData.applyStreamWrapper((streamName, stream) => {
+    return (): MotiaStream<BaseStreamItem> => {
+      const main = stream() as MotiaStream<BaseStreamItem>
       // eslint-disable-next-line @typescript-eslint/no-explicit-any
-      const wrapObject = (groupId: string, id: string, object: any) => ({
-        ...object,
-        __motia: { type: 'state-stream', streamName, groupId, id },
-      })
+      const wrapObject = (groupId: string, id: string, object: any) => {
+        if (!object) {
+          return null
+        }
 
-      const wrapper: IStateStream<BaseStreamItem> = {
-        ...suuper,
-
-        async send<T>(channel: StateStreamEventChannel, event: StateStreamEvent<T>) {
-          pushEvent({ streamName, ...channel, event: { type: 'event', event } })
-        },
-
-        async get(groupId: string, id: string) {
-          const result = await suuper.get.apply(wrapper, [groupId, id])
-          return wrapObject(groupId, id, result)
-        },
-
-        async set(groupId: string, id: string, data: BaseStreamItem) {
-          if (!data) {
-            return null
-          }
-
-          const exists = await suuper.get(groupId, id)
-          const updated = await suuper.set.apply(wrapper, [groupId, id, data])
-          const result = updated ?? data
-          const wrappedResult = wrapObject(groupId, id, result)
-
-          const type = exists ? 'update' : 'create'
-          pushEvent({ streamName, groupId, id, event: { type, data: result } })
-
-          return wrappedResult
-        },
-
-        async delete(groupId: string, id: string) {
-          const result = await suuper.delete.apply(wrapper, [groupId, id])
-
-          pushEvent({ streamName, groupId, id, event: { type: 'delete', data: result } })
-
-          return wrapObject(groupId, id, result)
-        },
-
-        async getGroup(groupId: string) {
-          const list = await suuper.getGroup.apply(wrapper, [groupId])
-          return list.map((object: BaseStreamItem) => wrapObject(groupId, object.id, object))
-        },
+        return {
+          ...object,
+          __motia: { type: 'state-stream', streamName, groupId, id },
+        }
       }
 
-      return wrapper
+      const mainGetGroup = main.getGroup
+      const mainGet = main.get
+      const mainSet = main.set
+      const mainDelete = main.delete
+
+      main.send = async <T>(channel: StateStreamEventChannel, event: StateStreamEvent<T>) => {
+        pushEvent({ streamName, ...channel, event: { type: 'event', event } })
+      }
+
+      main.getGroup = async (groupId: string) => {
+        const result = await mainGetGroup.apply(main, [groupId])
+        return result.map((object: BaseStreamItem) => wrapObject(groupId, object.id, object))
+      }
+
+      main.get = async (groupId: string, id: string) => {
+        const result = await mainGet.apply(main, [groupId, id])
+        return wrapObject(groupId, id, result)
+      }
+
+      main.set = async (groupId: string, id: string, data: BaseStreamItem) => {
+        if (!data) {
+          return null
+        }
+
+        const exists = await main.get(groupId, id)
+        const updated = await mainSet.apply(main, [groupId, id, data])
+        const result = updated ?? data
+        const wrappedResult = wrapObject(groupId, id, result)
+
+        const type = exists ? 'update' : 'create'
+        pushEvent({ streamName, groupId, id, event: { type, data: result } })
+
+        return wrappedResult
+      }
+
+      main.delete = async (groupId: string, id: string) => {
+        const result = await mainDelete.apply(main, [groupId, id])
+
+        pushEvent({ streamName, groupId, id, event: { type: 'delete', data: result } })
+
+        return wrapObject(groupId, id, result)
+      }
+
+      return main
     }
   })
 
@@ -176,6 +183,7 @@ export const createServer = async (
         })
 
         if (!result) {
+          console.log('no result')
           res.status(500).json({ error: 'Internal server error' })
           return
         }

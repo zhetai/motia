@@ -1,4 +1,4 @@
-import { StateStream } from '../state-stream'
+import { StreamAdapter } from './adapters/stream-adapter'
 
 export type Log = {
   id: string
@@ -15,7 +15,7 @@ export type Log = {
  * if process stays for to long it would consume too much memory
  * in this case, we're just streaming through events.
  */
-export class LogsStream extends StateStream<Log> {
+export class LogsStream extends StreamAdapter<Log> {
   get = async () => null
   delete = async () => null
   getGroup = async () => []

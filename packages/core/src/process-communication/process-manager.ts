@@ -91,7 +91,7 @@ export class ProcessManager {
 
   kill(): void {
     if (this.child) {
-      this.child.kill()
+      this.child.kill('SIGKILL')
     }
   }
 

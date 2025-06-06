@@ -19,7 +19,7 @@ describe('Server', () => {
     let server: MotiaServer
 
     beforeEach(async () => {
-      const lockedData = new LockedData(baseDir)
+      const lockedData = new LockedData(baseDir, 'memory')
       const eventManager = createEventManager()
       const state = new MemoryStateAdapter()
       server = await createServer(lockedData, eventManager, state, config)
@@ -39,7 +39,7 @@ describe('Server', () => {
     let server: MotiaServer
 
     beforeEach(async () => {
-      const lockedData = new LockedData(baseDir)
+      const lockedData = new LockedData(baseDir, 'memory')
       const eventManager = createEventManager()
       const state = new MemoryStateAdapter()
       server = await createServer(lockedData, eventManager, state, config)
@@ -91,7 +91,7 @@ describe('Server', () => {
       const eventManager = createEventManager()
       const state = new MemoryStateAdapter()
       const baseDir = __dirname
-      const lockedData = new LockedData(baseDir)
+      const lockedData = new LockedData(baseDir, 'memory')
       const mockApiStep: Step<ApiRouteConfig> = createApiStep(
         { emits: ['TEST_EVENT'], path: '/test', method: 'POST' },
         path.join(baseDir, 'steps', 'api-step.ts'),

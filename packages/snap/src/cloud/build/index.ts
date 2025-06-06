@@ -39,7 +39,7 @@ export const build = async (context: CliContext): Promise<Builder> => {
   const streams = lockedData.listStreams()
 
   for (const stream of streams) {
-    if (stream.config.baseConfig.storageType === 'state') {
+    if (stream.config.baseConfig.storageType === 'default') {
       builder.registerStateStream(stream)
     } else {
       context.log(stream.filePath, (message) =>

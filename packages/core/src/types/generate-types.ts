@@ -17,12 +17,12 @@ export const generateTypesString = (handlers: HandlersMap, streams: StreamsMap):
  * 
  * Consider adding this file to .prettierignore and eslint ignore.
  */
-import { EventHandler, ApiRouteHandler, ApiResponse, IStateStream } from 'motia'
+import { EventHandler, ApiRouteHandler, ApiResponse, MotiaStream } from 'motia'
 
 declare module 'motia' {
   interface FlowContextStateStreams {
     ${Object.entries(streams)
-      .map(([key, value]) => `'${key}': IStateStream<${value}>`)
+      .map(([key, value]) => `'${key}': MotiaStream<${value}>`)
       .join('\n    ')
       .trim()}
   }

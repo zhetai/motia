@@ -3,7 +3,7 @@ import { Logger } from './logger'
 import { composeMiddleware } from './middleware-compose'
 import { RpcSender } from './rpc'
 import { RpcStateManager } from './rpc-state-manager'
-import { StateStreamConfig } from '../types-stream'
+import { StreamConfig } from '../types-stream'
 
 // eslint-disable-next-line @typescript-eslint/no-require-imports
 require('dotenv').config()
@@ -39,7 +39,7 @@ async function runTypescriptModule(filePath: string, event: Record<string, unkno
     const state = new RpcStateManager(sender)
 
     const emit = async (data: unknown) => sender.send('emit', data)
-    const streamsConfig = event.streams as StateStreamConfig[]
+    const streamsConfig = event.streams as StreamConfig[]
     const streams = (streamsConfig ?? []).reduce(
       (acc, streams) => {
         acc[streams.name] = {

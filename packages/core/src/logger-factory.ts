@@ -1,5 +1,5 @@
 import { Logger } from './logger'
-import { StateStream } from './state-stream'
+import { StreamAdapter } from './streams/adapters/stream-adapter'
 import { Log } from './streams/logs-stream'
 
 type CreateLogger = {
@@ -11,7 +11,7 @@ type CreateLogger = {
 export class LoggerFactory {
   constructor(
     private readonly isVerbose: boolean,
-    private readonly logStream: StateStream<Log>,
+    private readonly logStream: StreamAdapter<Log>,
   ) {}
 
   create({ stepName, traceId, flows }: CreateLogger): Logger {

@@ -1,12 +1,12 @@
-import { StateStreamConfig } from 'motia'
+import { StreamConfig } from 'motia'
 import { z } from 'zod'
 
-export const config: StateStreamConfig = {
+export const config: StreamConfig = {
   name: 'message',
   schema: z.object({
     message: z.string(),
     from: z.enum(['user', 'assistant']),
     status: z.enum(['created', 'pending', 'completed']),
   }),
-  baseConfig: { storageType: 'state' },
+  baseConfig: { storageType: 'default' },
 }

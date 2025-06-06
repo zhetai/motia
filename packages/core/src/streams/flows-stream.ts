@@ -1,12 +1,12 @@
 import { LockedData } from '../locked-data'
-import { StateStream } from '../state-stream'
+import { StreamAdapter } from './adapters/stream-adapter'
 
 export type Flow = {
   id: string
   name: string
 }
 
-export class FlowsStream extends StateStream<Flow> {
+export class FlowsStream extends StreamAdapter<Flow> {
   constructor(private readonly lockedData: LockedData) {
     super()
   }
