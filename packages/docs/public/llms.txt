@@ -2937,7 +2937,7 @@ By understanding these core concepts – you'll have a solid foundation for buil
 -   [index](/docs/getting-started\index.md): Documentation for index.
 ---
 title: Getting Started
-description: Get started with Motia - A powerful automation framework
+description: Get started with Motia - A Modern Unified Backend Framework for APIs, Events and AI Agents
 ---
 
 # Your Path to Intelligent Workflow Automation
@@ -3231,7 +3231,7 @@ title: Welcome to Motia
 description: Get started with Motia, a powerful framework for building event-driven workflows
 ---
 
-# Code-First Framework for Intelligent Workflows
+# Unified Backend Framework for APIs, Events and AI Agents
 
 Motia is a **code-first framework** designed to empower developers to build robust, scalable, and observable event-driven workflows with unparalleled ease. We handle the infrastructure complexities, so you can focus on your business logic.
 
@@ -5709,7 +5709,7 @@ description: A 3-minute overview of Motia’s core concepts with a business-read
 
 # TLDR - Motia in 3 Minutes
 
-Got 3 minutes? Here’s the scoop on Motia—a code-first framework that powers event-driven workflows, perfect for Generative AI (GenAI). We’ll spotlight a real-world win: analyzing customer feedback.
+Got 3 minutes? Here’s the scoop on Motia—a Modern Unified Backend Framework for APIs, Events and AI Agents that powers event-driven workflows, perfect for Generative AI (GenAI). We’ll spotlight a real-world win: analyzing customer feedback.
 
 ## What’s Motia?
 Motia builds scalable, observable workflows without infrastructure headaches. Code in JS, TS, or Python, chain it up, and track it live in a visual Workbench.
@@ -5753,7 +5753,7 @@ title: Welcome to Motia
 description: Get started with Motia, a powerful framework for building event-driven workflows
 ---
 
-# Code-First Framework for Intelligent Workflows
+# Unified Backend Framework for APIs, Events and AI Agents
 
 Motia is a **code-first framework** designed to empower developers to build robust, scalable, and observable event-driven workflows with unparalleled ease. We handle the infrastructure complexities, so you can focus on your business logic.
 

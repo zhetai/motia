@@ -3,7 +3,7 @@ title: Welcome to Motia
 description: Get started with Motia, a powerful framework for building event-driven workflows
 ---
 
-# Code-First Framework for Intelligent Workflows
+# Unified Backend Framework for APIs, Events and AI Agents
 
 Motia is a **code-first framework** designed to empower developers to build robust, scalable, and observable event-driven workflows with unparalleled ease. We handle the infrastructure complexities, so you can focus on your business logic.
 

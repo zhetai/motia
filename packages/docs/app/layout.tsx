@@ -36,7 +36,7 @@ const YANDEX_VERIFICATION = process.env.NEXT_PUBLIC_YANDEX_VERIFICATION ?? 'YOUR
 const BING_VERIFICATION = process.env.NEXT_PUBLIC_BING_VERIFICATION ?? 'YOUR_BING_VERIFICATION'
 const GOOGLE_VERIFICATION = process.env.NEXT_PUBLIC_GOOGLE_VERIFICATION ?? 'YOUR_GOOGLE_VERIFICATION'
 
-const metaTitle = 'Motia - AI Agent Framework for Software Engineering Teams'
+const metaTitle = 'Motia - Unified Backend Framework for APIs, Events and AI Agents'
 const metaDescription =
   'Multi-language cloud functions runtime for API endpoints, background jobs, and agentic workflows using Motia Steps. Preview them in the Workbench, ship to zero-config infrastructure, and monitor in the Cloud.'
 
