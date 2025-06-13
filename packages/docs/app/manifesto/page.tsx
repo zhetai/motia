@@ -1,6 +1,5 @@
 import Footer from '@/components/Footer'
 import Navbar from '@/components/ui/Navbar'
-import { Metadata } from 'next'
 import Image from 'next/image'
 import bgManifesto from '@/public/images/landing/bgManifestoPage.svg'
 import bgManifestoDeclaration from '@/public/images/landing/bgManifestoDeclaration.svg'
@@ -8,32 +7,11 @@ import Title from '@/components/Title'
 {
   /* eslint-disable react/no-unescaped-entities */
 }
-export const metadata: Metadata = {
-  title: 'Manifesto',
-  description:
-    'Motia is the missing framework for AI-native software engineering. Discover why the Step is our core primitive.',
-  openGraph: {
-    title: 'Manifesto',
-    description:
-      'Motia is the missing framework for AI-native software engineering. Discover why the Step is our core primitive.',
-    url: 'https://www.motia.dev/manifesto',
-    siteName: 'Motia',
-    type: 'article',
-  },
-  twitter: {
-    card: 'summary_large_image',
-    title: 'Manifesto',
-    description:
-      'Motia is the missing framework for AI-native software engineering. Discover why the Step is our core primitive.',
-  },
-}
-
 // Common utility classes
 const gradientText = 'font-medium bg-gradient-to-l from-[#5AC5FF] to-[#FFFFFF] bg-clip-text text-transparent'
 const gradientTextBlue = 'bg-gradient-to-r from-[#5AC5FF] to-[#C4E5FF] bg-clip-text text-transparent font-medium'
 const headingText = 'text-[24px] font-semibold text-white font-tasa'
 const normalText = 'text-[18px] text-white/60 leading-[150%] font-sans'
-const textBlue = 'text-[#53B4FF]'
 
 export default function ManifestoPage() {
   return (
