@@ -37,7 +37,7 @@ Motia brings cohesion to the fragmented backend world with our core primitive: t
 
 - **🎯 Single Purpose**: Each Step performs one task
 - **🌍 Language agnostic**: Each Step can be in a different language, while being part of the same workflow
-- **⚡ Versatile**: Steps can trigger APIs, background jobs, or even LLMs
+- **⚡ Versatile**: Steps can trigger APIs, background jobs, and AI Agents
 - **👁️ Observable**: Everything is observable by default
 - **🌊 Workflows**: Collections of connected steps that form complete processes
 - **🏪 State Management**: Shared state across all steps with full traceability
