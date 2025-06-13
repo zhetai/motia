@@ -40,7 +40,7 @@ const metaTitle = 'Motia - Unified Backend Framework for APIs, Events and AI Age
 const metaDescription =
   'Multi-language cloud functions runtime for API endpoints, background jobs, and agentic workflows using Motia Steps. Preview them in the Workbench, ship to zero-config infrastructure, and monitor in the Cloud.'
 
-const hostedImagePath = DOMAIN_URL + '/og-image-new.webp'
+const hostedImagePath = DOMAIN_URL + '/og-image-updated.jpg'
 export const metadata: Metadata = {
   title: {
     template: '%s | motia',
@@ -71,7 +71,7 @@ export const metadata: Metadata = {
         width: 1200,
         height: 630,
         alt: metaTitle,
-        type: 'image/webp',
+        type: 'image/jpg',
       },
     ],
   },
