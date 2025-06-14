@@ -158,7 +158,7 @@ Write steps in your preferred language:
 | **JavaScript** | ✅ Stable      | `handler.step.js` |
 | **TypeScript** | ✅ Stable      | `handler.step.ts` |
 | **Python**     | ✅ Stable      | `handler.step.py` |
-| **Ruby**       | ✅ Stable      | `handler.step.rb` |
+| **Ruby**       | 🔄 Coming Soon | `handler.step.rb` |
 | **Go**         | 🔄 Coming Soon | `handler.step.go` |
 | **Rust**       | 🔄 Coming Soon | `handler.step.rs` |
 
@@ -170,6 +170,14 @@ Write steps in your preferred language:
 - **🎥 Blog**: [Motia Blog](https://dev.to/motiadev)
 
 ### 🤝 **Contributing**
+
+#### 🚀 Roadmap
+
+We're building Motia in the open, and we'd love for you to be a part of the journey.
+
+Check out our public roadmap to see what’s planned, what’s in progress, and what’s recently shipped:
+
+👉 [View our public Roadmap](https://github.com/orgs/MotiaDev/projects/2/views/2)
 
 We welcome contributions! Whether it's:
 - 🐛 Bug fixes and improvements
