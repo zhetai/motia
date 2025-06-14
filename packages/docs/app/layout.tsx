@@ -1,12 +1,11 @@
-import type { Metadata } from 'next'
+import type { Metadata, ResolvingMetadata } from 'next'
 import { DM_Mono, Geist } from 'next/font/google'
 import localFont from 'next/font/local'
 import './globals.css'
 import { RootProvider } from 'fumadocs-ui/provider'
-import type { WithContext, Organization } from 'schema-dts'
-import { DOMAIN_URL } from '@/utils/constants'
 import { GoogleTagManager } from '@next/third-parties/google'
 import { Analytics } from '@vercel/analytics/react'
+import { headers } from 'next/headers'
 
 const tasaExplorer = localFont({
   src: [
@@ -31,146 +30,114 @@ const dmMono = DM_Mono({
 })
 
 const GTM_ID = process.env.NEXT_PUBLIC_GTM_ID ?? 'GTM-P6672CSW'
-const SLACK_APP_ID = process.env.NEXT_PUBLIC_SLACK_APP_ID ?? 'YOUR_SLACK_APP_ID'
-const YANDEX_VERIFICATION = process.env.NEXT_PUBLIC_YANDEX_VERIFICATION ?? 'YOUR_YANDEX_VERIFICATION'
-const BING_VERIFICATION = process.env.NEXT_PUBLIC_BING_VERIFICATION ?? 'YOUR_BING_VERIFICATION'
-const GOOGLE_VERIFICATION = process.env.NEXT_PUBLIC_GOOGLE_VERIFICATION ?? 'YOUR_GOOGLE_VERIFICATION'
 
 const metaTitle = 'Motia - Unified Backend Framework for APIs, Events and AI Agents'
 const metaDescription =
   'Multi-language cloud functions runtime for API endpoints, background jobs, and agentic workflows using Motia Steps. Preview them in the Workbench, ship to zero-config infrastructure, and monitor in the Cloud.'
 
-const hostedImagePath = DOMAIN_URL + '/og-image-updated.jpg'
-export const metadata: Metadata = {
-  title: {
-    template: '%s | motia',
-    default: metaTitle,
-  },
-  description: metaDescription,
-  keywords: [
-    'AI',
-    'automation',
-    'event-driven workflows',
-    'software engineering',
-    'backend automation',
-    'developer tools',
-  ],
-  metadataBase: new URL(DOMAIN_URL),
+export async function generateMetadata(
+  _props: never,
+  _parent: ResolvingMetadata
+): Promise<Metadata> {
+  const h = await headers();
+  const host = h.get('x-forwarded-host') ?? h.get('host') ?? 'motia.dev';
+  const proto = host.startsWith('localhost') ? 'http' : 'https';
+  const base = `${proto}://${host}`;
 
-  // Standard OpenGraph
-  openGraph: {
-    type: 'website',
-    locale: 'en_US',
-    url: DOMAIN_URL,
-    siteName: 'motia',
-    title: metaTitle,
+  const ogImage = `${base}/og-image-updated.jpg`;
+
+  return {
+    metadataBase: new URL(base),
+    title: {
+      default: metaTitle,
+      template: '%s | motia',
+    },
     description: metaDescription,
-    images: [
-      {
-        url: hostedImagePath,
-        width: 1200,
-        height: 630,
-        alt: metaTitle,
-        type: 'image/jpg',
-      },
+    keywords: [
+      'AI',
+      'automation',
+      'event-driven workflows',
+      'software engineering',
+      'backend automation',
+      'developer tools',
     ],
-  },
-
-  // Twitter/X
-  twitter: {
-    card: 'summary_large_image',
-    site: '@motiadev',
-    creator: '@motiadev',
-    title: metaTitle,
-    description: metaDescription,
-    images: [hostedImagePath],
-  },
-
-  // Icons and PWA
-  icons: {
-    icon: [{ url: '/app/favicon.ico' }, { url: '/icon.png', type: 'image/png' }],
-    apple: [{ url: '/apple-icon.png', type: 'image/png' }],
-    other: [
-      {
-        rel: 'mask-icon',
-        url: '/safari-pinned-tab.svg',
-        color: '#18181b',
-      },
-    ],
-  },
-
-  // Additional metadata
-  other: {
-    // Twitter alt text
-    'twitter:image:alt': metaTitle,
-
-    // Instagram
-    'instagram:card': 'summary_large_image',
-    'instagram:title': metaTitle,
-    'instagram:description': metaDescription,
-    'instagram:image': hostedImagePath,
-
-    // Reddit
-    'reddit:title': metaTitle,
-    'reddit:description': metaDescription,
-    'reddit:image': hostedImagePath,
-
-    // LinkedIn
-    'linkedin:card': 'summary_large_image',
-    'linkedin:title': metaTitle,
-    'linkedin:description': metaDescription,
-    'linkedin:image': hostedImagePath,
-
-    // Slack
-    'slack-app-id': SLACK_APP_ID,
-
-    // PWA related
-    'theme-color': '#18181b',
-    'application-name': 'motia',
-    'apple-mobile-web-app-title': 'motia',
-    'apple-mobile-web-app-capable': 'yes',
-    'apple-mobile-web-app-status-bar-style': 'black-translucent',
-    'mobile-web-app-capable': 'yes',
-    'msapplication-TileColor': '#18181b',
-    'msapplication-config': '/browserconfig.xml',
-    'format-detection': 'telephone=no',
-
-    // Search Engine
-    'google-site-verification': GOOGLE_VERIFICATION,
-    'yandex-verification': YANDEX_VERIFICATION,
-    'bing-verification': BING_VERIFICATION,
-
-    // Canonical URL (important for SEO)
-    canonical: DOMAIN_URL,
-  },
-
-  // Robots
-  robots: {
-    index: true,
-    follow: true,
-    googleBot: {
+    openGraph: {
+      type: 'website',
+      url: base,
+      locale: 'en_US',
+      siteName: 'Motia',
+      title: metaTitle,
+      description: metaDescription,
+      images: [
+        {
+          url: ogImage,
+          width: 1200,
+          height: 630,
+          alt: metaTitle,
+          type: 'image/jpeg',
+        },
+      ],
+    },
+    icons: {
+      icon: [{ url: '/app/favicon.ico' }, { url: '/icon.png', type: 'image/png' }],
+      apple: [{ url: '/apple-icon.png', type: 'image/png' }],
+      other: [
+        {
+          rel: 'mask-icon',
+          url: '/safari-pinned-tab.svg',
+          color: '#18181b',
+        },
+      ],
+    },
+    twitter: {
+      card: 'summary_large_image',
+      site: '@motiadev',
+      creator: '@motiadev',
+      title: metaTitle,
+      description: metaDescription,
+      images: [ogImage],
+    },
+    robots: {
       index: true,
       follow: true,
-      'max-video-preview': -1,
-      'max-image-preview': 'large',
-      'max-snippet': -1,
+      googleBot: {
+        index: true,
+        follow: true,
+        'max-video-preview': -1,
+        'max-image-preview': 'large',
+        'max-snippet': -1,
+      },
     },
-  },
+    // Additional metadata
+    other: {
+      // Instagram
+      'instagram:card': 'summary_large_image',
+      'instagram:title': metaTitle,
+      'instagram:description': metaDescription,
+      'instagram:image': ogImage,
 
-  // Verification for webmaster tools
-  verification: {
-    google: GOOGLE_VERIFICATION,
-  },
-}
+      // Reddit
+      'reddit:title': metaTitle,
+      'reddit:description': metaDescription,
+      'reddit:image': ogImage,
 
-// Define typed JSON-LD structured data using schema-dts Organization type
-const structuredData: WithContext<Organization> = {
-  '@context': 'https://schema.org',
-  '@type': 'Organization',
-  name: 'Motia',
-  url: DOMAIN_URL,
-  logo: 'https://motia.dev/logos/logo-black.svg',
-  sameAs: ['https://twitter.com/motiadev', 'https://github.com/MotiaDev/motia', 'https://discord.gg/nJFfsH5d6v'],
+      // LinkedIn
+      'linkedin:card': 'summary_large_image',
+      'linkedin:title': metaTitle,
+      'linkedin:description': metaDescription,
+      'linkedin:image': ogImage,
+
+      // PWA related
+      'theme-color': '#18181b',
+      'application-name': 'motia',
+      'apple-mobile-web-app-title': 'motia',
+      'apple-mobile-web-app-capable': 'yes',
+      'apple-mobile-web-app-status-bar-style': 'black-translucent',
+      'mobile-web-app-capable': 'yes',
+      'msapplication-TileColor': '#18181b',
+      canonical: base,
+    },
+  };
 }
 
 export default function RootLayout({
