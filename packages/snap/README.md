@@ -24,12 +24,10 @@ Motia brings cohesion to the fragmented backend world with our primitive: the **
 - 🧱 Each Step performs one task.  
 - 📚 Each Step can be in a different language, while being part of the same flow.
 - 🔀 Steps connect via Workflows.  
-- 🤖 Steps can trigger APIs, background jobs, or even LLMs.  
+- 🤖 Steps can trigger APIs, background jobs, and AI Agents
 - 🧰 Everything is observable via the built-in Workbench.
 
 ---
-
-
 
 ## 🚧 The Problem
 
@@ -54,6 +52,7 @@ Motia unifies your entire backend into a unified state. APIs, background jobs, a
 
 
 ![Motia combines APIs, background queues, and AI agents into one system](https://github.com/MotiaDev/motia/blob/main/assets/2.gif?raw=true)
+
 
 ---
 
@@ -192,7 +191,6 @@ motia build
 Motia currently supports:
 - JavaScript
 - TypeScript
-- Ruby
 - Python
 
 With more languages coming soon!
@@ -204,7 +202,8 @@ For more information on a specific command, you can use the `--help` flag:
 ```sh
 motia <command> --help
 ```
-![alt text](https://github.com/MotiaDev/motia/blob/main/assets/1.png?raw=true)
+
+![why-devs-love-motia](https://raw.githubusercontent.com/MotiaDev/motia/refs/heads/main/assets/1.png)
 
 ## Documentation
 
@@ -215,8 +214,12 @@ For questions and support please use the [official Discord channel](https://disc
 
 ## Contributing
 
+#### 🚀 Roadmap
+
+We're building Motia in the open, and we'd love for you to be a part of the journey. [View our public Roadmap](https://github.com/orgs/MotiaDev/projects/2/views/2)
+
 We welcome contributions! Please see our [Contributing Guide](https://github.com/MotiaDev/motia/blob/main/CONTRIBUTING.md) for details.
 
 ## License
 
-This project is licensed under the MIT License.
+This project is licensed under the [MIT License.](https://github.com/MotiaDev/motia?tab=MIT-1-ov-file)
