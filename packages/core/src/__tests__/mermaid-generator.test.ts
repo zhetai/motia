@@ -47,8 +47,7 @@ describe('Mermaid Generator', () => {
     let generator: ReturnType<typeof createMermaidGenerator>
 
     beforeEach(() => {
-      lockedData = new LockedData(baseDir)
-      lockedData.printer = new NoPrinter(baseDir) // Suppress console output
+      lockedData = new LockedData(baseDir, 'memory', new NoPrinter())
       generator = createMermaidGenerator(baseDir)
 
       // Mock the on method of lockedData
@@ -89,8 +88,7 @@ describe('Mermaid Generator', () => {
     let flowRemovedHandler: (flowName: string) => void
 
     beforeEach(() => {
-      lockedData = new LockedData(baseDir)
-      lockedData.printer = new NoPrinter(baseDir) // Suppress console output
+      lockedData = new LockedData(baseDir, 'memory', new NoPrinter())
       generator = createMermaidGenerator(baseDir)
 
       // Mock the on method of lockedData to capture the handlers
@@ -185,8 +183,7 @@ describe('Mermaid Generator', () => {
       }
 
       // Create a mock LockedData instance
-      const lockedData = new LockedData(baseDir)
-      lockedData.printer = new NoPrinter(baseDir) // Suppress console output
+      const lockedData = new LockedData(baseDir, 'memory', new NoPrinter())
       lockedData.flows = { 'flow-1': flow }
 
       // Generate the diagram
@@ -238,8 +235,7 @@ describe('Mermaid Generator', () => {
       }
 
       // Create a mock LockedData instance
-      const lockedData = new LockedData(baseDir)
-      lockedData.printer = new NoPrinter(baseDir) // Suppress console output
+      const lockedData = new LockedData(baseDir, 'memory', new NoPrinter())
       lockedData.flows = { 'empty-flow': flow }
 
       // Generate the diagram

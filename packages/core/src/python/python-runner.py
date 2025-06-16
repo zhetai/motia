@@ -4,9 +4,8 @@ import importlib.util
 import os
 import asyncio
 import traceback
-from typing import Optional, Any, Callable, List, Dict
+from typing import Callable, List, Dict
 from rpc import RpcSender
-from type_definitions import FlowConfig, ApiResponse
 from context import Context
 from middleware import compose_middleware
 from rpc_stream_manager import RpcStreamManager
@@ -42,7 +41,6 @@ async def run_python_module(file_path: str, rpc: RpcSender, args: Dict) -> None:
             raise AttributeError(f"Function 'handler' not found in module {file_path}")
 
         config = module.config
-        is_api_handler = (config and config.get("type") == "api")
 
         trace_id = args.get("traceId")
         flows = args.get("flows") or []
@@ -75,9 +73,20 @@ async def run_python_module(file_path: str, rpc: RpcSender, args: Dict) -> None:
         rpc.close()
         
     except Exception as error:
-        print(f'Error running Python module: {error}', file=sys.stderr)
-        traceback.print_exc(file=sys.stderr)
-        sys.exit(1)
+        stack_list = traceback.format_exception(type(error), error, error.__traceback__)
+
+        # We're removing the first two and last item
+        # 0: Traceback (most recent call last):
+        # 1: File "python-runner.py", line 82, in run_python_module
+        # 2: File "python-runner.py", line 69, in run_python_module
+        # -1: Exception: message
+        stack_list = stack_list[3:-1]
+
+        rpc.send_no_wait("close", {
+            "message": str(error),
+            "stack": "\n".join(stack_list)
+        })
+        rpc.close()
 
 if __name__ == "__main__":
     if len(sys.argv) < 2:

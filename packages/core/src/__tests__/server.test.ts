@@ -6,6 +6,7 @@ import request from 'supertest'
 import { createApiStep } from './fixtures/step-fixtures'
 import { MemoryStateAdapter } from '../state/adapters/memory-state-adapter'
 import path from 'path'
+import { NoPrinter } from '../printer'
 
 const config = { isVerbose: true }
 
@@ -19,7 +20,7 @@ describe('Server', () => {
     let server: MotiaServer
 
     beforeEach(async () => {
-      const lockedData = new LockedData(baseDir, 'memory')
+      const lockedData = new LockedData(baseDir, 'memory', new NoPrinter())
       const eventManager = createEventManager()
       const state = new MemoryStateAdapter()
       server = await createServer(lockedData, eventManager, state, config)
@@ -39,7 +40,7 @@ describe('Server', () => {
     let server: MotiaServer
 
     beforeEach(async () => {
-      const lockedData = new LockedData(baseDir, 'memory')
+      const lockedData = new LockedData(baseDir, 'memory', new NoPrinter())
       const eventManager = createEventManager()
       const state = new MemoryStateAdapter()
       server = await createServer(lockedData, eventManager, state, config)
@@ -91,7 +92,7 @@ describe('Server', () => {
       const eventManager = createEventManager()
       const state = new MemoryStateAdapter()
       const baseDir = __dirname
-      const lockedData = new LockedData(baseDir, 'memory')
+      const lockedData = new LockedData(baseDir, 'memory', new NoPrinter())
       const mockApiStep: Step<ApiRouteConfig> = createApiStep(
         { emits: ['TEST_EVENT'], path: '/test', method: 'POST' },
         path.join(baseDir, 'steps', 'api-step.ts'),

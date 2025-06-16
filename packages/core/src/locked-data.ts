@@ -1,7 +1,7 @@
 import fs from 'fs'
 import path from 'path'
 import { isApiStep, isCronStep, isEventStep } from './guards'
-import { NoPrinter, Printer } from './printer'
+import { Printer } from './printer'
 import { validateStep } from './step-validator'
 import { FileStreamAdapter } from './streams/adapters/file-stream-adapter'
 import { MemoryStreamAdapter } from './streams/adapters/memory-stream-adapter'
@@ -21,7 +21,6 @@ export class LockedData {
   public flows: Record<string, Flow>
   public activeSteps: Step[]
   public devSteps: Step[]
-  public printer: Printer
 
   private stepsMap: Record<string, Step>
   private handlers: Record<FlowEvent, ((flowName: string) => void)[]>
@@ -35,12 +34,12 @@ export class LockedData {
   constructor(
     public readonly baseDir: string,
     private readonly streamAdapter: 'file' | 'memory' = 'file',
+    private readonly printer: Printer,
   ) {
     this.flows = {}
     this.activeSteps = []
     this.devSteps = []
     this.stepsMap = {}
-    this.printer = new Printer(baseDir)
 
     this.handlers = {
       'flow-created': [],
@@ -61,10 +60,6 @@ export class LockedData {
     }
 
     this.streams = {}
-  }
-
-  disablePrinter() {
-    this.printer = new NoPrinter(this.baseDir)
   }
 
   applyStreamWrapper<TData>(streamWrapper: StreamWrapper<TData>): void {

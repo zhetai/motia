@@ -1,6 +1,5 @@
 from typing import TypeVar, Callable, Coroutine, Union, Dict, List, Optional
 from types import SimpleNamespace
-from rpc import RpcSender
 
 # Generic type for JSON schema validation
 T = TypeVar('T')

@@ -6,6 +6,7 @@ import { Builder, StepsConfigFile } from './builder'
 import { NodeBuilder } from './builders/node'
 import { PythonBuilder } from './builders/python'
 import { CliContext } from '../config-utils'
+import { NoPrinter } from '@motiadev/core/dist/src/printer'
 
 export const build = async (context: CliContext): Promise<Builder> => {
   const projectDir = process.cwd()
@@ -19,9 +20,7 @@ export const build = async (context: CliContext): Promise<Builder> => {
   fs.rmSync(distDir, { recursive: true, force: true })
   fs.mkdirSync(distDir, { recursive: true })
 
-  const lockedData = new LockedData(projectDir)
-
-  lockedData.disablePrinter()
+  const lockedData = new LockedData(projectDir, 'memory', new NoPrinter())
 
   const invalidSteps = await collectFlows(projectDir, lockedData)
   const hasPythonSteps = lockedData.activeSteps.some((step) => step.filePath.endsWith('.py'))

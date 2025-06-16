@@ -115,8 +115,8 @@ export class Printer {
 }
 
 export class NoPrinter extends Printer {
-  constructor(baseDir: string) {
-    super(baseDir)
+  constructor() {
+    super('')
   }
 
   printInvalidEmit() {}

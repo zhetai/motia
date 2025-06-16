@@ -2,11 +2,13 @@ import { randomUUID } from 'crypto'
 import path from 'path'
 import { callStepFile } from '../call-step-file'
 import { createEventManager } from '../event-manager'
-import { BaseLogger } from '../logger'
-import { Printer } from '../printer'
+import { LockedData } from '../locked-data'
+import { Logger } from '../logger'
+import { Motia } from '../motia'
+import { NoPrinter } from '../printer'
 import { MemoryStateAdapter } from '../state/adapters/memory-state-adapter'
 import { createCronStep } from './fixtures/step-fixtures'
-import { LockedData } from '../locked-data'
+import { NoTracer } from '../observability/no-tracer'
 
 describe('callStepFile', () => {
   beforeAll(() => {
@@ -18,22 +20,22 @@ describe('callStepFile', () => {
     const eventManager = createEventManager()
     const state = new MemoryStateAdapter()
     const step = createCronStep({ emits: ['TEST_EVENT'], cron: '* * * * *' }, path.join(baseDir, 'cron-step.ts'))
-    const printer = new Printer(baseDir)
+    const printer = new NoPrinter()
     const traceId = randomUUID()
-    const logger = new BaseLogger()
+    const logger = new Logger()
+    const tracer = new NoTracer()
+    const motia: Motia = {
+      eventManager,
+      state,
+      printer,
+      lockedData: new LockedData(baseDir, 'memory', printer),
+      loggerFactory: { create: () => logger },
+      tracerFactory: { createTracer: () => tracer },
+    }
 
     jest.spyOn(eventManager, 'emit').mockImplementation(() => Promise.resolve())
 
-    await callStepFile({
-      lockedData: new LockedData(baseDir),
-      step,
-      eventManager,
-      printer,
-      state,
-      traceId,
-      logger,
-      contextInFirstArg: true,
-    })
+    await callStepFile({ step, traceId, logger, contextInFirstArg: true, tracer }, motia)
 
     expect(eventManager.emit).toHaveBeenCalledWith(
       {
@@ -41,7 +43,8 @@ describe('callStepFile', () => {
         data: { test: 'data' },
         flows: ['motia-server'],
         traceId,
-        logger: expect.any(BaseLogger),
+        logger: expect.anything(),
+        tracer: expect.anything(),
       },
       step.filePath,
     )

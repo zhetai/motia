@@ -1,4 +1,5 @@
 import { LockedData, Step, getStepConfig, getStreamConfig } from '@motiadev/core'
+import { NoPrinter, Printer } from '@motiadev/core/dist/src/printer'
 import { randomUUID } from 'crypto'
 import { globSync } from 'glob'
 import path from 'path'
@@ -48,13 +49,15 @@ export const collectFlows = async (projectDir: string, lockedData: LockedData): 
 export const generateLockedData = async (
   projectDir: string,
   streamAdapter: 'file' | 'memory' = 'file',
+  printerType: 'disabled' | 'default' = 'default',
 ): Promise<LockedData> => {
   try {
+    const printer = printerType === 'disabled' ? new NoPrinter() : new Printer(projectDir)
     /*
      * NOTE: right now for performance and simplicity let's enforce a folder,
      * but we might want to remove this and scan the entire current directory
      */
-    const lockedData = new LockedData(projectDir, streamAdapter)
+    const lockedData = new LockedData(projectDir, streamAdapter, printer)
 
     await collectFlows(projectDir, lockedData)
     lockedData.saveTypes()

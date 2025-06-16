@@ -24,6 +24,8 @@ function parseArgs(arg: string) {
 }
 
 async function runTypescriptModule(filePath: string, event: Record<string, unknown>) {
+  const sender = new RpcSender(process)
+
   try {
     // eslint-disable-next-line @typescript-eslint/no-require-imports
     const module = require(path.resolve(filePath))
@@ -34,7 +36,7 @@ async function runTypescriptModule(filePath: string, event: Record<string, unkno
     }
 
     const { traceId, flows, contextInFirstArg } = event
-    const sender = new RpcSender(process)
+
     const logger = new Logger(traceId as string, flows as string[], sender)
     const state = new RpcStateManager(sender)
 
@@ -71,9 +73,22 @@ async function runTypescriptModule(filePath: string, event: Record<string, unkno
     await sender.close()
 
     process.exit(0)
-  } catch (error) {
-    console.error('Error running TypeScript module:', error)
-    process.exit(1)
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  } catch (err: any) {
+    const stack: string[] = err.stack?.split('\n') ?? []
+
+    if (stack) {
+      const index = stack.findIndex((line) => line.includes('src/node/node-runner'))
+      stack.splice(index, stack.length - index)
+      stack.splice(0, 1) // remove first line which has the error message
+    }
+
+    const error = {
+      message: err.message || '',
+      code: err.code || null,
+      stack: stack.join('\n'),
+    }
+    sender.sendNoWait('close', error)
   }
 }
 
