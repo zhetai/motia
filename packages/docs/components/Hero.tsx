@@ -35,7 +35,7 @@ export default function Hero() {
         </SectionAppearAnimation>
       </div>
       {/* Rive animation and smoke effect */}
-      <div className="flex h-screen w-full flex-col items-end max-lg:items-start max-lg:pl-[16px]">
+      <div className="flex h-screen max-h-[1000px] w-full flex-col items-end mask-r-from-white mask-r-from-90% mask-r-to-transparent max-lg:items-start max-lg:pl-[16px]">
         <div className="relative -mb-[26px] flex h-[200px] w-full shrink-0 justify-start max-lg:h-[60px]">
           <SectionAppearAnimation
             initialY={20}
@@ -73,7 +73,7 @@ export default function Hero() {
             </ScaleAnimation>
           </div>
         </div>
-        <div className="fade-bottom relative z-1 flex min-w-[50vw] overflow-hidden max-2xl:min-w-[60vw] max-lg:w-full max-md:h-[100vh] xl:h-[65vh]">
+        <div className="fade-bottom relative z-1 flex w-[50vw] max-w-[1000px] overflow-hidden max-lg:w-full max-md:h-[100vh] xl:h-[65vh]">
           <Image
             layout="responsive"
             priority={true}
