@@ -146,7 +146,6 @@ export class LockedData {
     const addedFlows = newStep.config.flows?.filter((flowName) => !oldStep.config.flows?.includes(flowName)) ?? []
     const removedFlows = oldStep.config.flows?.filter((flowName) => !newStep.config.flows?.includes(flowName)) ?? []
     const untouchedFlows = oldStep.config.flows?.filter((flowName) => newStep.config.flows?.includes(flowName)) ?? []
-    savedStep.config = newStep.config
 
     untouchedFlows.forEach((flowName) => this.onFlowUpdated(flowName))
 
@@ -170,6 +169,8 @@ export class LockedData {
         this.onFlowUpdated(flowName)
       }
     }
+
+    savedStep.config = newStep.config
 
     if (!options.disableTypeCreation) {
       this.saveTypes()

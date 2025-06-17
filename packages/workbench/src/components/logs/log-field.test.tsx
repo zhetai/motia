@@ -1,5 +1,3 @@
-import React from 'react'
-
 import { render, screen } from '@testing-library/react'
 import { LogField } from './log-field'
 
@@ -159,6 +157,16 @@ describe('LogField', () => {
       expect(screen.getByText('Zero Label')).toBeInTheDocument()
       expect(screen.getByText('0')).toBeInTheDocument()
       expect(screen.getByLabelText('0')).toBeInTheDocument()
+    })
+  })
+
+  describe('className prop', () => {
+    it('applies custom className', () => {
+      render(<LogField label="Custom Class" value="test" className="custom-class" />)
+
+      // The className is applied to the outermost div
+      const container = screen.getByText('Custom Class').closest('.custom-class')
+      expect(container).toBeInTheDocument()
     })
   })
 

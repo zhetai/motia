@@ -2,9 +2,9 @@ import React from 'react'
 import { Stream } from '@motiadev/stream-client-browser'
 
 type MotiaStreamContextType = {
-  stream: Stream | null
+  stream: Stream
 }
 
 export const MotiaStreamContext = React.createContext<MotiaStreamContextType>({
-  stream: null,
+  stream: null as never,
 })
