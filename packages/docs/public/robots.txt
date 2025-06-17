@@ -4,6 +4,3 @@ Allow: /
 
 # Host
 Host: https://motia.dev
-
-# Sitemaps
-Sitemap: https://motia.dev/sitemap.xml

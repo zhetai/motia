@@ -4,7 +4,7 @@
   "private": true,
   "scripts": {
     "prepare-docs": "node scripts/prepare-docs.js",
-    "dev": "next dev --turbopack",
+    "dev": "next dev",
     "build": "next build  && npm run prepare-docs",
     "start": "next start",
     "lint": "next lint",

@@ -73,7 +73,7 @@ Important notes:
 -   Mix and match workflow steps written in different languages within the same flow.
 
 ## Documentation
--   [cli](/docs/concepts\cli.md): Documentation for cli.
+-   [cli](/llm-docs/concepts/cli.md): Documentation for cli.
 ---
 title: Command Line Interface (CLI)
 description: Learn how to use the Motia CLI to manage your projects and workflows
@@ -228,7 +228,7 @@ This will set the `LOG_LEVEL` environment variable to `'debug'`, providing more 
 - Check out the [Examples](/docs/examples) for common patterns and use cases.
 - Join our [Community](/community) for help and discussions. 
 
--   [deployment](/docs/concepts\deployment.md): Documentation for deployment.
+-   [deployment](/llm-docs/concepts/deployment.md): Documentation for deployment.
 ---
 title: Deployment
 description: Learn how to deploy your Motia workflows to production
@@ -340,7 +340,7 @@ If you encounter issues during deployment, try these steps:
 - Explore [CI/CD Integration](/docs/concepts/ci-cd) for automating your deployment process
 - Check out [Deployment Strategies](/docs/concepts/deployment-strategies) for advanced deployment patterns 
 
--   [flows-and-visualization](/docs/concepts\flows-and-visualization.md): Documentation for flows-and-visualization.
+-   [Flows](/llm-docs/concepts/flows-and-visualization.md): Documentation for Flows.
 ---
 title: Flows
 ---
@@ -422,7 +422,7 @@ Checkout the [Motia Workbench](/docs/workbench/overview) docs for more informati
 <Callout>New to Motia? Follow the **[quick start](/docs/getting-started/quick-start)** guide to get set up.</Callout>
 
 
--   [logging-and-debugging](/docs/concepts\logging-and-debugging.md): Documentation for logging-and-debugging.
+-   [Logging & Debugging](/llm-docs/concepts/logging-and-debugging.md): Documentation for Logging & Debugging.
 ---
 title: Logging & Debugging
 ---
@@ -686,7 +686,7 @@ logger.debug('Operation details', {
 </Callout>
 
 
--   [state-management](/docs/concepts\state-management.md): Documentation for state-management.
+-   [state-management](/llm-docs/concepts/state-management.md): Documentation for state-management.
 ---
 title: State Management
 description: Learn how to manage state within your Motia.dev workflows for persistent data and cross-step communication.
@@ -1121,7 +1121,7 @@ state:
 | Concurrent Access | - Memory/File: Limited concurrent flow support\n- Redis: Use atomic operations and implement retry logic                                                                                         |
 
 
--   [api](/docs/concepts\steps\api.md): Documentation for api.
+-   [API Step](/llm-docs/concepts/steps/api.md): Documentation for API Step.
 ---
 title: API Step
 ---
@@ -1622,7 +1622,7 @@ const rateLimiterMiddleware: ApiMiddleware = (() => {
 </Tabs>
 
 
--   [cron](/docs/concepts\steps\cron.md): Documentation for cron.
+-   [Cron Step](/llm-docs/concepts/steps/cron.md): Documentation for Cron Step.
 ---
 title: Cron Step
 ---
@@ -1710,7 +1710,7 @@ The following examples showcase how to configure an **CRON Step**
 </Tabs>
 
 
--   [defining-steps](/docs/concepts\steps\defining-steps.md): Documentation for defining-steps.
+-   [Defining Steps](/llm-docs/concepts/steps/defining-steps.md): Documentation for Defining Steps.
 ---
 title: Defining Steps
 ---
@@ -1845,7 +1845,7 @@ Follow the **[quick start](/docs/getting-started/quick-start)** guide if you hav
 </Callout>
 
 
--   [event](/docs/concepts\steps\event.md): Documentation for event.
+-   [Event Step](/llm-docs/concepts/steps/event.md): Documentation for Event Step.
 ---
 title: Event Step
 ---
@@ -1954,7 +1954,7 @@ The following examples showcase how to configure an **Event Step**
 ## Example
 
 
--   [streams](/docs/concepts\streams.md): Documentation for streams.
+-   [streams](/llm-docs/concepts/streams.md): Documentation for streams.
 ---
 title: Streams 
 description: Motia Streams are a way to quickly push updates from your asynchronous workflows to the client without having to implement any sort of polling processes.
@@ -2153,7 +2153,7 @@ const { data } = useStreamItem({
 })
 ```
 
--   [testing](/docs/concepts\testing.md): Documentation for testing.
+-   [testing](/llm-docs/concepts/testing.md): Documentation for testing.
 ---
 title: Testing
 description: Learn how to write and run tests for your Motia components
@@ -2252,7 +2252,7 @@ pnpm test --watch
 
 By following these best practices and regularly running tests, you can catch bugs early, maintain code quality, and ensure the reliability of your Motia application. 
 
--   [how-to-contribute](/docs/contribution\how-to-contribute.md): Documentation for how-to-contribute.
+-   [how-to-contribute](/llm-docs/contribution/how-to-contribute.md): Documentation for how-to-contribute.
 ---
 title: How to Contribute
 description: Guide for developers who want to contribute to Motia
@@ -2293,7 +2293,7 @@ Help spread the word about Motia by sharing it with your friends, colleagues, an
 
 We appreciate all forms of contributions and look forward to collaborating with you to make Motia even better! 
 
--   [index](/docs/examples\index.md): Documentation for index.
+-   [Examples](/llm-docs/examples/index.md): Documentation for Examples.
 ---
 title: Examples
 ---
@@ -2317,7 +2317,7 @@ We welcome contributions to the examples. Please submit a PR to the [examples re
 
 
 ## Examples
-[index](/docs/examples\index.md): Code example
+[Examples](/llm-docs/examples/index.md): Code example
 ---
 title: Examples
 ---
@@ -2339,7 +2339,7 @@ We have curated a few examples to help you get started with Motia.
 We welcome contributions to the examples. Please submit a PR to the [examples repository](https://github.com/motiadev/motia-examples).
 
 
--   [sentiment-analysis](/docs/examples\sentiment-analysis.md): Documentation for sentiment-analysis.
+-   [Dynamic Sentiment Analysis](/llm-docs/examples/sentiment-analysis.md): Documentation for Dynamic Sentiment Analysis.
 ---
 title: Dynamic Sentiment Analysis
 ---
@@ -2597,7 +2597,7 @@ Try it out, see the branching logic in action, and enjoy skipping all the boring
 
 
 ## Examples
-[sentiment-analysis](/docs/examples\sentiment-analysis.md): Code example
+[Dynamic Sentiment Analysis](/llm-docs/examples/sentiment-analysis.md): Code example
 ---
 title: Dynamic Sentiment Analysis
 ---
@@ -2853,7 +2853,7 @@ Here are some ways to build upon this example:
 Try it out, see the branching logic in action, and enjoy skipping all the boring boilerplate!
 
 
--   [core-concepts](/docs/getting-started\core-concepts.md): Documentation for core-concepts.
+-   [core-concepts](/llm-docs/getting-started/core-concepts.md): Documentation for core-concepts.
 ---
 title: Core Concepts
 description: Understand the fundamental concepts behind Motia.
@@ -2934,10 +2934,10 @@ happen outside of Motia.
 By understanding these core concepts – you'll have a solid foundation for building powerful and maintainable automation workflows with Motia. Continue exploring the documentation to delve deeper into each concept and start building your own amazing automations!
 
 
--   [index](/docs/getting-started\index.md): Documentation for index.
+-   [index](/llm-docs/getting-started/index.md): Documentation for index.
 ---
 title: Getting Started
-description: Get started with Motia - A Modern Unified Backend Framework for APIs, Events and AI Agents
+description: Get started with Motia - Unified Backend Framework for APIs, Events and AI Agents
 ---
 
 # Your Path to Intelligent Workflow Automation
@@ -2964,7 +2964,7 @@ Before you begin, ensure you have the following installed:
 1.  **Quick Start Guide:** [Build Your First Flow](/docs/getting-started/quick-start) -  Follow our step-by-step guide to create a minimal Motia workflow and see it in action.
 2.  **Core Concepts:** [Understand the Fundamentals](/docs/getting-started/core-concepts) -  Dive deeper into the essential concepts of Motia: Steps, Flows, Events, and Topics.
 
--   [quick-start](/docs/getting-started\quick-start.md): Documentation for quick-start.
+-   [Quick Start](/llm-docs/getting-started/quick-start.md): Documentation for Quick Start.
 ---
 title: Quick Start
 ---
@@ -3225,7 +3225,7 @@ Now, let's start Motia and see your workflow in action!
 </Steps>
 
 
--   [index](/docs/index.md): Documentation for index.
+-   [index](/llm-docs/index.md): Documentation for index.
 ---
 title: Welcome to Motia
 description: Get started with Motia, a powerful framework for building event-driven workflows
@@ -3301,7 +3301,7 @@ Become part of a growing community of developers and automation enthusiasts!
 We're excited to see what you'll build with Motia!
 
 
--   [ai-deep-research-agent](/docs/real-world-use-cases\ai-deep-research-agent.md): Documentation for ai-deep-research-agent.
+-   [ai-deep-research-agent](/llm-docs/real-world-use-cases/ai-deep-research-agent.md): Documentation for ai-deep-research-agent.
 ---
 title: AI Deep Research Agent
 description: A powerful research assistant that leverages the Motia Framework to perform comprehensive web research on any topic and any question.
@@ -3512,7 +3512,7 @@ Response:
 
 
 ## Use Cases
-[ai-deep-research-agent](/docs/real-world-use-cases\ai-deep-research-agent.md): Real world use case
+[ai-deep-research-agent](/llm-docs/real-world-use-cases/ai-deep-research-agent.md): Real world use case
 ---
 title: AI Deep Research Agent
 description: A powerful research assistant that leverages the Motia Framework to perform comprehensive web research on any topic and any question.
@@ -3721,7 +3721,7 @@ Response:
 - [OpenAI](https://platform.openai.com/) for AI analysis 
 - [Firecrawl](https://www.firecrawl.dev/) for Web search and content extraction API
 
--   [finance-agent](/docs/real-world-use-cases\finance-agent.md): Documentation for finance-agent.
+-   [finance-agent](/llm-docs/real-world-use-cases/finance-agent.md): Documentation for finance-agent.
 ---
 title: Finance Agent
 description: A powerful event-driven financial analysis workflow that combines web search, financial data, and AI analysis to provide comprehensive investment insights.
@@ -3880,7 +3880,7 @@ Response:
 
 
 ## Use Cases
-[finance-agent](/docs/real-world-use-cases\finance-agent.md): Real world use case
+[finance-agent](/llm-docs/real-world-use-cases/finance-agent.md): Real world use case
 ---
 title: Finance Agent
 description: A powerful event-driven financial analysis workflow that combines web search, financial data, and AI analysis to provide comprehensive investment insights.
@@ -4037,7 +4037,7 @@ Response:
 - [SerperDev](https://serper.dev/) for web search capabilities
 - [OpenAI](https://platform.openai.com/) for AI analysis 
 
--   [github-integration-workflow](/docs/real-world-use-cases\github-integration-workflow.md): Documentation for github-integration-workflow.
+-   [github-integration-workflow](/llm-docs/real-world-use-cases/github-integration-workflow.md): Documentation for github-integration-workflow.
 ---
 title: GitHub Integration Workflow
 description: Build an automated GitHub issue and PR management system with AI-powered classification and routing
@@ -4177,7 +4177,7 @@ npm run dev
 
 
 ## Use Cases
-[github-integration-workflow](/docs/real-world-use-cases\github-integration-workflow.md): Real world use case
+[github-integration-workflow](/llm-docs/real-world-use-cases/github-integration-workflow.md): Real world use case
 ---
 title: GitHub Integration Workflow
 description: Build an automated GitHub issue and PR management system with AI-powered classification and routing
@@ -4315,7 +4315,7 @@ npm run dev
   documentation](https://github.com/MotiaDev/motia-examples/tree/main/examples/github-integration-workflow).
 </Callout> 
 
--   [gmail-automation](/docs/real-world-use-cases\gmail-automation.md): Documentation for gmail-automation.
+-   [gmail-automation](/llm-docs/real-world-use-cases/gmail-automation.md): Documentation for gmail-automation.
 ---
 title: Gmail Automation
 description: Build an automated email system with smart labeling, auto-responses, and AI-powered filtering
@@ -4654,7 +4654,7 @@ AUTO_RESPONDER_EMAIL=your-email@example.com
 
 
 ## Use Cases
-[gmail-automation](/docs/real-world-use-cases\gmail-automation.md): Real world use case
+[gmail-automation](/llm-docs/real-world-use-cases/gmail-automation.md): Real world use case
 ---
 title: Gmail Automation
 description: Build an automated email system with smart labeling, auto-responses, and AI-powered filtering
@@ -4991,7 +4991,7 @@ AUTO_RESPONDER_EMAIL=your-email@example.com
 ```
 
 
--   [index](/docs/real-world-use-cases\index.md): Documentation for index.
+-   [index](/llm-docs/real-world-use-cases/index.md): Documentation for index.
 ---
 title: Real-World Use Cases
 description: See how Motia is used to solve real problems
@@ -5012,7 +5012,7 @@ Have a great use case to share? [Contribute it here](https://github.com/MotiaDev
 
 
 ## Use Cases
-[index](/docs/real-world-use-cases\index.md): Real world use case
+[index](/llm-docs/real-world-use-cases/index.md): Real world use case
 ---
 title: Real-World Use Cases
 description: See how Motia is used to solve real problems
@@ -5031,7 +5031,7 @@ Explore these practical examples of Motia in action:
 
 Have a great use case to share? [Contribute it here](https://github.com/MotiaDev/motia-examples/tree/main/examples). 
 
--   [rag-docling-weaviate-agent](/docs/real-world-use-cases\rag-docling-weaviate-agent.md): Documentation for rag-docling-weaviate-agent.
+-   [rag-docling-weaviate-agent](/llm-docs/real-world-use-cases/rag-docling-weaviate-agent.md): Documentation for rag-docling-weaviate-agent.
 ---
 title: RAG Agent using Docling and Weaviate
 description: An LLM chat-like question-answering system with RAG (Retrieval-Augmented Generation) to provide accurate answers from PDF documents. The system leverages Docling to parse and intelligently chunk PDF documents, Weaviate as a vector database to store vectorized chunks, and OpenAI for embeddings and text generation.
@@ -5222,7 +5222,7 @@ Error Response:
 
 
 ## Use Cases
-[rag-docling-weaviate-agent](/docs/real-world-use-cases\rag-docling-weaviate-agent.md): Real world use case
+[rag-docling-weaviate-agent](/llm-docs/real-world-use-cases/rag-docling-weaviate-agent.md): Real world use case
 ---
 title: RAG Agent using Docling and Weaviate
 description: An LLM chat-like question-answering system with RAG (Retrieval-Augmented Generation) to provide accurate answers from PDF documents. The system leverages Docling to parse and intelligently chunk PDF documents, Weaviate as a vector database to store vectorized chunks, and OpenAI for embeddings and text generation.
@@ -5411,7 +5411,7 @@ Error Response:
 - [OpenAI](https://platform.openai.com/) for AI analysis 
 
 
--   [trello-automation](/docs/real-world-use-cases\trello-automation.md): Documentation for trello-automation.
+-   [trello-automation](/llm-docs/real-world-use-cases/trello-automation.md): Documentation for trello-automation.
 ---
 title: Trello Card Automation
 description: Build an automated card progression system for Trello boards with AI-powered summaries
@@ -5557,7 +5557,7 @@ pnpm dev
 
 
 ## Use Cases
-[trello-automation](/docs/real-world-use-cases\trello-automation.md): Real world use case
+[trello-automation](/llm-docs/real-world-use-cases/trello-automation.md): Real world use case
 ---
 title: Trello Card Automation
 description: Build an automated card progression system for Trello boards with AI-powered summaries
@@ -5701,7 +5701,7 @@ pnpm dev
 </Callout>{' '}
 
 
--   [tldr-motia-in-3-minutes](/docs/tldr-motia-in-3-minutes.md): Documentation for tldr-motia-in-3-minutes.
+-   [tldr-motia-in-3-minutes](/llm-docs/tldr-motia-in-3-minutes.md): Documentation for tldr-motia-in-3-minutes.
 ---
 title: TLDR - Motia in 3 Minutes
 description: A 3-minute overview of Motia’s core concepts with a business-ready GenAI use case
@@ -5709,7 +5709,7 @@ description: A 3-minute overview of Motia’s core concepts with a business-read
 
 # TLDR - Motia in 3 Minutes
 
-Got 3 minutes? Here’s the scoop on Motia—a Modern Unified Backend Framework for APIs, Events and AI Agents that powers event-driven workflows, perfect for Generative AI (GenAI). We’ll spotlight a real-world win: analyzing customer feedback.
+Got 3 minutes? Here’s the scoop on Motia - Unified Backend Framework for APIs, Events and AI Agents that powers event-driven workflows, perfect for Generative AI (GenAI). We’ll spotlight a real-world win: analyzing customer feedback.
 
 ## What’s Motia?
 Motia builds scalable, observable workflows without infrastructure headaches. Code in JS, TS, or Python, chain it up, and track it live in a visual Workbench.
@@ -5747,7 +5747,7 @@ Motia = **Steps** (logic) → **Events** (messages) → **Topics** (routing) →
 Want to build it? Hit the [Quick Start](/docs/getting-started/quick-start) for a 5-minute go. Or dive into [Core Concepts](/docs/getting-started/core-concepts) for the full rundown.
 </Callout>
 
--   [welcome](/docs/welcome.md): Documentation for welcome.
+-   [welcome](/llm-docs/welcome.md): Documentation for welcome.
 ---
 title: Welcome to Motia
 description: Get started with Motia, a powerful framework for building event-driven workflows
@@ -5840,7 +5840,7 @@ Become part of a growing community of developers and automation enthusiasts!
 
 We're excited to see what you'll build with Motia!
 
--   [noop-steps](/docs/workbench\noop-steps.md): Documentation for noop-steps.
+-   [NOOP Steps](/llm-docs/workbench/noop-steps.md): Documentation for NOOP Steps.
 ---
 title: NOOP Steps
 ---
@@ -6255,7 +6255,7 @@ You can enhance your NOOP steps with custom React components for better visualiz
 | Design System | • Follow your project's design tokens<br/>• Maintain consistent spacing and padding<br/>• Use standard border radiuses<br/>• Ensure high contrast for readability<br/>• Use consistent font sizes (14px-16px) |
 
 
--   [overview](/docs/workbench\overview.md): Documentation for overview.
+-   [Overview](/llm-docs/workbench/overview.md): Documentation for Overview.
 ---
 title: Overview
 ---
@@ -6355,7 +6355,7 @@ UI steps allow you to customize how your steps appear in the Workbench visualiza
 <Callout>New to Motia? Follow the **[quick start](/docs/getting-started/quick-start)** guide to get set up.</Callout>
 
 
--   [ui-steps](/docs/workbench\ui-steps.md): Documentation for ui-steps.
+-   [UI Steps](/llm-docs/workbench/ui-steps.md): Documentation for UI Steps.
 ---
 title: UI Steps
 ---

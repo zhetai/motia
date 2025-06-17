@@ -1,6 +1,6 @@
 ---
 title: Getting Started
-description: Get started with Motia - A Modern Unified Backend Framework for APIs, Events and AI Agents
+description: Get started with Motia - Unified Backend Framework for APIs, Events and AI Agents
 ---
 
 # Your Path to Intelligent Workflow Automation

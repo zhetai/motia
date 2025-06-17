@@ -108,7 +108,7 @@ Now follow these instructions:
 
     for (const file of mdFiles) {
       const relativePath = path.relative(contentDir, file)
-      const url = `/docs/${relativePath.replace(/\.mdx?$/, '')}`
+      const url = `/llm-docs/${relativePath.replace(/\.mdx?$/, '')}`
 
       // Extract title from frontmatter (assuming it's at the beginning)
       const content = await getContentFromMdx(file)
@@ -138,7 +138,7 @@ Now follow these instructions:
     console.log('✅ Successfully prepared llms.txt for LLM ingestion')
 
     // 2. Write markdown files of each page
-    const docsDir = path.join(publicDir, 'docs')
+    const docsDir = path.join(publicDir, 'llm-docs')
     try {
       await fs.access(docsDir)
     } catch {
