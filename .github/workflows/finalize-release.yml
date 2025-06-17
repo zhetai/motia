@@ -74,6 +74,7 @@ jobs:
           npm dist-tag add @motiadev/stream-client-react@${{ needs.prepare.outputs.version }} latest
           npm dist-tag add motia@${{ needs.prepare.outputs.version }} latest
           npm dist-tag add @motiadev/test@${{ needs.prepare.outputs.version }} latest
+          npm dist-tag add @motiadev/ui@${{ needs.prepare.outputs.version }} latest
 
       - name: Remove pre-release tag
         run: |
@@ -83,6 +84,7 @@ jobs:
           npm dist-tag rm @motiadev/stream-client-react pre-release || true
           npm dist-tag rm motia pre-release || true
           npm dist-tag rm @motiadev/test pre-release || true
+          npm dist-tag rm @motiadev/ui pre-release || true
 
   create-github-release:
     needs: [prepare, promote-to-latest]
@@ -129,6 +131,7 @@ jobs:
           - @motiadev/stream-client-react@${{ needs.prepare.outputs.version }}
           - motia@${{ needs.prepare.outputs.version }}
           - @motiadev/test@${{ needs.prepare.outputs.version }}
+          - @motiadev/ui@${{ needs.prepare.outputs.version }}
           
           ## Installation
           \`\`\`bash

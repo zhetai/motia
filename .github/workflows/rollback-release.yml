@@ -93,6 +93,7 @@ jobs:
           npm unpublish @motiadev/stream-client-browser@${{ needs.prepare.outputs.version }} --force || echo "Package not found or already removed"
           npm unpublish @motiadev/test@${{ needs.prepare.outputs.version }} --force || echo "Package not found or already removed"
           npm unpublish @motiadev/core@${{ needs.prepare.outputs.version }} --force || echo "Package not found or already removed"
+          npm unpublish @motiadev/ui@${{ needs.prepare.outputs.version }} --force || echo "Package not found or already removed"
 
       - name: Remove pre-release tags
         run: |
@@ -102,6 +103,7 @@ jobs:
           npm dist-tag rm @motiadev/stream-client-browser pre-release || true
           npm dist-tag rm @motiadev/test pre-release || true
           npm dist-tag rm @motiadev/core pre-release || true
+          npm dist-tag rm @motiadev/ui pre-release || true
 
       - name: Delete Git tag
         run: |

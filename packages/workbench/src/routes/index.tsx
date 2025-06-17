@@ -1,4 +1,4 @@
-import { Button } from '@/components/ui/button'
+import { Button } from '@motiadev/ui'
 
 export const Index = () => {
   return (
