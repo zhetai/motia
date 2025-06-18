@@ -55,9 +55,9 @@ jobs:
       - name: Publish packages with pre-release tag
         run: |
           pnpm publish -r --filter @motiadev/core --no-git-checks --tag pre-release
+          pnpm publish -r --filter @motiadev/ui --no-git-checks --tag pre-release
           pnpm publish -r --filter @motiadev/workbench --no-git-checks --tag pre-release
           pnpm publish -r --filter @motiadev/stream-client-browser --no-git-checks --tag pre-release
           pnpm publish -r --filter @motiadev/stream-client-react --no-git-checks --tag pre-release
           pnpm publish -r --filter motia --no-git-checks --tag pre-release
-          pnpm publish -r --filter @motiadev/test --no-git-checks --tag pre-release 
-          pnpm publish -r --filter @motiadev/ui --no-git-checks --tag pre-release
+          pnpm publish -r --filter @motiadev/test --no-git-checks --tag pre-release

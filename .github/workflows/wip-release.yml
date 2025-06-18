@@ -41,7 +41,7 @@ jobs:
         run: |
           CURRENT_VERSION=$(node -p "require('./packages/snap/package.json').version")
           echo "Current version: ${CURRENT_VERSION}"
-          
+
           NEW_VERSION=$(node -e "
             const version = require('./packages/snap/package.json').version;
             const parts = version.split('-');
@@ -61,7 +61,7 @@ jobs:
               console.log(\`\${baseVersion}-build.\${timestamp}\`);
             }
           ")
-          
+
           echo "version=${NEW_VERSION}" >> $GITHUB_OUTPUT
           echo "Generated version: ${NEW_VERSION}"
 
@@ -79,9 +79,9 @@ jobs:
       - name: Publish packages with custom tag
         run: |
           pnpm publish -r --filter @motiadev/core --no-git-checks --tag ${{ github.event.inputs.tag }}
+          pnpm publish -r --filter @motiadev/ui --no-git-checks --tag ${{ github.event.inputs.tag }}
           pnpm publish -r --filter @motiadev/workbench --no-git-checks --tag ${{ github.event.inputs.tag }}
           pnpm publish -r --filter @motiadev/stream-client-browser --no-git-checks --tag ${{ github.event.inputs.tag }}
           pnpm publish -r --filter @motiadev/stream-client-react --no-git-checks --tag ${{ github.event.inputs.tag }}
           pnpm publish -r --filter motia --no-git-checks --tag ${{ github.event.inputs.tag }}
           pnpm publish -r --filter @motiadev/test --no-git-checks --tag ${{ github.event.inputs.tag }}
-          pnpm publish -r --filter @motiadev/ui --no-git-checks --tag ${{ github.event.inputs.tag }}
