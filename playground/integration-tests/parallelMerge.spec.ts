@@ -16,11 +16,15 @@ describe('parallelMerge', () => {
     const response = await server.post('/api/parallel-merge', {
       body: { message: 'Start parallel merge test' },
     })
-    expect(response.status).toBe(200)
-    expect(response.body).toEqual({ message: 'Started parallel merge' })
 
     // This is important to ensure all events are handled in this test
     await server.waitEvents()
+
+    expect(response.status).toBe(200)
+    expect(response.body).toEqual({
+      traceId: expect.any(String),
+      message: 'Started parallel merge',
+    })
 
     // Checking all captured events
     expect(joinComplete.getCapturedEvents()).toHaveLength(1)

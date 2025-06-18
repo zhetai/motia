@@ -20,7 +20,7 @@ export const TracesGroups: React.FC<Props> = memo(({ groups, selectedGroupId, on
   return (
     <div className="overflow-auto p-4 space-y-4 ">
       <div className="flex items-center justify-between">
-        <h2 className="text-lg font-semibold">Trace Groups</h2>
+        <h2 className="text-lg font-semibold">Traces</h2>
         <div className="text-xs text-muted-foreground">{groups.length} total</div>
       </div>
 
@@ -28,6 +28,7 @@ export const TracesGroups: React.FC<Props> = memo(({ groups, selectedGroupId, on
         <div className="space-y-2">
           {[...groups].reverse().map((group) => (
             <Card
+              data-testid={`trace-${group.id}`}
               key={group.id}
               className={`cursor-pointer transition-colors hover:bg-muted/50 ${
                 selectedGroupId === group.id ? 'ring-2 ring-primary' : ''
@@ -42,6 +43,12 @@ export const TracesGroups: React.FC<Props> = memo(({ groups, selectedGroupId, on
 
                 <div className="text-xs text-muted-foreground space-y-1">
                   <div className="flex justify-between">
+                    <div
+                      data-testid="trace-id"
+                      className="text-xs text-muted-foreground font-semibold font-mono tracking-[1px]"
+                    >
+                      {group.id}
+                    </div>
                     <span>{group.metadata.totalSteps} steps</span>
                   </div>
                   <div className="flex justify-between">

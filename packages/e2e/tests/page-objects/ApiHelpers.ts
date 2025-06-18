@@ -11,7 +11,7 @@ export class ApiHelpers {
       },
     }
 
-    const fullUrl = `${process.env.MOTIA_API_URL}${endpoint}`
+    const fullUrl = `${process.env.MOTIA_API_URL ?? 'http://localhost:3000'}${endpoint}`
 
     if (body && method !== 'GET') {
       options.body = JSON.stringify(body)
@@ -83,15 +83,15 @@ export class ApiHelpers {
   async verifyJsonResponse(response: Response, expectedProperties: string[]) {
     const json = await this.getResponseJson(response)
     expect(json).toBeDefined()
-    
+
     for (const property of expectedProperties) {
       expect(json).toHaveProperty(property)
     }
   }
 
-    async testHealthEndpoint(): Promise<Response> {
+  async testHealthEndpoint(): Promise<Response> {
     const healthEndpoints = ['/health', '/status', '/api/health']
-    
+
     for (const endpoint of healthEndpoints) {
       try {
         const response = await this.get(endpoint)
@@ -102,7 +102,7 @@ export class ApiHelpers {
         continue
       }
     }
-    
+
     throw new Error('No working health endpoint found')
   }
-} 
+}

@@ -16,17 +16,15 @@ export const TracesPage = () => {
   return (
     <div className="flex flex-col h-screen">
       <div className="border-b border-border p-4">
-        <div className="flex items-center justify-between mb-4">
-          <ObservabilityStats groups={data} />
-        </div>
+        <ObservabilityStats groups={data} />
       </div>
 
       <div className="flex flex-1 overflow-hidden">
-        <div className="w-1/3 border-r border-border overflow-auto">
+        <div className="w-1/3 border-r border-border overflow-auto" data-testid="traces-container">
           <TracesGroups groups={data} selectedGroupId={selectedGroupId} onGroupSelect={handleGroupSelect} />
         </div>
 
-        <div className="flex-1 overflow-auto">
+        <div className="flex-1 overflow-auto" data-testid="trace-details">
           {selectedGroupId && <TraceTimeline groupId={selectedGroupId} />}
           {!selectedGroupId && (
             <div className="flex items-center justify-center h-full text-muted-foreground">

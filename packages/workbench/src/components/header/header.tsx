@@ -27,10 +27,17 @@ export const Header: React.FC = () => {
       <NavigationMenu>
         <NavigationMenuList>
           <NavigationMenuItem>
-            <NavigationMenuLink asChild active={true}>
+            <NavigationMenuLink asChild>
               <Link data-testid="header-logs-link" to="/logs" className={'flex flex-row items-center pr-2 relative'}>
                 Logs
                 <BadgeCount className="absolute top-1 right-0" dotOnly={true} />
+              </Link>
+            </NavigationMenuLink>
+          </NavigationMenuItem>
+          <NavigationMenuItem>
+            <NavigationMenuLink asChild>
+              <Link data-testid="header-traces-link" to="/traces">
+                Traces
               </Link>
             </NavigationMenuLink>
           </NavigationMenuItem>

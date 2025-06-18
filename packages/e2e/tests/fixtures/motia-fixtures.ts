@@ -1,14 +1,16 @@
 import { test as base } from '@playwright/test'
 import { MotiaApplicationPage, WorkbenchPage, LogsPage, ApiHelpers } from '../page-objects'
+import { TracesPage } from '../page-objects/TracesPage'
 
-type MotiaFixtures = {
+export type MotiaContext = {
   motiaApp: MotiaApplicationPage
   workbench: WorkbenchPage
   logsPage: LogsPage
+  tracesPage: TracesPage
   api: ApiHelpers
 }
 
-export const test = base.extend<MotiaFixtures>({
+export const test = base.extend<MotiaContext>({
   motiaApp: async ({ page }, use) => {
     const motiaApp = new MotiaApplicationPage(page)
     await use(motiaApp)
@@ -24,10 +26,15 @@ export const test = base.extend<MotiaFixtures>({
     await use(logsPage)
   },
 
+  tracesPage: async ({ page }, use) => {
+    const tracesPage = new TracesPage(page)
+    await use(tracesPage)
+  },
+
   api: async ({ page }, use) => {
     const api = new ApiHelpers(page)
     await use(api)
   },
 })
 
-export { expect } from '@playwright/test' 
+export { expect } from '@playwright/test'

@@ -6,6 +6,7 @@ export class WorkbenchPage extends MotiaApplicationPage {
   readonly logsLink: Locator
   readonly statesLink: Locator
   readonly endpointsLink: Locator
+  readonly tracesLink: Locator
   readonly flowsLink: Locator
   readonly flowLinks: Locator
   readonly startFlowButton: Locator
@@ -16,11 +17,16 @@ export class WorkbenchPage extends MotiaApplicationPage {
     this.sidebarContainer = page.getByTestId('sidebar')
     this.logsLink = page.getByTestId('header-logs-link')
     this.statesLink = page.getByTestId('header-states-link')
+    this.tracesLink = page.getByTestId('header-traces-link')
     this.endpointsLink = page.getByTestId('header-endpoints-link')
     this.flowsLink = page.getByTestId('header-flows-link')
     this.flowLinks = page.getByTestId(/flow-.*-link/)
     this.startFlowButton = page.getByTestId('start-flow-button')
     this.flowContainer = page.getByTestId('flow-container')
+  }
+
+  async open() {
+    await this.goto('/')
   }
 
   async gotoWorkbench() {
@@ -37,6 +43,11 @@ export class WorkbenchPage extends MotiaApplicationPage {
 
   async navigateToLogs() {
     await this.logsLink.click()
+    await this.waitForApplication()
+  }
+
+  async navigateToTraces() {
+    await this.tracesLink.click()
     await this.waitForApplication()
   }
 

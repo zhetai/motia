@@ -1,5 +1,5 @@
 import { useListFlows } from '@/hooks/use-list-flows'
-import { File, Link2, Logs, Workflow, Activity } from 'lucide-react'
+import { File, Link2, Logs, Workflow, GanttChartIcon } from 'lucide-react'
 import { Link, useLocation } from 'react-router'
 import { Sidebar, SidebarButton, SidebarGroup } from './ui/sidebar'
 import { BadgeCount } from './ui/BadgeCount'
@@ -19,7 +19,7 @@ export const AppSidebar = () => {
           </SidebarButton>
         </Link>
         <Link data-testid="traces-link" to="/traces">
-          <SidebarButton isActive={pathname === '/traces'} icon={<Activity className="w-4 h-4" />}>
+          <SidebarButton isActive={pathname === '/traces'} icon={<GanttChartIcon className="w-4 h-4" />}>
             Traces
           </SidebarButton>
         </Link>

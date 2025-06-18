@@ -23,10 +23,19 @@ export const config: ApiRouteConfig = {
   middleware: [timingMiddleware],
 }
 
-export const handler: Handlers['Parallel Merge'] = async (_, { emit, logger }) => {
+export const handler: Handlers['Parallel Merge'] = async (_, { emit, logger, traceId }) => {
   logger.info('Starting parallel merge')
 
-  await emit({ topic: 'pms.start', data: {} })
+  await emit({
+    topic: 'pms.start',
+    data: {},
+  })
 
-  return { status: 200, body: { message: 'Started parallel merge' } }
+  return {
+    status: 200,
+    body: {
+      traceId,
+      message: 'Started parallel merge',
+    },
+  }
 }
