@@ -23,7 +23,10 @@ export const config: ApiRouteConfig = {
    * Expected response body for type checking and documentation
    */
   responseSchema: {
-    200: z.object({ message: z.string() }),
+    200: z.object({
+      message: z.string(),
+      traceId: z.string(),
+    }),
   },
 
   /**
@@ -40,7 +43,7 @@ export const config: ApiRouteConfig = {
   flows: ['default'],
 }
 
-export const handler: Handlers['ApiTrigger'] = async (req, { logger, emit }) => {
+export const handler: Handlers['ApiTrigger'] = async (req, { logger, emit, traceId }) => {
   /**
    * Avoid usage of console.log, use logger instead
    */
@@ -59,6 +62,9 @@ export const handler: Handlers['ApiTrigger'] = async (req, { logger, emit }) => 
    */
   return {
     status: 200,
-    body: { message: 'test-state topic emitted' },
+    body: {
+      traceId,
+      message: 'test-state topic emitted',
+    },
   }
 }

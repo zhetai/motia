@@ -31,7 +31,7 @@ declare module 'motia' {
     'OpenAiApi': ApiRouteHandler<{ message: string; threadId?: string }, ApiResponse<200, { threadId: string }>, { topic: 'openai-prompt'; data: { message: string; assistantMessageId: string; threadId: string } }>
     'CheckStateChange': EventHandler<{ key: string; expected: string }, never>
     'SetStateChange': EventHandler<{ message: string }, { topic: 'check-state-change'; data: { key: string; expected: string } }>
-    'ApiTrigger': ApiRouteHandler<{ message: string }, ApiResponse<200, { message: string }>, { topic: 'test-state'; data: { message: string } }>
+    'ApiTrigger': ApiRouteHandler<{ message: string }, ApiResponse<200, { message: string; traceId: string }>, { topic: 'test-state'; data: { message: string } }>
     'HandlePeriodicJob': EventHandler<never, never>
   }
 }
