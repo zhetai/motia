@@ -130,17 +130,21 @@ export const useGetFlowState = (flow: FlowResponse, flowConfig: FlowConfigRespon
   const flowIdRef = useRef<string>('')
   const saveTimeoutRef = useRef<ReturnType<typeof setTimeout>>(null)
   const lastSavedConfigRef = useRef<FlowConfigResponse['config']>(null)
+  const lastSavedFlowRef = useRef<FlowResponse>(null)
 
   // eslint-disable-next-line react-hooks/exhaustive-deps
   const memoizedFlowConfig = useMemo(() => flowConfig, [flowConfig?.id, flowConfig?.config])
 
   useEffect(() => {
     if (!flow || flow.error) return
+    const hasSameConfig = isEqual(lastSavedConfigRef.current, memoizedFlowConfig?.config)
+    const hasSameFlow = isEqual(lastSavedFlowRef.current, flow)
 
-    if (isEqual(lastSavedConfigRef.current, memoizedFlowConfig?.config)) return
+    if (hasSameConfig && hasSameFlow) return
 
     lastSavedConfigRef.current = memoizedFlowConfig?.config
     flowIdRef.current = flow.id
+    lastSavedFlowRef.current = flow
 
     const importFlowAsync = async () => {
       try {

@@ -1,6 +1,14 @@
 import { LogConsole } from '@/components/logs/log-console'
-import { Background, BackgroundVariant, NodeChange, OnNodesChange, ReactFlow } from '@xyflow/react'
-import React, { useCallback, useEffect, useMemo, useState } from 'react'
+import {
+  Background,
+  BackgroundVariant,
+  Edge as ReactFlowEdge,
+  Node as ReactFlowNode,
+  NodeChange,
+  OnNodesChange,
+  ReactFlow,
+} from '@xyflow/react'
+import React, { useCallback, useMemo, useState } from 'react'
 import { ArrowHead } from './arrow-head'
 import { BaseEdge } from './base-edge'
 import { FlowLoader } from './flow-loader'
@@ -8,7 +16,6 @@ import { EdgeData, NodeData } from './nodes/nodes.types'
 import { FlowConfigResponse, FlowResponse, useGetFlowState } from './hooks/use-get-flow-state'
 import { Legend } from './legend'
 import { NodeOrganizer } from './node-organizer'
-import { Node as ReactFlowNode, Edge as ReactFlowEdge } from '@xyflow/react'
 
 import '@xyflow/react/dist/style.css'
 
@@ -29,9 +36,8 @@ export const FlowView: React.FC<Props> = ({ flow, flowConfig }) => {
   const [initialized, setInitialized] = useState(false)
   const [hoveredType, setHoveredType] = useState<string | null>(null)
 
-  useEffect(() => setInitialized(false), [flow])
   const onInitialized = useCallback(() => {
-    setTimeout(() => setInitialized(true), 10)
+    setInitialized(true)
   }, [])
 
   const getClassName = useCallback(
