@@ -3,7 +3,7 @@ import { Step } from '../types'
 import { StateOperation, StreamOperation, TraceError } from './types'
 
 export interface TracerFactory {
-  createTracer(traceId: string, step: Step, logger: Logger): Tracer
+  createTracer(traceId: string, step: Step, logger: Logger): Promise<Tracer> | Tracer
 }
 
 export interface Tracer {

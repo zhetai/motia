@@ -33,7 +33,7 @@ export class LockedData {
 
   constructor(
     public readonly baseDir: string,
-    private readonly streamAdapter: 'file' | 'memory' = 'file',
+    public readonly streamAdapter: 'file' | 'memory' = 'file',
     private readonly printer: Printer,
   ) {
     this.flows = {}

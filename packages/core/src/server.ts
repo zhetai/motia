@@ -168,7 +168,7 @@ export const createServer = (
       const traceId = generateTraceId()
       const { name: stepName, flows } = step.config
       const logger = loggerFactory.create({ traceId, flows, stepName })
-      const tracer = motia.tracerFactory.createTracer(traceId, step, logger)
+      const tracer = await motia.tracerFactory.createTracer(traceId, step, logger)
 
       logger.debug('[API] Received request, processing step', { path: req.path })
 

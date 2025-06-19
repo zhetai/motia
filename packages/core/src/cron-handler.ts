@@ -35,7 +35,7 @@ export const setupCronHandlers = (motia: Motia) => {
     const task = cron.schedule(cronExpression, async () => {
       const traceId = generateTraceId()
       const logger = motia.loggerFactory.create({ traceId, flows, stepName })
-      const tracer = motia.tracerFactory.createTracer(traceId, step, logger)
+      const tracer = await motia.tracerFactory.createTracer(traceId, step, logger)
 
       try {
         await callStepFile({ contextInFirstArg: true, step, traceId, tracer, logger }, motia)

@@ -1,6 +1,7 @@
 import fs from 'fs'
 import * as path from 'path'
 import { StreamAdapter } from './stream-adapter'
+import { BaseStreamItem } from '../../types-stream'
 
 export type FileAdapterConfig = {
   filePath: string
@@ -30,22 +31,22 @@ export class FileStreamAdapter<TData> extends StreamAdapter<TData> {
     }
   }
 
-  async getGroup<T>(groupId: string): Promise<T[]> {
+  async getGroup(groupId: string): Promise<BaseStreamItem<TData>[]> {
     const data = this._readFile()
 
     return Object.entries(data)
       .filter(([key]) => key.startsWith(groupId))
-      .map(([, value]) => JSON.parse(value) as T)
+      .map(([, value]) => JSON.parse(value) as BaseStreamItem<TData>)
   }
 
-  async get<T>(groupId: string, key: string): Promise<T | null> {
+  async get(groupId: string, key: string): Promise<BaseStreamItem<TData> | null> {
     const data = this._readFile()
     const fullKey = this._makeKey(groupId, key)
 
-    return data[fullKey] ? (JSON.parse(data[fullKey]) as T) : null
+    return data[fullKey] ? (JSON.parse(data[fullKey]) as BaseStreamItem<TData>) : null
   }
 
-  async set<T>(groupId: string, id: string, value: T) {
+  async set(groupId: string, id: string, value: TData) {
     const data = this._readFile()
     const key = this._makeKey(groupId, id)
 
@@ -56,10 +57,10 @@ export class FileStreamAdapter<TData> extends StreamAdapter<TData> {
     return { ...value, id }
   }
 
-  async delete<T>(groupId: string, id: string): Promise<T | null> {
+  async delete(groupId: string, id: string): Promise<BaseStreamItem<TData> | null> {
     const data = this._readFile()
     const key = this._makeKey(groupId, id)
-    const value = await this.get<T>(groupId, id)
+    const value = await this.get(groupId, id)
 
     if (value) {
       delete data[key]
@@ -82,11 +83,11 @@ export class FileStreamAdapter<TData> extends StreamAdapter<TData> {
     this._writeFile(data)
   }
 
-  private _makeKey(groupId: string, id: string) {
+  protected _makeKey(groupId: string, id: string) {
     return `${groupId}:${id}`
   }
 
-  private _readFile(): Record<string, string> {
+  protected _readFile(): Record<string, string> {
     try {
       const content = fs.readFileSync(this.filePath, 'utf-8')
       return JSON.parse(content)
@@ -96,7 +97,7 @@ export class FileStreamAdapter<TData> extends StreamAdapter<TData> {
     }
   }
 
-  private _writeFile(data: unknown) {
+  protected _writeFile(data: unknown) {
     try {
       fs.writeFileSync(this.filePath, JSON.stringify(data, null, 2), 'utf-8')
     } catch (error) {
