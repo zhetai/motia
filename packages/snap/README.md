@@ -51,7 +51,7 @@ Motia unifies your entire backend into a unified state. APIs, background jobs, a
 | Complex error handling      | Automatic retries & fault tolerance |
 
 
-![Motia combines APIs, background queues, and AI agents into one system](https://github.com/MotiaDev/motia/blob/main/assets/2.gif?raw=true)
+![Motia combines APIs, background queues, and AI agents into one system](https://github.com/MotiaDev/motia/blob/main/assets/final.gif?raw=true)
 
 
 ---
