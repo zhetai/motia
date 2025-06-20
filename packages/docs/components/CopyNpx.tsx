@@ -6,7 +6,7 @@ import { blueTick, copyIconBlack } from './Icons'
 
 export default function CopyNPX() {
   const [copied, setCopied] = useState(false)
-  const command = 'npx motia create -n my-agent'
+  const command = 'npx motia create -i'
 
   const handleCopy = async () => {
     await navigator.clipboard.writeText(command)
