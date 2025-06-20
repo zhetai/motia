@@ -96,9 +96,9 @@ Get up and running in **under 60 seconds**:
 ### 1. Create Your Project
 
 ```bash
-npx motia@latest create -n my-motia-app
-cd my-motia-app
+npx motia create -i
 ```
+- Enter project details like template, project name, etc
 
 ### 2. Write Your First Step
 
