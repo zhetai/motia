@@ -38,7 +38,7 @@
 
 ## 🎯 What is Motia?
 
-Motia is a **modern backend framework** that unifies APIs, background jobs, events, and AI agents into a single cohesive system. Eliminate runtime complexity and build unified backends where **JavaScript, TypeScript, Python, and Ruby** work together in event-driven workflows, with built-in state management, observability, and one-click deployments.
+Motia is a **modern backend framework** that unifies APIs, background jobs, events, and AI agents into a single cohesive system. Eliminate runtime complexity and build unified backends where **JavaScript, TypeScript, Python, etc, work together in event-driven workflows, with built-in state management, observability, and one-click deployments.
 
 Motia brings cohesion to the fragmented backend world with our core primitive: the **Step**. Think of Steps like React Components, but for backends.
 
@@ -47,7 +47,7 @@ Motia brings cohesion to the fragmented backend world with our core primitive: t
 ### 🧱 The Step Philosophy
 
 - **🎯 Single Purpose**: Each Step performs one task
-- **🌍 Language agnostic**: Each Step can be in a different language, while being part of the same workflow
+- **🌍 Language agnostic**: Each Step can be in a different language while being part of the same workflow
 - **⚡ Versatile**: Steps can trigger APIs, background jobs, and AI Agents
 - **👁️ Observable**: Everything is observable by default
 - **🌊 Workflows**: Collections of connected steps that form complete processes
@@ -71,7 +71,7 @@ Motia unifies your entire backend into a **unified state**. APIs, background job
 | --------------------------- | ---------------------------------------- |
 | Multiple deployment targets | **Single unified deployment**            |
 | Fragmented observability    | **End-to-end tracing**                   |
-| Language dependant          | **JavaScript, TypeScript, Python, Ruby** |
+| Language dependent          | **JavaScript, TypeScript, Python, etc** |
 | Context-switching overhead  | **Single intuitive model**               |
 | Complex error handling      | **Automatic retries & fault tolerance**  |
 
