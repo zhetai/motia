@@ -72,12 +72,13 @@ Motia unifies your entire backend into a unified state. APIs, background jobs, a
 1. **Create a project**, and `cd` into its directory:
 
 ```bash
-npx motia@latest create -n my-motia-app
-cd my-motia-app
+npx motia create -i
 ```
+- Enter project details like the template you wanna use, project name, etc.
+
 2. **Write your first step**
 
-open up your favourite code editor there, and let's write our first step. Open up the `01-api.step.ts` file and paste the following into it:
+Open up your favourite code editor there, and let's write our first step. Open up the `01-api.step.ts` file and paste the following into it:
 
 ```bash
   exports.config = {
@@ -99,7 +100,7 @@ exports.handler = async () => {
 
 Here are the details about this step:
 
-- `type`: `api` - This is an API step that we can trigger this via HTTP request. Steps can be of four types - API, Event, NOOP, and Cron.
+- `type`: `api` - This is an API step that we can trigger via HTTP request. Steps can be of four types - API, Event, NOOP, and Cron.
 - `path`: `/hello-world` - The URL path to access this step. This is the API Endpoint.
 - `method`: `GET` - HTTP request method.
 - `name`: `HelloWorld` - Name for this step
@@ -107,14 +108,14 @@ Here are the details about this step:
 - `flows`: `['default']` - Flow to which this step belongs. By default, all steps belong to the default flow.
 
 3. **Start the Motia Workbench**
-Now, fire up the Motia workbench to visualize the data flow, test API endpoints and debug locally. To start it, simply run `pnpm run dev` and it will launch at `http://localhost:3000`.
+Now, fire up the Motia workbench to visualise the data flow, test API endpoints and debug locally. To start it, simply run `pnpm run dev` and it will launch at `http://localhost:3000`.
 
 From the Workbench, you can navigate to:
 
 - Logs: To get structured logs for each step execution, including inputs, outputs, and errors.
 - States: To view the internal state and data passed between steps using traceID and field.
 - Endpoints: To see and test all your API endpoints from within the Workbench, by simply hitting the `Play` button.
-- Flows: To visually inspect how your steps are connected and triggered, what each step does, which language it was written in, what events does it subscribe/emit to and more.
+- Flows: To visually inspect how your steps are connected and triggered, what each step does, which language it was written in, what events it subscribes to/emits to and more.
 
 ---
 
@@ -157,11 +158,12 @@ npx motia create [options]
   # -n, --name <project name>: Project name; use . or ./ to use current directory
   # -t, --template <template name>: Template to use; run npx motia templates to view available ones
   # -c, --cursor: Adds .cursor config for Cursor IDE
+  # Alternatively, you can use `npx motia create -i` to use the create command in interactive mode
 ```
 
 ### `npx motia dev`
 
-Initiates a dev environment for your project allowing you to use Motia Workbench (visualization tool for your flows). For Python projects, this will automatically use the configured virtual environment.
+Initiates a dev environment for your project, allowing you to use Motia Workbench (a visualisation tool for your flows). For Python projects, this will automatically use the configured virtual environment.
 
 ```sh
 npm run dev [options]
@@ -180,7 +182,7 @@ bun run dev  [options]
 ```
 
 ### `npx motia build`
-Compiles all your steps (Node.js, Python and more) and builds a lock file based on your current project setup which is then used by the Motia ecosystem.
+Compiles all your steps (Node.js, Python and more) and builds a lock file based on your current project setup, which is then used by the Motia ecosystem.
 
 ``` bash
 motia build
@@ -210,7 +212,7 @@ motia <command> --help
 For full documentation, visit [our docs.](https://motia.dev/docs)
 
 ## Help
-For questions and support please use the [official Discord channel](https://discord.gg/7rXsekMK). The issue list of our Github repo is exclusively for bug reports and feature requests.
+For questions and support, please use the [official Discord channel](https://discord.gg/7rXsekMK). The issue list of our Github repo is exclusively for bug reports and feature requests.
 
 ## Contributing
 
