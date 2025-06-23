@@ -6,6 +6,7 @@ import { RootProvider } from 'fumadocs-ui/provider'
 import { GoogleTagManager } from '@next/third-parties/google'
 import { Analytics } from '@vercel/analytics/react'
 import { headers } from 'next/headers'
+import PlausibleProvider from 'next-plausible'
 
 const tasaExplorer = localFont({
   src: [
@@ -153,10 +154,18 @@ export default function RootLayout({
       <body
         className={`${geistSans.variable} ${dmMono.variable} ${tasaExplorer.variable} w-screen overflow-x-hidden antialiased`}
       >
-        <RootProvider>
-          {children}
-          <Analytics />
-        </RootProvider>
+        <PlausibleProvider 
+          domain="motia.dev"
+          customDomain="https://plausible.io"
+          scriptProps={{
+            src: "https://plausible.io/js/script.file-downloads.hash.outbound-links.pageview-props.revenue.tagged-events.js"
+          }}
+        >
+          <RootProvider>
+            {children}
+            <Analytics />
+          </RootProvider>
+        </PlausibleProvider>
       </body>
     </html>
   )

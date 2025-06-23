@@ -9,7 +9,7 @@ import bento2DashboardText from '@/public/images/landing/bento2DashboardText.png
 import Image from 'next/image'
 import React from 'react'
 
-const transition = { type: 'spring', bounce: 0, duration: 0.6 }
+const transition = { type: 'spring' as const, bounce: 0, duration: 0.6 }
 const childVariants = {
   logsTab: {
     initial: { opacity: 0 },
