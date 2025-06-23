@@ -41,7 +41,7 @@ export default function Navbar() {
     return (
       <button
         onClick={() => setMenuOpen(!isMenuOpen)}
-        className="h-[40px] w-[40px] rounded-[4px] bg-white/10 p-[10px] sm:hidden"
+        className="h-[40px] w-[40px] rounded-[4px] bg-white/10 p-[10px] md:hidden"
       >
         <div className="flex h-full w-full flex-col items-end justify-center space-y-[5px]">
           <motion.div
@@ -150,8 +150,8 @@ export default function Navbar() {
                   target="_blank"
                   className="flex cursor-pointer items-center gap-[16px] py-[8px] text-[16px] text-white"
                 >
-                  {githubIcon} <p>Contribute on Github </p> <p className="max-sm:hidden">|</p>
-                  <div className="flex items-center gap-[6px] text-white max-sm:hidden">
+                  {githubIcon} <p>Contribute on Github </p> <p className="max-md:hidden">|</p>
+                  <div className="flex items-center gap-[6px] text-white max-md:hidden">
                     {starIcon} <p>{stars}</p>
                   </div>
                 </Link>
