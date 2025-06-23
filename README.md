@@ -67,13 +67,13 @@ Backend teams juggle **fragmented runtimes** across APIs, background queues, and
 
 Motia unifies your entire backend into a **unified state**. APIs, background jobs, and AI agents become interconnected Steps with shared state and integrated observability.
 
-| **Before**                  | **After (Motia)**                        |
-| --------------------------- | ---------------------------------------- |
-| Multiple deployment targets | **Single unified deployment**            |
-| Fragmented observability    | **End-to-end tracing**                   |
+| **Before**                  | **After (Motia)**                       |
+| --------------------------- | --------------------------------------- |
+| Multiple deployment targets | **Single unified deployment**           |
+| Fragmented observability    | **End-to-end tracing**                  |
 | Language dependent          | **JavaScript, TypeScript, Python, etc** |
-| Context-switching overhead  | **Single intuitive model**               |
-| Complex error handling      | **Automatic retries & fault tolerance**  |
+| Context-switching overhead  | **Single intuitive model**              |
+| Complex error handling      | **Automatic retries & fault tolerance** |
 
 ---
 
@@ -96,7 +96,7 @@ Get up and running in **under 60 seconds**:
 ### 1. Create Your Project
 
 ```bash
-npx motia create -i
+npx motia@latest create -i
 ```
 - Enter project details like template, project name, etc
 

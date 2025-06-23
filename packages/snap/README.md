@@ -73,7 +73,7 @@ Motia unifies your entire backend into a unified state. APIs, background jobs, a
 1. **Create a project**, and `cd` into its directory:
 
 ```bash
-npx motia create -i
+npx motia@latest create -i
 ```
 - Enter project details like the template you wanna use, project name, etc.
 
