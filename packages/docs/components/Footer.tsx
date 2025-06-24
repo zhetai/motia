@@ -75,7 +75,9 @@ const HomePageLinks: React.FC = () => {
       <div className="flex w-fit flex-col items-end gap-[24px] max-lg:w-fit max-lg:items-start">
         <SectionLink sectionId="use-cases" linkText="Use Cases" />
         <SectionLink sectionId="integrations" linkText="Integrations" />
-        <SectionLink sectionId="motia-cloud" linkText="Motia Cloud" />
+        <Link href="/telemetry" className="text-[16px] text-white/60 transition-colors ease-in-out hover:text-white">
+          Telemetry
+        </Link>
       </div>
       <div className="flex w-fit flex-col items-end gap-[24px] max-lg:w-fit max-lg:items-start">
         <Link href="/manifesto" className="text-[16px] text-white/60 transition-colors ease-in-out hover:text-white">

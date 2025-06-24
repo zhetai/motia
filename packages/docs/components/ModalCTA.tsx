@@ -45,7 +45,7 @@ export default function ModalCTA({ variant, text, icon }: ModalCTA) {
           onClick={showModal}
           className="flex cursor-pointer gap-[4px] font-sans text-[16px] text-white/60 transition-colors ease-in-out hover:text-white"
         >
-          <div className="rounded-[4px] bg-[#20ABFC]/12 px-[6px] text-[#088CFF]">Coming Soon</div>
+          <div className="rounded-[4px] bg-[#20ABFC]/12 px-[6px] text-[#088CFF]">Join Beta</div>
           <p>Motia Cloud</p>
         </button>
       )}
