@@ -12,7 +12,7 @@
   <a href="https://www.npmjs.com/package/motia"><img src="https://img.shields.io/npm/v/motia.svg" alt="npm version"></a>
   <a href="https://github.com/MotiaDev/motia/blob/main/LICENSE"><img src="https://img.shields.io/badge/license-MIT-blue.svg" alt="license"></a>
   <a href="https://twitter.com/motiadev" target="_blank"><img src="https://img.shields.io/twitter/follow/motiadev.svg?style=social&label=Follow"></a>
-  <a href="https://discord.gg/7rXsekMK" target="_blank"><img src="https://img.shields.io/discord/1322278831184281721"></a>
+  <a href="https://discord.gg/EnfDRFYW" target="_blank"><img src="https://img.shields.io/discord/1322278831184281721"></a>
 </p>
 
 **Unify APIs and agents with built-in observability and one-click deployment**

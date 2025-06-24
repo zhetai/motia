@@ -21,7 +21,7 @@
   <a href="https://twitter.com/motiadev" target="_blank">
     <img src="https://img.shields.io/badge/Follow-@motiadev-1DA1F2?style=flat&logo=twitter&logoColor=white&labelColor=000000" alt="Twitter Follow">
   </a>
-  <a href="https://discord.gg/7rXsekMK" target="_blank">
+  <a href="https://discord.gg/EnfDRFYW" target="_blank">
     <img src="https://img.shields.io/discord/1322278831184281721?style=flat&logo=discord&logoColor=white&color=5865F2&label=Discord&labelColor=000000" alt="Discord">
   </a>
 </p>
