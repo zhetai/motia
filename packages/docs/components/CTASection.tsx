@@ -89,7 +89,7 @@ export default function CTASection() {
         delay={0.35}
       >
         <CopyNPX />
-        <ModalCTA variant="secondary" text="Join Beta" />
+        <ModalCTA variant="secondary" text="Sign up for Motia Cloud Beta" />
       </SectionAppearAnimation>
     </div>
   )

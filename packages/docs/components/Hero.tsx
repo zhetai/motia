@@ -30,7 +30,7 @@ export default function Hero() {
         <SectionAppearAnimation delay={0.5}>
           <div className="mt-[60px] flex w-fit max-w-full flex-wrap-reverse items-center justify-center gap-[16px] max-md:w-full max-sm:mt-[30px] md:gap-[8px]">
             <CopyNPX />
-            <ModalCTA variant="secondary" text="Join Beta" />
+            <ModalCTA variant="secondary" text="Sign up for Motia Cloud Beta" />
           </div>
         </SectionAppearAnimation>
       </div>

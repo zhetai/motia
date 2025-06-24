@@ -256,7 +256,7 @@ export default function MotiaCloud() {
               <CardStats />
             </div>
           </div>
-          <ModalCTA variant="primary" text="Join Beta" icon={chevronRightCircle} />
+          <ModalCTA variant="primary" text="Get early access to Motia Cloud" icon={chevronRightCircle} />
         </div>
       </div>
     </div>

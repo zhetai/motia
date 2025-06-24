@@ -97,7 +97,7 @@ const ModalForm: FC<ModalFormProps> = ({ isOpen, onClose, title }) => {
                   <form onSubmit={handleSubmit} className="">
                     <Image src={motiaLogoWhiteFull} alt="Motia" className="mx-auto w-[120px]" />
                     <DialogTitle className="font-tasa pt-[20px] text-center text-[16px] text-white">
-                      {title || 'Get early access to motia today.'}
+                      {title || 'Get early access to motia cloud today.'}
                     </DialogTitle>
                     <div className="flex flex-col gap-[12px] pt-[60px] pb-[40px]">
                       <div>
@@ -139,7 +139,7 @@ const ModalForm: FC<ModalFormProps> = ({ isOpen, onClose, title }) => {
 
                     <div className="flex justify-center space-x-2 pt-[40px]">
                       <ButtonPrimary type="submit" disabled={state.submitting}>
-                        {state.submitting ? 'Submitting...' : <>Join Beta {chevronRightCircle}</>}
+                        {state.submitting ? 'Submitting...' : <>Get early access to Motia Cloud {chevronRightCircle}</>}
                       </ButtonPrimary>
                     </div>
                   </form>
