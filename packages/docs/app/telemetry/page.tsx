@@ -124,6 +124,33 @@ export default function TelemetryPage() {
             </p>
           </section>
 
+          <section className={normalText}>
+            <h2 className={headingText}>Opting Out</h2>
+            <p>
+              You can disable analytics collection at any time by setting an environment variable:
+            </p>
+            <div className="bg-[#0A0A0A] mt-[10px] mb-[-30px] border border-white/20 rounded-lg p-[20px] font-mono text-[#5AC5FF] text-[16px]">
+              MOTIA_ANALYTICS_DISABLED=true
+            </div>
+          </section>
+
+          <section className={normalText}>
+            <p>
+              <span className={gradientTextBlue}>When analytics is disabled, no data is collected or transmitted.</span> Motia will function identically with analytics disabled.
+            </p>
+            <p className="mt-[20px]">
+              To verify your analytics status, you can manually go to this address: <code className="bg-white/10 px-2 py-1 rounded text-white/90">localhost:3000/motia/analytics/status</code>
+            </p>
+            <p className="mt-[20px]">
+              If analytics is disabled, you&apos;ll see: <code className="bg-white/10 px-2 py-1 rounded text-white/90">{`{"analyticsEnabled":false}`}</code>
+            </p>
+          </section>
+          <section className={`${normalText} mt-[-30px]`} >
+            <p>
+              We believe great developer tools are shaped by real-world usage, but only with your consent. Your privacy matters, and your feedback, whether explicit or anonymous, helps Motia become better for everyone.
+            </p>
+          </section>
+
         </div>
       </div>
 
