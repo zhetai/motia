@@ -4,12 +4,11 @@ This document describes the complete automated deploy flow for the Motia framewo
 
 ## Overview
 
-The deploy flow is divided into 4 main stages:
+The deploy flow is divided into 3 main stages:
 
 1. **Build and Pre-Release** (`deploy.yml`)
 2. **E2E Tests** (`e2e-tests.yml`) 
 3. **Finalization** (`finalize-release.yml`) or **Rollback** (`rollback-release.yml`)
-4. **Monitoring** (`deploy-monitor.yml`)
 
 ## Detailed Flow
 
@@ -68,14 +67,6 @@ git push origin v1.0.0
 - Create failure issue on GitHub
 - Download test artifacts for analysis
 
-### 5. Monitoring (deploy-monitor.yml)
-**Trigger:** Any complete deploy workflow
-
-**Actions:**
-- Monitor status of all workflows
-- Report deploy progress
-- Update deployment status
-
 ## Workflow Structure
 
 ```
@@ -84,7 +75,6 @@ git push origin v1.0.0
 ├── e2e-tests.yml       # End-to-end tests
 ├── finalize-release.yml # Release finalization
 ├── rollback-release.yml # Rollback in case of failure
-├── deploy-monitor.yml   # Monitoring
 ├── motia.yml           # CI/CD (quality checks)
 └── wip-release.yml     # Manual WIP releases
 ```
@@ -200,4 +190,4 @@ git push origin v1.0.1
 ### Workflows not triggering
 1. Check GitHub App permissions
 2. Check trigger configuration
-3. Check monitor workflow logs
+3. Check workflow logs

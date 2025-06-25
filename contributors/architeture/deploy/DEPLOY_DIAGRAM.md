@@ -22,12 +22,6 @@ graph TD
     M --> N[Create Failure Issue]
     N --> O[❌ Deploy Rolled Back]
     
-    K --> P[deploy-monitor.yml]
-    O --> P
-    X --> P
-    
-    P --> Q[Monitor & Report Status]
-    
     style A fill:#e1f5fe
     style B fill:#f3e5f5
     style D fill:#f3e5f5
@@ -36,7 +30,6 @@ graph TD
     style K fill:#e8f5e8
     style O fill:#ffebee
     style X fill:#ffebee
-    style P fill:#fff3e0
 ```
 
 ## Detailed Flow by Workflow
