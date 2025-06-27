@@ -1,20 +1,22 @@
 import type { Meta, StoryObj } from '@storybook/react'
 import { Panel } from './panel'
 import { Button } from './button'
-import { PictureInPicture2, X, Copy } from "lucide-react"
-
+import { PictureInPicture2, X, Copy } from 'lucide-react'
 
 const meta: Meta<typeof Panel> = {
-  title: 'Components/Panel',
+  title: 'UI/Panel',
   component: Panel,
   parameters: {
     layout: 'centered',
+    actions: { argTypesRegex: '^on.*' },
     docs: {
       description: {
-        component: 'A glassmorphic panel component for displaying structured information with a header and key-value pairs.',
+        component:
+          'A glassmorphic panel component for displaying structured information with a header and key-value pairs.',
       },
     },
   },
+  tags: ['autodocs'],
   argTypes: {
     title: {
       control: 'text',
@@ -35,6 +37,10 @@ const meta: Meta<typeof Panel> = {
     className: {
       control: 'text',
       description: 'Additional CSS classes to apply to the panel',
+    },
+    children: {
+      control: 'object',
+      description: 'Custom content to render inside the panel body, overriding `details`.',
     },
   },
 }
@@ -57,8 +63,8 @@ export const LogDetails: Story = {
       { label: 'Status', value: 'outline-processing' },
       { label: 'Content', value: 'null' },
       { label: 'Outline', value: 'null' },
-      { 
-        label: 'Idea', 
+      {
+        label: 'Idea',
         value: (
           <div className="space-y-2">
             <div className="text-foreground font-medium">topic</div>
@@ -66,7 +72,7 @@ export const LogDetails: Story = {
               Discover Hidden Gems: Fun Fact About Lord of the Rings Lore Only True Fans Know
             </div>
           </div>
-        )
+        ),
       },
     ],
     actions: [
@@ -136,15 +142,15 @@ export const WithCustomContent: Story = {
     details: [
       { label: 'Status Code', value: '200' },
       { label: 'Method', value: 'GET' },
-      { 
-        label: 'Headers', 
+      {
+        label: 'Headers',
         value: (
           <div className="space-y-1 text-xs font-mono">
             <div>Content-Type: application/json</div>
             <div>Cache-Control: no-cache</div>
             <div>X-Request-ID: abc123</div>
           </div>
-        )
+        ),
       },
       { label: 'Response Time', value: '124ms', highlighted: true },
     ],
@@ -203,7 +209,7 @@ export const WithChildren: Story = {
             </div>
           </div>
         </div>
-        
+
         <div className="space-y-3">
           <h3 className="text-sm font-semibold text-foreground">Performance Metrics</h3>
           <div className="grid grid-cols-2 gap-3">
@@ -225,79 +231,11 @@ export const WithChildren: Story = {
             </div>
           </div>
         </div>
-        
+
         <div className="pt-4 border-t border-border">
-          <Button className="w-full">
-            View Full Report
-          </Button>
+          <Button className="w-full">View Full Report</Button>
         </div>
       </div>
     ),
   },
 }
-
-export const LightAndDark: Story = {
-  render: () => (
-    <div className="flex gap-8 items-start">
-      <div className="flex flex-col gap-4 p-6 bg-white rounded-lg">
-        <h3 className="text-lg font-semibold text-gray-900">Light Theme</h3>
-        <div className="w-96 h-[500px]">
-          <Panel
-            title="System Status"
-            subtitle="Current system health metrics"
-            details={[
-              { label: 'Environment', value: 'Production' },
-              { label: 'Status', value: 'Healthy', highlighted: true },
-              { label: 'CPU Usage', value: '42%' },
-              { label: 'Memory', value: '1.2 GB / 4 GB' },
-              { label: 'Uptime', value: '5 days, 3 hours' },
-              { label: 'Last Deploy', value: '2 hours ago' },
-            ]}
-            actions={[
-              {
-                icon: <Copy />,
-                onClick: () => console.log('Copy clicked'),
-                label: 'Copy details',
-              },
-              {
-                icon: <X />,
-                onClick: () => console.log('Close clicked'),
-                label: 'Close panel',
-              },
-            ]}
-          />
-        </div>
-      </div>
-      
-      <div className="flex flex-col gap-4 p-6 bg-gray-900 rounded-lg dark">
-        <h3 className="text-lg font-semibold text-white">Dark Theme</h3>
-        <div className="w-96 h-[500px]">
-          <Panel
-            title="System Status"
-            subtitle="Current system health metrics"
-            details={[
-              { label: 'Environment', value: 'Production' },
-              { label: 'Status', value: 'Healthy', highlighted: true },
-              { label: 'CPU Usage', value: '42%' },
-              { label: 'Memory', value: '1.2 GB / 4 GB' },
-              { label: 'Uptime', value: '5 days, 3 hours' },
-              { label: 'Last Deploy', value: '2 hours ago' },
-            ]}
-            actions={[
-              {
-                icon: <Copy />,
-                onClick: () => console.log('Copy clicked'),
-                label: 'Copy details',
-              },
-              {
-                icon: <X />,
-                onClick: () => console.log('Close clicked'),
-                label: 'Close panel',
-              },
-            ]}
-          />
-        </div>
-      </div>
-    </div>
-  ),
-} 
