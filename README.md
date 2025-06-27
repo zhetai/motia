@@ -208,6 +208,9 @@ Check out our [Contributing Guide](https://github.com/MotiaDev/motia/blob/main/C
 [🚀 **Get Started Now**](https://motia.dev) • [📖 **Read the Docs**](https://motia.dev/docs) • [💬 **Join Discord**](https://discord.gg/7rXsekMK)
 
 ---
+## Star History
+
+[![Star History Chart](https://api.star-history.com/svg?repos=motiadev/motia&type=Date)](https://www.star-history.com/#motiadev/motia&Date)
 
 <sub>Built with ❤️ by the Motia team • **Star us on GitHub if you find Motia useful!** ⭐</sub>
 
