@@ -42,16 +42,16 @@ Motia is a **modern backend framework** that unifies APIs, background jobs, even
 
 Motia brings cohesion to the fragmented backend world with our core primitive: the **Step**. Think of Steps like React Components, but for backends.
 
-![Motia combines APIs, background queues, and AI agents into one system](https://github.com/MotiaDev/motia/blob/main/assets/final.gif?raw=true)
+![Motia combines APIs, background queues, and AI agents into one system](/assets/motia-architecture-with-bg.png)
 
 ### 🧱 The Step Philosophy
 
-- **🎯 Single Purpose**: Each Step performs one task
-- **🌍 Language agnostic**: Each Step can be in a different language while being part of the same workflow
-- **⚡ Versatile**: Steps can trigger APIs, background jobs, and AI Agents
-- **👁️ Observable**: Everything is observable by default
-- **🌊 Workflows**: Collections of connected steps that form complete processes
-- **🏪 State Management**: Shared state across all steps with full traceability
+- **🎯 Your Logic, Your Step**: A Step holds your business logic. It can be a simple function, a call to a database, or a complex AI agent. This is where your application's real work gets done.
+- **🌍 Any Language, One Workflow**: Write Steps in TypeScript, Python, and other languages to come. all in the same project. Use Python for your AI agents and TypeScript for your API, and Motia makes them work together effortlessly.
+- **⚡ Full Power, No Boilerplate**: Inside a Step's `handler`, you have the full power of the Node.js or Python ecosystem. Install any package, call any API, connect to any database. No restrictions, just your code.
+- **👁️ Zero-Config Observability**: Get full end-to-end tracing and logging for every Step execution, automatically. No setup required. See exactly what happened, when, and why.
+- **🌊 Simple & Powerful Workflows**: Connect Steps together by emitting and subscribing to events. Build complex, multi-stage processes with simple, declarative code.
+- **🏪 Unified State**: Share data between Steps effortlessly. Motia provides built-in state management that is automatically traced, giving you a complete picture of your data's lifecycle through a workflow.
 
 ---
 
@@ -88,6 +88,101 @@ Motia unifies your entire backend into a **unified state**. APIs, background job
 
 ---
 
+### 🤔 How it Works
+
+Motia's architecture is built around a single, powerful primitive: the **Step**. A Step is not just a trigger; it's a powerful container for your business logic. You can write anything from a simple database query to a complex AI agent interaction inside a single step. Instead of managing separate services for APIs, background workers, and scheduled tasks, you simply define how your steps are triggered.
+
+-   **Need a public API?** Create an `api` step. This defines a route and handler for HTTP requests. You can build a complete REST or GraphQL API just with these steps.
+-   **Need a background job or queue?** Have your `api` step `emit` an event. An `event` step subscribed to that event's topic will pick up the job and process it asynchronously. This is how you handle anything that shouldn't block the main request thread, from sending emails to complex data processing.
+-   **Need to run a task on a schedule?** Use a `cron` step. It will trigger automatically based on the schedule you define.
+
+This model means you no longer need to glue together separate frameworks and tools. A single Motia application can replace a stack that might otherwise include **Nest.js** (for APIs), **Temporal** (for workflows), and **Celery/BullMQ** (for background jobs). It's all just steps and events.
+
+## ⚡ Core Concepts
+
+The **Step** is Motia's core primitive. The following concepts are deeply integrated with Steps to help you build powerful, complex, and scalable backends:
+
+### ✨ Streams: Real-time Messaging
+
+Motia Streams provide a way to push real-time updates from your asynchronous workflows to connected clients, without polling. This is perfect for applications like live dashboards, progress indicators for long-running jobs, or real-time AI agent interactions.
+
+**Defining a Stream:**
+
+Create a file ending in `.stream.ts` (e.g., `steps/my-stream.stream.ts`) to define a new stream:
+
+```typescript
+import { StreamConfig } from 'motia'
+import { z } from 'zod'
+
+export const config: StreamConfig = {
+  name: 'myStream', // Becomes context.streams.myStream
+  schema: z.object({
+    message: z.string(),
+    progress: z.number(),
+  }),
+  baseConfig: {
+    storageType: 'default', // Uses the default state adapter
+  },
+}
+```
+
+**Using Streams in Steps:**
+
+Once defined, you can interact with streams in any step handler via the `context.streams` object.
+
+```typescript
+export const handler: Handlers['MyStep'] = async (input, { streams, traceId }) => {
+  // Set data in the stream
+  await streams.myStream.set(traceId, 'unique-item-id', {
+    message: 'Processing...',
+    progress: 50,
+  });
+};
+```
+
+**Consuming Streams in the Frontend:**
+
+With the `@motiadev/stream-client-react` package, you can easily subscribe to stream updates in your React components.
+
+```tsx
+import { useStreamItem } from '@motiadev/stream-client-react'
+
+function MyComponent() {
+  const { data } = useStreamItem({
+    streamName: 'myStream',
+    groupId: 'some-group-id', // Often the traceId
+    id: 'unique-item-id',
+  });
+
+  return <div>Progress: {data?.progress}%</div>;
+}
+```
+
+**Real-time Updates:**
+When your API step updates the progress from 50 to 75, the frontend component automatically receives the new data and re-renders. No polling, no manual refresh required. This creates a complete real-time experience for users tracking long-running processes.
+
+### 👁️ End-to-End Observability
+
+Motia provides built-in, end-to-end observability, giving you deep insights into your application's behavior without any extra configuration.
+
+**Automatic Tracing:**
+Every workflow execution, whether triggered by an API call, an event, or a cron job, generates a detailed trace. This trace captures the entire lifecycle, including:
+
+- **Step Executions:** See which steps ran, in what order, and for how long.
+- **State Changes:** Track every `get`, `set`, and `delete` operation on the shared state.
+- **Event Emissions:** View all events emitted by your steps.
+- **Stream Operations:** Monitor real-time data pushes to clients.
+- **Logs:** All logs are automatically correlated with the corresponding trace and step.
+
+**The Traces UI:**
+The Workbench includes a dedicated **Traces** UI where you can:
+- **Visualize Timelines:** See a gantt chart of your workflow, making it easy to spot bottlenecks.
+- **Inspect Payloads:** Drill down into the details of each event, including state changes and log messages.
+- **Debug Errors:** Quickly identify the root cause of failures with full error messages and stack traces associated with the exact step that failed.
+
+This unified view eliminates the need for fragmented logging and tracing tools, dramatically simplifying debugging and performance analysis.
+
+---
 
 ## 🚀 Quickstart
 
@@ -139,12 +234,13 @@ npm run dev
 
 ### 4. Explore the Workbench
 
-From the Workbench, navigate to:
+The Workbench is your command center for developing and monitoring your Motia application.
 
-- **📊 Logs**: Structured logs for each step execution with inputs, outputs, and errors
-- **🏪 States**: View internal state and data passed between steps using traceID
-- **🔌 Endpoints**: Test all your API endpoints directly from the UI
-- **🌊 Flows**: Visually inspect how your steps connect and what each step does
+- **🌊 Flows**: Visually inspect, design, and understand the connections between your steps.
+- **🔌 Endpoints**: Test your API endpoints directly from the UI, with full support for streaming responses.
+- **👁️ Traces**: Dive into detailed, end-to-end traces of your workflows. See exactly how data flows, where time is spent, and what errors occurred.
+- **📊 Logs**: View structured, correlated logs for every step execution.
+- **🏪 States**: Inspect the internal state and data passed between steps for any given workflow execution.
 
 ---
 
@@ -186,7 +282,7 @@ Write steps in your preferred language:
 
 We're building Motia in the open, and we'd love for you to be a part of the journey.
 
-Check out our public roadmap to see what’s planned, what’s in progress, and what’s recently shipped:
+Check out our public roadmap to see what's planned, what's in progress, and what's recently shipped:
 
 👉 [View our public Roadmap](https://github.com/orgs/MotiaDev/projects/2/views/2)
 
@@ -206,6 +302,8 @@ Check out our [Contributing Guide](https://github.com/MotiaDev/motia/blob/main/C
 **🌟 Ready to unify your backend?**
 
 [🚀 **Get Started Now**](https://motia.dev) • [📖 **Read the Docs**](https://motia.dev/docs) • [💬 **Join Discord**](https://discord.gg/7rXsekMK)
+
+</div>
 
 ---
 ## Star History
