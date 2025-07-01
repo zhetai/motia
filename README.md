@@ -102,85 +102,26 @@ This model means you no longer need to glue together separate frameworks and too
 
 The **Step** is Motia's core primitive. The following concepts are deeply integrated with Steps to help you build powerful, complex, and scalable backends:
 
-### ✨ Streams: Real-time Messaging
+### 🔑 Steps & Step Types
+Understand the three ways Steps are triggered:
+- **HTTP (`api`)** – Build REST/GraphQL endpoints with zero boilerplate.
+- **Events (`event`)** – React to internal or external events emitted by other steps.
+- **Cron (`cron`)** – Schedule recurring jobs with a familiar cron syntax.
 
-Motia Streams provide a way to push real-time updates from your asynchronous workflows to connected clients, without polling. This is perfect for applications like live dashboards, progress indicators for long-running jobs, or real-time AI agent interactions.
+### 📣 Emit & Subscribe (Event-Driven Workflows)
+Steps talk to each other by **emitting** and **subscribing** to topics. This decouples producers from consumers and lets you compose complex workflows with simple, declarative code.
 
-**Defining a Stream:**
+### 🏪 State Management
+All steps share a unified key-value state store. Every `get`, `set`, and `delete` is automatically traced so you always know when and where your data changed.
 
-Create a file ending in `.stream.ts` (e.g., `steps/my-stream.stream.ts`) to define a new stream:
+### 📊 Structured Logging
+Motia provides structured, JSON logs correlated with trace IDs and step names. Search and filter your logs without regex gymnastics.
 
-```typescript
-import { StreamConfig } from 'motia'
-import { z } from 'zod'
+### 📡 Streams: Real-time Messaging
+Push live updates from long-running or asynchronous workflows to clients without polling. Perfect for dashboards, progress indicators, and interactive AI agents.
 
-export const config: StreamConfig = {
-  name: 'myStream', // Becomes context.streams.myStream
-  schema: z.object({
-    message: z.string(),
-    progress: z.number(),
-  }),
-  baseConfig: {
-    storageType: 'default', // Uses the default state adapter
-  },
-}
-```
-
-**Using Streams in Steps:**
-
-Once defined, you can interact with streams in any step handler via the `context.streams` object.
-
-```typescript
-export const handler: Handlers['MyStep'] = async (input, { streams, traceId }) => {
-  // Set data in the stream
-  await streams.myStream.set(traceId, 'unique-item-id', {
-    message: 'Processing...',
-    progress: 50,
-  });
-};
-```
-
-**Consuming Streams in the Frontend:**
-
-With the `@motiadev/stream-client-react` package, you can easily subscribe to stream updates in your React components.
-
-```tsx
-import { useStreamItem } from '@motiadev/stream-client-react'
-
-function MyComponent() {
-  const { data } = useStreamItem({
-    streamName: 'myStream',
-    groupId: 'some-group-id', // Often the traceId
-    id: 'unique-item-id',
-  });
-
-  return <div>Progress: {data?.progress}%</div>;
-}
-```
-
-**Real-time Updates:**
-When your API step updates the progress from 50 to 75, the frontend component automatically receives the new data and re-renders. No polling, no manual refresh required. This creates a complete real-time experience for users tracking long-running processes.
-
-### 👁️ End-to-End Observability
-
-Motia provides built-in, end-to-end observability, giving you deep insights into your application's behavior without any extra configuration.
-
-**Automatic Tracing:**
-Every workflow execution, whether triggered by an API call, an event, or a cron job, generates a detailed trace. This trace captures the entire lifecycle, including:
-
-- **Step Executions:** See which steps ran, in what order, and for how long.
-- **State Changes:** Track every `get`, `set`, and `delete` operation on the shared state.
-- **Event Emissions:** View all events emitted by your steps.
-- **Stream Operations:** Monitor real-time data pushes to clients.
-- **Logs:** All logs are automatically correlated with the corresponding trace and step.
-
-**The Traces UI:**
-The Workbench includes a dedicated **Traces** UI where you can:
-- **Visualize Timelines:** See a gantt chart of your workflow, making it easy to spot bottlenecks.
-- **Inspect Payloads:** Drill down into the details of each event, including state changes and log messages.
-- **Debug Errors:** Quickly identify the root cause of failures with full error messages and stack traces associated with the exact step that failed.
-
-This unified view eliminates the need for fragmented logging and tracing tools, dramatically simplifying debugging and performance analysis.
+### 👁️ End-to-End Observability with Traces
+Every execution generates a full trace, capturing step timelines, state operations, emits, stream calls, and logs. Visualise everything in the Workbench's Traces UI and debug faster.
 
 ---
 
@@ -195,36 +136,15 @@ npx motia@latest create -i
 ```
 - Enter project details like template, project name, etc
 
-### 2. Write Your First Step
+### 2. Launch the Workbench
 
-Open `01-api.step.ts` and create a simple API endpoint:
-
-```typescript
-exports.config = {
-  type: 'api',           // Step type: "api", "event", "cron", or "noop"
-  path: '/hello-world',  // API endpoint path
-  method: 'GET',         // HTTP method
-  name: 'HelloWorld',    // Step identifier
-  emits: ['test-state'], // Events this step emits
-  flows: ['default'],    // Flow this step belongs to
-}
-
-exports.handler = async () => {
-  return {
-    status: 200,
-    body: { message: 'Hello World from Motia!' },
-  }
-}
-```
-
-### 3. Launch the Workbench
-
-Start the visual development environment:
+Start the Motia Workbench:
 
 ```bash
-npm run dev
+npx motia dev
 # Opens at http://localhost:3000
 ```
+
 
 🎉 **That's it!** You now have a fully functional Motia app with:
 - ✅ API endpoint at `/hello-world`
