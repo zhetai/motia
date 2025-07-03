@@ -1,7 +1,8 @@
-# Motia
-
 <p align="center">
-  <img src="https://motia.dev/icon.png" alt="Motia Logo" width="200" />
+  <!-- shows in LIGHT mode only -->
+  <img src="assets/FLAT_BLUE_LOGO_MOTIA_dark.png#gh-dark-mode-only"  width="400" alt="Motia logo" />
+  <!-- shows in DARK mode only -->
+  <img src="assets/FLAT_BLUE_LOGO_MOTIA_light.png#gh-light-mode-only" width="400" alt="Motia logo (dark)" />
 </p>
 
 <p align="center">
@@ -40,7 +41,7 @@
 
 Motia is a **modern backend framework** that unifies APIs, background jobs, events, and AI agents into a single cohesive system. Eliminate runtime complexity and build unified backends where **JavaScript, TypeScript, Python, etc**, work together in event-driven workflows, with built-in state management, observability, and one-click deployments.
 
-Motia brings cohesion to the fragmented backend world with our core primitive: the **Step**. Think of Steps like React Components, but for backends.
+Motia brings cohesion to the fragmented backend world with our core primitive: the **Step**.
 
 ![Motia combines APIs, background queues, and AI agents into one system](/assets/motia-architecture-with-bg.png)
 
@@ -115,7 +116,7 @@ Steps talk to each other by **emitting** and **subscribing** to topics. This dec
 All steps share a unified key-value state store. Every `get`, `set`, and `delete` is automatically traced so you always know when and where your data changed.
 
 ### 📊 Structured Logging
-Motia provides structured, JSON logs correlated with trace IDs and step names. Search and filter your logs without regex gymnastics.
+Motia provides structured, JSON logs correlated with trace IDs and step names. Search and filter your logs without regex hassle.
 
 ### 📡 Streams: Real-time Messaging
 Push live updates from long-running or asynchronous workflows to clients without polling. Perfect for dashboards, progress indicators, and interactive AI agents.
@@ -127,40 +128,64 @@ Every execution generates a full trace, capturing step timelines, state operatio
 
 ## 🚀 Quickstart
 
-Get up and running in **under 60 seconds**:
+Get Motia project up and running in **under 60 seconds**:
+### **Prerequisites**
 
-### 1. Create Your Project
+- **Node.js 18+** (we recommend the latest LTS)
+- **npm** ≥ 8 (or **pnpm** / **yarn** – your choice)
+
+---
+
+### 1. Bootstrap a New Motia Project
 
 ```bash
-npx motia@latest create -i
+npx motia@latest create -i   # runs the interactive terminal
 ```
-- Enter project details like template, project name, etc
+Follow the prompts to pick a template, project name, and language.
 
-### 2. Launch the Workbench
+### 2. Start the Workbench
 
-Start the Motia Workbench:
+Inside your new project folder, launch the dev server:
 
 ```bash
 npx motia dev
-# Opens at http://localhost:3000
+# ➜ http://localhost:3000
+```
+This spins up the Motia Workbench – a local UI for building, testing & observing your backend in real-time.
+
+![motia-terminal](assets/motia-terminal.gif)
+
+### 3. Hit Your First Endpoint
+
+Open a new terminal tab and run:
+
+```bash
+curl http://localhost:3000/default
+```
+You should see the JSON response:
+
+```json
+{"message":"Hello World from Motia!"}
 ```
 
+### 4. Explore the Workbench UI
 
-🎉 **That's it!** You now have a fully functional Motia app with:
-- ✅ API endpoint at `/hello-world`
-- ✅ Visual debugger and flow inspector
+The Workbench is your command centre:
+
+- **🌊 Flows** – Visualise how your Steps connect.
+- **🔌 Endpoints** – Test APIs with one click and stream results live.
+- **👁️ Traces** – Inspect end-to-end traces of every execution.
+- **📊 Logs** – View structured logs grouped by trace.
+- **🏪 State** – Inspect the key-value store across Steps.
+
+---
+
+🎉 **That's it!** You now have a fully-featured Motia project with:
+
+- ✅ `/default` API endpoint
+- ✅ Visual debugger & flow inspector
 - ✅ Built-in observability
-- ✅ Hot reload for instant feedback
-
-### 4. Explore the Workbench
-
-The Workbench is your command center for developing and monitoring your Motia application.
-
-- **🌊 Flows**: Visually inspect, design, and understand the connections between your steps.
-- **🔌 Endpoints**: Test your API endpoints directly from the UI, with full support for streaming responses.
-- **👁️ Traces**: Dive into detailed, end-to-end traces of your workflows. See exactly how data flows, where time is spent, and what errors occurred.
-- **📊 Logs**: View structured, correlated logs for every step execution.
-- **🏪 States**: Inspect the internal state and data passed between steps for any given workflow execution.
+- ✅ Hot-reload for instant feedback
 
 ---
 
