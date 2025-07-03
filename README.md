@@ -210,7 +210,7 @@ Write steps in your preferred language:
 | **JavaScript** | ✅ Stable      | `handler.step.js` |
 | **TypeScript** | ✅ Stable      | `handler.step.ts` |
 | **Python**     | ✅ Stable      | `handler.step.py` |
-| **Ruby**       | 🔄 Coming Soon | `handler.step.rb` |
+| **Ruby**       | 🚧 Beta | `handler.step.rb` |
 | **Go**         | 🔄 Coming Soon | `handler.step.go` |
 | **Rust**       | 🔄 Coming Soon | `handler.step.rs` |
 
@@ -251,10 +251,11 @@ Check out our [Contributing Guide](https://github.com/MotiaDev/motia/blob/main/C
 </div>
 
 ---
+<div align="center">
 ## Star History
 
 [![Star History Chart](https://api.star-history.com/svg?repos=motiadev/motia&type=Date)](https://www.star-history.com/#motiadev/motia&Date)
 
-<sub>Built with ❤️ by the Motia team • **Star us on GitHub if you find Motia useful!** ⭐</sub>
+<sub>Built with ❤️ by the Motia team • **Star us if you find Motia useful!** ⭐</sub>
 
 </div>
