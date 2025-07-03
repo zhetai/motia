@@ -18,27 +18,6 @@ export interface BreadcrumbItemProps {
 }
 
 export const BreadcrumbItem: FC<BreadcrumbItemProps> = ({ label, onClick, isLast, dropdownItems, icon }) => {
-  if (dropdownItems?.length) {
-    return (
-      <DropdownMenu>
-        <DropdownMenuTrigger asChild>
-          <Button variant="ghost" size="sm" className="p-1 gap-2">
-            {icon}
-            {label} <ChevronsUpDown className="size-4" />
-          </Button>
-        </DropdownMenuTrigger>
-        <DropdownMenuContent className={'bg-background text-foreground'}>
-          {dropdownItems.map((item) => (
-            <DropdownMenuItem key={item.label as string} className="cursor-pointer gap-2" onClick={item.onClick}>
-              {item.icon}
-              {item.label}
-            </DropdownMenuItem>
-          ))}
-        </DropdownMenuContent>
-      </DropdownMenu>
-    )
-  }
-
   if (isLast) {
     return (
       <Button
@@ -52,6 +31,27 @@ export const BreadcrumbItem: FC<BreadcrumbItemProps> = ({ label, onClick, isLast
           {label}
         </div>
       </Button>
+    )
+  }
+
+  if (dropdownItems?.length) {
+    return (
+      <DropdownMenu>
+        <DropdownMenuTrigger asChild>
+          <Button variant="ghost" size="sm" className="p-1 gap-2">
+            {icon}
+            {label} <ChevronsUpDown className="size-4" />
+          </Button>
+        </DropdownMenuTrigger>
+        <DropdownMenuContent>
+          {dropdownItems.map((item) => (
+            <DropdownMenuItem key={item.label as string} className="cursor-pointer gap-2" onClick={item.onClick}>
+              {item.icon}
+              {item.label}
+            </DropdownMenuItem>
+          ))}
+        </DropdownMenuContent>
+      </DropdownMenu>
     )
   }
 
