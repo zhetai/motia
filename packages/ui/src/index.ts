@@ -23,3 +23,5 @@ export {
   DropdownMenuSubTrigger,
   DropdownMenuSubContent,
 } from './components/ui/dropdown-menu'
+export { SidePanel } from './components/ui/side-panel'
+export { SidePanelDetail, SidePanelDetailItem } from './components/ui/side-panel-detail'

@@ -12,8 +12,34 @@
   }
 }
 
+
+.font-mono {
+  font-family: 'IBM Plex Mono', 'Courier New', monospace;
+  font-size: 14px;
+  line-height: 1.5;
+  font-weight: 500;
+}
+
 .edge-animated {
   stroke-dasharray: 5; /* length of dash pattern */
   stroke-linecap: round; /* round the dash ends */
   animation: flowDash 1s linear infinite;
+}
+
+.json-view {
+  border-radius: 8px;
+  padding: 12px 12px;
+  background:rgba(0, 0, 0, 0.2);
+  font-family: 'IBM Plex Mono', 'Courier New', monospace;
+  font-size: 14px;
+  line-height: 1.5;
+  font-weight: 500;
+}
+
+.json-view--pair, .json-view--property, .json-view > span {
+  line-height: 24px;
+}
+
+.json-view--property {
+  font-weight: 600;
 }

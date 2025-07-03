@@ -1,11 +1,11 @@
-import React from 'react'
 import { LogEntry } from '@/types/observability'
-import { LogLevelBadge } from '@/components/logs/log-level-badge'
+import React from 'react'
+import { LogLevelDot } from '../../logs/log-level-dot'
 
 export const TraceLogEvent: React.FC<{ event: LogEntry }> = ({ event }) => {
   return (
     <div className="flex items-center gap-2">
-      <LogLevelBadge level={event.level} /> {event.message}
+      <LogLevelDot level={event.level} /> {event.message}
     </div>
   )
 }

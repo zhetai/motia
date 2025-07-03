@@ -1,19 +1,20 @@
 import { Badge } from '@/components/ui/badge'
-import { Card, CardContent } from '@/components/ui/card'
-import { cn, formatDuration } from '@/lib/utils'
+import { formatDuration } from '@/lib/utils'
 import { Trace } from '@/types/observability'
+import { SidePanel } from '@motiadev/ui'
 import React, { memo } from 'react'
 import { EventIcon } from '../events/event-icon'
 import { TraceEvent } from '../events/trace-event'
 
 type Props = {
   trace: Trace
+  onClose: () => void
 }
 
-export const TraceItemDetail: React.FC<Props> = memo(({ trace }) => {
+export const TraceItemDetail: React.FC<Props> = memo(({ trace, onClose }) => {
   return (
-    <Card className={cn('mt-2', trace.error && 'border-red-800/80 border-solid')}>
-      <CardContent className="p-4">
+    <SidePanel title={trace.name} className="min-w-[500px]" onClose={onClose}>
+      <div className="px-2 w-[800px] overflow-auto">
         <div className="flex items-center gap-4 text-sm text-muted-foreground mb-4">
           {trace.endTime && <span>Duration: {formatDuration(trace.endTime - trace.startTime)}</span>}
           <div className="bg-blue-500 font-bold text-xs px-[4px] py-[2px] rounded-sm text-blue-100">
@@ -36,13 +37,13 @@ export const TraceItemDetail: React.FC<Props> = memo(({ trace }) => {
             </div>
           ))}
         </div>
-      </CardContent>
+      </div>
       {trace.error && (
         <div className="p-4 bg-red-800/10">
           <div className="text-sm text-red-800 dark:text-red-400 font-semibold">{trace.error.message}</div>
           <div className="text-sm text-red-800 dark:text-red-400 pl-4">{trace.error.stack}</div>
         </div>
       )}
-    </Card>
+    </SidePanel>
   )
 })

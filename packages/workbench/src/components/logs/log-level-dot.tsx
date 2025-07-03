@@ -1,15 +1,15 @@
 import * as React from 'react'
 import { cva, type VariantProps } from 'class-variance-authority'
 
-const badgeVariants = cva('text-xs font-medium tracking-wide w-2 h-2 rounded-full mx-1', {
+const badgeVariants = cva('text-xs font-medium tracking-wide rounded-full h-[6px] w-[6px] m-[4px] outline-[2px]', {
   variants: {
     variant: {
-      info: 'bg-sky-500',
-      trace: 'bg-sky-500',
-      debug: 'bg-sky-500',
-      error: 'bg-rose-500',
-      fatal: 'bg-rose-500',
-      warn: 'bg-amber-500',
+      info: 'bg-[#2862FE] outline-[#2862FE]/20',
+      trace: 'bg-sky-500 outline-sky-500',
+      debug: 'bg-sky-500 outline-sky-500',
+      error: 'bg-rose-500 outline-rose-500',
+      fatal: 'bg-rose-500 outline-rose-500',
+      warn: 'bg-amber-500 outline-amber-500',
     },
   },
 })
