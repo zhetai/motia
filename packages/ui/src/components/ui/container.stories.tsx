@@ -23,12 +23,6 @@ const meta: Meta<typeof Container> = {
     actions: { argTypesRegex: '^on.*' },
   },
   tags: ['autodocs'],
-  argTypes: {
-    defaultExpanded: {
-      control: { type: 'boolean' },
-      description: 'Whether the container is expanded by default',
-    },
-  },
 }
 
 export default meta

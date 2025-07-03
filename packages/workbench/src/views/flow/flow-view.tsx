@@ -1,4 +1,3 @@
-import { LogConsole } from '@/components/logs/log-console'
 import {
   Background,
   BackgroundVariant,
@@ -110,7 +109,6 @@ export const FlowView: React.FC<Props> = ({ flow, flowConfig }) => {
           </defs>
         </svg>
       </ReactFlow>
-      <LogConsole />
     </div>
   )
 }

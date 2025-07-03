@@ -3,8 +3,9 @@ import { TraceTimeline } from '@/components/observability/trace-timeline'
 import { TraceGroup } from '@/types/observability'
 import { useStreamGroup } from '@motiadev/stream-client-react'
 import { useState } from 'react'
-import { TracesGroups } from '../components/observability/traces-groups'
+import { TracesGroups } from '@/components/observability/traces-groups'
 
+// TODO MOVE to a component
 export const TracesPage = () => {
   const [selectedGroupId, setSelectedGroupId] = useState<string | null>(null)
   const { data } = useStreamGroup<TraceGroup>({ streamName: 'motia-trace-group', groupId: 'default' })
@@ -14,12 +15,12 @@ export const TracesPage = () => {
   }
 
   return (
-    <div className="flex flex-col h-screen">
-      <div className="border-b border-border p-4">
+    <div className="w-full h-full bg-background flex flex-col">
+      <div className="border-b border-border p-4 flex-shrink-0">
         <ObservabilityStats groups={data} />
       </div>
 
-      <div className="flex flex-1 overflow-hidden">
+      <div className="flex flex-1 min-h-0">
         <div className="w-1/3 border-r border-border overflow-auto" data-testid="traces-container">
           <TracesGroups groups={data} selectedGroupId={selectedGroupId} onGroupSelect={handleGroupSelect} />
         </div>
