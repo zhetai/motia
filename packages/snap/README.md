@@ -205,7 +205,7 @@ Write steps in your preferred language:
 | **JavaScript** | ✅ Stable      | `handler.step.js` |
 | **TypeScript** | ✅ Stable      | `handler.step.ts` |
 | **Python**     | ✅ Stable      | `handler.step.py` |
-| **Ruby**       | 🔄 Coming Soon | `handler.step.rb` |
+| **Ruby**       | 🚧 Beta | `handler.step.rb` |
 | **Go**         | 🔄 Coming Soon | `handler.step.go` |
 | **Rust**       | 🔄 Coming Soon | `handler.step.rs` |
 
