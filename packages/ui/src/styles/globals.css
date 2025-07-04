@@ -173,15 +173,41 @@
   
   --secondary-foreground: var(--light-600);
   --muted-foreground: var(--light-600);
-  
-  /* Chart colors for dark theme */
-  --chart-2: var(--light-600);
-  --chart-3: var(--light-400);
-  --chart-4: var(--light-200);
-  --chart-5: var(--light-100);
-  
-  --header-accent-foreground: var(--light-600);
-  --sidebar-accent-foreground: var(--light-600);
+
+  --card: var(--surface-content);
+  --card-foreground: var(--foreground);
+
+  --popover: var(--surface-content);
+  --popover-foreground: var(--foreground);
+
+  --input: var(--states-hover);
+  --ring: var(--border-accent);
+
+  --chart-1: var(--accent-1000);
+  --chart-2: var(--accent-800);
+  --chart-3: var(--accent-600);
+  --chart-4: var(--accent-400);
+  --chart-5: var(--accent-200);
+
+  /* Header tokens */
+  --header: var(--background);
+  --header-foreground: var(--text-header);
+  --header-primary: var(--primary);
+  --header-primary-foreground: var(--primary-foreground);
+  --header-accent: var(--surface-component);
+  --header-accent-foreground: var(--text-body);
+  --header-border: var(--border);
+  --header-ring: var(--ring);
+
+  /* Sidebar tokens */
+  --sidebar: var(--background);
+  --sidebar-foreground: var(--text-header);
+  --sidebar-primary: var(--primary);
+  --sidebar-primary-foreground: var(--primary-foreground);
+  --sidebar-accent: var(--surface-component);
+  --sidebar-accent-foreground: var(--text-body);
+  --sidebar-border: var(--border);
+  --sidebar-ring: var(--ring);
 }
 
 @theme inline {

@@ -37,6 +37,7 @@ export const LogDetail: React.FC<Props> = ({ log, onClose }) => {
 
   return (
     <Sidebar
+      onClose={onClose}
       title="Logs Details"
       subtitle="Details including custom properties"
       actions={[

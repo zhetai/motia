@@ -12,6 +12,11 @@
   }
 }
 
+.dark {
+  .react-flow__panel {
+    background: var(--background)
+  }
+}
 
 .font-mono {
   font-family: 'IBM Plex Mono', 'Courier New', monospace;

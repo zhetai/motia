@@ -1,14 +1,61 @@
 import { Panel, type PanelProps } from '@motiadev/ui'
 import { createPortal } from 'react-dom'
-import { FC } from 'react'
+import { FC, useEffect, useMemo } from 'react'
+import { useResizable } from 'react-use-resizable'
+import { Equal } from 'lucide-react'
 
 export const APP_SIDEBAR_CONTAINER_ID = 'app-sidebar-container'
 
-export const Sidebar: FC<PanelProps> = (props) => {
+const CLOSE_PREVIOUS_SIDEBAR_EVENT = 'close-previous-sidebar'
+
+export type SidebarProps = PanelProps & {
+  onClose: () => void
+}
+
+export const Sidebar: FC<SidebarProps> = (props) => {
+  const sidebarId = useMemo(() => Symbol(), [])
+  const { getRootProps, getHandleProps } = useResizable({
+    lockVertical: true,
+    initialWidth: 400,
+    initialHeight: '100%',
+    onDragStart: () => {
+      document.body.style.userSelect = 'none'
+    },
+    onDragEnd: () => {
+      document.body.style.userSelect = ''
+    },
+  })
+
+  useEffect(() => {
+    const event = new CustomEvent(CLOSE_PREVIOUS_SIDEBAR_EVENT, { detail: { sidebarId } })
+    window.dispatchEvent(event)
+
+    const handleClose = (e: Event) => {
+      const customEvent = e as CustomEvent
+      if (customEvent.detail.sidebarId !== sidebarId) {
+        props.onClose()
+      }
+    }
+
+    window.addEventListener(CLOSE_PREVIOUS_SIDEBAR_EVENT, handleClose)
+
+    return () => {
+      window.removeEventListener(CLOSE_PREVIOUS_SIDEBAR_EVENT, handleClose)
+    }
+  }, [sidebarId])
+
   return createPortal(
-    <div id={APP_SIDEBAR_CONTAINER_ID} className="w-[400px] h-full pr-2 py-2 max-h-full">
-      <Panel {...props} />
+    <div {...getRootProps()} className="pr-2 py-2 relative">
+      <div
+        {...getHandleProps({
+          reverse: true,
+        })}
+        className="flex h-6 w-6 items-center justify-center rounded-full bg-background border border-border absolute top-1/2 -translate-y-1/2 -left-4 z-20"
+      >
+        <Equal className="rotate-90 w-4 h-4 text-muted-foreground" />
+      </div>
+      <Panel {...props} className="max-h-[calc(100vh-80px)] h-full" />
     </div>,
-    document.querySelector(`#${APP_SIDEBAR_CONTAINER_ID}`) as Element,
+    document.querySelector(`#${APP_SIDEBAR_CONTAINER_ID}`) as HTMLDivElement,
   )
 }

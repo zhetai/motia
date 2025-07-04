@@ -29,7 +29,7 @@ export const BreadcrumbItem: FC<BreadcrumbItemProps> = ({ label, onClick, isLast
         </DropdownMenuTrigger>
         <DropdownMenuContent className={'bg-background text-foreground'}>
           {dropdownItems.map((item) => (
-            <DropdownMenuItem key={item.label as string} className="cursor-pointer gap-2" onClick={item.onClick}>
+            <DropdownMenuItem key={`dropdown-${item.label}`} className="cursor-pointer gap-2" onClick={item.onClick}>
               {item.icon}
               {item.label}
             </DropdownMenuItem>
@@ -83,9 +83,10 @@ export const Breadcrumb: FC<BreadcrumbProps> = ({ className, items, ...props }) 
   return (
     <div className={cn('flex items-center', className)} {...props}>
       {items.map((item, index) => (
-        <React.Fragment key={item.label as string}>
-          {index !== 0 && <span className="mx-1.5 text-muted-foreground">/</span>}
+        <React.Fragment key={`${item.label}-fragment`}>
+          {index !== 0 && <span key={`${item.label}-separator`} className="mx-1.5 text-muted-foreground">/</span>}
           <BreadcrumbItem
+            key={`${item.label}-item`}
             label={item.label}
             icon={item.icon}
             isLast={index === lastIndex}

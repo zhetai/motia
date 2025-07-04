@@ -15,6 +15,7 @@ type Props = {
 export const TraceItemDetail: React.FC<Props> = memo(({ trace, onClose }) => {
   return (
     <Sidebar
+      onClose={onClose}
       title="Trace Details"
       subtitle={`Viewing details from step ${trace.name}`}
       actions={[{ icon: <X />, onClick: onClose, label: 'Close' }]}

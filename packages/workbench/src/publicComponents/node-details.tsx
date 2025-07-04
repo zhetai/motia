@@ -1,8 +1,8 @@
 import { ChevronRight, X } from 'lucide-react'
-import React, { PropsWithChildren, useState } from 'react'
-import { Sidebar } from '../components/sidebar/sidebar'
-import { Label } from '../components/ui/label'
-import { LanguageIndicator } from '../views/flow/nodes/language-indicator'
+import React, { PropsWithChildren, useCallback, useState } from 'react'
+import { Sidebar } from '@/components/sidebar/sidebar'
+import { Label } from '@/components/ui/label'
+import { LanguageIndicator } from '@/views/flow/nodes/language-indicator'
 import { Subscribe } from './subscribe'
 import { Emits } from './emits'
 
@@ -29,6 +29,10 @@ export const NodeDetails: React.FC<Props> = (props) => {
   const { name, type, subscribes, emits, description, language, children } = props
   const [isOpen, setIsOpen] = useState(false)
 
+  const onClose = useCallback(() => {
+    setIsOpen(false)
+  }, [])
+
   return (
     <>
       <div className="flex justify-end gap-2">
@@ -41,9 +45,10 @@ export const NodeDetails: React.FC<Props> = (props) => {
       </div>
       {isOpen && (
         <Sidebar
+          onClose={onClose}
           title={name}
           subtitle={description}
-          actions={[{ icon: <X />, onClick: () => setIsOpen(false), label: 'Close' }]}
+          actions={[{ icon: <X />, onClick: onClose, label: 'Close' }]}
           details={[
             { label: 'Type', value: <div className="capitalize flex gap-2 items-center">{type}</div> },
             {
