@@ -1,8 +1,9 @@
 import { Badge } from '@/components/ui/badge'
 import { formatDuration } from '@/lib/utils'
 import { Trace } from '@/types/observability'
-import { SidePanel } from '@motiadev/ui'
+import { X } from 'lucide-react'
 import React, { memo } from 'react'
+import { Sidebar } from '../../sidebar/sidebar'
 import { EventIcon } from '../events/event-icon'
 import { TraceEvent } from '../events/trace-event'
 
@@ -13,7 +14,11 @@ type Props = {
 
 export const TraceItemDetail: React.FC<Props> = memo(({ trace, onClose }) => {
   return (
-    <SidePanel title={trace.name} className="min-w-[500px]" onClose={onClose}>
+    <Sidebar
+      title="Trace Details"
+      subtitle={`Viewing details from step ${trace.name}`}
+      actions={[{ icon: <X />, onClick: onClose, label: 'Close' }]}
+    >
       <div className="px-2 w-[800px] overflow-auto">
         <div className="flex items-center gap-4 text-sm text-muted-foreground mb-4">
           {trace.endTime && <span>Duration: {formatDuration(trace.endTime - trace.startTime)}</span>}
@@ -44,6 +49,6 @@ export const TraceItemDetail: React.FC<Props> = memo(({ trace, onClose }) => {
           <div className="text-sm text-red-800 dark:text-red-400 pl-4">{trace.error.stack}</div>
         </div>
       )}
-    </SidePanel>
+    </Sidebar>
   )
 })

@@ -8,12 +8,12 @@ export const CronNode = ({ data }: CronNodeProps) => {
     <BaseNode
       variant="cron"
       title={data.name}
+      subtitle={data.description}
       language={data.language}
       headerChildren={<Clock className="w-4 h-4 text-purple-400" />}
       disableTargetHandle={!data.virtualSubscribes?.length}
       disableSourceHandle={!data.virtualEmits?.length && !data.emits?.length}
     >
-      <div className="text-sm text-muted-foreground">{data.description}</div>
       <div className="text-xs text-muted-foreground flex items-center gap-2">
         <Clock className="w-3 h-3" /> {data.cronExpression}
       </div>

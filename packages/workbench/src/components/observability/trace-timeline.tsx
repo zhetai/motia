@@ -24,16 +24,20 @@ export const TraceTimeline: React.FC<Props> = memo(({ groupId }) => {
 
   const selectedTrace = useMemo(() => data?.find((trace) => trace.id === selectedTraceId), [data, selectedTraceId])
 
+  const zoomMinus = () => {
+    if (zoom > 0.5) setZoom(zoom - 0.1)
+  }
+
   if (!group) return null
 
   return (
-    <div className="flex flex-row h-full">
+    <div className="flex flex-row h-full overflow-y-auto">
       <div className="flex flex-col gap-2 border-r">
-        <div className="w-full h-[37px] border-b flex items-center justify-center gap-2">
-          <Button variant="icon" size="sm" className="px-2" onClick={() => setZoom(zoom - 0.1)}>
+        <div className="w-full min-h-[37px] h-[37px] border-b flex items-center justify-center gap-2 sticky top-0 bg-background">
+          <Button variant="icon" size="sm" className="px-2" onClick={zoomMinus}>
             <Minus className="w-4 h-4 cursor-pointer" />
           </Button>
-          <span className="text-sm font-bold text-muted-foreground">Zoom</span>
+          <span className="text-sm font-bold text-muted-foreground">{Math.floor(zoom * 100)}%</span>
           <Button variant="icon" size="sm" className="px-2" onClick={() => setZoom(zoom + 0.1)}>
             <Plus className="w-4 h-4 cursor-pointer" />
           </Button>
@@ -49,10 +53,10 @@ export const TraceTimeline: React.FC<Props> = memo(({ groupId }) => {
           ))}
         </div>
       </div>
-      <div className="flex flex-col flex-1 overflow-auto">
+      <div className="flex flex-col flex-1 overflow-x-auto h-full">
         <div className="flex flex-row items-center min-w-full" style={{ width: `${zoom * 1000}px` }}>
           <div className="flex flex-1 relative">
-            <div className="flex justify-between font-mono p-2 w-full text-xs text-muted-foreground bg-muted-foreground/10">
+            <div className="flex justify-between font-mono p-2 w-full text-xs text-muted-foreground bg-muted-foreground/10 sticky top-0">
               <span>0ms</span>
               <span>{Math.floor((endTime - group.startTime) * 0.25)}ms</span>
               <span>{Math.floor((endTime - group.startTime) * 0.5)}ms</span>
@@ -68,7 +72,7 @@ export const TraceTimeline: React.FC<Props> = memo(({ groupId }) => {
             </div>
           </div>
         </div>
-        <div className="h-full overflow-auto p-2 min-w-full" style={{ width: `${zoom * 1000}px` }}>
+        <div className="p-2" style={{ width: `${zoom * 1000}px` }}>
           {data?.map((trace) => (
             <TraceItem
               key={trace.id}

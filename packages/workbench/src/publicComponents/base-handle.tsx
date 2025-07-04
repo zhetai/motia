@@ -11,14 +11,17 @@ type Props = HandleProps &
 
 export const BaseHandle: React.FC<Props> = (props) => {
   const { isHidden, position, variant, ...rest } = props
+  const isHorizontal = position === Position.Left || position === Position.Right
 
   return (
     <div
       className={clsx(
         'absolute w-[6px] h-[6px]',
-        position === Position.Top && '-top-[20px]',
-        position === Position.Bottom && '-bottom-[20px]',
-        'left-1/2 -ml-[2px]',
+        position === Position.Top && '-top-[4px]',
+        position === Position.Bottom && '-bottom-[4px]',
+        position === Position.Left && '-left-[4px]',
+        position === Position.Right && '-right-[4px]',
+        isHorizontal ? 'top-1/2 -mt-[2px]' : 'left-1/2 -ml-[2px]',
         isHidden && 'hidden',
       )}
     >

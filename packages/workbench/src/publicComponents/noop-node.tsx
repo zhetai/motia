@@ -11,10 +11,10 @@ export const NoopNode = ({ data, children }: Props) => {
     <BaseNode
       variant="noop"
       title={data.name}
+      subtitle={data.description}
       disableSourceHandle={!data.virtualEmits.length}
       disableTargetHandle={!data.subscribes?.length}
     >
-      {data.description && <div className="text-sm max-w-[300px] text-muted-foreground">{data.description}</div>}
       {children}
     </BaseNode>
   )

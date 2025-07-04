@@ -12,11 +12,11 @@ export const EventNode = (props: Props) => {
     <BaseNode
       variant="event"
       title={data.name}
+      subtitle={data.description}
       language={data.language}
       disableSourceHandle={!data.emits?.length && !data.virtualEmits?.length}
       disableTargetHandle={!data.subscribes?.length && !data.virtualSubscribes?.length}
     >
-      <div className="text-sm text-muted-foreground">{data.description}</div>
       {children}
 
       <NodeDetails
