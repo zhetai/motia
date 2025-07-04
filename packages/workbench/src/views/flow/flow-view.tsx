@@ -85,7 +85,7 @@ export const FlowView: React.FC<Props> = ({ flow, flowConfig }) => {
   }
 
   return (
-    <div className="w-full h-full relative bg-background">
+    <div className="w-full h-full relative">
       {!initialized && <FlowLoader />}
       <Legend onHover={setHoveredType} />
       <ReactFlow

@@ -13,9 +13,5 @@ export const Flow = () => {
       </div>
     )
 
-  return (
-    <div className="w-full h-full bg-background">
-      <FlowView flow={flow} flowConfig={flowConfig!} />
-    </div>
-  )
+  return <FlowView flow={flow} flowConfig={flowConfig!} />
 }

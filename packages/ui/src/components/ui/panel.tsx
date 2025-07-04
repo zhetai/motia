@@ -1,15 +1,15 @@
 import { cn } from '@/lib/utils'
 import { Button } from './button'
-import { FC } from 'react'
+import { FC, ReactNode } from 'react'
 
 export interface PanelDetailItem {
   label: string
-  value: string | React.ReactNode
+  value: string | ReactNode
   highlighted?: boolean
 }
 
 export interface PanelAction {
-  icon: React.ReactNode
+  icon: ReactNode
   onClick: () => void
   label?: string
 }
@@ -17,10 +17,10 @@ export interface PanelAction {
 export interface PanelProps {
   title: string
   subtitle?: string
-  details: PanelDetailItem[]
+  details?: PanelDetailItem[]
   actions?: PanelAction[]
   className?: string
-  children?: React.ReactNode
+  children?: ReactNode
 }
 
 export const Panel: FC<PanelProps> = ({ title, subtitle, details, actions, className, children }) => {
@@ -28,7 +28,6 @@ export const Panel: FC<PanelProps> = ({ title, subtitle, details, actions, class
     <div
       className={cn(
         'relative size-full backdrop-blur-[48px] backdrop-filter',
-        'bg-card',
         'text-foreground',
         'border border-border',
         'rounded-lg overflow-hidden',
@@ -36,7 +35,7 @@ export const Panel: FC<PanelProps> = ({ title, subtitle, details, actions, class
       )}
     >
       <div className="flex flex-col size-full">
-        <div className="relative shrink-0 w-full border-b border-border">
+        <div className="relative shrink-0 w-full border-b border-border bg-card">
           <div className="flex flex-col gap-1 px-5 py-4">
             <div className="flex items-center justify-between w-full">
               <h2 className="text-base font-semibold text-foreground tracking-[-0.25px] leading-tight">{title}</h2>
@@ -58,7 +57,7 @@ export const Panel: FC<PanelProps> = ({ title, subtitle, details, actions, class
 
         <div className="flex-1 overflow-auto">
           <div className="flex flex-col gap-2 px-5 py-4">
-            {details.map((detail, index) => (
+            {details?.map((detail, index) => (
               <div key={index} className="flex gap-4 items-start">
                 <div className="flex items-center h-8 shrink-0">
                   <span className="text-sm font-medium text-foreground tracking-[-0.25px] w-24 truncate">
