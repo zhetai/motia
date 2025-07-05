@@ -31,32 +31,20 @@ export const TraceTimeline: React.FC<Props> = memo(({ groupId }) => {
   if (!group) return null
 
   return (
-    <div className="flex flex-row h-full overflow-y-auto">
-      <div className="flex flex-col gap-2 border-r">
-        <div className="w-full min-h-[37px] h-[37px] border-b flex items-center justify-center gap-2 sticky top-0 bg-background">
-          <Button variant="icon" size="sm" className="px-2" onClick={zoomMinus}>
-            <Minus className="w-4 h-4 cursor-pointer" />
-          </Button>
-          <span className="text-sm font-bold text-muted-foreground">{Math.floor(zoom * 100)}%</span>
-          <Button variant="icon" size="sm" className="px-2" onClick={() => setZoom(zoom + 0.1)}>
-            <Plus className="w-4 h-4 cursor-pointer" />
-          </Button>
-        </div>
-        <div className="px-2">
-          {data?.map((trace) => (
-            <div
-              key={trace.id}
-              className="flex items-center min-w-[200px] max-w-[250px] h-[32px] max-h-[32px] py-4 px-2"
-            >
-              <div className="text-sm font-semibold text-foreground truncate">{trace.name}</div>
+    <>
+      <div className="flex flex-col flex-1 overflow-x-auto h-full relative">
+        <div className="flex flex-col items-center min-w-full sticky top-0" style={{ width: `${zoom * 1000}px` }}>
+          <div className="flex flex-1 w-full sticky top-0 bg-background z-10">
+            <div className="w-full min-h-[37px] h-[37px] min-w-[200px] max-w-[200px] flex items-center justify-center gap-2 sticky left-0 top-0 dark:bg-[#121212] bg-[#f1f1f1]">
+              <Button variant="icon" size="sm" className="px-2" onClick={zoomMinus}>
+                <Minus className="w-4 h-4 cursor-pointer" />
+              </Button>
+              <span className="text-sm font-bold text-muted-foreground">{Math.floor(zoom * 100)}%</span>
+              <Button variant="icon" size="sm" className="px-2" onClick={() => setZoom(zoom + 0.1)}>
+                <Plus className="w-4 h-4 cursor-pointer" />
+              </Button>
             </div>
-          ))}
-        </div>
-      </div>
-      <div className="flex flex-col flex-1 overflow-x-auto h-full">
-        <div className="flex flex-row items-center min-w-full" style={{ width: `${zoom * 1000}px` }}>
-          <div className="flex flex-1 relative">
-            <div className="flex justify-between font-mono p-2 w-full text-xs text-muted-foreground bg-muted-foreground/10 sticky top-0">
+            <div className="flex justify-between font-mono p-2 w-full text-xs text-muted-foreground dark:bg-[#131313] bg-[#f1f1f1]">
               <span>0ms</span>
               <span>{Math.floor((endTime - group.startTime) * 0.25)}ms</span>
               <span>{Math.floor((endTime - group.startTime) * 0.5)}ms</span>
@@ -71,20 +59,21 @@ export const TraceTimeline: React.FC<Props> = memo(({ groupId }) => {
               </div>
             </div>
           </div>
-        </div>
-        <div className="p-2" style={{ width: `${zoom * 1000}px` }}>
-          {data?.map((trace) => (
-            <TraceItem
-              key={trace.id}
-              trace={trace}
-              group={group}
-              groupEndTime={endTime}
-              onExpand={setSelectedTraceId}
-            />
-          ))}
+
+          <div className="flex flex-col w-full h-full">
+            {data?.map((trace) => (
+              <TraceItem
+                key={trace.id}
+                trace={trace}
+                group={group}
+                groupEndTime={endTime}
+                onExpand={setSelectedTraceId}
+              />
+            ))}
+          </div>
         </div>
       </div>
       {selectedTrace && <TraceItemDetail trace={selectedTrace} onClose={() => setSelectedTraceId(null)} />}
-    </div>
+    </>
   )
 })
