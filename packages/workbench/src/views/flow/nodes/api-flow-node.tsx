@@ -1,6 +1,6 @@
-import { ApiNode } from '../../../publicComponents/api-node'
-import { ApiNodeData } from './nodes.types'
+import { ApiNode } from '@/publicComponents/api-node'
+import { ApiNodeProps } from '@/publicComponents/node-props'
 
-export const ApiFlowNode = ({ data }: { data: ApiNodeData }) => {
+export const ApiFlowNode = ({ data }: ApiNodeProps) => {
   return <ApiNode data={data} />
 }

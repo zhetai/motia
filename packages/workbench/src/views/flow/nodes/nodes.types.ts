@@ -45,6 +45,10 @@ export type CronNodeData = {
 export type NodeData = (EventNodeData | ApiNodeData | NoopNodeData | CronNodeData) & {
   position?: { x: number; y: number }
   filePath?: string
+  nodeConfig?: {
+    sourceHandlePosition?: 'bottom' | 'right'
+    targetHandlePosition?: 'top' | 'left'
+  }
 }
 
 // ducplicate of packages/core/src/flows-endpoint.ts

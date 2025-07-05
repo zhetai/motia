@@ -1,32 +1,21 @@
 import { PropsWithChildren } from 'react'
 import { BaseNode } from './base-node'
-import { NodeDetails } from './node-details'
 import { EventNodeProps } from './node-props'
 
-type Props = PropsWithChildren<EventNodeProps & { className?: string }>
-
-export const EventNode = (props: Props) => {
-  const { data, children } = props
-
+export const EventNode: React.FC<PropsWithChildren<EventNodeProps>> = ({ data, children }) => {
   return (
     <BaseNode
+      data={data}
       variant="event"
       title={data.name}
       subtitle={data.description}
       language={data.language}
       disableSourceHandle={!data.emits?.length && !data.virtualEmits?.length}
       disableTargetHandle={!data.subscribes?.length && !data.virtualSubscribes?.length}
+      emits={data.emits}
+      subscribes={data.subscribes}
     >
       {children}
-
-      <NodeDetails
-        type="event"
-        name={data.name}
-        subscribes={data.subscribes}
-        emits={data.emits}
-        description={data.description}
-        language={data.language}
-      />
     </BaseNode>
   )
 }

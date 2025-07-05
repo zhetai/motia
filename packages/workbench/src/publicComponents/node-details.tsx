@@ -2,7 +2,7 @@ import { ChevronRight, X } from 'lucide-react'
 import React, { PropsWithChildren, useCallback, useState } from 'react'
 import { Sidebar } from '@/components/sidebar/sidebar'
 import { Label } from '@/components/ui/label'
-import { LanguageIndicator } from '@/views/flow/nodes/language-indicator'
+import { LanguageIndicator } from '@/publicComponents/base-node/language-indicator'
 import { Subscribe } from './subscribe'
 import { Emits } from './emits'
 

@@ -1,6 +1,6 @@
-import { NoopNode } from '../../../publicComponents/noop-node'
-import { NoopNodeData } from './nodes.types'
+import { NoopNodeProps } from '@/publicComponents/node-props'
+import { NoopNode } from '@/publicComponents/noop-node'
 
-export const NoopFlowNode = ({ data }: { data: NoopNodeData }) => {
+export const NoopFlowNode = ({ data }: NoopNodeProps) => {
   return <NoopNode data={data} />
 }

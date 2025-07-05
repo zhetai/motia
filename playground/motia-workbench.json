@@ -47,23 +47,6 @@
     }
   },
   {
-    "id": "test-state",
-    "config": {
-      "steps/testState/test_state.step.py": {
-        "x": 169,
-        "y": 219
-      },
-      "steps/testState/testStateCheck.step.ts": {
-        "x": 521,
-        "y": 223
-      },
-      "steps/testState/testState.api.step.ts": {
-        "x": -181,
-        "y": 199
-      }
-    }
-  },
-  {
     "id": "open-ai",
     "config": {
       "steps/open-ai-python/02-prompt.step.py": {
@@ -85,35 +68,65 @@
     }
   },
   {
+    "id": "test-state",
+    "config": {
+      "steps/testState/test_state.step.py": {
+        "x": 169,
+        "y": 219,
+        "sourceHandlePosition": "right",
+        "targetHandlePosition": "left"
+      },
+      "steps/testState/testStateCheck.step.ts": {
+        "x": 535,
+        "y": 219,
+        "targetHandlePosition": "left"
+      },
+      "steps/testState/testState.api.step.ts": {
+        "x": -224,
+        "y": 192,
+        "sourceHandlePosition": "right"
+      }
+    }
+  },
+  {
     "id": "parallel-merge",
     "config": {
       "steps/parallelMergeState/stepC.step.py": {
         "x": 43,
-        "y": 244
+        "y": 157,
+        "sourceHandlePosition": "right",
+        "targetHandlePosition": "left"
       },
       "steps/parallelMergeState/stepB.step.py": {
         "x": 44,
-        "y": 43
+        "y": 43,
+        "sourceHandlePosition": "right",
+        "targetHandlePosition": "left"
       },
       "steps/parallelMergeState/stepA.step.ts": {
-        "x": 42,
-        "y": -141
+        "x": 45,
+        "y": -58,
+        "sourceHandlePosition": "right",
+        "targetHandlePosition": "left"
       },
       "steps/parallelMergeState/startParallelMerge.step.ts": {
-        "x": -401,
-        "y": 26
+        "x": -396,
+        "y": -5,
+        "sourceHandlePosition": "right",
+        "targetHandlePosition": "left"
       },
       "steps/parallelMergeState/noopStartButton.step.ts": {
-        "x": -613,
-        "y": 62
+        "x": -641,
+        "y": 8,
+        "sourceHandlePosition": "right"
       },
       "steps/parallelMergeState/joinStep.step.ts": {
-        "x": 342,
-        "y": 60
+        "x": 388,
+        "y": 22
       },
       "steps/parallelMergeState/joinComplete.step.ts": {
-        "x": 765,
-        "y": 33
+        "x": 425,
+        "y": 153
       }
     }
   }

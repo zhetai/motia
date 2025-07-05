@@ -1,16 +1,16 @@
 import React, { HTMLAttributes } from 'react'
 import { HandleProps, Position, Handle as RFHandle } from '@xyflow/react'
 import clsx from 'clsx'
-import { colorMap } from './colorMap'
 
 type Props = HandleProps &
   Omit<HTMLAttributes<HTMLDivElement>, 'id'> & {
     isHidden?: boolean
     variant?: string | null
+    onTogglePosition?: () => void
   }
 
 export const BaseHandle: React.FC<Props> = (props) => {
-  const { isHidden, position, variant, ...rest } = props
+  const { isHidden, position, variant, onTogglePosition, ...rest } = props
   const isHorizontal = position === Position.Left || position === Position.Right
 
   return (
@@ -24,14 +24,14 @@ export const BaseHandle: React.FC<Props> = (props) => {
         isHorizontal ? 'top-1/2 -mt-[2px]' : 'left-1/2 -ml-[2px]',
         isHidden && 'hidden',
       )}
+      onClick={onTogglePosition}
     >
       <RFHandle
         {...rest}
         position={position}
-        style={{
-          background: colorMap[variant as keyof typeof colorMap],
-        }}
+        style={{ background: 'rgb(30,118,231)' }}
         className="
+        bg-white/50
         !static
         !w-[6px]
         !h-[6px]

@@ -4,9 +4,9 @@ import type { EdgeData, NodeData } from '../nodes/nodes.types'
 import { ApiFlowNode } from '../nodes/api-flow-node'
 import { NoopFlowNode } from '../nodes/noop-flow-node'
 import { EventFlowNode } from '../nodes/event-flow-node'
-import { CronNode } from '@/publicComponents/cron-node'
 import isEqual from 'fast-deep-equal'
 import { useSaveWorkflowConfig } from '@/views/flow/hooks/use-save-workflow-config'
+import { CronFlowNode } from '../nodes/cron-flow-node'
 
 type Emit = string | { topic: string; label?: string }
 
@@ -35,9 +35,7 @@ export type FlowResponse = {
 
 export type FlowConfigResponse = {
   id: string
-  config: {
-    [stepName: string]: Position
-  }
+  config: Record<string, NodeConfig>
 }
 
 type FlowEdge = {
@@ -47,15 +45,17 @@ type FlowEdge = {
   data: EdgeData
 }
 
-type Position = {
+type NodeConfig = {
   x: number
   y: number
+  sourceHandlePosition?: 'bottom' | 'right'
+  targetHandlePosition?: 'top' | 'left'
 }
 
-const DEFAULT_POSITION: Position = { x: 0, y: 0 }
+const DEFAULT_CONFIG: NodeConfig = { x: 0, y: 0 }
 
-const getNodePosition = (flowConfig: FlowConfigResponse | null, stepName: string): Position => {
-  return flowConfig?.config[stepName] || DEFAULT_POSITION
+const getNodePosition = (flowConfig: FlowConfigResponse | null, stepName: string): NodeConfig => {
+  return flowConfig?.config[stepName] || DEFAULT_CONFIG
 }
 
 type FlowState = {
@@ -72,7 +72,7 @@ const BASE_NODE_TYPES: Record<string, React.ComponentType<any>> = {
   event: EventFlowNode,
   api: ApiFlowNode,
   noop: NoopFlowNode,
-  cron: CronNode,
+  cron: CronFlowNode,
 }
 
 async function importFlow(flow: FlowResponse, flowConfig: FlowConfigResponse | null): Promise<FlowState> {
@@ -106,8 +106,8 @@ async function importFlow(flow: FlowResponse, flowConfig: FlowConfigResponse | n
     id: step.id,
     type: step.nodeComponentPath || step.type,
     filePath: step.filePath,
-    position: step.filePath ? getNodePosition(flowConfig, step.filePath) : DEFAULT_POSITION,
-    data: step,
+    position: step.filePath ? getNodePosition(flowConfig, step.filePath) : DEFAULT_CONFIG,
+    data: { ...step, nodeConfig: step.filePath ? getNodePosition(flowConfig, step.filePath) : DEFAULT_CONFIG },
     language: step.language,
   }))
 
@@ -173,11 +173,20 @@ export const useGetFlowState = (flow: FlowResponse, flowConfig: FlowConfigRespon
               x: Math.round(node.position.x),
               y: Math.round(node.position.y),
             }
+
+            if (node.data.nodeConfig?.sourceHandlePosition) {
+              acc[node.data.filePath].sourceHandlePosition = node.data.nodeConfig.sourceHandlePosition
+            }
+            if (node.data.nodeConfig?.targetHandlePosition) {
+              acc[node.data.filePath].targetHandlePosition = node.data.nodeConfig.targetHandlePosition
+            }
           }
           return acc
         }, {})
 
         if (!isEqual(steps, lastSavedConfigRef.current)) {
+          console.log('steps', steps, lastSavedConfigRef.current)
+
           lastSavedConfigRef.current = steps
           const newConfig = { id: flowIdRef.current, config: steps }
 
