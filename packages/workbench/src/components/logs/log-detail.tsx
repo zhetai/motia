@@ -16,13 +16,13 @@ type Props = {
 const defaultProps = ['id', 'msg', 'time', 'level', 'step', 'flows', 'traceId']
 
 export const LogDetail: React.FC<Props> = ({ log, onClose }) => {
-  if (!log) {
-    return null
-  }
-
   const [hasOtherProps, setHasOtherProps] = useState(false)
 
   const otherPropsObject = useMemo(() => {
+    if (!log) {
+      return null
+    }
+
     const otherProps = Object.keys(log ?? {}).filter((key) => !defaultProps.includes(key))
     setHasOtherProps(otherProps.length > 0)
 
@@ -31,9 +31,13 @@ export const LogDetail: React.FC<Props> = ({ log, onClose }) => {
         acc[key] = log[key]
         return acc
       },
-      {} as Record<string, any>,
+      {} as Record<string, unknown>,
     )
   }, [log])
+
+  if (!log) {
+    return null
+  }
 
   return (
     <Sidebar

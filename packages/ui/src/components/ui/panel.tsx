@@ -15,8 +15,8 @@ export interface PanelAction {
 }
 
 export interface PanelProps {
-  title: string
-  subtitle?: string
+  title: ReactNode
+  subtitle?: ReactNode
   details?: PanelDetailItem[]
   actions?: PanelAction[]
   className?: string
@@ -37,8 +37,10 @@ export const Panel: FC<PanelProps> = ({ title, subtitle, details, actions, class
       <div className="flex flex-col size-full">
         <div className="relative shrink-0 w-full border-b border-border bg-card">
           <div className="flex flex-col gap-1 px-5 py-4">
-            <div className="flex items-center justify-between w-full">
-              <h2 className="text-base font-semibold text-foreground tracking-[-0.25px] leading-tight">{title}</h2>
+            <div className="flex items-center w-full">
+              <div className="text-base font-semibold text-foreground tracking-[-0.25px] leading-tight flex-1">
+                {title}
+              </div>
               {actions && actions.length > 0 && (
                 <div className="flex items-center gap-1">
                   {actions.map((action, index) => (

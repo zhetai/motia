@@ -10,13 +10,14 @@ const CLOSE_PREVIOUS_SIDEBAR_EVENT = 'close-previous-sidebar'
 
 export type SidebarProps = PanelProps & {
   onClose: () => void
+  initialWidth?: number
 }
 
-export const Sidebar: FC<SidebarProps> = (props) => {
+export const Sidebar: FC<SidebarProps> = ({ initialWidth, onClose, ...props }) => {
   const sidebarId = useMemo(() => Symbol(), [])
   const { getRootProps, getHandleProps } = useResizable({
     lockVertical: true,
-    initialWidth: 400,
+    initialWidth: initialWidth ?? 400,
     initialHeight: '100%',
     onDragStart: () => {
       document.body.style.userSelect = 'none'
@@ -33,7 +34,7 @@ export const Sidebar: FC<SidebarProps> = (props) => {
     const handleClose = (e: Event) => {
       const customEvent = e as CustomEvent
       if (customEvent.detail.sidebarId !== sidebarId) {
-        props.onClose()
+        onClose()
       }
     }
 
@@ -42,7 +43,7 @@ export const Sidebar: FC<SidebarProps> = (props) => {
     return () => {
       window.removeEventListener(CLOSE_PREVIOUS_SIDEBAR_EVENT, handleClose)
     }
-  }, [sidebarId])
+  }, [sidebarId, onClose])
 
   return createPortal(
     <div {...getRootProps()} className="pr-2 py-2 relative">

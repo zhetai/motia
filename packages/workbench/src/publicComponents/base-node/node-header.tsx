@@ -1,6 +1,7 @@
 import { cn } from '@/lib/utils'
 import { cva, VariantProps } from 'class-variance-authority'
 import { CalendarClock, CircleOff, CloudDownload, Waypoints } from 'lucide-react'
+import { ReactNode } from 'react'
 
 const baseIcon = cva('rounded-md p-3', {
   variants: {
@@ -35,7 +36,7 @@ export const NodeHeader = ({
   text: string
   subtitle?: string
   variant: VariantProps<typeof baseIcon>['variant']
-  children?: React.ReactNode
+  children?: ReactNode
 }) => (
   <div className="flex items-center gap-4 p-4">
     <div className={baseIcon({ variant })}>

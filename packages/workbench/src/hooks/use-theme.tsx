@@ -1,9 +1,8 @@
-import { useCallback, useEffect, useState } from 'react'
+import { useCallback, useSyncExternalStore } from 'react'
 
 type Theme = 'dark' | 'light' | 'system'
 
 const storageKey = 'motia-workbench-theme'
-const defaultTheme = (localStorage.getItem(storageKey) as Theme) || 'system'
 
 const updateTheme = (theme: Theme) => {
   const root = window.document.body
@@ -20,21 +19,48 @@ const updateTheme = (theme: Theme) => {
   root.classList.add(theme)
 }
 
-export const useTheme = () => {
-  const [theme, _setTheme] = useState<Theme>(defaultTheme)
+export type ThemeState = {
+  theme: Theme
+  setTheme: (theme: Theme) => void
+}
 
-  useEffect(() => {
-    updateTheme(defaultTheme)
-  }, [])
+const listeners = new Set<() => void>()
 
-  const setTheme = useCallback((newTheme: Theme) => {
-    localStorage.setItem(storageKey, newTheme)
-    _setTheme(newTheme)
-    updateTheme(newTheme)
-  }, [])
+let currentTheme: Theme = 'dark'
+let memoizedSnapshot: ThemeState
 
-  return {
-    theme,
-    setTheme,
+const updateMemoizedSnapshot = () => {
+  memoizedSnapshot = {
+    theme: currentTheme,
+    setTheme: storeActions.setTheme,
   }
+}
+
+const notify = () => {
+  listeners.forEach((listener) => listener())
+}
+
+const storeActions = {
+  setTheme: (theme: Theme) => {
+    currentTheme = theme
+    localStorage.setItem(storageKey, theme)
+    updateTheme(theme)
+    updateMemoizedSnapshot()
+    notify()
+  },
+}
+
+updateMemoizedSnapshot()
+
+const subscribe = (onStoreChange: () => void) => {
+  listeners.add(onStoreChange)
+  return () => listeners.delete(onStoreChange)
+}
+
+export function useTheme<SelectorOutput = ThemeState>(
+  selector: (state: ThemeState) => SelectorOutput = (state) => state as unknown as SelectorOutput,
+): SelectorOutput {
+  const getSnapshot = useCallback(() => selector(memoizedSnapshot), [selector])
+
+  return useSyncExternalStore(subscribe, getSnapshot)
 }

@@ -3,7 +3,6 @@ import { useEffect, useState } from 'react'
 import { EndpointBadge } from './endpoint-badge'
 import { EndpointCall } from './endpoint-call'
 import { ApiEndpoint, useGetEndpoints } from './hooks/use-get-endpoints'
-import { SelectedEndpoint } from './selected-endpoint'
 
 const endpointVariants = cva('flex flex-col gap-2 font-mono p-2 rounded-lg cursor-pointer', {
   variants: {
@@ -56,16 +55,10 @@ export const Endpoints = () => {
               {!selectedEndpoint && <span className="text-xs text-muted-foreground">{endpoint.description}</span>}
             </div>
             {selectedEndpoint && <span className="text-xs text-muted-foreground">{endpoint.description}</span>}
-
-            {selectedEndpoint === endpoint && <SelectedEndpoint endpoint={selectedEndpoint} />}
           </div>
         ))}
       </div>
-      {selectedEndpoint && (
-        <div className="flex flex-col gap-2 flex-1 m-4 ml-2 p-4 rounded-lg bg-muted">
-          <EndpointCall endpoint={selectedEndpoint} onClose={() => setSelectedEndpoint(null)} />
-        </div>
-      )}
+      {selectedEndpoint && <EndpointCall endpoint={selectedEndpoint} onClose={() => setSelectedEndpoint(null)} />}
     </div>
   )
 }
