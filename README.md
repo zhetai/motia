@@ -252,7 +252,6 @@ Check out our [Contributing Guide](https://github.com/MotiaDev/motia/blob/main/C
 
 ---
 <div align="center">
-## Star History
 
 [![Star History Chart](https://api.star-history.com/svg?repos=motiadev/motia&type=Date)](https://www.star-history.com/#motiadev/motia&Date)
 
