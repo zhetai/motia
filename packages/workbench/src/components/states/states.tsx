@@ -1,70 +1,48 @@
-import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '../ui/table'
 import { useState } from 'react'
-import { useGetFields, useGetTraces, useGetValues } from './hooks/states-hooks'
+import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '../ui/table'
+import { StateItem, useGetStateItems } from './hooks/states-hooks'
 import { StateDetail } from './state-detail'
+import { cn } from '@motiadev/ui'
 
 export const States = () => {
-  const [selectedTraceId, setSelectedTraceId] = useState<string>()
-  const [selectedState, setSelectedState] = useState<any>() // eslint-disable-line @typescript-eslint/no-explicit-any
-  const traces = useGetTraces()
-  const fields = useGetFields(selectedTraceId)
-  const values = useGetValues(selectedTraceId, selectedState)
+  const [selectedItem, setSelectedItem] = useState<StateItem>()
+  const items = useGetStateItems()
 
-  const handleTraceClick = (traceId: string) => {
-    setSelectedTraceId(traceId)
-    setSelectedState(undefined)
-  }
-
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  const handleStateClick = (state: any) => {
-    setSelectedState(state)
-  }
+  const handleRowClick = (item: StateItem) => setSelectedItem(item)
+  const onClose = () => setSelectedItem(undefined)
 
   return (
     <div className="flex flex-row gap-4 h-full">
-      <StateDetail state={values} onClose={() => setSelectedState(undefined)} />
+      {selectedItem && <StateDetail state={selectedItem} onClose={onClose} />}
 
-      <div className="flex flex-col gap-2 flex-1 pl-4 py-4">
-        <Table>
-          <TableHeader className="sticky top-0">
-            <TableRow>
-              <TableHead>Root Field (Trace ID)</TableHead>
+      <Table>
+        <TableHeader className="sticky top-0 bg-background">
+          <TableRow>
+            <TableHead className="rounded-0">Group ID</TableHead>
+            <TableHead>Key</TableHead>
+            <TableHead>Type</TableHead>
+          </TableRow>
+        </TableHeader>
+        <TableBody>
+          {items.map((item) => (
+            <TableRow
+              data-testid={`item-${item}`}
+              key={`${item.groupId}:${item.key}`}
+              onClick={() => handleRowClick(item)}
+              className={cn(
+                'font-mono font-semibold',
+                selectedItem === item
+                  ? 'bg-muted-foreground/10 hover:bg-muted-foreground/20'
+                  : 'hover:bg-muted-foreground/10',
+              )}
+            >
+              <TableCell className="hover:bg-transparent">{item.groupId}</TableCell>
+              <TableCell className="hover:bg-transparent">{item.key}</TableCell>
+              <TableCell className="hover:bg-transparent">{item.type}</TableCell>
             </TableRow>
-          </TableHeader>
-          <TableBody>
-            {traces.map((trace) => (
-              <TableRow data-testid={`trace-${trace}`} key={trace} onClick={() => handleTraceClick(trace)}>
-                <TableCell
-                  className={`rounded-lg font-mono font-semibold ${selectedTraceId === trace ? 'bg-indigo-900/50 hover:bg-indigo-900/30' : ''}`}
-                >
-                  {trace}
-                </TableCell>
-              </TableRow>
-            ))}
-          </TableBody>
-        </Table>
-      </div>
-      <div className="flex flex-col gap-2 flex-1 pr-4 py-4">
-        <Table>
-          <TableHeader className="sticky top-0">
-            <TableRow>
-              <TableHead>Fields</TableHead>
-            </TableRow>
-          </TableHeader>
-          <TableBody>
-            {fields.map((field) => (
-              <TableRow
-                key={field}
-                data-testid={`field-${field}`}
-                className={`font-semibold font-mono ${selectedState === field ? 'bg-indigo-900/50 hover:bg-indigo-900/30' : ''}`}
-                onClick={() => handleStateClick(field)}
-              >
-                <TableCell>{field}</TableCell>
-              </TableRow>
-            ))}
-          </TableBody>
-        </Table>
-      </div>
+          ))}
+        </TableBody>
+      </Table>
     </div>
   )
 }

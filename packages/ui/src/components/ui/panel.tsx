@@ -1,6 +1,6 @@
 import { cn } from '@/lib/utils'
-import { Button } from './button'
 import { FC, ReactNode } from 'react'
+import { Button } from './button'
 
 export interface PanelDetailItem {
   label: string
@@ -9,6 +9,7 @@ export interface PanelDetailItem {
 }
 
 export interface PanelAction {
+  active?: boolean
   icon: ReactNode
   onClick: () => void
   label?: string
@@ -50,7 +51,14 @@ export const Panel: FC<PanelProps> = ({ title, subtitle, details, actions, class
               {actions && actions.length > 0 && (
                 <div className="flex items-center gap-1">
                   {actions.map((action, index) => (
-                    <Button key={index} onClick={action.onClick} variant="ghost" size="icon" aria-label={action.label}>
+                    <Button
+                      key={index}
+                      onClick={action.onClick}
+                      variant="ghost"
+                      className={cn(action.active && 'bg-muted-foreground/20 hover:bg-muted-foreground/30')}
+                      size="icon"
+                      aria-label={action.label}
+                    >
                       {action.icon}
                     </Button>
                   ))}
@@ -64,7 +72,7 @@ export const Panel: FC<PanelProps> = ({ title, subtitle, details, actions, class
         </div>
 
         <div className="flex-1 overflow-auto">
-          <div className="flex flex-col gap-2 px-5 py-4">
+          <div className="flex flex-col gap-2 p-4">
             {details?.map((detail, index) => (
               <div key={index} className="flex gap-4 items-start">
                 <div className="flex items-center h-8 shrink-0">

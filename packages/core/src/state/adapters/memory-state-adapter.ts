@@ -1,4 +1,5 @@
-import { StateAdapter } from '../state-adapter'
+import { StateAdapter, StateItem, StateItemsInput } from '../state-adapter'
+import { filterItem, inferType } from './utils'
 
 export class MemoryStateAdapter implements StateAdapter {
   private state: Record<string, unknown> = {}
@@ -62,8 +63,20 @@ export class MemoryStateAdapter implements StateAdapter {
     return Array.from(traceIds)
   }
 
+  async items(input: StateItemsInput): Promise<StateItem[]> {
+    return Object.entries(this.state)
+      .map(([key, value]) => ({
+        groupId: key.split(':')[0],
+        key: key.split(':')[1],
+        type: inferType(value),
+        value: value as StateItem['value'],
+      }))
+      .filter((item) => (input.groupId ? item.groupId === input.groupId : true))
+      .filter((item) => (input.filter ? filterItem(item, input.filter) : true))
+  }
+
   async cleanup() {
-    // No cleanup needed for file system
+    // No cleanup needed for memory
   }
 
   private _makeKey(traceId: string, key: string) {

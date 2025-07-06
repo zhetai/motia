@@ -3,13 +3,13 @@ import { SquareMinus, SquarePlus } from 'lucide-react'
 import React, { ReactNode, useState } from 'react'
 import { cn } from '../../lib/utils'
 
-const valueVariants = cva('text-muted-foreground text-sm py-2', {
+const valueVariants = cva('text-muted-foreground text-sm', {
   variants: {
     variant: {
-      boolean: 'text-sky-400',
-      number: 'text-teal-400',
+      boolean: 'text-sky-400 font-mono font-bold',
+      number: 'text-teal-400 font-mono font-bold',
       undefined: 'text-muted-foreground',
-      string: 'text-muted-foreground',
+      string: 'text-muted-foreground font-mono font-medium',
       object: 'text-gray-800',
     },
   },
@@ -27,7 +27,7 @@ const Value: React.FC<{ value: ReactNode; label?: string } & VariantProps<typeof
 
   return (
     <div className="flex flex-col gap-1">
-      {label && <div className="text-md font-semibold py-2">{label}</div>}
+      {label && <div className="text-md font-bold">{label}</div>}
       <div className={valueVariants({ variant })}>{displayValue}</div>
     </div>
   )
@@ -73,7 +73,7 @@ export const StateValue: React.FC<Props> = ({ value, label, isRoot = false }) =>
       <div className="flex flex-col gap-2">
         {(label || openBracket) && (
           <div
-            className="flex gap-1 items-center text-md font-semibold hover:bg-gray-800 rounded-md py-2"
+            className="flex gap-1 items-center text-md font-bold hover:bg-muted-foreground/10 rounded-md py-2 cursor-pointer"
             onClick={toggle}
           >
             {isOpen ? (

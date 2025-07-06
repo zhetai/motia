@@ -1,5 +1,35 @@
 import { InternalStateManager } from '../types'
 
+export interface StateItem {
+  groupId: string
+  key: string
+  type: 'string' | 'number' | 'boolean' | 'object' | 'array' | 'null'
+  value: string | number | boolean | object | unknown[] | null
+}
+
+export interface StateFilter {
+  valueKey: string
+  operation:
+    | 'eq'
+    | 'neq'
+    | 'gt'
+    | 'gte'
+    | 'lt'
+    | 'lte'
+    | 'contains'
+    | 'notContains'
+    | 'startsWith'
+    | 'endsWith'
+    | 'isNotNull'
+    | 'isNull'
+  value: string
+}
+
+export interface StateItemsInput {
+  groupId?: string
+  filter?: StateFilter[]
+}
+
 /**
  * Interface for state management adapters
  */
@@ -9,4 +39,6 @@ export interface StateAdapter extends InternalStateManager {
 
   keys(traceId: string): Promise<string[]>
   traceIds(): Promise<string[]>
+
+  items(input: StateItemsInput): Promise<StateItem[]>
 }

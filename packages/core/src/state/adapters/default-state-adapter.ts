@@ -1,6 +1,7 @@
-import { StateAdapter } from '../state-adapter'
 import fs from 'fs'
 import * as path from 'path'
+import { StateAdapter, StateItem, StateItemsInput } from '../state-adapter'
+import { filterItem, inferType } from './utils'
 
 export type FileAdapterConfig = {
   adapter: 'default'
@@ -100,6 +101,19 @@ export class FileStateAdapter implements StateAdapter {
 
   async cleanup() {
     // No cleanup needed for file system
+  }
+
+  async items(input: StateItemsInput): Promise<StateItem[]> {
+    const data = this._readFile()
+
+    return Object.entries(data)
+      .map(([key, value]) => {
+        const [groupId, itemKey] = key.split(':')
+        const itemValue = JSON.parse(value)
+        return { groupId, key: itemKey, value: itemValue, type: inferType(itemValue) }
+      })
+      .filter((item) => (input.groupId ? item.groupId === input.groupId : true))
+      .filter((item) => (input.filter ? filterItem(item, input.filter) : true))
   }
 
   private _makeKey(traceId: string, key: string) {

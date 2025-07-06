@@ -12,9 +12,16 @@
   }
 }
 
+.json-view {
+  background:rgba(0, 0, 0, 0.1);
+}
+
 .dark {
   .react-flow__panel {
     background: var(--background)
+  }
+  .json-view {
+    background: rgba(0, 0, 0, 0.8);
   }
 }
 
@@ -32,7 +39,6 @@
 .json-view {
   border-radius: 8px;
   padding: 12px 12px;
-  background:rgba(0, 0, 0, 0.2);
   font-family: 'IBM Plex Mono', 'Courier New', monospace;
   font-size: 14px;
   line-height: 1.5;

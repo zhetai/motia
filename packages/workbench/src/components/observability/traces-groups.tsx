@@ -32,7 +32,7 @@ export const TracesGroups: React.FC<Props> = memo(({ groups, selectedGroupId, on
               onClick={() => onGroupSelect(group)}
             >
               <div className="p-3 flex flex-col gap-1">
-                <div className="flex flex-row justify-between items-center">
+                <div className="flex flex-row justify-between items-center gap-2">
                   <span className="font-semibold text-lg">{group.name}</span>
                   <TraceStatusBadge
                     status={group.status}

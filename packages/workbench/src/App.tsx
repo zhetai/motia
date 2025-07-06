@@ -1,14 +1,14 @@
-import React from 'react'
-import { ReactFlowProvider } from '@xyflow/react'
-import { Header } from './components/header/header'
-import { CollapsiblePanel, CollapsiblePanelGroup, TabsContent, TabsList, TabsTrigger } from '@motiadev/ui'
-import { Link2, Workflow } from 'lucide-react'
-import { Flow } from '@/routes/flow'
-import { Logs } from '@/components/logs/logs'
 import { Endpoints } from '@/components/endpoints/endpoints'
-import { States } from '@/components/states/states'
-import { TracesPage } from '@/routes/traces-page'
+import { Logs } from '@/components/logs/logs'
 import { APP_SIDEBAR_CONTAINER_ID } from '@/components/sidebar/sidebar'
+import { States } from '@/components/states/states'
+import { Flow } from '@/routes/flow'
+import { TracesPage } from '@/routes/traces-page'
+import { CollapsiblePanel, CollapsiblePanelGroup, TabsContent, TabsList, TabsTrigger } from '@motiadev/ui'
+import { ReactFlowProvider } from '@xyflow/react'
+import { File, GanttChart, Link2, LogsIcon, Workflow } from 'lucide-react'
+import React from 'react'
+import { Header } from './components/header/header'
 
 export const App: React.FC = () => {
   return (
@@ -56,14 +56,14 @@ export const App: React.FC = () => {
             header={
               <TabsList>
                 <TabsTrigger value="tracing">
-                  <Workflow /> Tracing
+                  <GanttChart /> Tracing
                 </TabsTrigger>
                 <TabsTrigger value="logs">
-                  <Link2 />
+                  <LogsIcon />
                   Logs
                 </TabsTrigger>
                 <TabsTrigger value="states">
-                  <Link2 />
+                  <File />
                   States
                 </TabsTrigger>
               </TabsList>
@@ -76,15 +76,7 @@ export const App: React.FC = () => {
               <Logs />
             </TabsContent>
             <TabsContent value="states" asChild>
-              <div className="w-full h-full overflow-hidden bg-background text-foreground">
-                <header className="p-4 border-b border-border">
-                  <h1 className="text-xl font-bold text-foreground">State details</h1>
-                  <span className="text-sm text-muted-foreground">
-                    Check all states saved locally along with all fields
-                  </span>
-                </header>
-                <States />
-              </div>
+              <States />
             </TabsContent>
           </CollapsiblePanel>
         </CollapsiblePanelGroup>
