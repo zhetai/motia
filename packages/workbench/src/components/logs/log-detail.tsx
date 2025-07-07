@@ -1,57 +1,67 @@
-import React from 'react'
-import { Log } from '../../stores/use-logs'
-import { LogLevelBadge } from './log-level-badge'
-import { LogField } from './log-field'
-import { Sheet, SheetContent, SheetDescription, SheetHeader, SheetTitle } from '../ui/sheet'
+import { formatTimestamp } from '@/lib/utils'
+import React, { useMemo, useState } from 'react'
+import ReactJson from 'react18-json-view'
+import 'react18-json-view/src/dark.css'
+import 'react18-json-view/src/style.css'
+import { Log } from '@/stores/use-logs-store'
+import { LogLevelDot } from './log-level-dot'
+import { Sidebar } from '@/components/sidebar/sidebar'
+import { X } from 'lucide-react'
 
 type Props = {
   log?: Log
   onClose: () => void
 }
 
-const defaultProps = ['msg', 'time', 'level', 'step', 'flows', 'traceId']
+const defaultProps = ['id', 'msg', 'time', 'level', 'step', 'flows', 'traceId']
 
 export const LogDetail: React.FC<Props> = ({ log, onClose }) => {
-  const isOpen = !!log
+  const [hasOtherProps, setHasOtherProps] = useState(false)
 
-  const onOpenChange = (open: boolean) => {
-    if (!open) {
-      onClose()
+  const otherPropsObject = useMemo(() => {
+    if (!log) {
+      return null
     }
+
+    const otherProps = Object.keys(log ?? {}).filter((key) => !defaultProps.includes(key))
+    setHasOtherProps(otherProps.length > 0)
+
+    return otherProps.reduce(
+      (acc, key) => {
+        acc[key] = log[key]
+        return acc
+      },
+      {} as Record<string, unknown>,
+    )
+  }, [log])
+
+  if (!log) {
+    return null
   }
 
-  const otherProps = Object.keys(log ?? {}).filter((key) => !defaultProps.includes(key))
-
   return (
-    <Sheet open={isOpen} onOpenChange={onOpenChange}>
-      <SheetContent className="flex flex-col h-full">
-        <SheetHeader>
-          <SheetTitle>Logs details</SheetTitle>
-          <SheetDescription>Log details and application.</SheetDescription>
-        </SheetHeader>
-        <div className="font-mono overflow-y-auto">
-          {log && (
-            <div className="flex flex-col gap-2">
-              <div className="flex flex-row gap-2">
-                <LogField label="Level" value={<LogLevelBadge level={log.level} />} className="flex-1" />
-                <LogField label="Time" value={new Date(log.time).toLocaleString()} className="flex-1" />
-              </div>
-
-              <div className="flex flex-row gap-2">
-                <LogField label="Step" value={log.step} className="flex-1" />
-                <LogField label="Flows" value={log.flows.join(', ')} className="flex-1" />
-              </div>
-
-              <LogField label="Trace ID" value={log.traceId} />
-              <LogField label="Message" value={log.msg} />
-
-              {otherProps.map((key) => (
-                <LogField key={key} label={key} value={log[key]} />
-              ))}
+    <Sidebar
+      onClose={onClose}
+      title="Logs Details"
+      subtitle="Details including custom properties"
+      actions={[{ icon: <X />, onClick: onClose, label: 'Close' }]}
+      details={[
+        {
+          label: 'Level',
+          value: (
+            <div className="flex items-center gap-2">
+              <LogLevelDot level={log.level} />
+              <div className="capitalize">{log.level}</div>
             </div>
-          )}
-        </div>
-      </SheetContent>
-    </Sheet>
+          ),
+        },
+        { label: 'Time', value: formatTimestamp(log.time) },
+        { label: 'Step', value: log.step },
+        { label: 'Flows', value: log.flows.join(', ') },
+        { label: 'Trace ID', value: log.traceId },
+      ]}
+    >
+      {hasOtherProps && <ReactJson src={otherPropsObject} theme="default" enableClipboard={false} />}
+    </Sidebar>
   )
 }

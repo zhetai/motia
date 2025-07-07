@@ -13,7 +13,7 @@ declare module 'motia' {
   }
 
   type Handlers = {
-    'Test State With Python': EventHandler<unknown, { topic: 'check-state-change'; data: { key: string; expected: string } }>
+    'Test State With Python': EventHandler<unknown, { topic: 'test-state-check'; data: { key: string; expected?: unknown } }>
     'TestStateCheck': EventHandler<{ key: string; expected?: unknown }, never>
     'TestStateApiTrigger': ApiRouteHandler<{}, unknown, { topic: 'test-state-python'; data: unknown }>
     'Tested Event': EventHandler<never, never>

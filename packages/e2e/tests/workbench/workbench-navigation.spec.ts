@@ -11,27 +11,27 @@ test.describe('CLI Generated Project - Workbench Navigation', () => {
   })
 
   test('should load workbench page of CLI generated project', async () => {
-    await workbench.gotoWorkbench()
+    await workbench.open()
 
     await expect(workbench.body).toBeVisible()
     await expect(workbench.logoIcon.first()).toBeVisible()
   })
 
   test('should display workbench interface elements', async () => {
-    await workbench.gotoWorkbench()
+    await workbench.open()
 
     await workbench.verifyWorkbenchInterface()
   })
 
   test('should show created steps in the workbench', async () => {
-    await workbench.gotoWorkbench()
+    await workbench.open()
 
     const expectedSteps = ['api-trigger', 'process-data', 'send-notification']
     await workbench.verifyStepsInWorkbench(expectedSteps)
   })
 
   test('should navigate through workbench sections', async () => {
-    await workbench.gotoWorkbench()
+    await workbench.open()
 
     await test.step('Navigate to Logs section', async () => {
       await workbench.navigateToLogs()
@@ -50,7 +50,7 @@ test.describe('CLI Generated Project - Workbench Navigation', () => {
   })
 
   test('should navigate through flow sections in sidebar', async () => {
-    await workbench.gotoWorkbench()
+    await workbench.open()
 
     const flowCount = await workbench.getFlowCount()
 
@@ -69,14 +69,14 @@ test.describe('CLI Generated Project - Workbench Navigation', () => {
   })
 
   test('should display project information correctly', async () => {
-    await workbench.gotoWorkbench()
+    await workbench.open()
 
     const hasProjectInfo = await workbench.verifyProjectInformation()
     expect(hasProjectInfo).toBeTruthy()
   })
 
   test('should handle CLI project structure validation', async () => {
-    await workbench.goto('/')
+    await workbench.open()
 
     const healthEndpoint = workbench.page.getByText(/health|status/)
     const stepsSection = workbench.page.getByText(/steps|workflows/)
@@ -88,7 +88,7 @@ test.describe('CLI Generated Project - Workbench Navigation', () => {
   })
 
   test('should execute default flow and verify logs', async () => {
-    await workbench.gotoWorkbench()
+    await workbench.open()
 
     await test.step('Execute default flow', async () => {
       await workbench.executeFlowAndNavigateToLogs('default')
@@ -108,18 +108,5 @@ test.describe('CLI Generated Project - Workbench Navigation', () => {
     })
 
     console.log('✅ Successfully executed default flow and verified all expected logs')
-  })
-
-  test('should toggle sidebar', async () => {
-    await workbench.gotoWorkbench()
-    await workbench.toggleSidebar()
-    await expect(workbench.title).toBeVisible()
-  })
-
-  test('should toggle sidebar and keep the state after refresh the page', async ({ page }) => {
-    await workbench.gotoWorkbench()
-    await workbench.toggleSidebar()
-    await page.reload()
-    await expect(workbench.title).toBeVisible()
   })
 })

@@ -1,24 +1,25 @@
-import React, { useCallback, useMemo, useState, ChangeEvent } from 'react'
+import { Sidebar } from '@/components/sidebar/sidebar'
+import { ApiEndpoint } from '@/types/endpoint'
+import { Button, Input, Panel } from '@motiadev/ui'
 import { Loader2, Play, X } from 'lucide-react'
-import { Button } from '../ui/button'
-import { Input } from '../ui/input'
-import { Textarea } from '../ui/textarea'
+import { FC, useEffect, useMemo, useState } from 'react'
 import { EndpointBadge } from './endpoint-badge'
-import { ApiEndpoint } from './hooks/use-get-endpoints'
+import { EndpointResponse } from './endpoint-response'
+import { EndpointResponseSchema } from './endpoint-response-schema'
 import { useJsonSchemaToJson } from './hooks/use-json-schema-to-json'
 import { usePathParams } from './hooks/use-path-params'
-import { useStateStream } from './hooks/use-state-stream'
+import { JsonEditor } from './json-editor'
 
 type Props = { endpoint: ApiEndpoint; onClose: () => void }
 
-export const EndpointCall: React.FC<Props> = ({ endpoint, onClose }) => {
+export const EndpointCall: FC<Props> = ({ endpoint, onClose }) => {
   const shouldHaveBody = ['post', 'put', 'patch'].includes(endpoint.method.toLowerCase())
   const [isRequestLoading, setIsRequestLoading] = useState(false)
-  const [responseCode, setResponseCode] = useState<number>()
-  const [responseBody, setResponseBody] = useState<Record<string, unknown>>()
-  const [executionTime, setExecutionTime] = useState<number>()
+  const [responseCode, setResponseCode] = useState<number | undefined>(undefined)
+  const [responseBody, setResponseBody] = useState<Record<string, unknown> | undefined>(undefined)
+  const [executionTime, setExecutionTime] = useState<number | undefined>(undefined)
   const { body, setBody } = useJsonSchemaToJson(endpoint.bodySchema)
-  const [isJsonValid, setIsJsonValid] = useState(true)
+  const [isBodyValid, setIsBodyValid] = useState(true)
   const pathParams = usePathParams(endpoint.path)
   const [pathParamsValues, setPathParamsValues] = useState<Record<string, string>>(
     pathParams?.reduce((acc, param) => ({ ...acc, [param]: '' }), {} as Record<string, string>),
@@ -26,14 +27,13 @@ export const EndpointCall: React.FC<Props> = ({ endpoint, onClose }) => {
   const [queryParamsValues, setQueryParamsValues] = useState<Record<string, string>>(
     endpoint.queryParams?.reduce((acc, param) => ({ ...acc, [param.name]: '' }), {} as Record<string, string>) ?? {},
   )
-  const { data: responseBodyData, isStreamed } = useStateStream(responseBody)
 
   const isPlayEnabled = useMemo(() => {
     if (!pathParams) return true
-    if (shouldHaveBody && !isJsonValid) return false
+    if (shouldHaveBody && !isBodyValid) return false
 
     return pathParams?.every((param) => pathParamsValues[param])
-  }, [pathParams, pathParamsValues, shouldHaveBody, isJsonValid])
+  }, [pathParams, pathParamsValues, shouldHaveBody, isBodyValid])
 
   const onPathParamChange = (param: string, value: string) => {
     setPathParamsValues((prev) => ({ ...prev, [param]: value }))
@@ -43,19 +43,14 @@ export const EndpointCall: React.FC<Props> = ({ endpoint, onClose }) => {
     setQueryParamsValues((prev) => ({ ...prev, [param]: value }))
   }
 
-  const handleBodyChange = useCallback(
-    (e: ChangeEvent<HTMLTextAreaElement>) => {
-      const value = e.target.value
-      setBody(value)
-      try {
-        JSON.parse(value)
-        setIsJsonValid(true)
-      } catch {
-        setIsJsonValid(false)
-      }
-    },
-    [setBody],
-  )
+  useEffect(() => {
+    if (endpoint.id) {
+      setResponseCode(undefined)
+      setResponseBody(undefined)
+      setExecutionTime(undefined)
+      setIsRequestLoading(false)
+    }
+  }, [endpoint.id])
 
   const handleRequest = async () => {
     setIsRequestLoading(true)
@@ -87,102 +82,87 @@ export const EndpointCall: React.FC<Props> = ({ endpoint, onClose }) => {
   }
 
   return (
-    <div className="flex flex-col gap-2 overflow-y-auto">
-      <div className="text-xs flex flex-row gap-2 items-center justify-between w-full">
-        <span className="font-bold">Request</span>
-        <div className="flex flex-row gap-2 items-center hover:bg-white/10 rounded-md p-1">
-          <X className="cursor-pointer w-4 h-4" onClick={onClose} />
+    <Sidebar
+      initialWidth={600}
+      title={
+        <div className="flex flex-row gap-2 items-center">
+          <EndpointBadge variant={endpoint.method as never}>{endpoint.method.toUpperCase()}</EndpointBadge>
+          <span className="text-md font-bold">{endpoint.path}</span>
         </div>
-      </div>
-      <div className="flex flex-row gap-2 items-center">
-        <EndpointBadge variant={endpoint.method as never}>{endpoint.method.toUpperCase()}</EndpointBadge>
-        <span className="text-md font-bold">{endpoint.path}</span>
-      </div>
-      <span className="text-xs text-muted-foreground">{endpoint.description}</span>
-
+      }
+      onClose={onClose}
+      actions={[
+        {
+          icon: <X className="cursor-pointer w-4 h-4" onClick={onClose} />,
+          onClick: onClose,
+        },
+      ]}
+    >
+      {endpoint.description && (
+        <div className="rounded-lg border p-4 font-medium text-muted-foreground">{endpoint.description}</div>
+      )}
       {!!pathParams.length && (
-        <div className="flex flex-col gap-2 p-4 rounded-lg bg-muted">
-          <span className="text-xs font-bold">Path Params</span>
-          <div className="flex flex-col gap-4">
+        <Panel title="Path params" size="sm">
+          <table>
             {pathParams.map((param) => (
-              <div className="text-xs" key={param}>
-                <div className="font-bold mb-2">{param}</div>
-                <Input
-                  className="w-full"
-                  value={pathParamsValues[param]}
-                  onChange={(e) => onPathParamChange(param, e.target.value)}
-                />
-              </div>
+              <tr key={param}>
+                <td className="flex flex-col font-bold leading-[36px]">{param}</td>
+                <td className="w-2/3 pl-4">
+                  <Input
+                    className="w-full"
+                    value={pathParamsValues[param]}
+                    onChange={(e) => onPathParamChange(param, e.target.value)}
+                  />
+                </td>
+              </tr>
             ))}
-          </div>
-        </div>
+          </table>
+        </Panel>
       )}
-
       {!!endpoint.queryParams?.length && (
-        <div className="flex flex-col gap-2 p-4 rounded-lg bg-muted">
-          <span className="text-xs font-bold">Query Params</span>
-          <div className="flex flex-col gap-4">
+        <Panel title="Query params" size="sm">
+          <table>
             {endpoint.queryParams.map((param) => (
-              <div className="text-xs" key={param.name}>
-                <div className="font-bold mb-2">{param.name}</div>
-                <Input
-                  className="w-full"
-                  value={queryParamsValues[param.name]}
-                  onChange={(e) => onQueryParamChange(param.name, e.target.value)}
-                />
-              </div>
+              <tr key={param.name}>
+                <td className="flex flex-col justify-start">
+                  <span className="font-bold">{param.name}</span>
+                  <span className="text-md text-muted-foreground">{param.description}</span>
+                </td>
+                <td className="w-2/3 pl-4 align-top">
+                  <Input
+                    className="w-full"
+                    value={queryParamsValues[param.name]}
+                    onChange={(e) => onQueryParamChange(param.name, e.target.value)}
+                  />
+                </td>
+              </tr>
             ))}
-          </div>
-        </div>
+          </table>
+        </Panel>
       )}
-
       {shouldHaveBody && (
-        <div className="flex flex-col gap-2 rounded-lg bg-muted">
-          <span className="text-xs font-bold">Body</span>
-          <Textarea
-            data-testid="endpoint-body-textarea"
-            className={`w-full font-mono font-medium min-h-[200px] ${!isJsonValid ? 'border-red-500' : ''}`}
-            value={body}
-            onChange={handleBodyChange}
-          />
-          <span
-            data-testid="endpoint-invalid-json-message"
-            className={`text-xs text-red-500 ${isJsonValid ? 'invisible' : ''}`}
-          >
-            Invalid JSON
-          </span>
-        </div>
+        <Panel title="Body" size="sm" contentClassName="p-0" data-testid="endpoint-body-panel">
+          <JsonEditor value={body} schema={endpoint.bodySchema} onChange={setBody} onValidate={setIsBodyValid} />
+        </Panel>
       )}
-
       <Button
         className="w-fit"
         onClick={handleRequest}
+        variant="accent"
         data-testid="endpoint-play-button"
         disabled={isRequestLoading || !isPlayEnabled}
       >
         {isRequestLoading ? <Loader2 className="animate-spin" /> : <Play />} Play
       </Button>
 
-      {responseCode !== undefined && (
-        <div className="flex flex-col gap-2 rounded-lg bg-muted" data-testid="endpoint-response-container">
-          <span className="text-xs font-bold">
-            <EndpointBadge variant={responseCode >= 400 ? 'DELETE' : 'GET'}>{responseCode}</EndpointBadge> Execution
-            time: <span className="text-muted-foreground">{executionTime}ms</span>
-          </span>
-          {isStreamed && (
-            <span className="flex flex-row items-center font-medium text-muted-foreground text-xs">
-              <span className="ml-1 inline-block w-2 h-2 rounded-full bg-green-500 mr-2 relative">
-                <span className="absolute inset-0 rounded-full bg-green-500 animate-[ping_1.5s_ease-in-out_infinite]" />
-                <span className="absolute inset-0 rounded-full bg-green-500" />
-              </span>
-              Object is being streamed, this is not the actual response from the API Endpoint
-            </span>
-          )}
-          <span className="text-xs font-mono font-bold dark:bg-black/50 bg-white/50 p-2 rounded-lg whitespace-pre-wrap">
-            {JSON.stringify(responseBodyData, null, 2)}
-          </span>
-        </div>
-      )}
-    </div>
+      <EndpointResponse responseCode={responseCode} responseBody={responseBody} executionTime={executionTime} />
+
+      <EndpointResponseSchema
+        items={Object.entries(endpoint?.responseSchema ?? {}).map(([status, schema]) => ({
+          responseCode: status,
+          bodySchema: schema,
+        }))}
+      />
+    </Sidebar>
   )
 }

@@ -1,7 +1,14 @@
 import { useEffect, useState } from 'react'
 
-export const useGetTraces = () => {
-  const [traces, setTraces] = useState<string[]>([])
+export interface StateItem {
+  groupId: string
+  key: string
+  type: 'string' | 'number' | 'boolean' | 'object' | 'array' | 'null'
+  value: string | number | boolean | object | unknown[] | null
+}
+
+export const useGetStateItems = (): StateItem[] => {
+  const [items, setItems] = useState<StateItem[]>([])
 
   useEffect(() => {
     fetch('/motia/state')
@@ -12,43 +19,9 @@ export const useGetTraces = () => {
           throw await res.json()
         }
       })
-      .then(setTraces)
-      .catch((err) => {
-        console.error(err)
-      })
+      .then(setItems)
+      .catch((err) => console.error(err))
   }, [])
 
-  return traces
-}
-
-export const useGetFields = (traceId: string | undefined) => {
-  const [fields, setFields] = useState<string[]>([])
-
-  useEffect(() => {
-    if (!traceId) {
-      setFields([])
-    } else {
-      fetch(`/motia/state/${traceId}`)
-        .then((res) => res.json())
-        .then((data) => setFields(data))
-    }
-  }, [traceId])
-
-  return fields
-}
-
-export const useGetValues = (traceId: string | undefined, field: string | undefined) => {
-  const [values, setValues] = useState<any>()
-
-  useEffect(() => {
-    setValues(undefined)
-
-    if (traceId && field) {
-      fetch(`/motia/state/${traceId}/${field}`)
-        .then((res) => res.json())
-        .then((data) => setValues(data))
-    }
-  }, [traceId, field])
-
-  return values
+  return items
 }

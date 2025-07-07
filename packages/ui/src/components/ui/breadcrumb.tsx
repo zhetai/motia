@@ -18,6 +18,27 @@ export interface BreadcrumbItemProps {
 }
 
 export const BreadcrumbItem: FC<BreadcrumbItemProps> = ({ label, onClick, isLast, dropdownItems, icon }) => {
+  if (dropdownItems?.length) {
+    return (
+      <DropdownMenu>
+        <DropdownMenuTrigger asChild>
+          <Button variant="ghost" size="sm" className="p-1 gap-2">
+            {icon}
+            {label} <ChevronsUpDown className="size-4" />
+          </Button>
+        </DropdownMenuTrigger>
+        <DropdownMenuContent className={'bg-background text-foreground'}>
+          {dropdownItems.map((item) => (
+            <DropdownMenuItem key={`dropdown-${item.label}`} className="cursor-pointer gap-2" onClick={item.onClick}>
+              {item.icon}
+              {item.label}
+            </DropdownMenuItem>
+          ))}
+        </DropdownMenuContent>
+      </DropdownMenu>
+    )
+  }
+
   if (isLast) {
     return (
       <Button
@@ -31,27 +52,6 @@ export const BreadcrumbItem: FC<BreadcrumbItemProps> = ({ label, onClick, isLast
           {label}
         </div>
       </Button>
-    )
-  }
-
-  if (dropdownItems?.length) {
-    return (
-      <DropdownMenu>
-        <DropdownMenuTrigger asChild>
-          <Button variant="ghost" size="sm" className="p-1 gap-2">
-            {icon}
-            {label} <ChevronsUpDown className="size-4" />
-          </Button>
-        </DropdownMenuTrigger>
-        <DropdownMenuContent>
-          {dropdownItems.map((item) => (
-            <DropdownMenuItem key={item.label as string} className="cursor-pointer gap-2" onClick={item.onClick}>
-              {item.icon}
-              {item.label}
-            </DropdownMenuItem>
-          ))}
-        </DropdownMenuContent>
-      </DropdownMenu>
     )
   }
 
@@ -83,9 +83,10 @@ export const Breadcrumb: FC<BreadcrumbProps> = ({ className, items, ...props }) 
   return (
     <div className={cn('flex items-center', className)} {...props}>
       {items.map((item, index) => (
-        <React.Fragment key={item.label as string}>
-          {index !== 0 && <span className="mx-1.5 text-muted-foreground">/</span>}
+        <React.Fragment key={`${item.label}-fragment`}>
+          {index !== 0 && <span key={`${item.label}-separator`} className="mx-1.5 text-muted-foreground">/</span>}
           <BreadcrumbItem
+            key={`${item.label}-item`}
             label={item.label}
             icon={item.icon}
             isLast={index === lastIndex}

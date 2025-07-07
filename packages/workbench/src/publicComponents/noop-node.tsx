@@ -1,20 +1,17 @@
-import { PropsWithChildren } from 'react'
-import { NoopNodeData } from '../views/flow/nodes/nodes.types'
-import { BaseNode } from './base-node'
+import React, { PropsWithChildren } from 'react'
+import { BaseNode } from './base-node/base-node'
+import { NoopNodeProps } from './node-props'
 
-type Props = PropsWithChildren<{
-  data: NoopNodeData
-}>
-
-export const NoopNode = ({ data, children }: Props) => {
+export const NoopNode: React.FC<PropsWithChildren<NoopNodeProps>> = ({ data, children }) => {
   return (
     <BaseNode
+      data={data}
       variant="noop"
       title={data.name}
+      subtitle={data.description}
       disableSourceHandle={!data.virtualEmits.length}
       disableTargetHandle={!data.subscribes?.length}
     >
-      {data.description && <div className="text-sm max-w-[300px] text-muted-foreground">{data.description}</div>}
       {children}
     </BaseNode>
   )

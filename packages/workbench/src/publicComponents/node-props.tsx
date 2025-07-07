@@ -1,19 +1,15 @@
-import { EventNodeData, ApiNodeData, NoopNodeData, CronNodeData } from '../views/flow/nodes/nodes.types'
+import { ApiNodeData, CronNodeData, EventNodeData, NoopNodeData } from '../types/flow'
 
-export type BaseNodeProps = EventNodeProps | NoopNodeProps | ApiNodeProps | CronNodeProps
-
-export type EventNodeProps = {
-  data: EventNodeData
+export type NodeProps = EventNodeProps | NoopNodeProps | ApiNodeProps | CronNodeProps
+export type BaseNodeProps = {
+  id: string
+  nodeConfig?: {
+    sourceHandlePosition?: 'bottom' | 'right'
+    targetHandlePosition?: 'top' | 'left'
+  }
 }
 
-export type NoopNodeProps = {
-  data: NoopNodeData
-}
-
-export type ApiNodeProps = {
-  data: ApiNodeData
-}
-
-export type CronNodeProps = {
-  data: CronNodeData
-}
+export type EventNodeProps = { data: BaseNodeProps & EventNodeData }
+export type NoopNodeProps = { data: BaseNodeProps & NoopNodeData }
+export type ApiNodeProps = { data: BaseNodeProps & ApiNodeData }
+export type CronNodeProps = { data: BaseNodeProps & CronNodeData }

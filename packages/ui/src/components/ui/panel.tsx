@@ -1,34 +1,36 @@
 import { cn } from '@/lib/utils'
+import { FC, ReactNode } from 'react'
 import { Button } from './button'
-import { FC } from 'react'
 
 export interface PanelDetailItem {
   label: string
-  value: string | React.ReactNode
+  value: string | ReactNode
   highlighted?: boolean
 }
 
 export interface PanelAction {
-  icon: React.ReactNode
+  active?: boolean
+  icon: ReactNode
   onClick: () => void
   label?: string
 }
 
 export interface PanelProps {
-  title: string
-  subtitle?: string
-  details: PanelDetailItem[]
+  title: ReactNode
+  subtitle?: ReactNode
+  details?: PanelDetailItem[]
   actions?: PanelAction[]
   className?: string
-  children?: React.ReactNode
+  children?: ReactNode
+  size?: 'sm' | 'md'
+  contentClassName?: string
 }
 
-export const Panel: FC<PanelProps> = ({ title, subtitle, details, actions, className, children }) => {
+export const Panel: FC<PanelProps> = ({ title, subtitle, details, actions, className, children, size, contentClassName }) => {
   return (
     <div
       className={cn(
         'relative size-full backdrop-blur-[48px] backdrop-filter',
-        'bg-card',
         'text-foreground',
         'border border-border',
         'rounded-lg overflow-hidden',
@@ -36,14 +38,28 @@ export const Panel: FC<PanelProps> = ({ title, subtitle, details, actions, class
       )}
     >
       <div className="flex flex-col size-full">
-        <div className="relative shrink-0 w-full border-b border-border">
-          <div className="flex flex-col gap-1 px-5 py-4">
-            <div className="flex items-center justify-between w-full">
-              <h2 className="text-base font-semibold text-foreground tracking-[-0.25px] leading-tight">{title}</h2>
+        <div className="relative shrink-0 w-full border-b border-border bg-card">
+          <div className={cn('flex flex-col gap-1', size === 'sm' ? 'px-4 py-3' : 'px-5 py-4')}>
+            <div className="flex items-center w-full">
+              <div
+                className={cn(
+                  'font-semibold text-foreground tracking-[-0.25px] leading-tight flex-1',
+                  size === 'sm' ? 'text-xs' : 'text-base',
+                )}
+              >
+                {title}
+              </div>
               {actions && actions.length > 0 && (
                 <div className="flex items-center gap-1">
                   {actions.map((action, index) => (
-                    <Button key={index} onClick={action.onClick} variant="ghost" size="icon" aria-label={action.label}>
+                    <Button
+                      key={index}
+                      onClick={action.onClick}
+                      variant="ghost"
+                      className={cn(action.active && 'bg-muted-foreground/20 hover:bg-muted-foreground/30')}
+                      size="icon"
+                      aria-label={action.label}
+                    >
                       {action.icon}
                     </Button>
                   ))}
@@ -57,8 +73,8 @@ export const Panel: FC<PanelProps> = ({ title, subtitle, details, actions, class
         </div>
 
         <div className="flex-1 overflow-auto">
-          <div className="flex flex-col gap-2 px-5 py-4">
-            {details.map((detail, index) => (
+          <div className={cn('flex flex-col gap-2 p-4', contentClassName)}>
+            {details?.map((detail, index) => (
               <div key={index} className="flex gap-4 items-start">
                 <div className="flex items-center h-8 shrink-0">
                   <span className="text-sm font-medium text-foreground tracking-[-0.25px] w-24 truncate">

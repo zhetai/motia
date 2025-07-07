@@ -2,7 +2,7 @@ config = {
     "type": "event",
     "name": "Test State With Python",
     "subscribes": ["test-state-python"],
-    "emits": ["check-state-change"],
+    "emits": ["test-state-check"],
     "input": {
         "key": { "type": "string" },
         "expected": { "type": "string" },
@@ -20,7 +20,7 @@ async def handler(args, ctx):
     await ctx.state.set(ctx.trace_id, 'python_state', value)
 
     await ctx.emit({
-        "topic": "check-state-change",
+        "topic": "test-state-check",
         "data": { 
             "key": "python_state", 
             "expected": value 

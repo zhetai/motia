@@ -22,7 +22,8 @@ export const Argument: React.FC<{ arg: string | object | false }> = ({ arg }) =>
       <span className="font-mono text-green-500">{'{ '}</span>
       {entries.map(([key, value], index) => (
         <span key={key}>
-          {key}: <Argument arg={value} />
+          <span className="font-mono text-green-500">{key}</span>
+          <span className="font-mono text-muted-foreground">:</span> <Argument arg={value} />
           {index < entries.length - 1 && <>, </>}
         </span>
       ))}

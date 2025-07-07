@@ -6,6 +6,8 @@ export { Panel, type PanelProps, type PanelDetailItem, type PanelAction } from '
 export { Tabs, TabsList, TabsTrigger, TabsContent } from './components/ui/tabs'
 export { cn } from './lib/utils'
 export { Breadcrumb, BreadcrumbItem, type BreadcrumbProps, type BreadcrumbItemProps } from './components/ui/breadcrumb'
+export { Container, ContainerContent, ContainerHeader } from './components/ui/container'
+export { CollapsiblePanel, CollapsiblePanelGroup } from './components/ui/collapsible-panel'
 export {
   DropdownMenu,
   DropdownMenuTrigger,
@@ -21,3 +23,5 @@ export {
   DropdownMenuSubTrigger,
   DropdownMenuSubContent,
 } from './components/ui/dropdown-menu'
+export { SidePanel } from './components/ui/side-panel'
+export { SidePanelDetail, SidePanelDetailItem } from './components/ui/side-panel-detail'

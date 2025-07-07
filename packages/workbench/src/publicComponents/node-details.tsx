@@ -1,14 +1,10 @@
-import { ChevronRight } from 'lucide-react'
-import { DialogDescription, DialogHeader, DialogTitle, DialogTrigger } from '../components/ui/dialog'
-import { DialogContent } from '../components/ui/dialog'
-import { Dialog } from '../components/ui/dialog'
-import { Label } from '../components/ui/label'
-import { LanguageIndicator } from '../views/flow/nodes/language-indicator'
-import { Emits } from './emits'
-import { Subscribe } from './subscribe'
-import { colorMap } from './colorMap'
-import { HeaderBar } from './components/header-bar'
-import React, { PropsWithChildren } from 'react'
+import { ChevronRight, X } from 'lucide-react'
+import React, { PropsWithChildren, useCallback, useState } from 'react'
+import { Sidebar } from '@/components/sidebar/sidebar'
+import { Label } from '@/components/ui/label'
+import { LanguageIndicator } from '@/publicComponents/base-node/language-indicator'
+import { Subscribe } from './base-node/subscribe'
+import { Emits } from './base-node/emits'
 
 type Props = PropsWithChildren<{
   name: string
@@ -31,49 +27,46 @@ export const DetailItem: React.FC<PropsWithChildren<{ label: string }>> = (props
 }
 export const NodeDetails: React.FC<Props> = (props) => {
   const { name, type, subscribes, emits, description, language, children } = props
+  const [isOpen, setIsOpen] = useState(false)
+
+  const onClose = useCallback(() => {
+    setIsOpen(false)
+  }, [])
 
   return (
-    <Dialog>
-      <DialogTrigger asChild>
-        <div className="flex justify-end gap-2">
-          <div className="border border-solid border-border/50 p-1 rounded-md cursor-pointer">
-            <ChevronRight className="w-4 h-4" />
-          </div>
+    <>
+      <div className="flex justify-end gap-2">
+        <div
+          className="border border-solid border-border/50 p-1 rounded-md cursor-pointer"
+          onClick={() => setIsOpen(true)}
+        >
+          <ChevronRight className="w-4 h-4" />
         </div>
-      </DialogTrigger>
-      <DialogContent className="border border-solid" style={{ borderColor: colorMap[type] }}>
-        <DialogHeader>
-          <DialogTitle>
-            <HeaderBar variant={type} text={name} />
-          </DialogTitle>
-        </DialogHeader>
-        <DialogDescription>
-          <div className="flex flex-col gap-6">
-            {description && (
-              <DetailItem label="Description">
-                <span className="text-sm text-muted-foreground">{description}</span>
-              </DetailItem>
-            )}
-            <DetailItem label="Language">
-              <div className="flex items-center gap-2">
-                <LanguageIndicator language={language} />
-                <span className="capitalize">{language}</span>
-              </div>
-            </DetailItem>
-            {subscribes && (
-              <DetailItem label="Subscribes">
-                <Subscribe subscribes={subscribes} />
-              </DetailItem>
-            )}
-            {emits && (
-              <DetailItem label="Emits">
-                <Emits emits={emits} />
-              </DetailItem>
-            )}
-            {children}
-          </div>
-        </DialogDescription>
-      </DialogContent>
-    </Dialog>
+      </div>
+      {isOpen && (
+        <Sidebar
+          onClose={onClose}
+          title={name}
+          subtitle={description}
+          actions={[{ icon: <X />, onClick: onClose, label: 'Close' }]}
+          details={[
+            { label: 'Type', value: <div className="capitalize flex gap-2 items-center">{type}</div> },
+            {
+              label: 'Language',
+              value: (
+                <div className="capitalize flex gap-2 items-center">
+                  <LanguageIndicator language={language} />
+                  {language}
+                </div>
+              ),
+            },
+            subscribes ? { label: 'Subscribes', value: <Subscribe subscribes={subscribes} /> } : undefined,
+            emits ? { label: 'Emits', value: <Emits emits={emits} /> } : undefined,
+          ].filter((a) => !!a)}
+        >
+          {children}
+        </Sidebar>
+      )}
+    </>
   )
 }
