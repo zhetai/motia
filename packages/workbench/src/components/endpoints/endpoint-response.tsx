@@ -7,6 +7,7 @@ import ReactJson from 'react18-json-view'
 
 type EndpointResponseProps = {
   responseCode: number | string | undefined
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
   responseBody: Record<string, any> | undefined
   executionTime?: number
 }

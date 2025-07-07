@@ -61,20 +61,10 @@ export const BaseNode: React.FC<Props> = ({
 
           {/* Connection points */}
           {!disableTargetHandle && (
-            <BaseHandle
-              type="target"
-              position={targetPosition}
-              variant={variant}
-              onTogglePosition={toggleTargetPosition}
-            />
+            <BaseHandle type="target" position={targetPosition} onTogglePosition={toggleTargetPosition} />
           )}
           {!disableSourceHandle && (
-            <BaseHandle
-              type="source"
-              position={sourcePosition}
-              variant={variant}
-              onTogglePosition={toggleSourcePosition}
-            />
+            <BaseHandle type="source" position={sourcePosition} onTogglePosition={toggleSourcePosition} />
           )}
         </div>
       </div>

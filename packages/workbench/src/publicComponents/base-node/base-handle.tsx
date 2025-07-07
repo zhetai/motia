@@ -5,12 +5,11 @@ import clsx from 'clsx'
 type Props = HandleProps &
   Omit<HTMLAttributes<HTMLDivElement>, 'id'> & {
     isHidden?: boolean
-    variant?: string | null
     onTogglePosition?: () => void
   }
 
 export const BaseHandle: React.FC<Props> = (props) => {
-  const { isHidden, position, variant, onTogglePosition, ...rest } = props
+  const { isHidden, position, onTogglePosition, ...rest } = props
   const isHorizontal = position === Position.Left || position === Position.Right
 
   return (

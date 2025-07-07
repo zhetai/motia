@@ -1,4 +1,4 @@
-import { PropsWithChildren } from 'react'
+import React, { type PropsWithChildren } from 'react'
 import { BaseNode } from './base-node/base-node'
 import { EventNodeProps } from './node-props'
 

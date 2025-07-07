@@ -6,6 +6,7 @@ import ReactJson from 'react18-json-view'
 
 export type EndpointResponseItem = {
   responseCode: string
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
   bodySchema: Record<string, Record<string, any>>
 }
 
