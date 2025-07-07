@@ -1,26 +1,44 @@
-import { useTheme } from '@/hooks/use-theme'
+import { useThemeStore } from '@/stores/use-theme-store'
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@motiadev/ui'
-import { FC } from 'react'
+import { FC, useMemo } from 'react'
 import ReactJson from 'react18-json-view'
+import { convertJsonSchemaToJson } from '@/components/endpoints/hooks/utils'
 
 export type EndpointResponseItem = {
   responseCode: string
-  responseBody: unknown
+  bodySchema: Record<string, Record<string, any>>
 }
 
 type EndpointResponseProps = {
   items: EndpointResponseItem[]
 }
 
-export const EndpointResponseSchema: FC<EndpointResponseProps> = ({ items }) => {
-  const { theme } = useTheme()
+const EndpointResponseSchemaItem: FC<EndpointResponseItem> = ({ responseCode, bodySchema }) => {
+  const theme = useThemeStore((store) => store.theme)
 
+  const schema = useMemo(() => convertJsonSchemaToJson(bodySchema), [bodySchema])
+
+  return (
+    <TabsContent value={responseCode} key={responseCode} className="border-t">
+      <div className="text-xs font-mono rounded-lg whitespace-pre-wrap">
+        <ReactJson
+          src={schema}
+          dark={theme === 'dark'}
+          enableClipboard={false}
+          style={{ backgroundColor: 'transparent' }}
+        />
+      </div>
+    </TabsContent>
+  )
+}
+
+export const EndpointResponseSchema: FC<EndpointResponseProps> = ({ items }) => {
   if (items.length === 0) {
     return null
   }
 
   return (
-    <div className="flex flex-col rounded-lg mt-6 border" data-testid="endpoint-response-container">
+    <div className="flex flex-col rounded-lg border" data-testid="endpoint-response-container">
       <Tabs defaultValue={items[0].responseCode}>
         <div className="flex items-center justify-between bg-card">
           <TabsList className="bg-transparent p-0">
@@ -36,17 +54,8 @@ export const EndpointResponseSchema: FC<EndpointResponseProps> = ({ items }) => 
           </TabsList>
         </div>
 
-        {items.map(({ responseCode, responseBody }) => (
-          <TabsContent value={responseCode} key={responseCode} className="border-t">
-            <div className="text-xs font-mono rounded-lg whitespace-pre-wrap">
-              <ReactJson
-                src={responseBody as object}
-                dark={theme === 'dark'}
-                enableClipboard={false}
-                style={{ backgroundColor: 'transparent' }}
-              />
-            </div>
-          </TabsContent>
+        {items.map((props) => (
+          <EndpointResponseSchemaItem key={props.responseCode} {...props} />
         ))}
       </Tabs>
     </div>

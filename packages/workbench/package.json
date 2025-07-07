@@ -12,6 +12,7 @@
     "test:watch": "jest --watch"
   },
   "dependencies": {
+    "@monaco-editor/react": "^4.6.1",
     "@motiadev/stream-client-react": "workspace:*",
     "@motiadev/ui": "workspace:*",
     "@radix-ui/react-collapsible": "^1.1.10",
@@ -49,7 +50,7 @@
     "typescript": "~5.8.3",
     "typescript-eslint": "^8.32.1",
     "vite": "^6.3.5",
-    "@monaco-editor/react": "^4.6.1"
+    "zustand": "^5.0.6"
   },
   "devDependencies": {
     "@testing-library/jest-dom": "^6.6.3",

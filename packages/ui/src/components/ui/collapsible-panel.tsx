@@ -13,6 +13,7 @@ export interface CollapsiblePanelProps extends PropsWithChildren {
   className?: string
   variant?: ContainerHeaderProps['variant']
   defaultTab?: string
+  onTabChange?: (tab: string) => void
 }
 
 interface PanelControlProps {
@@ -70,6 +71,7 @@ export const CollapsiblePanel: React.FC<CollapsiblePanelProps> = ({
   className,
   variant,
   defaultTab,
+  onTabChange,
 }) => {
   const [isCollapsed, setIsCollapsed] = useState(false)
   const panelRef = useRef<ImperativePanelHandle>(null)
@@ -101,13 +103,13 @@ export const CollapsiblePanel: React.FC<CollapsiblePanelProps> = ({
     )
     if (variant == 'tabs') {
       return (
-        <Tabs className="h-full" defaultValue={defaultTab}>
+        <Tabs className="h-full" defaultValue={defaultTab} onValueChange={onTabChange}>
           {container}
         </Tabs>
       )
     }
     return container
-  }, [variant, isCollapsed, header, children, defaultTab, onToggle])
+  }, [variant, isCollapsed, header, children, defaultTab, onToggle, onTabChange])
 
   return (
     <>

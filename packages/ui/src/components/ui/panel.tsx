@@ -23,9 +23,10 @@ export interface PanelProps {
   className?: string
   children?: ReactNode
   size?: 'sm' | 'md'
+  contentClassName?: string
 }
 
-export const Panel: FC<PanelProps> = ({ title, subtitle, details, actions, className, children, size }) => {
+export const Panel: FC<PanelProps> = ({ title, subtitle, details, actions, className, children, size, contentClassName }) => {
   return (
     <div
       className={cn(
@@ -72,7 +73,7 @@ export const Panel: FC<PanelProps> = ({ title, subtitle, details, actions, class
         </div>
 
         <div className="flex-1 overflow-auto">
-          <div className="flex flex-col gap-2 p-4">
+          <div className={cn('flex flex-col gap-2 p-4', contentClassName)}>
             {details?.map((detail, index) => (
               <div key={index} className="flex gap-4 items-start">
                 <div className="flex items-center h-8 shrink-0">

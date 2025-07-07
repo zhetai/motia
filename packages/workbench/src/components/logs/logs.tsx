@@ -1,12 +1,12 @@
 import { Table, TableBody, TableCell, TableRow } from '@/components/ui/table'
-import { Log, useLogs } from '@/stores/use-logs'
+import { Log, useLogsStore } from '@/stores/use-logs-store'
 import { useState } from 'react'
 import { LogDetail } from './log-detail'
 import { LogLevelDot } from './log-level-dot'
 import { formatTimestamp } from '@/lib/utils'
 
 export const Logs = () => {
-  const logs = useLogs((state) => state.logs)
+  const logs = useLogsStore((state) => state.logs)
   const [selectedLog, setSelectedLog] = useState<Log>()
 
   const handleLogClick = (log: Log) => {

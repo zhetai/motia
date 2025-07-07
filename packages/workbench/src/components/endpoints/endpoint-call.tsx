@@ -1,16 +1,14 @@
 import { FC, useEffect, useMemo, useState } from 'react'
 import { Loader2, Play, X } from 'lucide-react'
-import { Button } from '../ui/button'
 import { EndpointBadge } from './endpoint-badge'
 import { ApiEndpoint } from './hooks/use-get-endpoints'
 import { useJsonSchemaToJson } from './hooks/use-json-schema-to-json'
 import { usePathParams } from './hooks/use-path-params'
-import { useStateStream } from './hooks/use-state-stream'
 import { Sidebar } from '@/components/sidebar/sidebar'
 import { JsonEditor } from './json-editor'
 import { EndpointResponse } from './endpoint-response'
 import { EndpointResponseSchema } from './endpoint-response-schema'
-import { Input, Panel } from '@motiadev/ui'
+import { Input, Panel, Button } from '@motiadev/ui'
 
 type Props = { endpoint: ApiEndpoint; onClose: () => void }
 
@@ -29,7 +27,6 @@ export const EndpointCall: FC<Props> = ({ endpoint, onClose }) => {
   const [queryParamsValues, setQueryParamsValues] = useState<Record<string, string>>(
     endpoint.queryParams?.reduce((acc, param) => ({ ...acc, [param.name]: '' }), {} as Record<string, string>) ?? {},
   )
-  const { data: responseBodyData, isStreamed } = useStateStream(responseBody)
 
   const isPlayEnabled = useMemo(() => {
     if (!pathParams) return true
@@ -101,7 +98,9 @@ export const EndpointCall: FC<Props> = ({ endpoint, onClose }) => {
         },
       ]}
     >
-      <div className="rounded-lg border p-4 text-muted-foreground">{endpoint.description}</div>
+      {endpoint.description && (
+        <div className="rounded-lg border p-4 text-muted-foreground">{endpoint.description}</div>
+      )}
       {!!pathParams.length && (
         <Panel title="Path params" size="sm">
           <table>
@@ -142,35 +141,26 @@ export const EndpointCall: FC<Props> = ({ endpoint, onClose }) => {
         </Panel>
       )}
       {shouldHaveBody && (
-        <div className="flex flex-col rounded-lg border">
-          <div className="grid grid-cols-2 items-center px-4 py-2 border-b gap-y-2 bg-card min-h-[40px]">
-            <span className="text-xs font-bold">Body</span>
-          </div>
+        <Panel title="Body" size="sm" contentClassName="p-0">
           <JsonEditor value={body} schema={endpoint.bodySchema} onChange={setBody} onValidate={setIsBodyValid} />
-        </div>
+        </Panel>
       )}
       <Button
         className="w-fit"
         onClick={handleRequest}
+        variant="accent"
         data-testid="endpoint-play-button"
         disabled={isRequestLoading || !isPlayEnabled}
       >
         {isRequestLoading ? <Loader2 className="animate-spin" /> : <Play />} Play
       </Button>
 
-      {responseCode !== undefined && responseBody !== undefined && (
-        <EndpointResponse
-          responseCode={responseCode}
-          responseBody={responseBodyData}
-          isStreamed={isStreamed}
-          executionTime={executionTime}
-        />
-      )}
+      <EndpointResponse responseCode={responseCode} responseBody={responseBody} executionTime={executionTime} />
 
       <EndpointResponseSchema
         items={Object.entries(endpoint?.responseSchema ?? {}).map(([status, schema]) => ({
           responseCode: status,
-          responseBody: schema?.properties,
+          bodySchema: schema,
         }))}
       />
     </Sidebar>

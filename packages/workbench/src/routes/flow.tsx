@@ -1,10 +1,9 @@
 import { FlowView } from '@/views/flow/flow-view'
-import { useFetchFlows } from '@/hooks/use-fetch-flows'
-import { useFlow } from '@/hooks/use-flow'
+import { useFlowStore } from '@/stores/use-flow-store'
 
 export const Flow = () => {
-  const { currentFlow } = useFlow()
-  const { flow, flowConfig } = useFetchFlows(currentFlow?.id)
+  const flow = useFlowStore((state) => state.flows[state.selectedFlowId])
+  const flowConfig = useFlowStore((state) => state.flowConfigs[state.selectedFlowId])
 
   if (!flow || flow.error)
     return (

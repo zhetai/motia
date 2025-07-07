@@ -27,13 +27,13 @@ export const Endpoints = () => {
           <div
             data-testid={`endpoint-${endpoint.method}-${endpoint.path}`}
             key={`${endpoint.method} ${endpoint.path}`}
-            className={cn(selectedEndpoint === endpoint && 'bg-muted-foreground/10')}
+            className={cn(selectedEndpoint === endpoint && 'bg-muted-foreground/10', 'cursor-pointer select-none')}
             onClick={() => setSelectedEndpoint(endpoint)}
           >
             <div className="flex flex-row gap-2 items-center hover:bg-muted-foreground/10 p-2">
               <EndpointBadge variant={endpoint.method as never}>{endpoint.method.toUpperCase()}</EndpointBadge>
-              <span className="text-md font-mono font-bold">{endpoint.path}</span>
-              <span className="text-md text-muted-foreground">{endpoint.description}</span>
+              <span className="text-md font-mono font-bold whitespace-nowrap">{endpoint.path}</span>
+              <span className="text-md text-muted-foreground truncate">{endpoint.description}</span>
             </div>
           </div>
         ))}
