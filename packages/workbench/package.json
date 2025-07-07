@@ -8,7 +8,6 @@
     "lint:ts": "eslint",
     "lint:tsx": "eslint --config ../../eslint.config.tsx.js",
     "build": "rm -rf dist && tsc --build && sh post-build.sh",
-    "test": "jest",
     "test:watch": "jest --watch"
   },
   "dependencies": {

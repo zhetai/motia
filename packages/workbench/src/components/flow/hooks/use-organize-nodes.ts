@@ -1,7 +1,7 @@
-import { Edge, Node, useNodesInitialized, useReactFlow } from '@xyflow/react'
+import { ApiNodeData, EdgeData, EventNodeData } from '@/types/flow'
+import { Edge, Node } from '@xyflow/react'
 import dagre from 'dagre'
-import React, { useEffect, useRef } from 'react'
-import { EventNodeData, EdgeData, ApiNodeData } from './nodes/nodes.types'
+import { useEffect, useRef } from 'react'
 
 const organizeNodes = (
   nodes: Node<EventNodeData | ApiNodeData>[],
@@ -10,6 +10,7 @@ const organizeNodes = (
   const dagreGraph = new dagre.graphlib.Graph({ compound: true })
   dagreGraph.setDefaultEdgeLabel(() => ({}))
 
+  // Top-to-bottom layout
   dagreGraph.setGraph({ rankdir: 'TB', ranksep: 80, nodesep: 60, edgesep: 20, ranker: 'tight-tree' })
 
   nodes.forEach((node) => {
@@ -32,10 +33,6 @@ const organizeNodes = (
   dagre.layout(dagreGraph)
 
   return nodes.map((node) => {
-    if (node.position.x !== 0 || node.position.y !== 0) {
-      return node
-    }
-
     const { x, y } = dagreGraph.node(node.id)
     const position = {
       x: x - (node.measured?.width ?? 0) / 2,
@@ -46,31 +43,18 @@ const organizeNodes = (
   })
 }
 
-type Props = {
-  onInitialized: () => void
-}
-
-export const NodeOrganizer: React.FC<Props> = ({ onInitialized }) => {
-  const { setNodes, getNodes, getEdges, fitView } = useReactFlow()
-  const nodesInitialized = useNodesInitialized()
-  const initialized = useRef(false)
+export const useOrganizeNodes = (
+  nodes: Node<EventNodeData | ApiNodeData>[],
+  edges: Edge<EdgeData>[],
+  setNodes: (nodes: Node<EventNodeData | ApiNodeData>[]) => void,
+) => {
+  const organizedRef = useRef<boolean>(false)
 
   useEffect(() => {
-    if (nodesInitialized && !initialized.current) {
-      initialized.current = true
+    if (!nodes.length || !edges.length || !nodes[0].measured || organizedRef.current) return
 
-      const nodes = getNodes() as Node<EventNodeData | ApiNodeData>[]
-      const edges = getEdges() as Edge<EdgeData>[]
-      const organizedNodes = organizeNodes(nodes, edges)
-
-      setNodes(organizedNodes)
-      onInitialized()
-
-      setTimeout(async () => {
-        await fitView()
-      }, 1)
-    }
-  }, [nodesInitialized, onInitialized, setNodes, getNodes, getEdges, fitView])
-
-  return null
+    const layoutedNodes = organizeNodes(nodes, edges)
+    setNodes(layoutedNodes)
+    organizedRef.current = true
+  }, [nodes, edges, setNodes])
 }

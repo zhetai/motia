@@ -1,5 +1,5 @@
+import { EventNodeData } from '@/types/flow'
 import { FC } from 'react'
-import { EventNodeData } from '../../views/flow/nodes/nodes.types'
 
 type Props = { language: EventNodeData['language'] }
 

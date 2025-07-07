@@ -1,5 +1,5 @@
 import { useCallback } from 'react'
-import { FlowConfigResponse } from '@/views/flow/hooks/use-get-flow-state'
+import { FlowConfigResponse } from '@/types/flow'
 
 export const useSaveWorkflowConfig = () => {
   return useCallback(async (body: FlowConfigResponse) => {

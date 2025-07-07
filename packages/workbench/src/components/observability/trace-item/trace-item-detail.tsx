@@ -1,9 +1,9 @@
+import { Sidebar } from '@/components/sidebar/sidebar'
 import { Badge } from '@/components/ui/badge'
 import { formatDuration } from '@/lib/utils'
 import { Trace } from '@/types/observability'
 import { X } from 'lucide-react'
 import React, { memo } from 'react'
-import { Sidebar } from '../../sidebar/sidebar'
 import { EventIcon } from '../events/event-icon'
 import { TraceEvent } from '../events/trace-event'
 

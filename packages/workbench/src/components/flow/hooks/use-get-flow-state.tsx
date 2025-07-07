@@ -1,56 +1,12 @@
+import type { EdgeData, FlowConfigResponse, FlowResponse, NodeConfig, NodeData } from '@/types/flow'
 import { Edge, Node, useEdgesState, useNodesState } from '@xyflow/react'
-import React, { useCallback, useEffect, useRef, useState, useMemo } from 'react'
-import type { EdgeData, NodeData } from '../nodes/nodes.types'
-import { ApiFlowNode } from '../nodes/api-flow-node'
-import { NoopFlowNode } from '../nodes/noop-flow-node'
-import { EventFlowNode } from '../nodes/event-flow-node'
 import isEqual from 'fast-deep-equal'
-import { useSaveWorkflowConfig } from '@/views/flow/hooks/use-save-workflow-config'
+import React, { useCallback, useEffect, useMemo, useRef, useState } from 'react'
+import { ApiFlowNode } from '../nodes/api-flow-node'
 import { CronFlowNode } from '../nodes/cron-flow-node'
-
-type Emit = string | { topic: string; label?: string }
-
-type FlowStep = {
-  id: string
-  name: string
-  type: 'event' | 'api' | 'noop' | 'cron'
-  description?: string
-  subscribes?: string[]
-  emits: Emit[]
-  virtualEmits?: Emit[]
-  action?: 'webhook'
-  webhookUrl?: string
-  language?: string
-  nodeComponentPath?: string
-  filePath?: string
-}
-
-export type FlowResponse = {
-  id: string
-  name: string
-  steps: FlowStep[]
-  edges: FlowEdge[]
-  error?: string
-}
-
-export type FlowConfigResponse = {
-  id: string
-  config: Record<string, NodeConfig>
-}
-
-type FlowEdge = {
-  id: string
-  source: string
-  target: string
-  data: EdgeData
-}
-
-type NodeConfig = {
-  x: number
-  y: number
-  sourceHandlePosition?: 'bottom' | 'right'
-  targetHandlePosition?: 'top' | 'left'
-}
+import { EventFlowNode } from '../nodes/event-flow-node'
+import { NoopFlowNode } from '../nodes/noop-flow-node'
+import { useSaveWorkflowConfig } from './use-save-workflow-config'
 
 const DEFAULT_CONFIG: NodeConfig = { x: 0, y: 0 }
 

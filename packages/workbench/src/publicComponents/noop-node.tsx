@@ -1,5 +1,5 @@
 import React, { PropsWithChildren } from 'react'
-import { BaseNode } from './base-node'
+import { BaseNode } from './base-node/base-node'
 import { NoopNodeProps } from './node-props'
 
 export const NoopNode: React.FC<PropsWithChildren<NoopNodeProps>> = ({ data, children }) => {

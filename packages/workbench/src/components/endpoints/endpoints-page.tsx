@@ -5,13 +5,14 @@ import { EndpointBadge } from './endpoint-badge'
 import { EndpointCall } from './endpoint-call'
 import { useGetEndpoints } from './hooks/use-get-endpoints'
 
-export const Endpoints = () => {
+export const EndpointsPage = () => {
   const endpoints = useGetEndpoints()
   const selectedEndpointId = useGlobalStore((state) => state.selectedEndpointId)
   const selectEndpointId = useGlobalStore((state) => state.selectEndpointId)
-  const selectedEndpoint = useMemo(() => {
-    return selectedEndpointId ? endpoints.find((endpoint) => endpoint.id === selectedEndpointId) : null
-  }, [endpoints, selectedEndpointId])
+  const selectedEndpoint = useMemo(
+    () => selectedEndpointId && endpoints.find((endpoint) => endpoint.id === selectedEndpointId),
+    [endpoints, selectedEndpointId],
+  )
 
   return (
     <div className="flex flex-row w-full h-full">

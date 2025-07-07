@@ -1,5 +1,5 @@
 import { useFlowStore } from '@/stores/use-flow-store'
-import { FlowResponse } from '@/views/flow/hooks/use-get-flow-state'
+import { FlowResponse } from '@/types/flow'
 import { useStreamGroup } from '@motiadev/stream-client-react'
 import { useEffect } from 'react'
 

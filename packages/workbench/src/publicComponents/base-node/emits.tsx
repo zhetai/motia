@@ -1,4 +1,4 @@
-import { EventNodeData } from '../views/flow/nodes/nodes.types'
+import { EventNodeData } from '@/types/flow'
 import React from 'react'
 
 const toTopic = (emit: string | { topic: string; label?: string; conditional?: boolean }) =>

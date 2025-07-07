@@ -5,7 +5,7 @@ import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '.
 import { StateItem, useGetStateItems } from './hooks/states-hooks'
 import { StateDetail } from './state-detail'
 
-export const States = () => {
+export const StatesPage = () => {
   const selectedStateId = useGlobalStore((state) => state.selectedStateId)
   const selectStateId = useGlobalStore((state) => state.selectStateId)
   const items = useGetStateItems()

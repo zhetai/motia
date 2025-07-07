@@ -1,3 +1,4 @@
+import { EdgeData, FlowConfigResponse, FlowResponse, NodeData } from '@/types/flow'
 import {
   Background,
   BackgroundVariant,
@@ -10,9 +11,8 @@ import {
 import React, { useCallback, useState } from 'react'
 import { BaseEdge } from './base-edge'
 import { FlowLoader } from './flow-loader'
-import { FlowConfigResponse, FlowResponse, useGetFlowState } from './hooks/use-get-flow-state'
+import { useGetFlowState } from './hooks/use-get-flow-state'
 import { NodeOrganizer } from './node-organizer'
-import { EdgeData, NodeData } from './nodes/nodes.types'
 
 import '@xyflow/react/dist/style.css'
 

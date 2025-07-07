@@ -1,6 +1,6 @@
+import { LogLevelDot } from '@/components/logs/log-level-dot'
 import { LogEntry } from '@/types/observability'
 import React from 'react'
-import { LogLevelDot } from '../../logs/log-level-dot'
 
 export const TraceLogEvent: React.FC<{ event: LogEntry }> = ({ event }) => {
   return (

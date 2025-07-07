@@ -1,8 +1,8 @@
+import { convertJsonSchemaToJson } from '@/components/endpoints/hooks/utils'
 import { useThemeStore } from '@/stores/use-theme-store'
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@motiadev/ui'
 import { FC, useMemo } from 'react'
 import ReactJson from 'react18-json-view'
-import { convertJsonSchemaToJson } from '@/components/endpoints/hooks/utils'
 
 export type EndpointResponseItem = {
   responseCode: string

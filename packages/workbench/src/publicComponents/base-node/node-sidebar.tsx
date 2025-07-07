@@ -3,8 +3,8 @@ import { LanguageIndicator } from '@/publicComponents/base-node/language-indicat
 import { PanelDetailItem } from '@motiadev/ui'
 import { X } from 'lucide-react'
 import React from 'react'
-import { Emits } from '../emits'
-import { Subscribe } from '../subscribe'
+import { Emits } from './emits'
+import { Subscribe } from './subscribe'
 
 type NodeSidebarProps = {
   title: string

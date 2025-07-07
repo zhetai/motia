@@ -1,12 +1,12 @@
+import { useHandlePositions } from '@/hooks/use-update-handle-positions'
 import { PanelDetailItem } from '@motiadev/ui'
 import { ChevronUp } from 'lucide-react'
 import React, { PropsWithChildren, useState } from 'react'
-import { LanguageIndicator } from './base-node/language-indicator'
+import { BaseNodeProps } from '../node-props'
 import { BaseHandle } from './base-handle'
-import { NodeHeader } from './base-node/node-header'
-import { NodeSidebar } from './base-node/node-sidebar'
-import { BaseNodeProps } from './node-props'
-import { useHandlePositions } from '../hooks/use-update-handle-positions'
+import { LanguageIndicator } from './language-indicator'
+import { NodeHeader } from './node-header'
+import { NodeSidebar } from './node-sidebar'
 
 type Props = PropsWithChildren<{
   title: string

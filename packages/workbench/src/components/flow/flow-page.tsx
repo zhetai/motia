@@ -1,9 +1,9 @@
-import { FlowView } from '@/views/flow/flow-view'
 import { useFlowStore } from '@/stores/use-flow-store'
+import { FlowConfigResponse, FlowResponse } from '@/types/flow'
 import { useStreamItem } from '@motiadev/stream-client-react'
-import { FlowConfigResponse, FlowResponse } from '../views/flow/hooks/use-get-flow-state'
+import { FlowView } from './flow-view'
 
-export const Flow = () => {
+export const FlowPage = () => {
   const selectedFlowId = useFlowStore((state) => state.selectedFlowId)
   const { data: flow } = useStreamItem<FlowResponse>({
     streamName: '__motia.flows',

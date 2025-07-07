@@ -1,5 +1,5 @@
 import { PropsWithChildren } from 'react'
-import { BaseNode } from './base-node'
+import { BaseNode } from './base-node/base-node'
 import { EventNodeProps } from './node-props'
 
 export const EventNode: React.FC<PropsWithChildren<EventNodeProps>> = ({ data, children }) => {

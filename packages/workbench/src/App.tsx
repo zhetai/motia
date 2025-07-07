@@ -1,15 +1,15 @@
-import { Logs } from '@/components/logs/logs'
-import { APP_SIDEBAR_CONTAINER_ID } from '@/components/sidebar/sidebar'
-import { States } from '@/components/states/states'
-import { TracesPage } from '@/routes/traces-page'
 import { CollapsiblePanel, CollapsiblePanelGroup, TabsContent, TabsList, TabsTrigger } from '@motiadev/ui'
+import { ReactFlowProvider } from '@xyflow/react'
 import { File, GanttChart, Link2, LogsIcon } from 'lucide-react'
 import React from 'react'
+import { EndpointsPage } from './components/endpoints/endpoints-page'
+import { FlowPage } from './components/flow/flow-page'
+import { FlowTabMenuItem } from './components/flow/flow-tab-menu-item'
 import { Header } from './components/header/header'
-import { ReactFlowProvider } from '@xyflow/react'
-import { Flow } from '@/routes/flow'
-import { Endpoints } from '@/components/endpoints/endpoints'
-import { FlowTabMenuItem } from '@/components/flow-tab-menu-item/flow-tab-menu-item'
+import { LogsPage } from './components/logs/logs-page'
+import { TracesPage } from './components/observability/traces-page'
+import { APP_SIDEBAR_CONTAINER_ID } from './components/sidebar/sidebar'
+import { StatesPage } from './components/states/states-page'
 import { useTabsStore } from './stores/use-tabs-store'
 
 export const App: React.FC = () => {
@@ -48,11 +48,11 @@ export const App: React.FC = () => {
           >
             <TabsContent value="flow" className="h-full" asChild>
               <ReactFlowProvider>
-                <Flow />
+                <FlowPage />
               </ReactFlowProvider>
             </TabsContent>
             <TabsContent value="endpoint" asChild>
-              <Endpoints />
+              <EndpointsPage />
             </TabsContent>
           </CollapsiblePanel>
           <CollapsiblePanel
@@ -80,10 +80,10 @@ export const App: React.FC = () => {
               <TracesPage />
             </TabsContent>
             <TabsContent value="logs" asChild>
-              <Logs />
+              <LogsPage />
             </TabsContent>
             <TabsContent value="states" asChild>
-              <States />
+              <StatesPage />
             </TabsContent>
           </CollapsiblePanel>
         </CollapsiblePanelGroup>

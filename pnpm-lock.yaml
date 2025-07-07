@@ -671,6 +671,9 @@ importers:
       '@motiadev/core':
         specifier: workspace:*
         version: link:../packages/core
+      '@motiadev/ui':
+        specifier: workspace:*
+        version: link:../packages/ui
       '@motiadev/workbench':
         specifier: workspace:*
         version: link:../packages/workbench

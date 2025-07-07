@@ -1,6 +1,6 @@
 import React, { PropsWithChildren } from 'react'
 import { Clock } from 'lucide-react'
-import { BaseNode } from './base-node'
+import { BaseNode } from './base-node/base-node'
 import { CronNodeProps } from './node-props'
 
 export const CronNode: React.FC<PropsWithChildren<CronNodeProps>> = ({ data, children }) => {

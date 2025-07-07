@@ -8,14 +8,15 @@ import { LogLevelDot } from './log-level-dot'
 import { Button, Input } from '@motiadev/ui'
 import { CircleX, Trash } from 'lucide-react'
 
-export const Logs = () => {
+export const LogsPage = () => {
   const logs = useLogsStore((state) => state.logs)
   const resetLogs = useLogsStore((state) => state.resetLogs)
   const selectedLogId = useGlobalStore((state) => state.selectedLogId)
   const selectLogId = useGlobalStore((state) => state.selectLogId)
-  const selectedLog = useMemo(() => {
-    return selectedLogId ? logs.find((log) => log.id === selectedLogId) : undefined
-  }, [logs, selectedLogId])
+  const selectedLog = useMemo(
+    () => (selectedLogId ? logs.find((log) => log.id === selectedLogId) : undefined),
+    [logs, selectedLogId],
+  )
 
   const [search, setSearch] = useState('')
   const filteredLogs = useMemo(() => {

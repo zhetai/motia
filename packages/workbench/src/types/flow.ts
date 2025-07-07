@@ -57,3 +57,47 @@ export type EdgeData = {
   label?: string
   labelVariant?: 'default' | 'conditional'
 }
+
+export type Emit = string | { topic: string; label?: string }
+
+export type FlowStep = {
+  id: string
+  name: string
+  type: 'event' | 'api' | 'noop' | 'cron'
+  description?: string
+  subscribes?: string[]
+  emits: Emit[]
+  virtualEmits?: Emit[]
+  action?: 'webhook'
+  webhookUrl?: string
+  language?: string
+  nodeComponentPath?: string
+  filePath?: string
+}
+
+export type FlowResponse = {
+  id: string
+  name: string
+  steps: FlowStep[]
+  edges: FlowEdge[]
+  error?: string
+}
+
+export type FlowConfigResponse = {
+  id: string
+  config: Record<string, NodeConfig>
+}
+
+export type FlowEdge = {
+  id: string
+  source: string
+  target: string
+  data: EdgeData
+}
+
+export type NodeConfig = {
+  x: number
+  y: number
+  sourceHandlePosition?: 'bottom' | 'right'
+  targetHandlePosition?: 'top' | 'left'
+}

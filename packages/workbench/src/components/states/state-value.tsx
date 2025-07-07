@@ -1,7 +1,7 @@
+import { cn } from '@/lib/utils'
 import { cva, VariantProps } from 'class-variance-authority'
 import { SquareMinus, SquarePlus } from 'lucide-react'
 import React, { ReactNode, useState } from 'react'
-import { cn } from '../../lib/utils'
 
 const valueVariants = cva('text-muted-foreground text-sm', {
   variants: {

@@ -3,8 +3,8 @@ import React, { PropsWithChildren, useCallback, useState } from 'react'
 import { Sidebar } from '@/components/sidebar/sidebar'
 import { Label } from '@/components/ui/label'
 import { LanguageIndicator } from '@/publicComponents/base-node/language-indicator'
-import { Subscribe } from './subscribe'
-import { Emits } from './emits'
+import { Subscribe } from './base-node/subscribe'
+import { Emits } from './base-node/emits'
 
 type Props = PropsWithChildren<{
   name: string

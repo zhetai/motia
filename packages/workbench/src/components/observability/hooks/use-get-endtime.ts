@@ -1,5 +1,5 @@
 import { useEffect, useState } from 'react'
-import { TraceGroup } from '../../../types/observability'
+import { TraceGroup } from '@/types/observability'
 
 export const useGetEndTime = (group: TraceGroup | undefined | null) => {
   const groupEndTime = group?.endTime

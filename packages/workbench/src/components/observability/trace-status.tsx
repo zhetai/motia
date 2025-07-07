@@ -1,6 +1,6 @@
+import { TraceGroup } from '@/types/observability'
 import { cva } from 'class-variance-authority'
 import React from 'react'
-import { TraceGroup } from '../../types/observability'
 
 const statusVariants = cva('inline-flex items-center rounded-full px-4 py-1 text-xs font-bold transition-colors', {
   variants: {
