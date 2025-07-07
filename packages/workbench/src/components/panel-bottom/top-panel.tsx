@@ -19,7 +19,7 @@ const FlowTabMenu = () => {
   useFetchFlows()
   const selectFlowId = useFlowStore((state) => state.selectFlowId)
   const flows = useFlowStore((state) => state.flows)
-  const flow = useFlowStore((state) => state.flows[state.selectedFlowId])
+  const flow = useFlowStore((state) => state.selectedFlowId)
 
   if (Object.keys(flows).length === 0) {
     return null
@@ -30,17 +30,17 @@ const FlowTabMenu = () => {
       <DropdownMenu>
         <DropdownMenuTrigger className="flex flex-row justify-center items-center gap-2 cursor-pointer">
           <Workflow />
-          {flow?.name ?? 'No flow selected'}
+          {flow ?? 'No flow selected'}
           <ChevronsUpDown className="size-4" />
         </DropdownMenuTrigger>
         <DropdownMenuContent className={'bg-background text-foreground'}>
           {Object.values(flows).map((item) => (
             <DropdownMenuItem
-              key={`dropdown-${item.name}`}
+              key={`dropdown-${item}`}
               className="cursor-pointer gap-2"
-              onClick={() => selectFlowId(item.id)}
+              onClick={() => selectFlowId(item)}
             >
-              {item.name}
+              {item}
             </DropdownMenuItem>
           ))}
         </DropdownMenuContent>

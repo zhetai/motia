@@ -1,26 +1,12 @@
 import { useFlowStore } from '@/stores/use-flow-store'
-import { FlowConfigResponse, FlowResponse } from '@/views/flow/hooks/use-get-flow-state'
-import { useStreamGroup, useStreamItem } from '@motiadev/stream-client-react'
+import { FlowResponse } from '@/views/flow/hooks/use-get-flow-state'
+import { useStreamGroup } from '@motiadev/stream-client-react'
 import { useEffect } from 'react'
 
 export const useFetchFlows = () => {
-  const addFlow = useFlowStore((state) => state.addFlow)
-  const addFlowList = useFlowStore((state) => state.addFlowList)
-  const addFlowConfig = useFlowStore((state) => state.addFlowConfig)
-  const flowId = useFlowStore((state) => state.selectedFlowId)
+  const setFlows = useFlowStore((state) => state.setFlows)
   const selectFlowId = useFlowStore((state) => state.selectFlowId)
-
-  const { data: flow } = useStreamItem<FlowResponse>({
-    streamName: '__motia.flows',
-    groupId: 'default',
-    id: flowId,
-  })
-
-  const { data: flowConfig } = useStreamItem<FlowConfigResponse>({
-    streamName: '__motia.flowsConfig',
-    groupId: 'default',
-    id: flowId,
-  })
+  const selectedFlowId = useFlowStore((state) => state.selectedFlowId)
 
   const { data: flows } = useStreamGroup<FlowResponse>({
     streamName: '__motia.flows',
@@ -28,26 +14,15 @@ export const useFetchFlows = () => {
   })
 
   useEffect(() => {
-    if (flows) {
-      addFlowList(flows)
-    }
-  }, [flows, addFlowList])
+    if (flows) setFlows(flows.map((flow) => flow.id))
+  }, [flows, setFlows])
 
   useEffect(() => {
-    if (!flowId && flows.length > 0) {
+    if (
+      (!selectedFlowId && flows.length > 0) ||
+      (selectedFlowId && flows.length > 0 && !flows.find((flow) => flow.id === selectedFlowId))
+    ) {
       selectFlowId(flows[0].id)
     }
-  }, [flows, flowId, selectFlowId])
-
-  useEffect(() => {
-    if (flow) {
-      addFlow(flow)
-    }
-  }, [flow, addFlow])
-
-  useEffect(() => {
-    if (flowConfig) {
-      addFlowConfig(flowConfig)
-    }
-  }, [flowConfig, addFlowConfig])
+  }, [flows, selectedFlowId, selectFlowId, selectedFlowId])
 }

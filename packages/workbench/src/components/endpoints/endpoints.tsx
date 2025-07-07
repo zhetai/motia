@@ -1,24 +1,17 @@
 import { cn } from '@/lib/utils'
-import { useEffect, useState } from 'react'
+import { useGlobalStore } from '@/stores/use-global-store'
+import { useMemo } from 'react'
 import { EndpointBadge } from './endpoint-badge'
 import { EndpointCall } from './endpoint-call'
-import { ApiEndpoint, useGetEndpoints } from './hooks/use-get-endpoints'
+import { useGetEndpoints } from './hooks/use-get-endpoints'
 
 export const Endpoints = () => {
   const endpoints = useGetEndpoints()
-  const [selectedEndpoint, setSelectedEndpoint] = useState<ApiEndpoint | null>(null)
-
-  useEffect(() => {
-    setSelectedEndpoint((selected) => {
-      if (!selected) return null
-
-      const endpoint = endpoints.find(
-        (endpoint) => endpoint.method === selected.method && endpoint.path === selected.path,
-      )
-
-      return endpoint ?? null
-    })
-  }, [endpoints])
+  const selectedEndpointId = useGlobalStore((state) => state.selectedEndpointId)
+  const selectEndpointId = useGlobalStore((state) => state.selectEndpointId)
+  const selectedEndpoint = useMemo(() => {
+    return selectedEndpointId ? endpoints.find((endpoint) => endpoint.id === selectedEndpointId) : null
+  }, [endpoints, selectedEndpointId])
 
   return (
     <div className="flex flex-row w-full h-full">
@@ -28,7 +21,7 @@ export const Endpoints = () => {
             data-testid={`endpoint-${endpoint.method}-${endpoint.path}`}
             key={`${endpoint.method} ${endpoint.path}`}
             className={cn(selectedEndpoint === endpoint && 'bg-muted-foreground/10', 'cursor-pointer select-none')}
-            onClick={() => setSelectedEndpoint(endpoint)}
+            onClick={() => selectEndpointId(endpoint.id)}
           >
             <div className="flex flex-row gap-2 items-center hover:bg-muted-foreground/10 p-2">
               <EndpointBadge variant={endpoint.method as never}>{endpoint.method.toUpperCase()}</EndpointBadge>
@@ -38,7 +31,7 @@ export const Endpoints = () => {
           </div>
         ))}
       </div>
-      {selectedEndpoint && <EndpointCall endpoint={selectedEndpoint} onClose={() => setSelectedEndpoint(null)} />}
+      {selectedEndpoint && <EndpointCall endpoint={selectedEndpoint} onClose={() => selectEndpointId(undefined)} />}
     </div>
   )
 }

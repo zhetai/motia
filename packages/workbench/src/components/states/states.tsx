@@ -1,15 +1,21 @@
-import { useState } from 'react'
+import { useGlobalStore } from '@/stores/use-global-store'
+import { cn } from '@motiadev/ui'
+import { useMemo } from 'react'
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '../ui/table'
 import { StateItem, useGetStateItems } from './hooks/states-hooks'
 import { StateDetail } from './state-detail'
-import { cn } from '@motiadev/ui'
 
 export const States = () => {
-  const [selectedItem, setSelectedItem] = useState<StateItem>()
+  const selectedStateId = useGlobalStore((state) => state.selectedStateId)
+  const selectStateId = useGlobalStore((state) => state.selectStateId)
   const items = useGetStateItems()
+  const selectedItem = useMemo(
+    () => (selectedStateId ? items.find((item) => `${item.groupId}:${item.key}` === selectedStateId) : null),
+    [items, selectedStateId],
+  )
 
-  const handleRowClick = (item: StateItem) => setSelectedItem(item)
-  const onClose = () => setSelectedItem(undefined)
+  const handleRowClick = (item: StateItem) => selectStateId(`${item.groupId}:${item.key}`)
+  const onClose = () => selectStateId(undefined)
 
   return (
     <div className="flex flex-row gap-4 h-full">

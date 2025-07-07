@@ -44,13 +44,7 @@ export const LogDetail: React.FC<Props> = ({ log, onClose }) => {
       onClose={onClose}
       title="Logs Details"
       subtitle="Details including custom properties"
-      actions={[
-        {
-          icon: <X />,
-          onClick: onClose,
-          label: 'Close',
-        },
-      ]}
+      actions={[{ icon: <X />, onClick: onClose, label: 'Close' }]}
       details={[
         {
           label: 'Level',
@@ -61,22 +55,10 @@ export const LogDetail: React.FC<Props> = ({ log, onClose }) => {
             </div>
           ),
         },
-        {
-          label: 'Time',
-          value: formatTimestamp(log.time),
-        },
-        {
-          label: 'Step',
-          value: log.step,
-        },
-        {
-          label: 'Flows',
-          value: log.flows.join(', '),
-        },
-        {
-          label: 'Trace ID',
-          value: log.traceId,
-        },
+        { label: 'Time', value: formatTimestamp(log.time) },
+        { label: 'Step', value: log.step },
+        { label: 'Flows', value: log.flows.join(', ') },
+        { label: 'Trace ID', value: log.traceId },
       ]}
     >
       {hasOtherProps && <ReactJson src={otherPropsObject} theme="default" enableClipboard={false} />}

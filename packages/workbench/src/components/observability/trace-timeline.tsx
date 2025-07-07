@@ -1,3 +1,4 @@
+import { useGlobalStore } from '@/stores/use-global-store'
 import { Trace, TraceGroup } from '@/types/observability'
 import { useStreamGroup, useStreamItem } from '@motiadev/stream-client-react'
 import { Button } from '@motiadev/ui'
@@ -20,7 +21,8 @@ export const TraceTimeline: React.FC<Props> = memo(({ groupId }) => {
   const { data } = useStreamGroup<Trace>({ streamName: 'motia-trace', groupId })
   const endTime = useGetEndTime(group)
   const [zoom, setZoom] = useState(1)
-  const [selectedTraceId, setSelectedTraceId] = useState<string | null>(null)
+  const selectedTraceId = useGlobalStore((state) => state.selectedTraceId)
+  const selectTraceId = useGlobalStore((state) => state.selectTraceId)
 
   const selectedTrace = useMemo(() => data?.find((trace) => trace.id === selectedTraceId), [data, selectedTraceId])
 
@@ -62,18 +64,12 @@ export const TraceTimeline: React.FC<Props> = memo(({ groupId }) => {
 
           <div className="flex flex-col w-full h-full">
             {data?.map((trace) => (
-              <TraceItem
-                key={trace.id}
-                trace={trace}
-                group={group}
-                groupEndTime={endTime}
-                onExpand={setSelectedTraceId}
-              />
+              <TraceItem key={trace.id} trace={trace} group={group} groupEndTime={endTime} onExpand={selectTraceId} />
             ))}
           </div>
         </div>
       </div>
-      {selectedTrace && <TraceItemDetail trace={selectedTrace} onClose={() => setSelectedTraceId(null)} />}
+      {selectedTrace && <TraceItemDetail trace={selectedTrace} onClose={() => selectTraceId(undefined)} />}
     </>
   )
 })

@@ -1,5 +1,4 @@
 import { create } from 'zustand'
-import { createJSONStorage, persist } from 'zustand/middleware'
 
 export type Log = {
   level: string
@@ -16,21 +15,13 @@ export type LogsState = {
   resetLogs: () => void
 }
 
-export const useLogsStore = create<LogsState>()(
-  persist(
-    (set) => ({
-      logs: [],
-      addLog: (log) =>
-        set((state) => ({
-          logs: [log, ...state.logs],
-        })),
-      resetLogs: () => {
-        set({ logs: [] })
-      },
-    }),
-    {
-      name: 'motia-logs-storage',
-      storage: createJSONStorage(() => localStorage),
-    },
-  ),
-)
+export const useLogsStore = create<LogsState>()((set) => ({
+  logs: [],
+  addLog: (log) =>
+    set((state) => ({
+      logs: [log, ...state.logs],
+    })),
+  resetLogs: () => {
+    set({ logs: [] })
+  },
+}))

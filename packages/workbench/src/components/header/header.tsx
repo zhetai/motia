@@ -1,11 +1,13 @@
 import React from 'react'
-import { LogoIcon } from '../ui/logo-icon'
+import { useThemeStore } from '@/stores/use-theme-store'
 import { ThemeToggle } from '../ui/theme-toggle'
 
 export const Header: React.FC = () => {
+  const theme = useThemeStore((state) => state.theme)
+
   return (
     <header className="min-h-16 px-4 gap-1 flex items-center bg-default text-default-foreground border-b">
-      <LogoIcon className="h-8 w-8 mr-2" />
+      <img src={`/motia-${theme}.png`} className="h-5" />
       <div className="flex-1" />
       <ThemeToggle />
     </header>

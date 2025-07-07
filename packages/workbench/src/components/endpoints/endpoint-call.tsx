@@ -1,14 +1,14 @@
-import { FC, useEffect, useMemo, useState } from 'react'
+import { Sidebar } from '@/components/sidebar/sidebar'
+import { Button, Input, Panel } from '@motiadev/ui'
 import { Loader2, Play, X } from 'lucide-react'
+import { FC, useEffect, useMemo, useState } from 'react'
 import { EndpointBadge } from './endpoint-badge'
+import { EndpointResponse } from './endpoint-response'
+import { EndpointResponseSchema } from './endpoint-response-schema'
 import { ApiEndpoint } from './hooks/use-get-endpoints'
 import { useJsonSchemaToJson } from './hooks/use-json-schema-to-json'
 import { usePathParams } from './hooks/use-path-params'
-import { Sidebar } from '@/components/sidebar/sidebar'
 import { JsonEditor } from './json-editor'
-import { EndpointResponse } from './endpoint-response'
-import { EndpointResponseSchema } from './endpoint-response-schema'
-import { Input, Panel, Button } from '@motiadev/ui'
 
 type Props = { endpoint: ApiEndpoint; onClose: () => void }
 
@@ -99,7 +99,7 @@ export const EndpointCall: FC<Props> = ({ endpoint, onClose }) => {
       ]}
     >
       {endpoint.description && (
-        <div className="rounded-lg border p-4 text-muted-foreground">{endpoint.description}</div>
+        <div className="rounded-lg border p-4 font-medium text-muted-foreground">{endpoint.description}</div>
       )}
       {!!pathParams.length && (
         <Panel title="Path params" size="sm">

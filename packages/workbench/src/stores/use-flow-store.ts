@@ -1,52 +1,18 @@
 import { create } from 'zustand'
-import { FlowConfigResponse, FlowResponse } from '@/views/flow/hooks/use-get-flow-state'
-import { persist, createJSONStorage } from 'zustand/middleware'
+import { createJSONStorage, persist } from 'zustand/middleware'
 
 type UseFlowStore = {
-  selectedFlowId: string
-  flows: Record<string, FlowResponse>
-  flowConfigs: Record<string, FlowConfigResponse>
-  addFlowConfig: (flowConfig: FlowConfigResponse) => void
-  addFlow: (flow: FlowResponse) => void
-  addFlowList: (flows: FlowResponse[]) => void
+  selectedFlowId?: string
   selectFlowId: (flowId: string) => void
+  flows: string[]
+  setFlows: (flows: string[]) => void
 }
 
 export const useFlowStore = create(
   persist<UseFlowStore>(
     (set) => ({
-      selectedFlowId: '',
-      flows: {},
-      flowConfigs: {},
-      addFlowConfig: (flowConfig: FlowConfigResponse) => {
-        const flowId = flowConfig.id
-        set((state) => {
-          return { flowConfigs: { ...state.flowConfigs, [flowId]: flowConfig } }
-        })
-      },
-      addFlowList: (flows: FlowResponse[]) => {
-        set((state) => {
-          const newFlows = flows.reduce(
-            (acc, flow) => {
-              if (state.flows[flow.id]) {
-                return acc
-              }
-              acc[flow.id] = flow
-              return acc
-            },
-            {} as Record<string, FlowResponse>,
-          )
-          return { flows: { ...state.flows, ...newFlows } }
-        })
-      },
-      addFlow: (flow: FlowResponse) => {
-        const flowId = flow.id as string
-        set((state) => {
-          return {
-            flows: { ...state.flows, [flowId]: flow },
-          }
-        })
-      },
+      flows: [],
+      setFlows: (flows) => set({ flows }),
       selectFlowId: (flowId) =>
         set((state) => {
           if (state.selectedFlowId === flowId) {

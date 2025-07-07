@@ -30,19 +30,12 @@ const PanelControls: React.FC<PanelControlProps> = ({ header, isCollapsed, onTog
       <div className="flex-1" />
       {onToggle && (
         <Button
-          variant="ghost"
-          size="sm"
+          variant="default"
           onClick={onToggle}
           aria-label={isCollapsed ? 'Expand panel' : 'Collapse panel'}
-          className={cn({
-            'mr-5': variant === 'tabs',
-          })}
+          className={cn('h-8 px-3 [&_svg]:size-5', { 'mr-5': variant === 'tabs' })}
         >
-          <ChevronDown
-            className={cn('w-6 h-6 transition-transform', {
-              '-rotate-90': !isCollapsed,
-            })}
-          />
+          <ChevronDown className={cn('transition-transform', { '-rotate-180': !isCollapsed })} />
         </Button>
       )}
     </ContainerHeader>

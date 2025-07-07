@@ -6,7 +6,7 @@ import { TraceStatusBadge } from './trace-status'
 
 interface Props {
   groups: TraceGroup[]
-  selectedGroupId: string | null
+  selectedGroupId?: string
   onGroupSelect: (group: TraceGroup) => void
 }
 
