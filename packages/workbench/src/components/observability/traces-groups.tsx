@@ -47,10 +47,7 @@ export const TracesGroups: React.FC<Props> = memo(({ groups, selectedGroupId, on
                     </div>
                     <span>{group.metadata.totalSteps} steps</span>
                   </div>
-                  <div className="flex justify-between">
-                    {group.endTime && <span>Duration: {formatDuration(group.endTime - group.startTime)}</span>}
-                    <span>{formatDistanceToNow(group.startTime)} ago</span>
-                  </div>
+                  <div className="flex justify-between">{formatDistanceToNow(group.startTime)} ago</div>
                   {group.metadata.activeSteps > 0 && (
                     <div className="text-blue-600">{group.metadata.activeSteps} active</div>
                   )}

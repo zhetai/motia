@@ -7,7 +7,6 @@ export class MotiaApplicationPage {
   readonly navigation: Locator
   readonly mainContent: Locator
   readonly logoIcon: Locator
-  readonly sidebarToggle: Locator
 
   constructor(page: Page) {
     this.page = page
@@ -16,7 +15,6 @@ export class MotiaApplicationPage {
     this.navigation = page.locator('nav')
     this.mainContent = page.locator('main')
     this.logoIcon = page.getByTestId('logo-icon')
-    this.sidebarToggle = page.getByTestId('sidebar-toggle')
   }
 
   async goto(path: string = '/') {
@@ -50,25 +48,21 @@ export class MotiaApplicationPage {
     expect(content.length).toBeGreaterThan(100)
   }
 
-  async toggleSidebar() {
-    await this.sidebarToggle.click()
-  }
-
   async collectConsoleErrors() {
     const errors: string[] = []
-    
-    this.page.on('pageerror', error => {
+
+    this.page.on('pageerror', (error) => {
       if (!error.message.includes('favicon.ico')) {
         errors.push(error.message)
       }
     })
-    
-    this.page.on('console', msg => {
+
+    this.page.on('console', (msg) => {
       if (msg.type() === 'error' && !msg.text().includes('favicon.ico')) {
         errors.push(msg.text())
       }
     })
-    
+
     return errors
   }
-} 
+}

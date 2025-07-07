@@ -8,19 +8,19 @@ export class WorkbenchPage extends MotiaApplicationPage {
   readonly endpointsLink: Locator
   readonly tracesLink: Locator
   readonly flowsLink: Locator
-  readonly flowLinks: Locator
+  readonly flowsDropdownTrigger: Locator
   readonly startFlowButton: Locator
   readonly flowContainer: Locator
 
   constructor(page: Page) {
     super(page)
     this.sidebarContainer = page.getByTestId('sidebar')
-    this.logsLink = page.getByTestId('header-logs-link')
-    this.statesLink = page.getByTestId('header-states-link')
-    this.tracesLink = page.getByTestId('header-traces-link')
-    this.endpointsLink = page.getByTestId('header-endpoints-link')
-    this.flowsLink = page.getByTestId('header-flows-link')
-    this.flowLinks = page.getByTestId(/flow-.*-link/)
+    this.logsLink = page.getByTestId('logs-link')
+    this.statesLink = page.getByTestId('states-link')
+    this.tracesLink = page.getByTestId('traces-link')
+    this.endpointsLink = page.getByTestId('endpoints-link')
+    this.flowsDropdownTrigger = page.getByTestId('flows-dropdown-trigger')
+    this.flowsLink = page.locator('.flows-dropdown .flow-link')
     this.startFlowButton = page.getByTestId('start-flow-button')
     this.flowContainer = page.getByTestId('flow-container')
   }
@@ -29,16 +29,12 @@ export class WorkbenchPage extends MotiaApplicationPage {
     await this.goto('/')
   }
 
-  async gotoWorkbench() {
-    await this.goto('/flow/default')
-  }
-
   async verifyWorkbenchInterface() {
     await expect(this.logoIcon).toBeVisible()
     await expect(this.logsLink).toBeVisible()
     await expect(this.statesLink).toBeVisible()
     await expect(this.endpointsLink).toBeVisible()
-    await expect(this.flowsLink).toBeVisible()
+    await expect(this.flowsDropdownTrigger).toBeVisible()
   }
 
   async navigateToLogs() {
@@ -62,20 +58,23 @@ export class WorkbenchPage extends MotiaApplicationPage {
   }
 
   async getFlowCount() {
-    await this.flowsLink.click()
-    return await this.flowLinks.count()
+    await this.flowsDropdownTrigger.click()
+    const count = await this.flowsLink.count()
+    await this.page.keyboard.press('Escape') // close the dropdown
+
+    return count
   }
 
   async navigateToFlow(flowName: string) {
-    await this.flowsLink.hover()
-    const flowLink = this.page.getByTestId(`flow-${flowName}-link`)
+    await this.flowsDropdownTrigger.click()
+    const flowLink = this.page.getByTestId(`dropdown-${flowName}`)
     await flowLink.click()
     await this.waitForApplication()
   }
 
   async navigateToFlowByIndex(index: number) {
-    await this.flowsLink.hover()
-    const flowLink = this.flowLinks.nth(index)
+    await this.flowsDropdownTrigger.click()
+    const flowLink = this.flowsLink.nth(index)
     await flowLink.click()
     await this.waitForApplication()
   }

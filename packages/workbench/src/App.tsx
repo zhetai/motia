@@ -36,10 +36,10 @@ export const App: React.FC = () => {
             onTabChange={setTopTab}
             header={
               <TabsList>
-                <TabsTrigger value="flow">
+                <TabsTrigger value="flow" data-testid="flows-link">
                   <FlowTabMenuItem />
                 </TabsTrigger>
-                <TabsTrigger value="endpoint">
+                <TabsTrigger value="endpoint" data-testid="endpoints-link">
                   <Link2 />
                   Endpoint
                 </TabsTrigger>
@@ -62,14 +62,14 @@ export const App: React.FC = () => {
             onTabChange={setBottomTab}
             header={
               <TabsList>
-                <TabsTrigger value="tracing">
+                <TabsTrigger value="tracing" data-testid="traces-link">
                   <GanttChart /> Tracing
                 </TabsTrigger>
-                <TabsTrigger value="logs">
+                <TabsTrigger value="logs" data-testid="logs-link">
                   <LogsIcon />
                   Logs
                 </TabsTrigger>
-                <TabsTrigger value="states">
+                <TabsTrigger value="states" data-testid="states-link">
                   <File />
                   States
                 </TabsTrigger>

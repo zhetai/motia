@@ -28,28 +28,36 @@ tests/
 ## 🎯 Page Object Models
 
 ### MotiaApplicationPage
+
 Base class providing common application functionality:
+
 - Navigation (`goto()`, `waitForApplication()`)
 - Screenshot capture
 - Console error collection
 - Basic application verification
 
 ### WorkbenchPage
+
 Extends MotiaApplicationPage with workbench-specific functionality:
+
 - Workbench navigation
 - Flow management
 - Interface verification
 - Step verification
 
 ### LogsPage
+
 Specialized for log functionality:
+
 - Log entry waiting and verification
 - Multiple log verification
 - Flow completion tracking
 - Log filtering and clearing
 
 ### ApiHelpers
+
 API testing utilities:
+
 - HTTP method helpers (`get()`, `post()`, `put()`, `delete()`)
 - Response validation
 - Endpoint verification
@@ -72,6 +80,7 @@ test('my test', async ({ motiaApp, workbench, logsPage, api }) => {
 ## 📝 Test Writing Patterns
 
 ### 1. Use Page Object Methods
+
 ```typescript
 // ✅ Good - Using page object methods
 await workbench.navigateToLogs()
@@ -83,10 +92,11 @@ await page.locator('text=Expected log message').waitFor()
 ```
 
 ### 2. Use Test Steps for Organization
+
 ```typescript
 test('flow execution', async ({ workbench, logsPage }) => {
   await test.step('Navigate to workbench', async () => {
-    await workbench.gotoWorkbench()
+    await workbench.open()
     await workbench.verifyWorkbenchInterface()
   })
 
@@ -101,6 +111,7 @@ test('flow execution', async ({ workbench, logsPage }) => {
 ```
 
 ### 3. Leverage Custom Fixtures
+
 ```typescript
 // ✅ Good - Using custom fixtures
 test('integration test', async ({ motiaApp, api }) => {
@@ -119,6 +130,7 @@ test('integration test', async ({ page }) => {
 ## 🚀 Running Tests
 
 ### Basic Commands
+
 ```bash
 # Run all tests
 pnpm test:e2e
@@ -137,6 +149,7 @@ pnpm test:e2e --grep "workbench"
 ```
 
 ### Test Categories
+
 ```bash
 # Smoke tests (basic functionality)
 pnpm test:e2e tests/smoke.spec.ts
@@ -154,8 +167,9 @@ pnpm test:e2e tests/integration/
 ## 🎛️ Cross-Platform Testing
 
 Our tests run on multiple platforms:
+
 - **Ubuntu** (Linux)
-- **Windows** 
+- **Windows**
 - **macOS**
 
 Platform-specific considerations are handled automatically in the page objects and global setup/teardown scripts.
@@ -163,13 +177,17 @@ Platform-specific considerations are handled automatically in the page objects a
 ## 📊 Test Reports
 
 ### HTML Reports
+
 Generated automatically in `playwright-report/` directory:
+
 ```bash
 pnpm test:report
 ```
 
 ### CI Reports
+
 In CI environments, we generate:
+
 - HTML reports
 - JUnit XML reports
 - GitHub Actions annotations
@@ -177,21 +195,25 @@ In CI environments, we generate:
 ## 🛠️ Best Practices
 
 ### 1. Locator Strategy
+
 - Use `data-testid` attributes when possible
 - Fallback to text content with flexible selectors
 - Combine multiple selector strategies for robustness
 
 ### 2. Waiting Strategy
+
 - Use Playwright's auto-waiting features
 - Implement custom wait methods in page objects
 - Handle dynamic content with appropriate timeouts
 
 ### 3. Error Handling
+
 - Collect console errors automatically
 - Take screenshots on failures
 - Provide detailed error messages
 
 ### 4. Test Organization
+
 - Group related tests in describe blocks
 - Use meaningful test names
 - Keep tests focused and independent
@@ -208,6 +230,7 @@ When updating existing tests:
 ### Example Migration
 
 Before:
+
 ```typescript
 test('old test', async ({ page }) => {
   const helpers = new TestHelpers(page)
@@ -219,9 +242,10 @@ test('old test', async ({ page }) => {
 ```
 
 After:
+
 ```typescript
 test('new test', async ({ workbench, logsPage }) => {
-  await workbench.gotoWorkbench()
+  await workbench.open()
   await workbench.navigateToLogs()
   await logsPage.verifyLogEntry('message')
 })
@@ -237,4 +261,4 @@ When adding new tests:
 4. **Add JSDoc comments** for complex methods
 5. **Test on multiple platforms** when applicable
 
-For questions or improvements, refer to the [Playwright documentation](https://playwright.dev/docs/pom) or the existing test examples. 
+For questions or improvements, refer to the [Playwright documentation](https://playwright.dev/docs/pom) or the existing test examples.

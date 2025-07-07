@@ -124,11 +124,11 @@ export const EndpointCall: FC<Props> = ({ endpoint, onClose }) => {
           <table>
             {endpoint.queryParams.map((param) => (
               <tr key={param.name}>
-                <td className="flex flex-col">
+                <td className="flex flex-col justify-start">
                   <span className="font-bold">{param.name}</span>
                   <span className="text-md text-muted-foreground">{param.description}</span>
                 </td>
-                <td className="w-2/3 pl-4">
+                <td className="w-2/3 pl-4 align-top">
                   <Input
                     className="w-full"
                     value={queryParamsValues[param.name]}
@@ -141,7 +141,7 @@ export const EndpointCall: FC<Props> = ({ endpoint, onClose }) => {
         </Panel>
       )}
       {shouldHaveBody && (
-        <Panel title="Body" size="sm" contentClassName="p-0">
+        <Panel title="Body" size="sm" contentClassName="p-0" data-testid="endpoint-body-panel">
           <JsonEditor value={body} schema={endpoint.bodySchema} onChange={setBody} onValidate={setIsBodyValid} />
         </Panel>
       )}
