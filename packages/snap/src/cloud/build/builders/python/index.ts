@@ -7,6 +7,7 @@ import { Step } from '@motiadev/core'
 import { Builder, StepBuilder } from '../../builder'
 import { addPackageToArchive } from './add-package-to-archive'
 import { activatePythonVenv } from '../../../../utils/activate-python-env'
+import { includeStaticFiles } from '../node/include-static-files'
 
 export class PythonBuilder implements StepBuilder {
   constructor(private readonly builder: Builder) {
@@ -54,6 +55,7 @@ export class PythonBuilder implements StepBuilder {
       const size = await new Promise<number>((resolve, reject) => {
         outputStream.on('close', () => resolve(archive.pointer()))
         outputStream.on('error', reject)
+        includeStaticFiles(step, this.builder, archive)
         archive.finalize()
       })
 
