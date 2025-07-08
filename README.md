@@ -169,7 +169,7 @@ You should see the JSON response:
 ```
 
 ### 4. Explore the Workbench UI
-
+![new-workbench](assets/new-workbench.png)
 The Workbench is your command centre:
 
 - **🌊 Flows** – Visualise how your Steps connect.
