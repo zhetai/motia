@@ -1,15 +1,15 @@
 import React from 'react'
-import { BaseNode, Button, EventNodeProps } from 'motia/workbench'
+import { BaseNode, NoopNodeProps } from 'motia/workbench'
+import { Button } from '@motiadev/ui'
 
 export const Node: React.FC<EventNodeProps> = ({ data }) => {
   const doSomething = () => {
     window.alert('Replace this with your custom logic')
   }
 
-
   return (
     <BaseNode title="{{STEP_NAME}}" variant="noop" {...data} disableTargetHandle>
-      <Button onClick={doSomething}>Click me</Button>
+      <Button variant="accent" onClick={doSomething}>Click me</Button>
     </BaseNode>
   )
 }
