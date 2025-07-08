@@ -2,7 +2,7 @@ import { CollapsiblePanel, CollapsiblePanelGroup, TabsContent, TabsList, TabsTri
 import { ReactFlowProvider } from '@xyflow/react'
 import { analytics } from '@/lib/analytics'
 import { File, GanttChart, Link2, LogsIcon } from 'lucide-react'
-import React from 'react'
+import { FC, useCallback, useMemo } from 'react'
 import { EndpointsPage } from './components/endpoints/endpoints-page'
 import { FlowPage } from './components/flow/flow-page'
 import { FlowTabMenuItem } from './components/flow/flow-tab-menu-item'
@@ -18,12 +18,12 @@ enum TabLocation {
   BOTTOM = 'bottom',
 }
 
-export const App: React.FC = () => {
+export const App: FC = () => {
   const tab = useTabsStore((state) => state.tab)
   const setTopTab = useTabsStore((state) => state.setTopTab)
   const setBottomTab = useTabsStore((state) => state.setBottomTab)
 
-  const tabChangeCallbacks = React.useMemo<Record<TabLocation, (tab: string) => void>>(
+  const tabChangeCallbacks = useMemo<Record<TabLocation, (tab: string) => void>>(
     () => ({
       [TabLocation.TOP]: setTopTab,
       [TabLocation.BOTTOM]: setBottomTab,
@@ -31,12 +31,12 @@ export const App: React.FC = () => {
     [setTopTab, setBottomTab],
   )
 
-  const onTabChange = React.useCallback(
+  const onTabChange = useCallback(
     (location: TabLocation) => (newTab: string) => {
       analytics.track(`${location} tab changed`, { [`new.${location}`]: newTab, tab })
       tabChangeCallbacks[location](newTab)
     },
-    [tabChangeCallbacks],
+    [tabChangeCallbacks, tab],
   )
 
   return (
@@ -61,7 +61,7 @@ export const App: React.FC = () => {
                 <TabsTrigger value="flow" data-testid="flows-link">
                   <FlowTabMenuItem />
                 </TabsTrigger>
-                <TabsTrigger value="endpoint" data-testid="endpoints-link">
+                <TabsTrigger value="endpoint" data-testid="endpoints-link" className="cursor-pointer">
                   <Link2 />
                   Endpoint
                 </TabsTrigger>
@@ -84,14 +84,14 @@ export const App: React.FC = () => {
             onTabChange={onTabChange(TabLocation.BOTTOM)}
             header={
               <TabsList>
-                <TabsTrigger value="tracing" data-testid="traces-link">
+                <TabsTrigger value="tracing" data-testid="traces-link" className="cursor-pointer">
                   <GanttChart /> Tracing
                 </TabsTrigger>
-                <TabsTrigger value="logs" data-testid="logs-link">
+                <TabsTrigger value="logs" data-testid="logs-link" className="cursor-pointer">
                   <LogsIcon />
                   Logs
                 </TabsTrigger>
-                <TabsTrigger value="states" data-testid="states-link">
+                <TabsTrigger value="states" data-testid="states-link" className="cursor-pointer">
                   <File />
                   States
                 </TabsTrigger>

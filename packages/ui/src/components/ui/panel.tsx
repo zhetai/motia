@@ -1,6 +1,7 @@
 import { cn } from '@/lib/utils'
-import { FC, ReactNode } from 'react'
+import { FC, ReactNode, useMemo } from 'react'
 import { Button } from './button'
+import { Tabs, TabsContent, TabsList, TabsTrigger } from './tabs'
 
 export interface PanelDetailItem {
   label: string
@@ -23,23 +24,118 @@ export interface PanelProps {
   className?: string
   children?: ReactNode
   size?: 'sm' | 'md'
+  variant?: 'default' | 'outlined' | 'filled' | 'ghost'
+  tabs?: {
+    tabs: {
+      label: string
+      content: ReactNode
+    }[]
+  }
   contentClassName?: string
 }
 
-export const Panel: FC<PanelProps> = ({ title, subtitle, details, actions, className, children, size, contentClassName }) => {
+const panelVariants = {
+  default: 'bg-card border border-border',
+  outlined: 'bg-transparent border-2 border-border',
+  filled: 'bg-muted border border-transparent',
+  ghost: 'bg-transparent border-transparent shadow-none',
+}
+
+export const Panel: FC<PanelProps> = ({
+  title,
+  subtitle,
+  details,
+  actions,
+  className,
+  children,
+  size,
+  variant = 'default',
+  contentClassName,
+  tabs,
+}) => {
+  const hasTabs = tabs && tabs.tabs.length > 0
+
+  const content = useMemo(() => {
+    const _view = (
+      <>
+        {hasTabs && (
+          <TabsList
+            className={cn('bg-card border-b border-border px-1 pt-5', {
+              'bg-transparent': variant === 'ghost',
+            })}
+          >
+            {tabs?.tabs.map((tab) => (
+              <TabsTrigger key={tab.label} value={tab.label}>
+                {tab.label}
+              </TabsTrigger>
+            ))}
+          </TabsList>
+        )}
+        <div className={cn('flex flex-col gap-2 p-4', contentClassName)}>
+          {details?.map((detail, index) => (
+            <div key={index} className="flex gap-4 items-start">
+              <div className="flex items-center h-8 shrink-0">
+                <span className="text-sm font-medium text-foreground tracking-[-0.25px] w-24 truncate">
+                  {detail.label}
+                </span>
+              </div>
+              <div className={cn('flex-1 rounded-lg px-2 py-1 min-h-6', detail.highlighted && 'bg-secondary')}>
+                <div className="flex items-center min-h-6">
+                  {typeof detail.value === 'string' ? (
+                    <span className="text-sm font-medium text-muted-foreground tracking-[-0.25px] leading-tight">
+                      {detail.value}
+                    </span>
+                  ) : (
+                    detail.value
+                  )}
+                </div>
+              </div>
+            </div>
+          ))}
+
+          {hasTabs &&
+            tabs.tabs.map((tab) => (
+              <TabsContent key={tab.label} value={tab.label}>
+                {tab.content}
+              </TabsContent>
+            ))}
+
+          {children}
+        </div>
+      </>
+    )
+
+    if (hasTabs) {
+      return <Tabs defaultValue={tabs?.tabs[0]?.label}>{_view}</Tabs>
+    }
+
+    return _view
+  }, [tabs, variant, size, title, subtitle, details, actions, contentClassName, children, hasTabs])
+
   return (
     <div
       className={cn(
         'relative size-full backdrop-blur-[48px] backdrop-filter',
         'text-foreground',
-        'border border-border',
         'rounded-lg overflow-hidden',
+        panelVariants[variant],
         className,
       )}
     >
       <div className="flex flex-col size-full">
-        <div className="relative shrink-0 w-full border-b border-border bg-card">
-          <div className={cn('flex flex-col gap-1', size === 'sm' ? 'px-4 py-3' : 'px-5 py-4')}>
+        <div
+          className={cn('relative shrink-0 w-full border-b border-border bg-card', {
+            'bg-transparent': variant === 'ghost',
+            'border-b-0': hasTabs,
+          })}
+        >
+          <div
+            className={cn('flex flex-col gap-1 px-5 py-4', {
+              'px-4 py-3': size === 'sm',
+              'px-5 py-4': size === 'md',
+              'pb-0': hasTabs,
+            })}
+          >
             <div className="flex items-center w-full">
               <div
                 className={cn(
@@ -72,33 +168,10 @@ export const Panel: FC<PanelProps> = ({ title, subtitle, details, actions, class
           </div>
         </div>
 
-        <div className="flex-1 overflow-auto">
-          <div className={cn('flex flex-col gap-2 p-4', contentClassName)}>
-            {details?.map((detail, index) => (
-              <div key={index} className="flex gap-4 items-start">
-                <div className="flex items-center h-8 shrink-0">
-                  <span className="text-sm font-medium text-foreground tracking-[-0.25px] w-24 truncate">
-                    {detail.label}
-                  </span>
-                </div>
-                <div className={cn('flex-1 rounded-lg px-2 py-1 min-h-6', detail.highlighted && 'bg-secondary')}>
-                  <div className="flex items-center min-h-6">
-                    {typeof detail.value === 'string' ? (
-                      <span className="text-sm font-medium text-muted-foreground tracking-[-0.25px] leading-tight">
-                        {detail.value}
-                      </span>
-                    ) : (
-                      detail.value
-                    )}
-                  </div>
-                </div>
-              </div>
-            ))}
-            {children}
-          </div>
-        </div>
+        <div className="flex-1 overflow-auto">{content}</div>
       </div>
     </div>
   )
 }
+
 Panel.displayName = 'Panel'

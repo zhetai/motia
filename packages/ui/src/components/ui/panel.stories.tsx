@@ -1,7 +1,7 @@
 import type { Meta, StoryObj } from '@storybook/react'
 import { Panel } from './panel'
 import { Button } from './button'
-import { PictureInPicture2, X, Copy } from 'lucide-react'
+import { PictureInPicture2, X, Copy, Settings, Activity, Users, FileText } from 'lucide-react'
 
 const meta: Meta<typeof Panel> = {
   title: 'UI/Panel',
@@ -42,11 +42,355 @@ const meta: Meta<typeof Panel> = {
       control: 'object',
       description: 'Custom content to render inside the panel body, overriding `details`.',
     },
+    size: {
+      control: 'select',
+      options: ['sm', 'md'],
+      description: 'Size variant of the panel',
+    },
+    variant: {
+      control: 'select',
+      options: ['default', 'outlined', 'filled', 'ghost'],
+      description: 'Visual variant of the panel',
+    },
+    tabs: {
+      control: 'object',
+      description: 'Tabs configuration with array of tab objects containing label and content',
+    },
   },
 }
 
 export default meta
 type Story = StoryObj<typeof meta>
+
+export const VariantDefault: Story = {
+  args: {
+    title: 'Default Panel',
+    subtitle: 'Standard panel with card background and border',
+    variant: 'default',
+    details: [
+      { label: 'Type', value: 'Default' },
+      { label: 'Background', value: 'Card background' },
+      { label: 'Border', value: 'Standard border' },
+      { label: 'Use Case', value: 'General purpose panels' },
+    ],
+  },
+}
+
+export const VariantOutlined: Story = {
+  args: {
+    title: 'Outlined Panel',
+    subtitle: 'Emphasized panel with transparent background and thick border',
+    variant: 'outlined',
+    details: [
+      { label: 'Type', value: 'Outlined' },
+      { label: 'Background', value: 'Transparent' },
+      { label: 'Border', value: 'Thick border' },
+      { label: 'Use Case', value: 'Emphasis and attention' },
+    ],
+  },
+}
+
+export const VariantFilled: Story = {
+  args: {
+    title: 'Filled Panel',
+    subtitle: 'Subtle panel with muted background',
+    variant: 'filled',
+    details: [
+      { label: 'Type', value: 'Filled' },
+      { label: 'Background', value: 'Muted background' },
+      { label: 'Border', value: 'No border' },
+      { label: 'Use Case', value: 'Subtle grouping' },
+    ],
+  },
+}
+
+export const VariantGhost: Story = {
+  args: {
+    title: 'Ghost Panel',
+    subtitle: 'Minimal panel with transparent styling',
+    variant: 'ghost',
+    details: [
+      { label: 'Type', value: 'Ghost' },
+      { label: 'Background', value: 'Transparent' },
+      { label: 'Border', value: 'No border' },
+      { label: 'Use Case', value: 'Minimal styling' },
+    ],
+  },
+}
+
+export const SizeComparison: Story = {
+  render: () => (
+    <div className="space-y-4">
+      <Panel
+        title="Small Panel"
+        subtitle="Compact size for limited space"
+        size="sm"
+        details={[
+          { label: 'Size', value: 'Small' },
+          { label: 'Padding', value: 'Reduced' },
+        ]}
+      />
+      <Panel
+        title="Medium Panel"
+        subtitle="Standard size for most use cases"
+        size="md"
+        details={[
+          { label: 'Size', value: 'Medium' },
+          { label: 'Padding', value: 'Standard' },
+        ]}
+      />
+    </div>
+  ),
+}
+
+export const VariantGrid: Story = {
+  render: () => (
+    <div className="grid grid-cols-2 gap-4 max-w-4xl">
+      <Panel title="Default" variant="default" size="sm" details={[{ label: 'Variant', value: 'default' }]} />
+      <Panel title="Outlined" variant="outlined" size="sm" details={[{ label: 'Variant', value: 'outlined' }]} />
+      <Panel title="Filled" variant="filled" size="sm" details={[{ label: 'Variant', value: 'filled' }]} />
+      <Panel title="Ghost" variant="ghost" size="sm" details={[{ label: 'Variant', value: 'ghost' }]} />
+    </div>
+  ),
+}
+
+export const WithTabs: Story = {
+  args: {
+    title: 'Dashboard Overview',
+    subtitle: 'Comprehensive system monitoring',
+    variant: 'default',
+    tabs: {
+      tabs: [
+        {
+          label: 'Overview',
+          content: (
+            <div className="space-y-4">
+              <div className="grid grid-cols-2 gap-4">
+                <div className="p-4 bg-secondary rounded-lg">
+                  <div className="flex items-center gap-2 mb-2">
+                    <Activity className="w-4 h-4 text-green-500" />
+                    <span className="text-sm font-medium">Active Users</span>
+                  </div>
+                  <p className="text-2xl font-bold">2,847</p>
+                  <p className="text-xs text-muted-foreground">+12% from last week</p>
+                </div>
+                <div className="p-4 bg-secondary rounded-lg">
+                  <div className="flex items-center gap-2 mb-2">
+                    <FileText className="w-4 h-4 text-blue-500" />
+                    <span className="text-sm font-medium">Total Sessions</span>
+                  </div>
+                  <p className="text-2xl font-bold">15,234</p>
+                  <p className="text-xs text-muted-foreground">+8% from last week</p>
+                </div>
+              </div>
+              <div className="space-y-2">
+                <h4 className="text-sm font-semibold">Recent Activity</h4>
+                <div className="space-y-2">
+                  <div className="flex items-center gap-3 p-2 bg-secondary rounded">
+                    <div className="w-2 h-2 bg-green-500 rounded-full"></div>
+                    <span className="text-sm">New user registration</span>
+                    <span className="text-xs text-muted-foreground ml-auto">2 min ago</span>
+                  </div>
+                  <div className="flex items-center gap-3 p-2 bg-secondary rounded">
+                    <div className="w-2 h-2 bg-blue-500 rounded-full"></div>
+                    <span className="text-sm">System backup completed</span>
+                    <span className="text-xs text-muted-foreground ml-auto">5 min ago</span>
+                  </div>
+                </div>
+              </div>
+            </div>
+          ),
+        },
+        {
+          label: 'Users',
+          content: (
+            <div className="space-y-4">
+              <div className="flex items-center gap-2 mb-4">
+                <Users className="w-4 h-4" />
+                <span className="text-sm font-medium">User Management</span>
+              </div>
+              <div className="space-y-3">
+                <div className="flex items-center justify-between p-3 bg-secondary rounded-lg">
+                  <div>
+                    <p className="text-sm font-medium">John Doe</p>
+                    <p className="text-xs text-muted-foreground">john.doe@example.com</p>
+                  </div>
+                  <div className="flex items-center gap-2">
+                    <span className="px-2 py-1 text-xs bg-green-100 text-green-800 rounded-full">Active</span>
+                    <Button size="sm" variant="ghost">
+                      <Settings className="w-3 h-3" />
+                    </Button>
+                  </div>
+                </div>
+                <div className="flex items-center justify-between p-3 bg-secondary rounded-lg">
+                  <div>
+                    <p className="text-sm font-medium">Jane Smith</p>
+                    <p className="text-xs text-muted-foreground">jane.smith@example.com</p>
+                  </div>
+                  <div className="flex items-center gap-2">
+                    <span className="px-2 py-1 text-xs bg-yellow-100 text-yellow-800 rounded-full">Pending</span>
+                    <Button size="sm" variant="ghost">
+                      <Settings className="w-3 h-3" />
+                    </Button>
+                  </div>
+                </div>
+                <div className="flex items-center justify-between p-3 bg-secondary rounded-lg">
+                  <div>
+                    <p className="text-sm font-medium">Mike Johnson</p>
+                    <p className="text-xs text-muted-foreground">mike.johnson@example.com</p>
+                  </div>
+                  <div className="flex items-center gap-2">
+                    <span className="px-2 py-1 text-xs bg-green-100 text-green-800 rounded-full">Active</span>
+                    <Button size="sm" variant="ghost">
+                      <Settings className="w-3 h-3" />
+                    </Button>
+                  </div>
+                </div>
+              </div>
+            </div>
+          ),
+        },
+        {
+          label: 'Settings',
+          content: (
+            <div className="space-y-4">
+              <div className="flex items-center gap-2 mb-4">
+                <Settings className="w-4 h-4" />
+                <span className="text-sm font-medium">System Configuration</span>
+              </div>
+              <div className="space-y-4">
+                <div className="space-y-2">
+                  <label className="text-sm font-medium">Notification Preferences</label>
+                  <div className="space-y-2">
+                    <div className="flex items-center gap-2">
+                      <input type="checkbox" defaultChecked className="rounded" />
+                      <span className="text-sm">Email notifications</span>
+                    </div>
+                    <div className="flex items-center gap-2">
+                      <input type="checkbox" defaultChecked className="rounded" />
+                      <span className="text-sm">Push notifications</span>
+                    </div>
+                    <div className="flex items-center gap-2">
+                      <input type="checkbox" className="rounded" />
+                      <span className="text-sm">SMS notifications</span>
+                    </div>
+                  </div>
+                </div>
+                <div className="space-y-2">
+                  <label className="text-sm font-medium">Data Retention</label>
+                  <select className="w-full p-2 border rounded-md bg-background">
+                    <option>30 days</option>
+                    <option>90 days</option>
+                    <option>1 year</option>
+                    <option>Forever</option>
+                  </select>
+                </div>
+                <div className="pt-4">
+                  <Button className="w-full">Save Settings</Button>
+                </div>
+              </div>
+            </div>
+          ),
+        },
+      ],
+    },
+    actions: [
+      {
+        icon: <Copy />,
+        onClick: () => console.log('Copy clicked'),
+        label: 'Copy data',
+      },
+      {
+        icon: <X />,
+        onClick: () => console.log('Close clicked'),
+        label: 'Close panel',
+      },
+    ],
+  },
+}
+
+// Simple tabs example
+export const SimpleTabs: Story = {
+  args: {
+    title: 'Product Details',
+    variant: 'outlined',
+    size: 'sm',
+    tabs: {
+      tabs: [
+        {
+          label: 'Description',
+          content: (
+            <div className="space-y-3">
+              <p className="text-sm text-muted-foreground">
+                This is a high-quality product designed for modern workflows. It features advanced capabilities and
+                seamless integration with existing systems.
+              </p>
+              <div className="space-y-1">
+                <p className="text-xs font-medium">Key Features:</p>
+                <ul className="text-xs text-muted-foreground space-y-1 ml-4">
+                  <li>• Advanced analytics</li>
+                  <li>• Real-time updates</li>
+                  <li>• Cloud integration</li>
+                  <li>• Mobile responsive</li>
+                </ul>
+              </div>
+            </div>
+          ),
+        },
+        {
+          label: 'Specifications',
+          content: (
+            <div className="space-y-2">
+              <div className="flex justify-between">
+                <span className="text-sm font-medium">Version</span>
+                <span className="text-sm text-muted-foreground">2.1.0</span>
+              </div>
+              <div className="flex justify-between">
+                <span className="text-sm font-medium">Size</span>
+                <span className="text-sm text-muted-foreground">4.2 MB</span>
+              </div>
+              <div className="flex justify-between">
+                <span className="text-sm font-medium">Platform</span>
+                <span className="text-sm text-muted-foreground">Web, iOS, Android</span>
+              </div>
+              <div className="flex justify-between">
+                <span className="text-sm font-medium">License</span>
+                <span className="text-sm text-muted-foreground">MIT</span>
+              </div>
+            </div>
+          ),
+        },
+        {
+          label: 'Reviews',
+          content: (
+            <div className="space-y-3">
+              <div className="flex items-center gap-2">
+                <div className="flex">
+                  {[...Array(5)].map((_, i) => (
+                    <span key={i} className="text-yellow-400">
+                      ★
+                    </span>
+                  ))}
+                </div>
+                <span className="text-sm text-muted-foreground">4.8/5 (127 reviews)</span>
+              </div>
+              <div className="space-y-2">
+                <div className="p-2 bg-secondary rounded">
+                  <p className="text-xs font-medium">Sarah M.</p>
+                  <p className="text-xs text-muted-foreground">"Excellent product, very intuitive to use!"</p>
+                </div>
+                <div className="p-2 bg-secondary rounded">
+                  <p className="text-xs font-medium">David L.</p>
+                  <p className="text-xs text-muted-foreground">"Great value for money, highly recommended."</p>
+                </div>
+              </div>
+            </div>
+          ),
+        },
+      ],
+    },
+  },
+}
 
 export const LogDetails: Story = {
   args: {
@@ -93,6 +437,7 @@ export const LogDetails: Story = {
 export const BasicPanel: Story = {
   args: {
     title: 'User Information',
+    variant: 'outlined',
     details: [
       { label: 'Name', value: 'John Doe' },
       { label: 'Email', value: 'john.doe@example.com' },
@@ -114,6 +459,7 @@ export const SimplePanel: Story = {
   args: {
     title: 'System Status',
     subtitle: 'Current system health metrics',
+    variant: 'filled',
     details: [
       { label: 'CPU Usage', value: '42%' },
       { label: 'Memory', value: '1.2 GB / 4 GB' },
@@ -173,6 +519,7 @@ export const WithChildren: Story = {
   args: {
     title: 'Custom Content Panel',
     subtitle: 'Using children instead of details',
+    variant: 'ghost',
     details: [],
     actions: [
       {

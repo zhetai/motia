@@ -2,12 +2,13 @@ import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuTrigge
 import { ChevronsUpDown, Workflow } from 'lucide-react'
 import { useFlowStore } from '@/stores/use-flow-store'
 import { useFetchFlows } from '@/hooks/use-fetch-flows'
+import { useShallow } from 'zustand/react/shallow'
 
 export const FlowTabMenuItem = () => {
   useFetchFlows()
 
   const selectFlowId = useFlowStore((state) => state.selectFlowId)
-  const flows = useFlowStore((state) => state.flows)
+  const flows = useFlowStore(useShallow((state) => Object.values(state.flows)))
   const selectedFlowId = useFlowStore((state) => state.selectedFlowId)
 
   if (flows.length === 0) {
