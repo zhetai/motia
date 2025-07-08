@@ -4,6 +4,7 @@ import { templates } from './templates'
 import { executeCommand } from '../utils/execute-command'
 import { pythonInstall } from '../install'
 import { generateTypes } from '../generate-types'
+import { version } from '../version'
 
 // eslint-disable-next-line @typescript-eslint/no-require-imports
 require('ts-node').register({
@@ -44,7 +45,7 @@ const installRequiredDependencies = async (packageManager: string, rootDir: stri
     pnpm: 'pnpm add',
   }[packageManager]
 
-  const dependencies = ['motia', 'zod@^3.24.4'].join(' ')
+  const dependencies = [`motia@^${version}`, 'zod@^3.24.4'].join(' ')
   const devDependencies = ['ts-node@^10.9.2', 'typescript@^5.7.3', '@types/react@^18.3.18'].join(' ')
 
   try {

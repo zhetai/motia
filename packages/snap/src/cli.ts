@@ -4,6 +4,7 @@ import { program } from 'commander'
 import path from 'path'
 import fs from 'fs'
 import './cloud'
+import { version } from './version'
 
 const defaultPort = 3000
 
@@ -12,10 +13,6 @@ require('ts-node').register({
   transpileOnly: true,
   compilerOptions: { module: 'commonjs' },
 })
-
-const packageJsonPath = path.resolve(__dirname, '..', '..', 'package.json')
-const packageJson = JSON.parse(fs.readFileSync(packageJsonPath, 'utf8'))
-const version = `${packageJson.version}`
 
 program
   .command('version')
