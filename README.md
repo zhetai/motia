@@ -1,4 +1,10 @@
 <p align="center">
+  <a href="https://trendshift.io/repositories/14032">
+    <img src="https://trendshift.io/api/badge/repositories/14032" alt="Motia" style="width: 250px; height: 55px;" width="250" height="55"/>
+  </a>
+</p>
+
+<p align="center">
   <!-- shows in LIGHT mode only -->
   <img src="assets/motia-logo-dark.png#gh-light-mode-only"  width="400" alt="Motia logo" />
   <!-- shows in DARK mode only -->
