@@ -37,7 +37,7 @@ const getStatusMessage = (status: number) => {
 
 export const EndpointResponse: FC<EndpointResponseProps> = ({ responseCode, executionTime, responseBody }) => {
   const theme = useThemeStore((state) => state.theme)
-  const { data, isStreamed } = useStateStream(responseBody)
+  const { data, isStreamed, originalData } = useStateStream(responseBody)
 
   const statusMessage = useMemo(() => getStatusMessage(Number(responseCode)), [responseCode])
   const isError = Number(responseCode) >= 400
@@ -48,6 +48,34 @@ export const EndpointResponse: FC<EndpointResponseProps> = ({ responseCode, exec
 
   return (
     <Panel
+      tabs={
+        isStreamed
+          ? {
+              tabs: [
+                {
+                  label: 'Streamed Response',
+                  content: (
+                    <ReactJson
+                      src={data as object}
+                      dark={theme === 'dark'}
+                      style={{ backgroundColor: 'transparent' }}
+                    />
+                  ),
+                },
+                {
+                  label: 'Original',
+                  content: (
+                    <ReactJson
+                      src={originalData as object}
+                      dark={theme === 'dark'}
+                      style={{ backgroundColor: 'transparent' }}
+                    />
+                  ),
+                },
+              ],
+            }
+          : undefined
+      }
       title={
         <div className="flex flex-row justify-between items-center flex-1">
           <div className="flex items-center gap-2">
@@ -75,12 +103,9 @@ export const EndpointResponse: FC<EndpointResponseProps> = ({ responseCode, exec
         )
       }
     >
-      <ReactJson
-        src={data as object}
-        dark={theme === 'dark'}
-        enableClipboard={false}
-        style={{ backgroundColor: 'transparent' }}
-      />
+      {!isStreamed && (
+        <ReactJson src={data as object} dark={theme === 'dark'} style={{ backgroundColor: 'transparent' }} />
+      )}
     </Panel>
   )
 }

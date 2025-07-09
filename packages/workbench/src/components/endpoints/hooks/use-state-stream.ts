@@ -1,10 +1,13 @@
 import { useStreamItem } from '@motiadev/stream-client-react'
 
 export const useStateStream = (object: Record<string, any> | undefined) => {
-  const { data } = useStreamItem(object?.__motia)
+  const { __motia, ...rest } = object || {}
+  const { data } = useStreamItem(__motia)
+  const originalData = rest || object
 
   return {
-    data: data || object,
-    isStreamed: !!data,
+    data: data || originalData,
+    originalData,
+    isStreamed: !!__motia,
   }
 }

@@ -80,7 +80,7 @@ program
   .command('dev')
   .description('Start the development server')
   .option('-p, --port <port>', 'The port to run the server on', `${defaultPort}`)
-  .option('-v, --verbose', 'Enable verbose logging')
+  .option('-v, --disable-verbose', 'Disable verbose logging')
   .option('-d, --debug', 'Enable debug logging')
   .option('-m, --mermaid', 'Enable mermaid diagram generation')
   .action(async (arg) => {
@@ -91,7 +91,7 @@ program
 
     const port = arg.port ? parseInt(arg.port) : defaultPort
     const { dev } = require('./dev')
-    await dev(port, arg.verbose, arg.mermaid)
+    await dev(port, arg.disableVerbose, arg.mermaid)
   })
 
 program
