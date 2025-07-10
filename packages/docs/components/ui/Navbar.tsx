@@ -1,5 +1,5 @@
 'use client'
-import Image from 'next/image'
+import Image from "next/legacy/image"
 import { AnimatePresence, motion, spring, useScroll } from 'framer-motion'
 import logoFull from '@/public/images/logoFull.png'
 import { DISCORD_HANDLE, GITHUB_LINK } from '@/utils/constants'

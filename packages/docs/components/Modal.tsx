@@ -5,7 +5,7 @@ import { Dialog, DialogPanel } from '@headlessui/react'
 import { motion, AnimatePresence } from 'framer-motion'
 import { closeIcon } from './Icons'
 import bgBento3 from '@/public/images/landing/bgModalSignUp.webp'
-import Image from 'next/image'
+import Image from "next/legacy/image"
 import useEarlyAccessForm from '../hooks/useEarlyAccessForm'
 import EarlyAccessFormContent from './EarlyAccessFormContent'
 import SuccessContent from './SuccessContent'

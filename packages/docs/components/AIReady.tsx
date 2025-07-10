@@ -1,7 +1,7 @@
 import { BentoCard, CardText } from './BentoCard'
 import bgBento5 from '@/public/images/landing/bgBento5.webp'
 import bento5 from '@/public/images/landing/bento5.webp'
-import Image from 'next/image'
+import Image from "next/legacy/image"
 import { ParticlesBento } from './Particles'
 
 export default function AIReady() {
