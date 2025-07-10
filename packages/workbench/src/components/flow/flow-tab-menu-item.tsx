@@ -3,6 +3,7 @@ import { ChevronsUpDown, Workflow } from 'lucide-react'
 import { useFlowStore } from '@/stores/use-flow-store'
 import { useFetchFlows } from '@/hooks/use-fetch-flows'
 import { useShallow } from 'zustand/react/shallow'
+import { analytics } from '@/lib/analytics'
 
 export const FlowTabMenuItem = () => {
   useFetchFlows()
@@ -13,6 +14,11 @@ export const FlowTabMenuItem = () => {
 
   if (flows.length === 0) {
     return null
+  }
+
+  const handleFlowSelect = (flowId: string) => {
+    selectFlowId(flowId)
+    analytics.track('flow_selected', { flow: flowId })
   }
 
   return (
@@ -33,7 +39,7 @@ export const FlowTabMenuItem = () => {
             data-testid={`dropdown-${item}`}
             key={`dropdown-${item}`}
             className="cursor-pointer gap-2 flow-link"
-            onClick={() => selectFlowId(item)}
+            onClick={() => handleFlowSelect(item)}
           >
             {item}
           </DropdownMenuItem>

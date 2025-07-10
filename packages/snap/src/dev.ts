@@ -8,12 +8,13 @@ import {
   trackEvent,
 } from '@motiadev/core'
 import path from 'path'
+import { flush } from '@amplitude/analytics-node'
 import { generateLockedData, getStepFiles } from './generate-locked-data'
 import { createDevWatchers } from './dev-watchers'
 import { stateEndpoints } from './dev/state-endpoints'
 import { activatePythonVenv } from './utils/activate-python-env'
 import { identifyUser } from './utils/analytics'
-import { flush } from '@amplitude/analytics-node'
+import { version } from './version'
 
 // eslint-disable-next-line @typescript-eslint/no-require-imports
 require('ts-node').register({
@@ -76,6 +77,10 @@ export const dev = async (port: number, disableVerbose: boolean, enableMermaid: 
     port,
     flows_count: lockedData.flows?.length || 0,
     steps_count: lockedData.activeSteps?.length || 0,
+    flows: Object.keys(lockedData.flows || {}),
+    steps: lockedData.activeSteps.map((step) => step.config.name),
+    streams: Object.keys(lockedData.getStreams() || {}),
+    runtime_version: version,
     environment: process.env.NODE_ENV || 'development',
   })
 

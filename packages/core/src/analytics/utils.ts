@@ -27,19 +27,6 @@ export const getProjectIdentifier = (baseDir: string): string => {
   }
 }
 
-export const getMotiaVersion = (baseDir: string): string => {
-  try {
-    const packageJsonPath = path.join(baseDir, 'package.json')
-    if (fs.existsSync(packageJsonPath)) {
-      const packageJson = JSON.parse(fs.readFileSync(packageJsonPath, 'utf8'))
-      return packageJson.name || path.basename(baseDir)
-    }
-    return 'unknown'
-  } catch (error) {
-    return 'unknown'
-  }
-}
-
 export const isAnalyticsEnabled = (): boolean => {
   return process.env.MOTIA_ANALYTICS_DISABLED !== 'true'
 }
