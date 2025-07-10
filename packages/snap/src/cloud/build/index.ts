@@ -1,12 +1,17 @@
 import { LockedData } from '@motiadev/core'
 import fs from 'fs'
 import path from 'path'
-import { collectFlows } from '../../generate-locked-data'
+import { collectFlows, getStepFiles } from '../../generate-locked-data'
 import { Builder, StepsConfigFile } from './builder'
 import { NodeBuilder } from './builders/node'
 import { PythonBuilder } from './builders/python'
 import { CliContext } from '../config-utils'
 import { NoPrinter } from '@motiadev/core/dist/src/printer'
+
+const hasPythonSteps = (projectDir: string) => {
+  const stepFiles = getStepFiles(projectDir)
+  return stepFiles.some((file) => file.endsWith('.py'))
+}
 
 export const build = async (context: CliContext): Promise<Builder> => {
   const projectDir = process.cwd()
@@ -22,12 +27,11 @@ export const build = async (context: CliContext): Promise<Builder> => {
 
   const lockedData = new LockedData(projectDir, 'memory', new NoPrinter())
 
-  const invalidSteps = await collectFlows(projectDir, lockedData)
-  const hasPythonSteps = lockedData.activeSteps.some((step) => step.filePath.endsWith('.py'))
-
-  if (hasPythonSteps) {
+  if (hasPythonSteps(projectDir)) {
     builder.registerBuilder('python', new PythonBuilder(builder))
   }
+
+  const invalidSteps = await collectFlows(projectDir, lockedData)
 
   if (invalidSteps.length > 0) {
     context.exitWithError('Project contains invalid steps, please fix them before building')
