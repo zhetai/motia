@@ -2,7 +2,7 @@ import { cn } from '@/lib/utils'
 import { useGlobalStore } from '@/stores/use-global-store'
 import { useMemo } from 'react'
 import { EndpointBadge } from './endpoint-badge'
-import { EndpointCall } from './endpoint-call'
+import { EndpointSidePanel } from './endpoint-side-panel'
 import { useGetEndpoints } from './hooks/use-get-endpoints'
 
 export const EndpointsPage = () => {
@@ -32,7 +32,10 @@ export const EndpointsPage = () => {
           </div>
         ))}
       </div>
-      {selectedEndpoint && <EndpointCall endpoint={selectedEndpoint} onClose={() => selectEndpointId(undefined)} />}
+
+      {selectedEndpoint && (
+        <EndpointSidePanel endpoint={selectedEndpoint} onClose={() => selectEndpointId(undefined)} />
+      )}
     </div>
   )
 }

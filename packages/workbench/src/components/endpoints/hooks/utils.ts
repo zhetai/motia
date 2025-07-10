@@ -17,7 +17,7 @@ export const convertJsonSchemaToJson = (schema: Record<string, any>): any => {
     case 'array':
       return [convertJsonSchemaToJson(schema.items)]
     case 'string':
-      return schema.description ?? 'string'
+      return schema.enum?.[0] ?? schema.description ?? 'string'
     case 'number':
       return schema.description ?? 0
     case 'integer':

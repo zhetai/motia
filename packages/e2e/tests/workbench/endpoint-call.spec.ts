@@ -11,6 +11,7 @@ test.describe('Workbench - Endpoint Call JSON Validation', () => {
     await workbench.open()
     await workbench.navigateToEndpoints()
     await endpoint.firstEndpointItem.click()
+    await endpoint.callTab.click()
   })
 
   test('should validate JSON body input', async () => {

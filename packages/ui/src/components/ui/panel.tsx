@@ -17,6 +17,7 @@ export interface PanelAction {
 }
 
 export interface PanelProps {
+  'data-testid'?: string
   title: ReactNode
   subtitle?: ReactNode
   details?: PanelDetailItem[]
@@ -26,11 +27,10 @@ export interface PanelProps {
   size?: 'sm' | 'md'
   variant?: 'default' | 'outlined' | 'filled' | 'ghost'
   tabs?: {
-    tabs: {
-      label: string
-      content: ReactNode
-    }[]
-  }
+    label: string
+    content: ReactNode
+    'data-testid'?: string
+  }[]
   contentClassName?: string
 }
 
@@ -42,6 +42,7 @@ const panelVariants = {
 }
 
 export const Panel: FC<PanelProps> = ({
+  'data-testid': dataTestId,
   title,
   subtitle,
   details,
@@ -53,7 +54,7 @@ export const Panel: FC<PanelProps> = ({
   contentClassName,
   tabs,
 }) => {
-  const hasTabs = tabs && tabs.tabs.length > 0
+  const hasTabs = tabs && tabs.length > 0
 
   const content = useMemo(() => {
     const _view = (
@@ -64,8 +65,8 @@ export const Panel: FC<PanelProps> = ({
               'bg-transparent': variant === 'ghost',
             })}
           >
-            {tabs?.tabs.map((tab) => (
-              <TabsTrigger key={tab.label} value={tab.label}>
+            {tabs?.map((tab) => (
+              <TabsTrigger key={tab.label} value={tab.label} data-testid={tab['data-testid']}>
                 {tab.label}
               </TabsTrigger>
             ))}
@@ -94,7 +95,7 @@ export const Panel: FC<PanelProps> = ({
           ))}
 
           {hasTabs &&
-            tabs.tabs.map((tab) => (
+            tabs.map((tab) => (
               <TabsContent key={tab.label} value={tab.label}>
                 {tab.content}
               </TabsContent>
@@ -106,7 +107,7 @@ export const Panel: FC<PanelProps> = ({
     )
 
     if (hasTabs) {
-      return <Tabs defaultValue={tabs?.tabs[0]?.label}>{_view}</Tabs>
+      return <Tabs defaultValue={tabs?.[0]?.label}>{_view}</Tabs>
     }
 
     return _view
@@ -121,6 +122,7 @@ export const Panel: FC<PanelProps> = ({
         panelVariants[variant],
         className,
       )}
+      data-testid={dataTestId}
     >
       <div className="flex flex-col size-full">
         <div

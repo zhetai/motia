@@ -36,7 +36,7 @@ export const StatesPage = () => {
               key={`${item.groupId}:${item.key}`}
               onClick={() => handleRowClick(item)}
               className={cn(
-                'font-mono font-semibold',
+                'font-mono font-semibold cursor-pointer border-0',
                 selectedItem === item
                   ? 'bg-muted-foreground/10 hover:bg-muted-foreground/20'
                   : 'hover:bg-muted-foreground/10',

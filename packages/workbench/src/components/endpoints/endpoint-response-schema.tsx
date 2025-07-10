@@ -39,7 +39,7 @@ export const EndpointResponseSchema: FC<EndpointResponseProps> = ({ items }) => 
   }
 
   return (
-    <div className="flex flex-col rounded-lg border" data-testid="endpoint-response-container">
+    <div className="flex flex-col rounded-lg border">
       <Tabs defaultValue={items[0].responseCode}>
         <div className="flex items-center justify-between bg-card">
           <TabsList className="bg-transparent p-0">

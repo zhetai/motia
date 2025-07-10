@@ -3,12 +3,16 @@ import { MotiaApplicationPage } from './MotiaApplicationPage'
 
 export class EndpointPage extends MotiaApplicationPage {
   readonly firstEndpointItem: Locator
+  readonly callTab: Locator
+  readonly detailsTab: Locator
   readonly editor: Locator
   readonly playButton: Locator
   readonly responseContainer: Locator
 
   constructor(page: Page) {
     super(page)
+    this.callTab = page.getByTestId('endpoint-call-tab')
+    this.detailsTab = page.getByTestId('endpoint-details-tab')
     this.firstEndpointItem = page.getByTestId('endpoint-POST-/default')
     this.editor = page.locator('.monaco-editor')
     this.playButton = page.getByTestId('endpoint-play-button')

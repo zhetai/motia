@@ -5,7 +5,7 @@ import { useLogsStore } from '@/stores/use-logs-store'
 import { useMemo, useState } from 'react'
 import { LogDetail } from './log-detail'
 import { LogLevelDot } from './log-level-dot'
-import { Button, Input } from '@motiadev/ui'
+import { Button, cn, Input } from '@motiadev/ui'
 import { CircleX, Trash } from 'lucide-react'
 
 export const LogsPage = () => {
@@ -52,7 +52,14 @@ export const LogsPage = () => {
         <Table>
           <TableBody className="font-mono font-medium">
             {filteredLogs.map((log, index) => (
-              <TableRow key={index} className="cursor-pointer border-0" onClick={() => selectLogId(log.id)}>
+              <TableRow
+                className={cn('font-mono font-semibold cursor-pointer border-0', {
+                  'bg-muted-foreground/10 hover:bg-muted-foreground/20': selectedLogId === log.id,
+                  'hover:bg-muted-foreground/10': selectedLogId !== log.id,
+                })}
+                key={index}
+                onClick={() => selectLogId(log.id)}
+              >
                 <TableCell
                   data-testid={`time-${index}`}
                   className="whitespace-nowrap flex items-center gap-2 text-muted-foreground"

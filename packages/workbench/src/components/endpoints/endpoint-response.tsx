@@ -48,32 +48,27 @@ export const EndpointResponse: FC<EndpointResponseProps> = ({ responseCode, exec
 
   return (
     <Panel
+      data-testid={'endpoint-response-container'}
       tabs={
         isStreamed
-          ? {
-              tabs: [
-                {
-                  label: 'Streamed Response',
-                  content: (
-                    <ReactJson
-                      src={data as object}
-                      dark={theme === 'dark'}
-                      style={{ backgroundColor: 'transparent' }}
-                    />
-                  ),
-                },
-                {
-                  label: 'Original',
-                  content: (
-                    <ReactJson
-                      src={originalData as object}
-                      dark={theme === 'dark'}
-                      style={{ backgroundColor: 'transparent' }}
-                    />
-                  ),
-                },
-              ],
-            }
+          ? [
+              {
+                label: 'Streamed Response',
+                content: (
+                  <ReactJson src={data as object} dark={theme === 'dark'} style={{ backgroundColor: 'transparent' }} />
+                ),
+              },
+              {
+                label: 'Original',
+                content: (
+                  <ReactJson
+                    src={originalData as object}
+                    dark={theme === 'dark'}
+                    style={{ backgroundColor: 'transparent' }}
+                  />
+                ),
+              },
+            ]
           : undefined
       }
       title={

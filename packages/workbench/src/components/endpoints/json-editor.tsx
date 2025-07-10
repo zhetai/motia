@@ -6,7 +6,7 @@ type JsonEditorProps = {
   value: string
   schema: Record<string, unknown> | undefined
   onChange: (value: string) => void
-  onValidate: (isValid: boolean) => void
+  onValidate?: (isValid: boolean) => void
 }
 
 export const JsonEditor: FC<JsonEditorProps> = ({ value, schema, onChange, onValidate }) => {
@@ -38,11 +38,11 @@ export const JsonEditor: FC<JsonEditorProps> = ({ value, schema, onChange, onVal
       theme={editorTheme}
       onChange={(value) => {
         if (!value) {
-          onValidate(false)
+          onValidate?.(false)
         }
         onChange(value ?? '')
       }}
-      onValidate={(markers) => onValidate(markers.length === 0)}
+      onValidate={(markers) => onValidate?.(markers.length === 0)}
       options={{ lineNumbers: 'off', minimap: { enabled: false } }}
     />
   )

@@ -159,8 +159,7 @@ export const WithTabs: Story = {
     title: 'Dashboard Overview',
     subtitle: 'Comprehensive system monitoring',
     variant: 'default',
-    tabs: {
-      tabs: [
+    tabs: [
         {
           label: 'Overview',
           content: (
@@ -293,7 +292,6 @@ export const WithTabs: Story = {
           ),
         },
       ],
-    },
     actions: [
       {
         icon: <Copy />,
@@ -315,8 +313,7 @@ export const SimpleTabs: Story = {
     title: 'Product Details',
     variant: 'outlined',
     size: 'sm',
-    tabs: {
-      tabs: [
+    tabs: [
         {
           label: 'Description',
           content: (
@@ -388,7 +385,6 @@ export const SimpleTabs: Story = {
           ),
         },
       ],
-    },
   },
 }
 
