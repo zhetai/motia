@@ -28,7 +28,7 @@
   <a href="https://twitter.com/motiadev" target="_blank">
     <img src="https://img.shields.io/badge/Follow-@motiadev-1DA1F2?style=flat&logo=twitter&logoColor=white&labelColor=000000" alt="Twitter Follow">
   </a>
-  <a href="https://discord.gg/EnfDRFYW" target="_blank">
+  <a href="https://discord.com/invite/nJFfsH5d6v" target="_blank">
     <img src="https://img.shields.io/discord/1322278831184281721?style=flat&logo=discord&logoColor=white&color=5865F2&label=Discord&labelColor=000000" alt="Discord">
   </a>
 </p>
@@ -252,7 +252,7 @@ Check out our [Contributing Guide](https://github.com/MotiaDev/motia/blob/main/C
 
 **🌟 Ready to unify your backend?**
 
-[🚀 **Get Started Now**](https://motia.dev) • [📖 **Read the Docs**](https://motia.dev/docs) • [💬 **Join Discord**](https://discord.gg/7rXsekMK)
+[🚀 **Get Started Now**](https://motia.dev) • [📖 **Read the Docs**](https://motia.dev/docs) • [💬 **Join Discord**](https://discord.com/invite/nJFfsH5d6v)
 
 </div>
 
