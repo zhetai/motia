@@ -1,4 +1,4 @@
-import Image from "next/legacy/image"
+import Image from 'next/image'
 import SectionAppearAnimation from './SectionAppearAnimation'
 import Title from './Title'
 import heroBackgroundRays from '@/public/images/landing/heroBackgroundRays.svg'

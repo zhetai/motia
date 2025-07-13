@@ -1,20 +1,21 @@
 'use client'
 import { AnimatePresence, motion } from 'framer-motion'
 import { PrismLight as SyntaxHighlighter } from 'react-syntax-highlighter'
-import js from 'react-syntax-highlighter/dist/esm/languages/prism/javascript'
 import ts from 'react-syntax-highlighter/dist/esm/languages/prism/typescript'
+import js from 'react-syntax-highlighter/dist/esm/languages/prism/javascript'
 import { atomDark } from 'react-syntax-highlighter/dist/esm/styles/prism'
 
+import React, { useEffect, useState } from 'react'
 import { AgentData } from '@/lib/fetchAgents'
 import bgWorkflowExplorer from '@/public/images/landing/bgWorkflowExplorer.avif'
-import logoFull from '@/public/images/logoFull.png'
-import { GITHUB_REPO_BASE } from '@/utils/constants'
-import Image from "next/legacy/image"
-import Link from 'next/link'
-import React, { useEffect, useState } from 'react'
+import Image from 'next/image'
 import CollapsibleFolder from './CollapsibleFolder'
-import { flowImages, folderMap } from './constants/agentExplorer'
+import { StaticImport } from 'next/dist/shared/lib/get-img-props'
+import logoFull from '@/public/images/logoFull.png'
 import { openInNewWindowIcon } from './Icons'
+import Link from 'next/link'
+import { GITHUB_REPO_BASE } from '@/utils/constants'
+import { flowImages, folderMap } from './constants/agentExplorer'
 
 // 1. Register the languages
 SyntaxHighlighter.registerLanguage('typescript', ts)

@@ -1,7 +1,7 @@
 'use client'
 
 import React from 'react'
-import Image from "next/legacy/image"
+import Image from 'next/image'
 import motiaCloudHeading from '@/public/images/landing/motiaCloudHeading.svg'
 import bgMotiaCloud from '@/public/images/landing/bgMotiaCloud.svg'
 import bgCloudCard1 from '@/public/images/landing/bgCloudCard1.svg'

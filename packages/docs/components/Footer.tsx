@@ -1,5 +1,5 @@
 'use client'
-import Image from "next/legacy/image"
+import Image from 'next/image'
 import bgFooter from '@/public/images/landing/bgFooter.svg'
 import footerBlueGlow from '@/public/images/landing/footerBlueGlow.svg'
 import footerWordmark from '@/public/images/landing/footerWordmark.svg'

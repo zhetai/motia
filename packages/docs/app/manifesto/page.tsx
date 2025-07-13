@@ -1,6 +1,6 @@
 import Footer from '@/components/Footer'
 import Navbar from '@/components/ui/Navbar'
-import Image from "next/legacy/image"
+import Image from 'next/image'
 import bgManifesto from '@/public/images/landing/bgManifestoPage.svg'
 import bgManifestoDeclaration from '@/public/images/landing/bgManifestoDeclaration.svg'
 import Title from '@/components/Title'
