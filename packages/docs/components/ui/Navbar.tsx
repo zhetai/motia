@@ -107,10 +107,17 @@ export default function Navbar() {
 
             <div className="relative flex w-full flex-col gap-[8px] border-b-[1px] border-white/20 bg-black px-[16px] pt-[100px] pb-[18px]">
               {/**
-               * Docs Link
+               * Blog Link
                *
                **/}
               <div className="flex w-full flex-col gap-[16px] border-b-[1px] border-white/20 pb-[28px]">
+                <Link href="https://blog.motia.dev" target="_blank" className="text-[16px] text-white">
+                  Blog
+                </Link>
+                {/**
+                 * Docs Link
+                 *
+                 **/}
                 <Link href="/docs" className="text-[16px] text-white">
                   Docs
                 </Link>
@@ -182,6 +189,13 @@ export default function Navbar() {
             </div>
           </div>
           <div className="flex gap-[24px] max-md:hidden">
+            {/**
+             * Blog Link
+             *
+             **/}
+            <Link href="https://blog.motia.dev" target="_blank" className="text-[16px] text-white/60 transition-colors ease-in-out hover:text-white">
+              Blog
+            </Link>
             {/**
              * Docs Link
              *

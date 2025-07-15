@@ -4,12 +4,12 @@ import bgFooter from '@/public/images/landing/bgFooter.svg'
 import footerBlueGlow from '@/public/images/landing/footerBlueGlow.svg'
 import footerWordmark from '@/public/images/landing/footerWordmark.svg'
 import footerWordmarkGlow from '@/public/images/landing/footerWordmarkGlow.svg'
-import { discordIcon, githubIcon, starIcon } from './Icons'
+import { discordIcon, githubIcon, starIcon, twitterIcon, linkedinIcon, youtubeIcon } from './Icons'
 import React from 'react'
 import Link from 'next/link'
 
 import SectionAppearAnimation from './SectionAppearAnimation'
-import { GITHUB_LINK, DISCORD_HANDLE } from '@/utils/constants'
+import { GITHUB_LINK, DISCORD_HANDLE, TWITTER_HANDLE, LINKEDIN_HANDLE, YOUTUBE_HANDLE } from '@/utils/constants'
 import { useGithubStars } from '@/hooks/useGithubStars'
 import ModalCTA, { ModalCTAVariants } from './ModalCTA'
 import { usePathname, useRouter } from 'next/navigation'
@@ -34,7 +34,7 @@ const SocialLinks: React.FC = () => {
         </Link>
 
         {/**
-         * Github Link
+         * GitHub Link
          *
          **/}
         <Link
@@ -46,6 +46,42 @@ const SocialLinks: React.FC = () => {
           <div className="flex items-center gap-[6px] text-white max-sm:hidden">
             {starIcon} <p>{stars}</p>
           </div>
+        </Link>
+
+        {/**
+         * Twitter Link
+         *
+         **/}
+        <Link
+          href={TWITTER_HANDLE}
+          target="_blank"
+          className="flex cursor-pointer items-center gap-[16px] py-[8px] text-[16px] text-white/60 transition-colors ease-in-out hover:text-white"
+        >
+          {twitterIcon} <p>Follow us on Twitter</p>
+        </Link>
+
+        {/**
+         * LinkedIn Link
+         *
+         **/}
+        <Link
+          href={LINKEDIN_HANDLE}
+          target="_blank"
+          className="flex cursor-pointer items-center gap-[16px] py-[8px] text-[16px] text-white/60 transition-colors ease-in-out hover:text-white"
+        >
+          {linkedinIcon} <p>Connect on LinkedIn</p>
+        </Link>
+
+        {/**
+         * YouTube Link
+         *
+         **/}
+        <Link
+          href={YOUTUBE_HANDLE}
+          target="_blank"
+          className="flex cursor-pointer items-center gap-[16px] py-[8px] text-[16px] text-white/60 transition-colors ease-in-out hover:text-white"
+        >
+          {youtubeIcon} <p>Watch on YouTube</p>
         </Link>
       </div>
     </div>
