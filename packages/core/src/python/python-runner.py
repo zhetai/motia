@@ -5,11 +5,11 @@ import os
 import asyncio
 import traceback
 from typing import Callable, List, Dict
-from rpc import RpcSender
-from context import Context
-from middleware import compose_middleware
-from rpc_stream_manager import RpcStreamManager
-from dot_dict import DotDict
+from motia_rpc import RpcSender
+from motia_context import Context
+from motia_middleware import compose_middleware
+from motia_rpc_stream_manager import RpcStreamManager
+from motia_dot_dict import DotDict
 
 def parse_args(arg: str) -> Dict:
     """Parse command line arguments into HandlerArgs"""

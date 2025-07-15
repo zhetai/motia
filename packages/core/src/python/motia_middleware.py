@@ -1,6 +1,6 @@
 from typing import Any, Callable
 from functools import reduce
-from context import Context
+from motia_context import Context
 
 def compose_middleware(*middlewares):
     """Compose multiple middleware functions into a single middleware"""

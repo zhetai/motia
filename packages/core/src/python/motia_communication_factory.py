@@ -1,8 +1,8 @@
 import os
 import platform
 from typing import Union
-from rpc_communication import RpcCommunication
-from ipc_communication import IpcCommunication
+from motia_rpc_communication import RpcCommunication
+from motia_ipc_communication import IpcCommunication
 
 def create_communication() -> Union[RpcCommunication, IpcCommunication]:
     """

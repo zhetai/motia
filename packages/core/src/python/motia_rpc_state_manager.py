@@ -1,33 +1,39 @@
-from typing import Any
 import asyncio
-from rpc import RpcSender
 import functools
 import sys
+from typing import Any
+from motia_rpc import RpcSender
 
-class RpcStreamManager:
-    def __init__(self, stream_name: str,rpc: RpcSender):
+class RpcStateManager:
+    def __init__(self, rpc: RpcSender):
         self.rpc = rpc
-        self.stream_name = stream_name
         self._loop = asyncio.get_event_loop()
 
-    async def get(self, group_id: str, id: str) -> asyncio.Future[Any]:
-        result = await self.rpc.send(f'streams.{self.stream_name}.get', {'groupId': group_id, 'id': id})
+    async def get(self, trace_id: str, key: str) -> asyncio.Future[Any]:
+        result = await self.rpc.send('state.get', {'traceId': trace_id, 'key': key})
+        
+        if result is None:
+            return {'data': None}
+        elif isinstance(result, dict):
+            if 'data' not in result:
+                return {'data': result}
+        
         return result
 
-    async def set(self, group_id: str, id: str, data: Any) -> asyncio.Future[None]:
-        future = await self.rpc.send(f'streams.{self.stream_name}.set', {'groupId': group_id, 'id': id, 'data': data})
+    async def set(self, trace_id: str, key: str, value: Any) -> asyncio.Future[None]:
+        future = await self.rpc.send('state.set', {'traceId': trace_id, 'key': key, 'value': value})
         return future
 
-    async def delete(self, group_id: str, id: str) -> asyncio.Future[None]:
-        return await self.rpc.send(f'streams.{self.stream_name}.delete', {'groupId': group_id, 'id': id})
+    async def delete(self, trace_id: str, key: str) -> asyncio.Future[None]:
+        return await self.rpc.send('state.delete', {'traceId': trace_id, 'key': key})
 
-    async def getGroup(self, group_id: str) -> asyncio.Future[None]:
-        return await self.rpc.send(f'streams.{self.stream_name}.getGroup', {'groupId': group_id})
+    async def clear(self, trace_id: str) -> asyncio.Future[None]:
+        return await self.rpc.send('state.clear', {'traceId': trace_id})
 
     # Add wrappers to handle non-awaited coroutines
     def __getattribute__(self, name):
         attr = super().__getattribute__(name)
-        if name in ('get', 'set', 'delete', 'getGroup') and asyncio.iscoroutinefunction(attr):
+        if name in ('get', 'set', 'delete', 'clear') and asyncio.iscoroutinefunction(attr):
             @functools.wraps(attr)
             def wrapper(*args, **kwargs):
                 coro = attr(*args, **kwargs)
