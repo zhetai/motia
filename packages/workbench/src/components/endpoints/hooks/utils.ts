@@ -1,4 +1,4 @@
-export const convertJsonSchemaToJson = (schema: Record<string, any>): any => {
+export const convertJsonSchemaToJson = (schema?: Record<string, any>): any => {
   if (!schema) return {}
 
   if (schema.type === 'object') {

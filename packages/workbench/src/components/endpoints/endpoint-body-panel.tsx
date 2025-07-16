@@ -27,7 +27,12 @@ export const EndpointBodyPanel: FC<Props> = ({ endpoint, onChange, onValidate })
       {onChange ? (
         <JsonEditor value={body} schema={endpoint.bodySchema} onChange={handleBodyChange} onValidate={onValidate} />
       ) : (
-        <ReactJson src={convertJsonSchemaToJson(endpoint.bodySchema ?? {})} theme="default" enableClipboard={false} />
+        <ReactJson
+          src={convertJsonSchemaToJson(endpoint.bodySchema)}
+          theme="default"
+          enableClipboard={false}
+          style={{ backgroundColor: 'transparent' }}
+        />
       )}
     </Panel>
   )
