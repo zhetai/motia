@@ -33,8 +33,6 @@ export interface VersionConfig {
 export interface VersionResult {
   bundlePath: string
   versionId?: string
-  stepType: string
-  stepName: string
   stepPath?: string
   flowName: string
   environment: string
@@ -64,9 +62,6 @@ export interface VersionSummary {
 
 export interface UploadResult {
   bundlePath: string
-  uploadId?: string
-  stepType: string
-  stepName: string
   error?: string
   success: boolean
 }

@@ -2,59 +2,60 @@ import path from 'path'
 import { VersionsClient } from '../../api'
 import { VersionStartResponse } from '../../api/models/responses/version-responses'
 import { CliContext } from '../../config-utils'
-import { FileManager } from '../file-manager'
 import { UploadResult } from '../types'
 import { BuildStepsConfig, BuildStreamsConfig } from '../../build/builder'
+import { DeployPrinter } from '../printer'
 
 export class VersionService {
   private readonly versionClient: VersionsClient
-  private readonly fileManager: FileManager
+  private readonly printer = new DeployPrinter()
 
   constructor(private readonly context: CliContext) {
     this.versionClient = context.apiFactory.getVersionsClient()
-    this.fileManager = new FileManager(context)
   }
 
   async uploadConfiguration(
     environmentId: string,
+    motiaVersion: string,
     version: string,
     stepsConfig: BuildStepsConfig,
     streamsConfig: BuildStreamsConfig,
   ): Promise<string> {
-    this.context.log('upload-config', (message) => message.tag('progress').append('Uploading configuration...'))
-    const versionId = await this.versionClient.uploadStepsConfig(environmentId, version, stepsConfig, streamsConfig)
-    this.context.log('upload-config', (message) => message.tag('success').append('Configuration uploaded successfully'))
+    this.printer.printConfigurationUploading()
+    const versionId = await this.versionClient.uploadStepsConfig(
+      environmentId,
+      motiaVersion,
+      version,
+      stepsConfig,
+      streamsConfig,
+    )
+    this.printer.printConfigurationUploaded()
     this.context.log('deploy', (message) => message.tag('success').append(`Version started with ID: ${versionId}`))
 
     return versionId
   }
 
-  async uploadZipFile(versionId: string, distDir: string): Promise<UploadResult> {
-    const { filePath, cleanup } = await this.fileManager.createDeployableZip(versionId, distDir)
-
-    const uploadResult: UploadResult = {
-      bundlePath: filePath,
-      uploadId: '',
-      stepType: 'zip',
-      stepName: path.basename(filePath),
-      success: true,
-    }
-
+  async uploadProject(versionId: string, distDir: string, steps: BuildStepsConfig): Promise<UploadResult> {
     try {
-      this.context.log('upload-zip', (message) => message.tag('progress').append('Uploading bundle...'))
+      const stepEntries = Object.entries(steps)
 
-      const uploadId = await this.versionClient.uploadZipFile(filePath, versionId)
-      uploadResult.uploadId = uploadId
+      await Promise.all(
+        stepEntries.map(async ([stepPath, stepConfig]) => {
+          this.printer.printStepUploading(stepConfig)
+          const stepZipPath = path.join(distDir, stepPath)
+          await this.versionClient.uploadZipFile(stepZipPath, versionId, stepPath)
+          this.printer.printStepUploaded(stepConfig)
+        }),
+      )
 
-      this.context.log('upload-zip', (message) => message.tag('success').append('Uploaded bundle successfully'))
+      return {
+        success: true,
+        bundlePath: distDir,
+      }
     } catch (error) {
       this.context.log('upload-zip', (message) => message.tag('failed').append('Failed to upload bundle'))
       throw error
-    } finally {
-      cleanup()
     }
-
-    return uploadResult
   }
 
   async startVersion(versionId: string, envData?: Record<string, string>): Promise<VersionStartResponse> {

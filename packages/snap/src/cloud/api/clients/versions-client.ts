@@ -19,6 +19,7 @@ import { BuildStreamsConfig, BuildStepsConfig } from '../../build/builder'
 export class VersionsClient extends AxiosClient {
   async uploadStepsConfig(
     environmentId: string,
+    motiaVersion: string,
     version: string,
     stepsConfig: BuildStepsConfig,
     streamsConfig: BuildStreamsConfig,
@@ -31,7 +32,7 @@ export class VersionsClient extends AxiosClient {
       const response = await this.makeRequest<{ versionId: string }>(
         `${ENDPOINTS.ENVIRONMENTS}/${environmentId}/versions`,
         'POST',
-        { config: stepsConfig, version, streamsConfig },
+        { config: stepsConfig, version, streamsConfig, motiaVersion },
       )
       return response.versionId
     } catch (error) {
@@ -42,12 +43,11 @@ export class VersionsClient extends AxiosClient {
     }
   }
 
-  async uploadZipFile(zipPath: string, versionId: string): Promise<string> {
+  async uploadZipFile(zipPath: string, versionId: string, fileName: string): Promise<string> {
     if (!fs.existsSync(zipPath)) {
       throw new FileUploadError(new Error('File not found'), zipPath)
     }
 
-    const fileName = path.basename(zipPath)
     const fileStats = fs.statSync(zipPath)
 
     try {

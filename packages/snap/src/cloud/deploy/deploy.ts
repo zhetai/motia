@@ -4,6 +4,7 @@ import { StepsConfigFile } from '../build/builder'
 import { CliContext } from '../config-utils'
 import { VersionResult } from './types'
 import { parseEnvFile } from './utils/env-parser'
+import { version as motiaVersion } from '../../version'
 
 export class VersionManager {
   async deploy(
@@ -54,11 +55,12 @@ export class VersionManager {
 
     const versionId = await context.versionService.uploadConfiguration(
       environment.id,
+      motiaVersion,
       versionName,
       configFile.steps,
       configFile.streams,
     )
-    const uploadResult = await context.versionService.uploadZipFile(versionId, distDir)
+    const uploadResult = await context.versionService.uploadProject(versionId, distDir, configFile.steps)
 
     if (!uploadResult.success) {
       context.log('deploy-failed', (message) =>
@@ -89,8 +91,6 @@ export class VersionManager {
     const versionResults: VersionResult[] = [uploadResult].map((result) => ({
       bundlePath: result.bundlePath,
       versionId: result.success ? versionId : undefined,
-      stepType: result.stepType,
-      stepName: result.stepName,
       stepPath: configFile.steps[result.bundlePath]?.entrypointPath,
       flowName: configFile.steps[result.bundlePath]?.config?.flows?.[0] || 'unknown',
       environment: environment.name,
