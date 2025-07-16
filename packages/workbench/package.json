@@ -1,7 +1,7 @@
 {
   "name": "@motiadev/workbench",
   "description": "A web-based interface for building and managing Motia workflows.",
-  "version": "0.4.3-beta.96",
+  "version": "0.4.4-beta.97",
   "main": "dist/index.js",
   "scripts": {
     "lint": "pnpm run lint:ts && pnpm run lint:tsx",
