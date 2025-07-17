@@ -182,6 +182,7 @@ bun run dev  [options]
 
 # options:
   # -p, --port <port>     The port to run the server on (default: 3000)
+  # -H, --host [host]     The host address for the server (default: localhost)
   # -v, --verbose         Enable verbose logging
   # -d, --debug          Enable debug logging
   # -m, --mermaid        Enable mermaid diagram generation

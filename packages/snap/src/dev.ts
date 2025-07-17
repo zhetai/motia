@@ -22,7 +22,7 @@ require('ts-node').register({
   compilerOptions: { module: 'commonjs' },
 })
 
-export const dev = async (port: number, disableVerbose: boolean, enableMermaid: boolean): Promise<void> => {
+export const dev = async (port: number, hostname: string, disableVerbose: boolean, enableMermaid: boolean): Promise<void> => {
   const baseDir = process.cwd()
   const isVerbose = !disableVerbose
 
@@ -69,9 +69,9 @@ export const dev = async (port: number, disableVerbose: boolean, enableMermaid: 
 
   stateEndpoints(motiaServer, state)
 
-  motiaServer.server.listen(port)
+  motiaServer.server.listen(port, hostname)
   console.log('🚀 Server ready and listening on port', port)
-  console.log(`🔗 Open http://localhost:${port}/ to open workbench 🛠️`)
+  console.log(`🔗 Open http://${hostname}:${port}/ to open workbench 🛠️`)
 
   trackEvent('dev_server_ready', {
     port,

@@ -2,11 +2,11 @@
 /* eslint-disable @typescript-eslint/no-require-imports */
 import { program } from 'commander'
 import path from 'path'
-import fs from 'fs'
 import './cloud'
 import { version } from './version'
 
 const defaultPort = 3000
+const defaultHost = 'localhost'
 
 require('dotenv/config')
 require('ts-node').register({
@@ -80,6 +80,7 @@ program
   .command('dev')
   .description('Start the development server')
   .option('-p, --port <port>', 'The port to run the server on', `${defaultPort}`)
+  .option('-H, --host [host]', 'The host address for the server', `${defaultHost}`)
   .option('-v, --disable-verbose', 'Disable verbose logging')
   .option('-d, --debug', 'Enable debug logging')
   .option('-m, --mermaid', 'Enable mermaid diagram generation')
@@ -90,8 +91,9 @@ program
     }
 
     const port = arg.port ? parseInt(arg.port) : defaultPort
+    const host = arg.host ? arg.host : defaultHost
     const { dev } = require('./dev')
-    await dev(port, arg.disableVerbose, arg.mermaid)
+    await dev(port, host, arg.disableVerbose, arg.mermaid)
   })
 
 program
