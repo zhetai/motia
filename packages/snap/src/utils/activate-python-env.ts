@@ -1,6 +1,7 @@
 import path from 'path'
 import fs from 'fs'
 import { findPythonSitePackagesDir } from './python-version-utils'
+import { internalLogger } from './internal-logger'
 
 interface VenvConfig {
   baseDir: string
@@ -9,13 +10,15 @@ interface VenvConfig {
 }
 
 export const activatePythonVenv = ({ baseDir, isVerbose = false, pythonVersion = '3.13' }: VenvConfig): void => {
+  internalLogger.info('Activating Python environment')
+
   // Set the virtual environment path
   const venvPath = path.join(baseDir, 'python_modules')
   const venvBinPath = path.join(venvPath, process.platform === 'win32' ? 'Scripts' : 'bin')
   const libPath = path.join(venvPath, 'lib')
 
   // Find the Python version directory using the utility function
-  const actualPythonVersionPath = findPythonSitePackagesDir(libPath, pythonVersion, isVerbose)
+  const actualPythonVersionPath = findPythonSitePackagesDir(libPath, pythonVersion)
   const sitePackagesPath = path.join(venvPath, 'lib', actualPythonVersionPath, 'site-packages')
 
   // Verify that the virtual environment exists
@@ -33,11 +36,14 @@ export const activatePythonVenv = ({ baseDir, isVerbose = false, pythonVersion =
     if (isVerbose) {
       const pythonPath =
         process.platform === 'win32' ? path.join(venvBinPath, 'python.exe') : path.join(venvBinPath, 'python')
-      console.log('🐍 Using Python from:', pythonPath)
-      console.log('📦 Site-packages path:', sitePackagesPath)
+
+      const relativePath = (path: string) => path.replace(baseDir, '<projectDir>')
+
+      internalLogger.info('Using Python', relativePath(pythonPath))
+      internalLogger.info('Site-packages path', relativePath(sitePackagesPath))
     }
   } else {
-    console.warn('❌ Python virtual environment not found in python_modules/')
-    console.warn('Please run `motia install` to create a new virtual environment')
+    internalLogger.error('Python virtual environment not found in python_modules/')
+    internalLogger.error('Please run `motia install` to create a new virtual environment')
   }
 }

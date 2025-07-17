@@ -1,6 +1,7 @@
-import { executeCommand } from './execute-command'
 import fs from 'fs'
 import path from 'path'
+import { executeCommand } from './execute-command'
+import { internalLogger } from './internal-logger'
 
 export async function checkPythonVersionExists(pythonCmd: string, baseDir: string): Promise<boolean> {
   try {
@@ -32,7 +33,7 @@ export async function getPythonCommand(requestedVersion: string, baseDir: string
   throw new Error('No compatible Python 3 installation found. Please install Python 3.')
 }
 
-export function findPythonSitePackagesDir(venvLibPath: string, pythonVersion: string, isVerbose = false): string {
+export function findPythonSitePackagesDir(venvLibPath: string, pythonVersion: string): string {
   let pythonVersionPath = `python${pythonVersion}`
 
   if (!venvLibPath || !pythonVersion) {
@@ -49,15 +50,12 @@ export function findPythonSitePackagesDir(venvLibPath: string, pythonVersion: st
       if (pythonDirs.length > 0) {
         // Use the first python3.x directory found
         pythonVersionPath = pythonDirs[0]
-        if (isVerbose) {
-          console.log(`Found Python directory: ${pythonVersionPath}`)
-        }
+        internalLogger.info('Found Python directory', pythonVersionPath)
       }
     }
-  } catch (error) {
-    if (isVerbose) {
-      console.warn(`Warning: Could not determine Python version directory: ${error}`)
-    }
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  } catch (error: any) {
+    internalLogger.warn('Could not determine Python version directory', error.message)
   }
 
   return pythonVersionPath

@@ -46,7 +46,6 @@ export const dev = async (
   })
 
   if (hasPythonFiles) {
-    console.log('⚙️ Activating Python environment...')
     activatePythonVenv({ baseDir, isVerbose })
     trackEvent('python_environment_activated')
   }

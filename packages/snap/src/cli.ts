@@ -1,7 +1,6 @@
 #!/usr/bin/env node
 /* eslint-disable @typescript-eslint/no-require-imports */
 import { program } from 'commander'
-import path from 'path'
 import './cloud'
 import { version } from './version'
 
@@ -42,10 +41,10 @@ program
         cursorEnabled: arg.cursor,
       })
     } else {
+      const skipConfirmation = arg.skipConfirmation ?? false
       const { createInteractive } = require('./create/interactive')
-      await createInteractive({
-        skipConfirmation: arg.skipConfirmation,
-      })
+
+      await createInteractive({ skipConfirmation })
     }
     process.exit(0)
   })
@@ -97,24 +96,6 @@ program
   })
 
 program
-  .command('get-config')
-  .description('Get the generated config for your project')
-  .option('-o, --output <port>', 'Path to write the generated config')
-  .action(async (arg) => {
-    const { generateLockedData } = require('./src/generate/locked-data')
-    const lockedData = await generateLockedData(path.join(process.cwd()))
-
-    if (arg.output) {
-      const fs = require('fs')
-      fs.writeFileSync(path.join(arg.output, '.motia.generated.json'), JSON.stringify(lockedData, null, 2))
-      console.log(`📄 Wrote locked data to ${arg.output}`)
-
-      return
-    }
-    console.log(JSON.stringify(lockedData, null, 2))
-  })
-
-program
   .command('emit')
   .description('Emit an event to the Motia server')
   .requiredOption('--topic <topic>', 'Event topic/type to emit')
@@ -159,28 +140,5 @@ generate
     })
   })
 
-const state = program.command('state').description('Manage application state')
-
-state
-  .command('list')
-  .description('List the current file state')
-  .action(async () => {
-    try {
-      const statePath = path.join(process.cwd(), '.motia', 'motia.state.json')
-
-      if (!fs.existsSync(statePath)) {
-        console.error('Error: State file not found at', statePath)
-        process.exit(1)
-      }
-
-      const state = require(statePath)
-      console.log(JSON.stringify(state, null, 2))
-    } catch (error) {
-      console.error('Error:', error instanceof Error ? error.message : 'Unknown error')
-      process.exit(1)
-    }
-  })
-
 program.version(version, '-V, --version', 'Output the current version')
-
 program.parse(process.argv)
