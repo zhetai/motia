@@ -22,7 +22,12 @@ require('ts-node').register({
   compilerOptions: { module: 'commonjs' },
 })
 
-export const dev = async (port: number, hostname: string, disableVerbose: boolean, enableMermaid: boolean): Promise<void> => {
+export const dev = async (
+  port: number,
+  hostname: string,
+  disableVerbose: boolean,
+  enableMermaid: boolean,
+): Promise<void> => {
   const baseDir = process.cwd()
   const isVerbose = !disableVerbose
 

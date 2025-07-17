@@ -1,6 +1,6 @@
 import { Button } from '@motiadev/ui'
 import { AlertCircle, Check, Loader2, Save } from 'lucide-react'
-import React, { useCallback, useEffect, useRef, useState } from 'react'
+import React, { useCallback, useEffect, useMemo, useRef, useState } from 'react'
 import { JsonEditor } from '../endpoints/json-editor'
 import { StateItem } from './hooks/states-hooks'
 
@@ -69,12 +69,57 @@ export const StateEditor: React.FC<Props> = ({ state }) => {
     setSaveStatus('idle')
   }, [state.value])
 
+  const statusView = useMemo(() => {
+    if (saveStatus === 'success') {
+      return (
+        <div className="bg-green-50 dark:bg-green-950/20 border border-green-200 dark:border-green-800 rounded-lg p-2">
+          <div className="flex items-center gap-2 text-green-700 dark:text-green-400 text-sm">
+            <Check className="w-4 h-4" />
+            State saved successfully!
+          </div>
+        </div>
+      )
+    }
+
+    if (saveStatus === 'error') {
+      return (
+        <div className="bg-red-50 dark:bg-red-950/20 border border-red-200 dark:border-red-800 rounded-lg p-2">
+          <div className="flex items-center gap-2 text-red-700 dark:text-red-400 text-sm">
+            <AlertCircle className="w-4 h-4" />
+            Failed to save state. Please try again.
+          </div>
+        </div>
+      )
+    }
+
+    return (
+      <div className="text-xs text-muted-foreground">
+        {hasChanges ? (
+          <span className="flex items-center gap-1">
+            <div className="w-2 h-2 bg-orange-500 rounded-full"></div>
+            Unsaved changes
+          </span>
+        ) : (
+          <span className="flex items-center gap-1">
+            <div className="w-2 h-2 bg-green-500 rounded-full"></div>
+            Up to date
+          </span>
+        )}
+      </div>
+    )
+  }, [saveStatus, hasChanges])
+
   return (
-    <div className="flex flex-col gap-2 h-full bg-red-500">
+    <div className="flex flex-col gap-2 h-full">
       <p className="text-xs text-muted-foreground">Modify the state value using the JSON editor below.</p>
       <div className="space-y-3 pt-2 flex flex-col">
         <div className="relative flex-1">
-          <JsonEditor value={jsonValue} onChange={handleJsonChange} onValidate={setIsValid} />
+          <JsonEditor
+            value={jsonValue}
+            onChange={handleJsonChange}
+            onValidate={setIsValid}
+            height={'calc(100vh - 300px)'}
+          />
 
           {!isValid && (
             <div className="absolute top-2 right-2 bg-destructive/90 text-destructive-foreground px-2 py-1 rounded text-xs flex items-center gap-1">
@@ -83,40 +128,10 @@ export const StateEditor: React.FC<Props> = ({ state }) => {
             </div>
           )}
         </div>
-
-        {saveStatus === 'success' && (
-          <div className="bg-green-50 dark:bg-green-950/20 border border-green-200 dark:border-green-800 rounded-lg p-3">
-            <div className="flex items-center gap-2 text-green-700 dark:text-green-400 text-sm">
-              <Check className="w-4 h-4" />
-              State saved successfully!
-            </div>
-          </div>
-        )}
-
-        {saveStatus === 'error' && (
-          <div className="bg-red-50 dark:bg-red-950/20 border border-red-200 dark:border-red-800 rounded-lg p-3">
-            <div className="flex items-center gap-2 text-red-700 dark:text-red-400 text-sm">
-              <AlertCircle className="w-4 h-4" />
-              Failed to save state. Please try again.
-            </div>
-          </div>
-        )}
       </div>
 
       <div className="flex items-center justify-between pt-2">
-        <div className="text-xs text-muted-foreground">
-          {hasChanges ? (
-            <span className="flex items-center gap-1">
-              <div className="w-2 h-2 bg-orange-500 rounded-full"></div>
-              Unsaved changes
-            </span>
-          ) : (
-            <span className="flex items-center gap-1">
-              <div className="w-2 h-2 bg-green-500 rounded-full"></div>
-              Up to date
-            </span>
-          )}
-        </div>
+        {statusView}
 
         <div className="flex items-center gap-2">
           {hasChanges && (

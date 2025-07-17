@@ -4,12 +4,13 @@ import { useThemeStore } from '@/stores/use-theme-store'
 
 type JsonEditorProps = {
   value: string
+  height?: number | string
   schema?: Record<string, unknown>
   onChange: (value: string) => void
   onValidate?: (isValid: boolean) => void
 }
 
-export const JsonEditor: FC<JsonEditorProps> = ({ value, schema, onChange, onValidate }) => {
+export const JsonEditor: FC<JsonEditorProps> = ({ value, height = 300, schema, onChange, onValidate }) => {
   const monaco = useMonaco()
   const theme = useThemeStore((state) => state.theme)
   const editorTheme = useMemo(() => (theme === 'dark' ? 'vs-dark' : 'light'), [theme])
@@ -34,7 +35,7 @@ export const JsonEditor: FC<JsonEditorProps> = ({ value, schema, onChange, onVal
   return (
     <Editor
       data-testid="json-editor"
-      height="200px"
+      height={height}
       language="json"
       value={value}
       theme={editorTheme}
