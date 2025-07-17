@@ -77,10 +77,9 @@ export default function CTASection() {
         <Ray delay={1} />
       </SectionAppearAnimation>
       <div className="flex w-full flex-col items-center px-[16px] text-center">
-        <Title className="max-w-[792px]">Code-first AI automation framework</Title>
+        <Title className="max-w-[792px]">Unify APIs, Jobs, and Agents in Any Language, One Flow</Title>
         <p className="w-full max-w-[440px] pt-[20px] text-[20px] text-white/60">
-          Write in Python, TypeScript, JavaScript, or Ruby. Deploy with confidence using industry standard test
-          suites, evals and monitoring.
+          Write in Python, TypeScript, JavaScript, and more. Deploy with confidence using industry standard test suites, evals, and monitoring.
         </p>
       </div>
       {/* CTAs */}

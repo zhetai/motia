@@ -19,11 +19,11 @@ export default function Hero() {
       <div className="relative z-2 max-w-full pt-[240px] pl-[16px] max-lg:p-[24px] max-lg:pt-[100px] max-lg:pb-0">
         {/* Title and Subtitle */}
         <SectionAppearAnimation className="flex w-[590px] flex-col gap-[20px] max-lg:max-w-full">
-          <Title>Unify endpoints, workflows, and agents</Title>
+          <Title>Unify APIs, Jobs, & AI Agents in One Flow</Title>
 
           <p className="w-[520px] max-w-full text-[16px] font-light text-white opacity-80">
-            Multi-language cloud functions runtime for API endpoints, background jobs, and agentic workflows using Motia
-            Steps. Preview them in the Workbench, ship to zero-config infrastructure, and monitor in the Cloud.
+          Motia is the single backend runtime where APIs, background jobs, workflows, and AI agents run together as event-driven Steps, in any language, with full observability and state tracing. 
+          Build, automate, and evolve all on one platform.
           </p>
         </SectionAppearAnimation>
         {/* CTAs */}

@@ -16,7 +16,7 @@ export default function AIReady() {
         </div>
         <CardText
           title="AI-Ready Workflows"
-          subtitle="Plug into 400k+ Python packages and 2M+ npm modules"
+          subtitle="Bring AI to your backend: write agentic workflows, leverage Python/Node AI libraries, and connect them directly with APIs and jobs."
           textBoxWidth="w-[280px]"
         />
       </BentoCard>

@@ -18,7 +18,7 @@ export default function TestAndDeploy() {
         </div>
         <CardText
           title="Test & deploy with confidence"
-          subtitle="Ensure robust test coverage with E2E, integration and unit test at the workflow or step level"
+          subtitle="Test any workflow, any step: automate code, APIs, and agents with guaranteed quality at every layer."
         />
       </BentoCard>
     </div>

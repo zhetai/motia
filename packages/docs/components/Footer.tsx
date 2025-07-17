@@ -4,7 +4,7 @@ import bgFooter from '@/public/images/landing/bgFooter.svg'
 import footerBlueGlow from '@/public/images/landing/footerBlueGlow.svg'
 import footerWordmark from '@/public/images/landing/footerWordmark.svg'
 import footerWordmarkGlow from '@/public/images/landing/footerWordmarkGlow.svg'
-import { discordIcon, githubIcon, starIcon, twitterIcon, linkedinIcon, youtubeIcon } from './Icons'
+import { discordIcon, githubIcon, starIcon, twitterIcon } from './Icons'
 import React from 'react'
 import Link from 'next/link'
 
@@ -58,30 +58,6 @@ const SocialLinks: React.FC = () => {
           className="flex cursor-pointer items-center gap-[16px] py-[8px] text-[16px] text-white/60 transition-colors ease-in-out hover:text-white"
         >
           {twitterIcon} <p>Follow us on Twitter</p>
-        </Link>
-
-        {/**
-         * LinkedIn Link
-         *
-         **/}
-        <Link
-          href={LINKEDIN_HANDLE}
-          target="_blank"
-          className="flex cursor-pointer items-center gap-[16px] py-[8px] text-[16px] text-white/60 transition-colors ease-in-out hover:text-white"
-        >
-          {linkedinIcon} <p>Connect on LinkedIn</p>
-        </Link>
-
-        {/**
-         * YouTube Link
-         *
-         **/}
-        <Link
-          href={YOUTUBE_HANDLE}
-          target="_blank"
-          className="flex cursor-pointer items-center gap-[16px] py-[8px] text-[16px] text-white/60 transition-colors ease-in-out hover:text-white"
-        >
-          {youtubeIcon} <p>Watch on YouTube</p>
         </Link>
       </div>
     </div>

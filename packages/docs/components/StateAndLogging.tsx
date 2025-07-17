@@ -77,8 +77,7 @@ export default function StateAndLogging() {
         </div>
         <CardText
           title="State and logging"
-          subtitle="Persistent state and real time logs out of the box"
-          textBoxWidth="w-[240px]"
+          subtitle="Every state change and event is tracked, searchable, and visualized. See exactly what happened, when, and why."
         />
       </BentoCard>
     </motion.div>
