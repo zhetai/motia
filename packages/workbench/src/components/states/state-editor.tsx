@@ -1,6 +1,6 @@
-import { Button, Panel } from '@motiadev/ui'
-import { AlertCircle, Check, Database, Loader2, Save } from 'lucide-react'
-import React, { useState, useCallback, useEffect, useRef } from 'react'
+import { Button } from '@motiadev/ui'
+import { AlertCircle, Check, Loader2, Save } from 'lucide-react'
+import React, { useCallback, useEffect, useRef, useState } from 'react'
 import { JsonEditor } from '../endpoints/json-editor'
 import { StateItem } from './hooks/states-hooks'
 
@@ -70,27 +70,10 @@ export const StateEditor: React.FC<Props> = ({ state }) => {
   }, [state.value])
 
   return (
-    <Panel
-      title={
-        <div className="flex items-center gap-2">
-          <Database className="w-4 h-4" />
-          <h3 className="text-sm font-semibold text-foreground">Edit State Value</h3>
-        </div>
-      }
-    >
-      <p className="text-xs text-muted-foreground mb-3">
-        Modify the state value using the JSON editor below. Changes will be saved to the system when you click Save.
-      </p>
-      <div className="text-xs text-muted-foreground space-y-1">
-        <div>
-          <strong>Group:</strong> <code className="bg-background px-1 py-0.5 rounded">{state.groupId}</code>
-        </div>
-        <div>
-          <strong>Key:</strong> <code className="bg-background px-1 py-0.5 rounded">{state.key}</code>
-        </div>
-      </div>
-      <div className="space-y-3 pt-2">
-        <div className="relative">
+    <div className="flex flex-col gap-2 h-full bg-red-500">
+      <p className="text-xs text-muted-foreground">Modify the state value using the JSON editor below.</p>
+      <div className="space-y-3 pt-2 flex flex-col">
+        <div className="relative flex-1">
           <JsonEditor value={jsonValue} onChange={handleJsonChange} onValidate={setIsValid} />
 
           {!isValid && (
@@ -162,6 +145,6 @@ export const StateEditor: React.FC<Props> = ({ state }) => {
           </Button>
         </div>
       </div>
-    </Panel>
+    </div>
   )
 }
