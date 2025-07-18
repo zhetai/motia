@@ -76,8 +76,8 @@ export default function StateAndLogging() {
           </motion.div>
         </div>
         <CardText
-          title="State and logging"
-          subtitle="Every state change and event is tracked, searchable, and visualized. See exactly what happened, when, and why."
+          title="Observability baked-in"
+          subtitle="Motia workbench comes with a built-in observability tool to help you track and visualize all your steps, events, and state changes. See exactly what happened after an endpoint is triggered, all the subsequent steps that were emitted, track the time it took to execute each step, and more."
         />
       </BentoCard>
     </motion.div>

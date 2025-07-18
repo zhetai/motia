@@ -184,8 +184,8 @@ export default function Navbar() {
             </Link>
 
             <div className="relative bottom-[-24px] flex items-center gap-[4px]">
-              <div className="h-[2px] w-[32px] bg-[#088CFF]"></div>
-              <div className="h-[1.5px] grow bg-white"></div>
+              <div className="h-[2px] w-[24px] bg-[#088CFF]"></div>
+              <div className="h-[2px] grow bg-white"></div>
             </div>
           </div>
           <div className="flex gap-[24px] max-md:hidden">
@@ -193,7 +193,11 @@ export default function Navbar() {
              * Blog Link
              *
              **/}
-            <Link href="https://blog.motia.dev" target="_blank" className="text-[16px] text-white/60 transition-colors ease-in-out hover:text-white">
+            <Link
+              href="https://blog.motia.dev"
+              target="_blank"
+              className="text-[16px] text-white/60 transition-colors ease-in-out hover:text-white"
+            >
               Blog
             </Link>
             {/**
@@ -207,7 +211,10 @@ export default function Navbar() {
              * Manifesto Link
              *
              **/}
-            <Link href="/manifesto" className="text-[16px] text-white/60 transition-colors ease-in-out hover:text-white">
+            <Link
+              href="/manifesto"
+              className="text-[16px] text-white/60 transition-colors ease-in-out hover:text-white"
+            >
               Manifesto
             </Link>
             {/**

@@ -42,7 +42,7 @@ const Title: React.FC<TitleProps> = ({ children, className, delay = 0 }) => {
 
   return (
     <motion.h1
-      className={`font-tasa text-[32px] leading-[1.25em] font-semibold tracking-[1.44px] text-white md:text-[48px] ${className}`}
+      className={`font-tasa text-[32px] leading-[1.25em] font-semibold tracking-[1.44px] text-white md:text-[40px] ${className}`}
       variants={container}
       initial="hidden"
       whileInView="visible"

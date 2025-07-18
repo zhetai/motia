@@ -23,11 +23,12 @@ const BentoLayout: React.FC = () => (
         <Image src={bentoSectionTitleIcon} alt="Features" />
       </SectionAppearAnimation>
       <Title className="w-[650px] max-w-full max-lg:text-center max-md:w-[470px]">
-        Code-First Backend Infrastructure Framework
+        Create workflows with the simplicity of Motia Steps
       </Title>
-      <p className="w-[600px] max-w-full text-[16px] text-white opacity-60 max-lg:text-center">
+      <p className="w-[600px] max-w-full text-[17px] text-white opacity-60 max-lg:text-center">
         <TextAppearBlur delay={0.25}>
-        Motia is the only event-driven backend where you architect code, AI agents, and background tasks as modular Steps. All tracked, connected, and observable, in real time. Forget rewriting for every new runtime. Run smarter, automate faster, and outgrow chaos.
+          API Endpoints, Events, Cron Jobs are all represented by a step each written in the language you need. Connect
+          steps to create powerful workflows.
         </TextAppearBlur>
       </p>
     </div>

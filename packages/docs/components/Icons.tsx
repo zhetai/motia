@@ -395,8 +395,6 @@ export const starIcon = (
   </svg>
 )
 
-
-
 export const motiaLogoWhite = (
   <svg width="31" height="15" viewBox="0 0 31 15" fill="none" xmlns="http://www.w3.org/2000/svg">
     <path
@@ -673,5 +671,3 @@ export const twitterIcon = (
     />
   </svg>
 )
-
-
