@@ -25,3 +25,5 @@ export {
 } from './components/ui/dropdown-menu'
 export { SidePanel } from './components/ui/side-panel'
 export { SidePanelDetail, SidePanelDetailItem } from './components/ui/side-panel-detail'
+export { Label } from './components/ui/label'
+export { Badge, type BadgeProps } from './components/ui/badge'

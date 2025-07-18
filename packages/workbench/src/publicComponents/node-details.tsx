@@ -1,7 +1,7 @@
 import { ChevronRight, X } from 'lucide-react'
 import React, { PropsWithChildren, useCallback, useState } from 'react'
 import { Sidebar } from '@/components/sidebar/sidebar'
-import { Label } from '@/components/ui/label'
+import { Label } from '@motiadev/ui'
 import { LanguageIndicator } from '@/publicComponents/base-node/language-indicator'
 import { Subscribe } from './base-node/subscribe'
 import { Emits } from './base-node/emits'

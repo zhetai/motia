@@ -1,5 +1,5 @@
 import { Sidebar } from '@/components/sidebar/sidebar'
-import { Badge } from '@/components/ui/badge'
+import { Badge } from '@motiadev/ui'
 import { formatDuration } from '@/lib/utils'
 import { Trace } from '@/types/observability'
 import { X } from 'lucide-react'
