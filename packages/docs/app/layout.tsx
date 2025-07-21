@@ -80,7 +80,7 @@ export async function generateMetadata(
       ],
     },
     icons: {
-      icon: [{ url: '/app/favicon.ico' }, { url: '/icon.png', type: 'image/png' }],
+      icon: [{ url: '/favicon.ico' }, { url: '/icon.png', type: 'image/png' }],
       apple: [{ url: '/apple-icon.png', type: 'image/png' }],
       other: [
         {
@@ -128,14 +128,27 @@ export async function generateMetadata(
       'linkedin:description': metaDescription,
       'linkedin:image': ogImage,
 
+      // Additional Twitter tags for better iOS compatibility
+      'twitter:url': base,
+      'twitter:domain': 'motia.dev',
+      'twitter:image:alt': metaTitle,
+
+      // iOS Safari specific
+      'format-detection': 'telephone=no',
+      'apple-mobile-web-app-title': 'Motia',
+      'apple-mobile-web-app-capable': 'yes',
+      'apple-mobile-web-app-status-bar-style': 'black-translucent',
+      
       // PWA related
       'theme-color': '#18181b',
       'application-name': 'motia',
-      'apple-mobile-web-app-title': 'motia',
-      'apple-mobile-web-app-capable': 'yes',
-      'apple-mobile-web-app-status-bar-style': 'black-translucent',
       'mobile-web-app-capable': 'yes',
       'msapplication-TileColor': '#18181b',
+      
+      // Additional meta for better social sharing
+      'og:image:secure_url': ogImage,
+      'og:image:alt': metaTitle,
+      
       canonical: base,
     },
   };
@@ -150,6 +163,11 @@ export default function RootLayout({
     <html lang="en" suppressHydrationWarning>
       <head>
         <GoogleTagManager gtmId={GTM_ID} />
+        {/* Additional iOS/Safari compatibility */}
+        <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
+        <meta name="mobile-web-app-capable" content="yes" />
+        <meta name="apple-mobile-web-app-capable" content="yes" />
+        <meta name="apple-touch-fullscreen" content="yes" />
       </head>
       <body
         className={`${geistSans.variable} ${dmMono.variable} ${tasaExplorer.variable} w-screen overflow-x-hidden antialiased`}
