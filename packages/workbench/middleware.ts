@@ -11,6 +11,7 @@ export const applyMiddleware = async (app: Express) => {
 
     server: {
       middlewareMode: true,
+      allowedHosts: true,
       host: true,
       fs: {
         allow: [__dirname, path.join(process.cwd(), './steps')],

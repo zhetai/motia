@@ -48,7 +48,4 @@ export default defineConfig({
       '@': resolve(__dirname, 'src'),
     },
   },
-  server: {
-    allowedHosts: true, // This will disable the host check
-  },
 })
