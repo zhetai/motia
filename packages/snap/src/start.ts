@@ -10,7 +10,7 @@ require('ts-node').register({
   compilerOptions: { module: 'commonjs' },
 })
 
-export const start = async (port: number, disableVerbose: boolean): Promise<void> => {
+export const start = async (port: number, hostname: string, disableVerbose: boolean): Promise<void> => {
   const baseDir = process.cwd()
   const isVerbose = !disableVerbose
 
@@ -33,9 +33,9 @@ export const start = async (port: number, disableVerbose: boolean): Promise<void
   const config = { isVerbose }
   const motiaServer = createServer(lockedData, eventManager, state, config)
 
-  motiaServer.server.listen(port)
+  motiaServer.server.listen(port, hostname)
   console.log('🚀 Server ready and listening on port', port)
-  console.log(`🔗 Open http://localhost:${port}/ to open workbench 🛠️`)
+  console.log(`🔗 Open http://${hostname}:${port}/ to open workbench 🛠️`)
 
   if (!process.env.MOTIA_DOCKER_DISABLE_WORKBENCH) {
     stateEndpoints(motiaServer, state)
