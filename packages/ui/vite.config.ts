@@ -18,15 +18,12 @@ export default defineConfig({
       writeBundle() {
         try {
           mkdirSync(resolve(__dirname, 'dist/styles'), { recursive: true })
-          copyFileSync(
-            resolve(__dirname, 'src/styles/globals.css'),
-            resolve(__dirname, 'dist/globals.css')
-          )
+          copyFileSync(resolve(__dirname, 'src/styles/globals.css'), resolve(__dirname, 'dist/globals.css'))
         } catch (err) {
           console.warn('Failed to copy globals.css:', err)
         }
-      }
-    }
+      },
+    },
   ],
   build: {
     lib: {
@@ -50,5 +47,8 @@ export default defineConfig({
     alias: {
       '@': resolve(__dirname, 'src'),
     },
+  },
+  server: {
+    allowedHosts: true, // This will disable the host check
   },
 })
