@@ -34,9 +34,11 @@ export const isAnalyticsEnabled = (): boolean => {
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
 export const trackEvent = (eventName: string, properties: Record<string, any> = {}) => {
   try {
-    track(eventName, properties, {
-      user_id: getUserIdentifier() || 'unknown',
-    })
+    if (isAnalyticsEnabled()) {
+      track(eventName, properties, {
+        user_id: getUserIdentifier() || 'unknown',
+      })
+    }
   } catch (error) {
     // Silently fail to not disrupt dev server
   }
