@@ -7,6 +7,7 @@ import {
   MotiaEventManager,
   MotiaServer,
   Step,
+  trackEvent,
 } from '@motiadev/core'
 import type { Stream } from '@motiadev/core/dist/src/types-stream'
 import path from 'path'
@@ -21,9 +22,32 @@ export const createDevWatchers = (
   const stepDir = path.join(process.cwd(), 'steps')
   const watcher = new Watcher(stepDir, lockedData)
 
-  watcher.onStreamChange((oldStream: Stream, stream: Stream) => lockedData.updateStream(oldStream, stream))
-  watcher.onStreamCreate((stream: Stream) => lockedData.createStream(stream))
-  watcher.onStreamDelete((stream: Stream) => lockedData.deleteStream(stream))
+  watcher.onStreamChange((oldStream: Stream, stream: Stream) => {
+    trackEvent('stream_updated', {
+      streamName: stream.config.name,
+      type: stream.config.baseConfig.storageType,
+    })
+
+    return lockedData.updateStream(oldStream, stream)
+  })
+
+  watcher.onStreamCreate((stream: Stream) => {
+    trackEvent('stream_created', {
+      streamName: stream.config.name,
+      type: stream.config.baseConfig.storageType,
+    })
+
+    return lockedData.createStream(stream)
+  })
+
+  watcher.onStreamDelete((stream: Stream) => {
+    trackEvent('stream_deleted', {
+      streamName: stream.config.name,
+      type: stream.config.baseConfig.storageType,
+    })
+
+    return lockedData.deleteStream(stream)
+  })
 
   watcher.onStepChange((oldStep: Step, newStep: Step) => {
     if (isApiStep(oldStep)) server.removeRoute(oldStep)
@@ -33,6 +57,11 @@ export const createDevWatchers = (
     const isUpdated = lockedData.updateStep(oldStep, newStep)
 
     if (isUpdated) {
+      trackEvent('step_updated', {
+        stepName: newStep.config.name,
+        type: newStep.config.type,
+      })
+
       if (isCronStep(newStep)) cronManager.createCronJob(newStep)
       if (isEventStep(newStep)) eventHandler.createHandler(newStep)
       if (isApiStep(newStep)) server.addRoute(newStep)
@@ -43,6 +72,11 @@ export const createDevWatchers = (
     const isCreated = lockedData.createStep(step)
 
     if (isCreated) {
+      trackEvent('step_created', {
+        stepName: step.config.name,
+        type: step.config.type,
+      })
+
       if (isApiStep(step)) server.addRoute(step)
       if (isEventStep(step)) eventHandler.createHandler(step)
       if (isCronStep(step)) cronManager.createCronJob(step)
@@ -50,6 +84,11 @@ export const createDevWatchers = (
   })
 
   watcher.onStepDelete((step: Step) => {
+    trackEvent('step_deleted', {
+      stepName: step.config.name,
+      type: step.config.type,
+    })
+
     if (isApiStep(step)) server.removeRoute(step)
     if (isEventStep(step)) eventHandler.removeHandler(step)
     if (isCronStep(step)) cronManager.removeCronJob(step)

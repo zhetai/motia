@@ -182,6 +182,8 @@ export const createServer = (
       try {
         const result = await callStepFile<ApiResponse>({ data, step, logger, tracer, traceId }, motia)
 
+        trackEvent('api_call_success', { stepName })
+
         if (!result) {
           console.log('no result')
           res.status(500).json({ error: 'Internal server error' })

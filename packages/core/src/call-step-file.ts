@@ -75,7 +75,12 @@ export const callStepFile = <TData>(options: CallStepFileOptions, motia: Motia):
       context: 'StepExecution',
     })
 
-    trackEvent('step_execution_started', { language: command, type: step.config.type, streams: streams.length })
+    trackEvent('step_execution_started', {
+      stepName: step.config.name,
+      language: command,
+      type: step.config.type,
+      streams: streams.length,
+    })
 
     processManager
       .spawn()
