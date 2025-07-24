@@ -5,7 +5,7 @@ import './cloud'
 import { version } from './version'
 
 const defaultPort = 3000
-const defaultHost = 'localhost'
+const defaultHost = '0.0.0.0'
 
 require('dotenv/config')
 require('ts-node').register({
