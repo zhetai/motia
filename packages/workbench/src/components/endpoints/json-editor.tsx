@@ -1,16 +1,26 @@
-import { FC, useEffect, useMemo } from 'react'
-import Editor, { useMonaco } from '@monaco-editor/react'
 import { useThemeStore } from '@/stores/use-theme-store'
+import Editor, { useMonaco } from '@monaco-editor/react'
+import { FC, useEffect, useMemo } from 'react'
 
 type JsonEditorProps = {
   value: string
   height?: number | string
   schema?: Record<string, unknown>
-  onChange: (value: string) => void
+  onChange?: (value: string) => void
   onValidate?: (isValid: boolean) => void
+  language?: 'json' | string
+  readOnly?: boolean
 }
 
-export const JsonEditor: FC<JsonEditorProps> = ({ value, height = 300, schema, onChange, onValidate }) => {
+export const JsonEditor: FC<JsonEditorProps> = ({
+  value,
+  height = 300,
+  schema,
+  onChange,
+  onValidate,
+  language = 'json',
+  readOnly = false,
+}) => {
   const monaco = useMonaco()
   const theme = useThemeStore((state) => state.theme)
   const editorTheme = useMemo(() => (theme === 'dark' ? 'vs-dark' : 'light'), [theme])
@@ -18,8 +28,8 @@ export const JsonEditor: FC<JsonEditorProps> = ({ value, height = 300, schema, o
   useEffect(() => {
     if (!monaco) return
 
+    monaco.languages.typescript.javascriptDefaults.setCompilerOptions({ isolatedModules: true })
     monaco.languages.json.jsonDefaults.setDiagnosticsOptions({
-      validate: true,
       schemas: schema
         ? [
             {
@@ -30,23 +40,27 @@ export const JsonEditor: FC<JsonEditorProps> = ({ value, height = 300, schema, o
           ]
         : [],
     })
-  }, [monaco, schema])
+  }, [monaco, schema, language])
 
   return (
     <Editor
       data-testid="json-editor"
       height={height}
-      language="json"
+      language={language}
       value={value}
       theme={editorTheme}
       onChange={(value) => {
         if (!value) {
           onValidate?.(false)
         }
-        onChange(value ?? '')
+        onChange?.(value ?? '')
       }}
       onValidate={(markers) => onValidate?.(markers.length === 0)}
-      options={{ lineNumbers: 'off', minimap: { enabled: false } }}
+      options={{
+        readOnly,
+        scrollBeyondLastLine: false,
+        minimap: { enabled: false },
+      }}
     />
   )
 }

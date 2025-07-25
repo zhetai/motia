@@ -12,8 +12,6 @@ export const EventNode: React.FC<PropsWithChildren<EventNodeProps>> = ({ data, c
       language={data.language}
       disableSourceHandle={!data.emits?.length && !data.virtualEmits?.length}
       disableTargetHandle={!data.subscribes?.length && !data.virtualSubscribes?.length}
-      emits={data.emits}
-      subscribes={data.subscribes}
     >
       {children}
     </BaseNode>

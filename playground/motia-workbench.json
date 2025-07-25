@@ -9,48 +9,6 @@
     }
   },
   {
-    "id": "test-state",
-    "config": {
-      "steps/testState/test_state.step.py": {
-        "x": 169,
-        "y": 219,
-        "sourceHandlePosition": "right",
-        "targetHandlePosition": "left"
-      },
-      "steps/testState/testStateCheck.step.ts": {
-        "x": 535,
-        "y": 219,
-        "targetHandlePosition": "left"
-      },
-      "steps/testState/testState.api.step.ts": {
-        "x": -224,
-        "y": 192,
-        "sourceHandlePosition": "right"
-      }
-    }
-  },
-  {
-    "id": "simple-python",
-    "config": {
-      "steps/simplePython/testedEvent.step.py": {
-        "x": 218,
-        "y": 75,
-        "targetHandlePosition": "left"
-      },
-      "steps/simplePython/testEvent.step.py": {
-        "x": -126,
-        "y": 75,
-        "sourceHandlePosition": "right",
-        "targetHandlePosition": "left"
-      },
-      "steps/simplePython/apiEndpoint.step.py": {
-        "x": -537,
-        "y": 25,
-        "sourceHandlePosition": "right"
-      }
-    }
-  },
-  {
     "id": "open-ai",
     "config": {
       "steps/open-ai-python/02-prompt.step.py": {
@@ -76,29 +34,19 @@
     }
   },
   {
-    "id": "default",
+    "id": "simple-python",
     "config": {
-      "steps/default-node/03-check-state-change.step.ts": {
-        "x": 334,
-        "y": 55,
-        "targetHandlePosition": "left"
+      "steps/simplePython/testedEvent.step.py": {
+        "x": 18,
+        "y": 425
       },
-      "steps/default-node/02-test-state.step.ts": {
-        "x": -84,
-        "y": 46,
-        "sourceHandlePosition": "right",
-        "targetHandlePosition": "left"
+      "steps/simplePython/testEvent.step.py": {
+        "x": 28,
+        "y": 263
       },
-      "steps/default-node/01-api.step.ts": {
-        "x": -479,
-        "y": 29,
-        "sourceHandlePosition": "right",
-        "targetHandlePosition": "left"
-      },
-      "steps/default-node/00-noop.step.ts": {
-        "x": -729,
-        "y": 21,
-        "sourceHandlePosition": "right"
+      "steps/simplePython/apiEndpoint.step.py": {
+        "x": 0,
+        "y": 0
       }
     }
   },
@@ -106,41 +54,78 @@
     "id": "parallel-merge",
     "config": {
       "steps/parallelMergeState/stepC.step.py": {
-        "x": 43,
-        "y": 157,
-        "sourceHandlePosition": "right",
-        "targetHandlePosition": "left"
+        "x": 0,
+        "y": 487
       },
       "steps/parallelMergeState/stepB.step.py": {
-        "x": 44,
-        "y": 43,
-        "sourceHandlePosition": "right",
-        "targetHandlePosition": "left"
+        "x": 342,
+        "y": 487
       },
       "steps/parallelMergeState/stepA.step.ts": {
-        "x": 45,
-        "y": -58,
-        "sourceHandlePosition": "right",
-        "targetHandlePosition": "left"
+        "x": 683,
+        "y": 487
       },
       "steps/parallelMergeState/startParallelMerge.step.ts": {
-        "x": -396,
-        "y": -5,
+        "x": 289,
+        "y": 198
+      },
+      "steps/parallelMergeState/noopStartButton.step.ts": {
+        "x": 389,
+        "y": 0
+      },
+      "steps/parallelMergeState/joinStep.step.ts": {
+        "x": 308,
+        "y": 649
+      },
+      "steps/parallelMergeState/joinComplete.step.ts": {
+        "x": 346,
+        "y": 831
+      }
+    }
+  },
+  {
+    "id": "test-state",
+    "config": {
+      "steps/testState/test_state.step.py": {
+        "x": 169,
+        "y": 219,
+        "sourceHandlePosition": "bottom",
+        "targetHandlePosition": "left"
+      },
+      "steps/testState/testStateCheck.step.ts": {
+        "x": 535,
+        "y": 219,
+        "targetHandlePosition": "top"
+      },
+      "steps/testState/testState.api.step.ts": {
+        "x": -114,
+        "y": 158,
+        "sourceHandlePosition": "right"
+      }
+    }
+  },
+  {
+    "id": "default",
+    "config": {
+      "steps/default-node/03-check-state-change.step.ts": {
+        "x": 20,
+        "y": 414
+      },
+      "steps/default-node/02-test-state.step.ts": {
+        "x": 258,
+        "y": 152,
+        "targetHandlePosition": "left"
+      },
+      "steps/default-node/01-api.step.ts": {
+        "x": -15,
+        "y": 118,
         "sourceHandlePosition": "right",
         "targetHandlePosition": "left"
       },
-      "steps/parallelMergeState/noopStartButton.step.ts": {
-        "x": -641,
-        "y": 8,
+      "steps/default-node/00-noop.step.ts": {
+        "x": -196,
+        "y": 295,
         "sourceHandlePosition": "right"
-      },
-      "steps/parallelMergeState/joinStep.step.ts": {
-        "x": 388,
-        "y": 22
-      },
-      "steps/parallelMergeState/joinComplete.step.ts": {
-        "x": 425,
-        "y": 153
       }
     }
   }

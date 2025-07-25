@@ -2,10 +2,10 @@
 import { Emit, Step } from 'src/types'
 import { isApiStep, isCronStep, isEventStep, isNoopStep } from '../guards'
 import { FlowEdge, FlowResponse, FlowStepResponse } from '../types/flows-types'
-import { randomUUID } from 'crypto'
 import { getStepLanguage } from '../get-step-language'
 import path from 'path'
 import fs from 'fs'
+import { v5 as uuidv5 } from 'uuid'
 
 const getNodeComponentPath = (filePath: string): string | undefined => {
   const filePathWithoutExtension = filePath.replace(/\.[^/.]+$/, '')
@@ -138,9 +138,13 @@ const createCronStepResponse = (step: Step, id: string): FlowStepResponse => {
   }
 }
 
-const createStepResponse = (step: Step): FlowStepResponse => {
-  const id = randomUUID()
+export const STEP_NAMESPACE = '7f1c3ff2-9b00-4d0a-bdd7-efb8bca49d4f'
+export const generateStepId = (filePath: string): string => {
+  return uuidv5(filePath, STEP_NAMESPACE)
+}
 
+const createStepResponse = (step: Step): FlowStepResponse => {
+  const id = generateStepId(step.filePath)
   if (isApiStep(step)) return createApiStepResponse(step, id)
   if (isEventStep(step)) return createEventStepResponse(step, id)
   if (isNoopStep(step)) return createNoopStepResponse(step, id)

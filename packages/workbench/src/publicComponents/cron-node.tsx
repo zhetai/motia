@@ -13,8 +13,6 @@ export const CronNode: React.FC<PropsWithChildren<CronNodeProps>> = ({ data, chi
       language={data.language}
       disableTargetHandle={!data.virtualSubscribes?.length}
       disableSourceHandle={!data.virtualEmits?.length && !data.emits?.length}
-      emits={data.emits}
-      subscribes={data.virtualSubscribes}
     >
       <div className="text-xs text-muted-foreground flex items-center gap-2">
         <Clock className="w-3 h-3" /> {data.cronExpression}

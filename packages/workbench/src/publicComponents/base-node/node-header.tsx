@@ -3,7 +3,7 @@ import { cva, VariantProps } from 'class-variance-authority'
 import { CalendarClock, CircleOff, Link2, Waypoints } from 'lucide-react'
 import React, { PropsWithChildren } from 'react'
 
-const baseIcon = cva('rounded-md p-3', {
+const baseIcon = cva('rounded-md p-2', {
   variants: {
     variant: {
       event: 'bg-[rgba(30,118,231,0.2)] text-[rgb(30,118,231)]',
@@ -29,19 +29,18 @@ const NodeIcon = ({ variant }: { variant: VariantProps<typeof baseIcon>['variant
 
 type Props = PropsWithChildren<{
   text: string
-  subtitle?: string
   variant: VariantProps<typeof baseIcon>['variant']
+  className?: string
 }>
 
-export const NodeHeader: React.FC<Props> = ({ text, variant, subtitle, children }) => (
-  <div className="flex items-center gap-4 p-4">
+export const NodeHeader: React.FC<Props> = ({ text, variant, children, className }) => (
+  <div className={cn('flex items-center gap-2 p-2', className)}>
     <div className={baseIcon({ variant })}>
       <NodeIcon variant={variant} />
     </div>
     <div className="flex flex-1 justify-between items-start gap-4">
       <div className="flex flex-col">
-        <div className="font-semibold text-md">{text}</div>
-        {subtitle && <div className="text-sm text-muted-foreground">{subtitle}</div>}
+        <div className="text-sm font-semibold leading-[1.25] tracking-[-0.25px]">{text}</div>
       </div>
       {children}
     </div>

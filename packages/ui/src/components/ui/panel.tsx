@@ -3,8 +3,8 @@ import { FC, ReactNode, useMemo } from 'react'
 import { Button } from './button'
 import { Tabs, TabsContent, TabsList, TabsTrigger } from './tabs'
 
-export interface PanelDetailItem {
-  label: string
+export interface PanelDetailItemProps {
+  label: string | ReactNode
   value: string | ReactNode
   highlighted?: boolean
 }
@@ -20,7 +20,7 @@ export interface PanelProps {
   'data-testid'?: string
   title: ReactNode
   subtitle?: ReactNode
-  details?: PanelDetailItem[]
+  details?: PanelDetailItemProps[]
   actions?: PanelAction[]
   className?: string
   children?: ReactNode
@@ -39,6 +39,25 @@ const panelVariants = {
   outlined: 'bg-transparent border-2 border-border',
   filled: 'bg-muted border border-transparent',
   ghost: 'bg-transparent border-transparent shadow-none',
+}
+
+export const PanelDetailItem: FC<PanelDetailItemProps> = ({ label, value, highlighted }) => {
+  return (
+    <div className="flex gap-4 items-start">
+      <div className="flex items-center h-8 shrink-0">
+        <span className="text-sm font-medium text-foreground tracking-[-0.25px] w-24 truncate">{label}</span>
+      </div>
+      <div className={cn('flex-1 rounded-lg px-2 py-1 min-h-6', highlighted && 'bg-secondary')}>
+        <div className="flex items-center min-h-6">
+          {typeof value === 'string' ? (
+            <span className="text-sm font-medium text-muted-foreground tracking-[-0.25px] leading-tight">{value}</span>
+          ) : (
+            value
+          )}
+        </div>
+      </div>
+    </div>
+  )
 }
 
 export const Panel: FC<PanelProps> = ({
@@ -73,26 +92,7 @@ export const Panel: FC<PanelProps> = ({
           </TabsList>
         )}
         <div className={cn('flex flex-col gap-2 p-4', contentClassName)}>
-          {details?.map((detail, index) => (
-            <div key={index} className="flex gap-4 items-start">
-              <div className="flex items-center h-8 shrink-0">
-                <span className="text-sm font-medium text-foreground tracking-[-0.25px] w-24 truncate">
-                  {detail.label}
-                </span>
-              </div>
-              <div className={cn('flex-1 rounded-lg px-2 py-1 min-h-6', detail.highlighted && 'bg-secondary')}>
-                <div className="flex items-center min-h-6">
-                  {typeof detail.value === 'string' ? (
-                    <span className="text-sm font-medium text-muted-foreground tracking-[-0.25px] leading-tight">
-                      {detail.value}
-                    </span>
-                  ) : (
-                    detail.value
-                  )}
-                </div>
-              </div>
-            </div>
-          ))}
+          {details?.map((detail, index) => <PanelDetailItem key={index} {...detail} />)}
 
           {hasTabs &&
             tabs.map((tab) => (

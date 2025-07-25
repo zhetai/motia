@@ -2,7 +2,13 @@ import './styles/globals.css'
 export { Button, type ButtonProps } from './components/ui/button'
 export { Textarea } from './components/ui/textarea'
 export { Input } from './components/ui/input'
-export { Panel, type PanelProps, type PanelDetailItem, type PanelAction } from './components/ui/panel'
+export {
+  Panel,
+  type PanelProps,
+  type PanelDetailItemProps,
+  PanelDetailItem,
+  type PanelAction,
+} from './components/ui/panel'
 export { Tabs, TabsList, TabsTrigger, TabsContent } from './components/ui/tabs'
 export { cn } from './lib/utils'
 export { Breadcrumb, BreadcrumbItem, type BreadcrumbProps, type BreadcrumbItemProps } from './components/ui/breadcrumb'

@@ -14,12 +14,9 @@ export const ApiNode = ({ data, children }: Props) => {
       subtitle={data.description}
       disableSourceHandle={!data.emits?.length && !data.virtualEmits?.length}
       disableTargetHandle={!data.subscribes?.length && !data.virtualSubscribes?.length}
-      subscribes={data.subscribes}
-      emits={data.emits}
-      details={[{ label: 'Endpoint', value: data.webhookUrl }].filter((item) => !!item)}
     >
       {data.webhookUrl && (
-        <div className="flex gap-1 items-center text-xs text-muted-foreground">
+        <div className="flex gap-1 items-center text-muted-foreground">
           <div className="font-mono">{data.webhookUrl}</div>
         </div>
       )}
