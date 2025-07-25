@@ -1,6 +1,7 @@
 import { ApiRouteConfig, Handlers } from 'motia'
 import { z } from 'zod'
 import { messageSchema } from './00-open-ai-message.stream'
+import { randomUUID } from 'crypto'
 
 const inputSchema = z.object({
   message: z.string({ description: 'The message to send to OpenAI' }),
@@ -24,8 +25,8 @@ export const handler: Handlers['OpenAiApi'] = async (req, { logger, emit, stream
   const { message } = req.body
   const { threadId } = req.pathParams
 
-  const userMessageId = crypto.randomUUID()
-  const assistantMessageId = crypto.randomUUID()
+  const userMessageId = randomUUID()
+  const assistantMessageId = randomUUID()
 
   await streams.message.set(threadId, userMessageId, { message, from: 'user', status: 'created' })
   const assistantMessage = await streams.message.set(threadId, assistantMessageId, {

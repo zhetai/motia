@@ -1,8 +1,9 @@
 import { Step } from '../types'
 import { Trace, TraceGroup } from './types'
+import { randomUUID } from 'crypto'
 
 export const createTrace = (traceGroup: TraceGroup, step: Step) => {
-  const id = crypto.randomUUID()
+  const id = randomUUID()
   const trace: Trace = {
     id,
     name: step.config.name,
