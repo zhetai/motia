@@ -7,6 +7,37 @@ We provide a docker image that you can use to deploy your Motia project to produ
 
 <Callout type="warn">You will need to use the latest version of the motia package **0.5.2-beta.101 or higher**</Callout>
 
+## Quick setup
+
+<Steps>
+<Step>
+#### Setup your motia project
+
+```bash
+npx motia@latest docker setup
+```
+
+</Step>
+<Step>
+#### Run your motia project inside a container
+
+```bash
+npx motia@latest docker run
+```
+
+  </Step>
+  <Step>
+#### You are good to go, your project should be running on localhost under port 3000, for additional options and configuration run
+
+```bash
+npx motia@latest docker run --help
+```
+
+  </Step>
+</Steps>
+
+> Reference the [CLI](/docs/concepts/cli#docker) for more information on the docker commands.
+
 ## Using the docker image
 
 You will need to implement your own Dockerfile where you will use the motia-docker image as a base image. Use the following template as a starting point for your Dockerfile:
