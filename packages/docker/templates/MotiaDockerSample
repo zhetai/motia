@@ -1,0 +1,19 @@
+# Specify platform to match your target architecture
+FROM --platform=linux/amd64 motiadev/motia:latest
+
+# Install Dependencies
+COPY package*.json ./
+RUN npm ci --only=production
+
+# Move application files
+COPY . .
+
+# Enable the following lines if you are using python steps!!!
+# Setup python steps dependencies
+# RUN npx motia@latest install
+
+# Expose outside access to the motia project
+EXPOSE 3000
+
+# Run your application
+CMD ["npm", "run", "start"]
