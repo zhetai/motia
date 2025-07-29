@@ -30,10 +30,10 @@ export default function ManifestoPage() {
           <section className={normalText}>
             <p>
               Modern software engineering is splintered. APIs live in one framework, background jobs in another, queues
-              have their own tooling, and AI agents are springing up in yet more isolated runtimes. <span
+              have their own tooling, and complex workflows require separate orchestration engines. <span
                 className={gradientText}>Motia</span> exists to <span className={gradientText}>unify</span>{' '}
-              all of these concerns <span className={gradientText}>API endpoints, automations & workflows, background
-              tasks, queues, and AI agents into a single, coherent system with shared observability and developer
+              all of these concerns viz. <span className={gradientText}>API endpoints, scheduled tasks, background
+              jobs, message queues, and workflow orchestration into a single, coherent system with shared observability and developer
               experience.</span>
             </p>
           </section>
@@ -66,21 +66,20 @@ export default function ManifestoPage() {
           <section className={normalText}>
             <ul className="list-disc space-y-[28px]">
               <li>
-                <span className={gradientTextBlue}>No/Low Code Solutions</span> (like Zapier, Make, n8n, Gumloop, and
-                Lindy) are great for back-office, non-technical users to build integrations, but{' '}
-                <span className={gradientText}>they are not for software engineers.</span> Software engineers want
-                coding solutions.
+                <span className={gradientTextBlue}>From Express.js/Flask:</span> API endpoints with routing and middleware, but{' '}
+                <span className={gradientText}>no built-in background job processing or scheduling.</span> You need separate tools for anything beyond HTTP requests.
               </li>
               <li>
-                <span className={gradientTextBlue}>AI/ML Frameworks</span> (like LangGraph, Langchain, Llama Index, and
-                DSPY) are built primarily for data scientists and ML engineers who understand model training and
-                evaluation metrics.{' '}
-                <span className={gradientText}>They are not backend software engineering frameworks.</span>
+                <span className={gradientTextBlue}>From Message Queues</span> (BullMQ, RabbitMQ): Reliable job processing and retries, but{' '}
+                <span className={gradientText}>completely separate from your API layer.</span> Different configuration, deployment, and monitoring.
               </li>
               <li>
-                <span className={gradientTextBlue}>Existing AI Agentic Frameworks</span> use prompts as their primary
-                control flow mechanism. Controlling workflow by updating and evaluating prompts is{' '}
-                <span className="font-medium text-white">not software engineering.</span>
+                <span className={gradientTextBlue}>From Traditional Cron Jobs:</span> Scheduled background tasks, but{' '}
+                <span className="font-medium text-white">no integration with your application logic or shared state.</span>
+              </li>
+              <li>
+                <span className={gradientTextBlue}>From Workflow Engines:</span> Multi-step process orchestration, but{' '}
+                <span className="font-medium text-white">yet another system to configure and maintain separately.</span>
               </li>
             </ul>
           </section>
@@ -89,19 +88,18 @@ export default function ManifestoPage() {
               There has been
               <span className={gradientText}>
                 {' '}
-                no software engineering framework built specifically to handle the influx of AI-driven complexity{' '}
+                no unified solution that brings together the essential backend building blocks that every modern application needs.{' '}
               </span>{' '}
-              in backend systems. Furthermore, attempting to integrate existing AI agent frameworks with traditional API
-              servers and background/queuing systems feels like adding complexity to an already disconnected setup needing{' '}
-              <span className={gradientText}>three different ways to fix linked problems</span> and, forcing teams to
-              either split up or make engineers learn too many things at once.
+              Furthermore, attempting to integrate Express.js APIs with BullMQ workers, traditional cron jobs, and workflow engines creates a fragmented architecture requiring{' '}
+              <span className={gradientText}>multiple deployment pipelines, separate monitoring tools, and disconnected debugging experiences</span> forcing teams to
+              either split expertise across tools or make engineers learn too many different systems at once.
             </p>
           </section>
 
           <section className={normalText}>
             <p>
               <span className={gradientTextBlue}>Motia is designed to fill that missing piece</span>, providing a
-              <span className={gradientTextBlue}> software engineering framework specifically for this problem. </span> We looked
+              <span className={gradientTextBlue}> unified backend framework that replaces the need for multiple tools. </span> We looked
               at the lessons learned from past paradigm shifts, particularly React's success with its simple core
               primitive.
             </p>
@@ -162,7 +160,7 @@ export default function ManifestoPage() {
             <p>
               We have <span className={gradientTextBlue}>25 years of knowledge</span> about event-based systems and
               microservices. We don't need new ways to connect workflows when we have strong patterns already
-              established. Motia leverages this knowledge to build a unified system that joins the functions previously spread across disconnected silos - API servers, background systems, and AI agent frameworks.
+              established. Motia leverages this knowledge to build a unified system that joins the functions previously spread across disconnected silos — API servers, background job processors, cron schedulers, and workflow orchestration engines.
             </p>
           </section>
 
