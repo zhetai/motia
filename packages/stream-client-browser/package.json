@@ -7,11 +7,11 @@
   "types": "dist/index.d.ts",
   "scripts": {
     "build": "rm -rf dist && tsc",
-    "lint": "eslint --config ../../eslint.config.js",
-    "test": "jest"
+    "lint": "eslint --config ../../eslint.config.js"
   },
   "dependencies": {
-    "uuid": "^11.1.0"
+    "uuid": "^11.1.0",
+    "@motiadev/stream-client": "workspace:*"
   },
   "devDependencies": {
     "@types/jest": "^29.5.14",

@@ -1,6 +1,6 @@
-# @motiadev/stream-client-browser
+# @motiadev/stream-client-node
 
-Motia Stream Client Package – Responsible for managing real-time [Motia](https://motia.dev) streams of data in browser environments. This package provides a simple, type-safe interface for subscribing to item and group streams over WebSockets, handling live updates, and managing stream state in your web applications.
+Motia Stream Client Package – Responsible for managing real-time [Motia](https://motia.dev) streams of data in node environments. This package provides a simple, type-safe interface for subscribing to item and group streams over WebSockets, handling live updates, and managing stream state in your web applications.
 
 ## Features
 
@@ -15,7 +15,7 @@ Motia Stream Client Package – Responsible for managing real-time [Motia](https
 ## Installation
 
 ```bash
-npm install @motiadev/stream-client-browser
+npm install @motiadev/stream-client-node
 ```
 
 ---
@@ -25,7 +25,7 @@ npm install @motiadev/stream-client-browser
 ### 1. Creating a Stream Connection
 
 ```typescript
-import { Stream } from '@motiadev/stream-client-browser'
+import { Stream } from '@motiadev/stream-client-node'
 
 const stream = new Stream('wss://your-stream-server')
 ```
@@ -159,7 +159,7 @@ All types are exported from `stream.types.ts` for advanced usage and type safety
 ## Example
 
 ```typescript
-import { Stream } from '@motiadev/stream-client-browser'
+import { Stream } from '@motiadev/stream-client-node'
 
 const stream = new Stream('wss://example.com')
 const userSub = stream.subscribeItem<{ id: string; name: string }>('users', 'user-1')

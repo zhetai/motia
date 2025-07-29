@@ -1,9 +1,10 @@
+import { SocketAdapter } from '../src/socket-adapter'
 import { Stream } from '../src/stream'
 import { GroupEventMessage } from '../src/stream.types'
 
 type TestData = { id: string; name: string; value: number }
 
-class MockSocket {
+class MockSocket implements SocketAdapter {
   listeners: Record<string, Function[]> = {}
 
   addEventListener(event: string, cb: Function) {
@@ -11,8 +12,26 @@ class MockSocket {
     this.listeners[event].push(cb)
   }
 
-  send(data: any) {
-    this.listeners['message']?.forEach((cb) => cb({ data: JSON.stringify(data) }))
+  connect(): void {}
+
+  isOpen(): boolean {
+    return true
+  }
+
+  onMessage(callback: (message: string) => void): void {
+    this.addEventListener('message', callback)
+  }
+
+  onOpen(callback: () => void): void {
+    this.addEventListener('open', callback)
+  }
+
+  onClose(callback: () => void): void {
+    this.addEventListener('close', callback)
+  }
+
+  send(data: string) {
+    this.listeners['message']?.forEach((cb) => cb(data))
   }
 
   close() {
@@ -61,7 +80,7 @@ describe('Stream', () => {
   })
 
   it('should sync group events', () => {
-    const stream = new Stream('ws://localhost:3000')
+    const stream = new Stream(() => new MockSocket())
     const socket = getSocket(stream)
 
     const sub = stream.subscribeGroup('test-stream', 'test-group')
@@ -71,12 +90,12 @@ describe('Stream', () => {
       { id: '2', name: 'B' },
     ]
 
-    socket.send(makeGroupMessage('sync', syncData))
+    socket.send(JSON.stringify(makeGroupMessage('sync', syncData)))
     expect(sub.getState()).toEqual(syncData)
   })
 
   it('should not sync item events in group subscriptions', () => {
-    const stream = new Stream('ws://localhost:3000')
+    const stream = new Stream(() => new MockSocket())
     const socket = getSocket(stream)
 
     const sub = stream.subscribeGroup('test-stream', 'test-group')
@@ -86,8 +105,8 @@ describe('Stream', () => {
       { id: '2', name: 'B' },
     ]
 
-    socket.send(makeGroupMessage('sync', syncData))
-    socket.send(makeItemMessage('sync', syncData[0]))
+    socket.send(JSON.stringify(makeGroupMessage('sync', syncData)))
+    socket.send(JSON.stringify(makeItemMessage('sync', syncData[0])))
 
     expect(sub.getState()).toEqual(syncData)
   })

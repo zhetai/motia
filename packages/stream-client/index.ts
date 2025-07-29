@@ -1,0 +1,7 @@
+export { Stream } from './src/stream'
+export { StreamItemSubscription } from './src/stream-item'
+export { StreamGroupSubscription } from './src/stream-group'
+export { StreamSubscription } from './src/stream-subscription'
+export { SocketAdapter } from './src/socket-adapter'
+export { SocketAdapterFactory } from './src/adapter-factory'
+export * from './src/stream.types'

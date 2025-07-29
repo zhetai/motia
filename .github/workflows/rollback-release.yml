@@ -7,7 +7,7 @@ permissions:
 
 on:
   workflow_run:
-    workflows: ["E2E Tests (Release)"]
+    workflows: ['E2E Tests (Release)']
     types:
       - completed
 
@@ -28,17 +28,17 @@ jobs:
         run: |
           # Extract from the triggering workflow's commit
           git fetch --tags
-          
+
           # Find the tag that points to the head_sha
           TAG_NAME=$(git tag --points-at ${{ github.event.workflow_run.head_sha }} | grep '^v' | head -1)
-          
+
           if [ -z "$TAG_NAME" ]; then
             echo "❌ No version tag found for commit ${{ github.event.workflow_run.head_sha }}"
             echo "Available tags pointing to this commit:"
             git tag --points-at ${{ github.event.workflow_run.head_sha }} || echo "None"
             exit 1
           fi
-          
+
           # Extract version from tag (remove 'v' prefix)
           if [[ $TAG_NAME =~ ^v(.+)$ ]]; then
             VERSION="${BASH_REMATCH[1]}"
@@ -46,7 +46,7 @@ jobs:
             echo "❌ Tag $TAG_NAME does not match expected format (v*)"
             exit 1
           fi
-          
+
           echo "Found tag: $TAG_NAME"
           echo "Extracted version: $VERSION"
           echo "version=$VERSION" >> $GITHUB_OUTPUT
@@ -101,6 +101,8 @@ jobs:
           npm dist-tag rm @motiadev/workbench pre-release || true
           npm dist-tag rm @motiadev/stream-client-react pre-release || true
           npm dist-tag rm @motiadev/stream-client-browser pre-release || true
+          npm dist-tag rm @motiadev/stream-client-node pre-release || true
+          npm dist-tag rm @motiadev/stream-client pre-release || true
           npm dist-tag rm @motiadev/test pre-release || true
           npm dist-tag rm @motiadev/core pre-release || true
           npm dist-tag rm @motiadev/ui pre-release || true
@@ -134,7 +136,7 @@ jobs:
           script: |
             const fs = require('fs');
             let testResults = '';
-            
+
             try {
               const artifactPath = './e2e-artifacts';
               if (fs.existsSync(artifactPath)) {
@@ -143,31 +145,31 @@ jobs:
             } catch (error) {
               testResults = '\n\n## Test Results\nNo test artifacts available.';
             }
-            
+
             const issueBody = `## Release Rollback: ${{ needs.prepare.outputs.version }}
-            
+
             **Reason:** ${{ needs.prepare.outputs.reason }}
-            
+
             **Actions Taken:**
             - ❌ Pre-release packages removed from NPM
             - ❌ Git tag \`${{ needs.prepare.outputs.tag_name }}\` deleted
             - ❌ Pre-release NPM tags cleaned up
-            
+
             **Current Status:**
             - Latest stable release: \`${{ steps.latest_release.outputs.latest_tag }}\`
             - Failed version: \`${{ needs.prepare.outputs.version }}\`
-            
+
             **Investigation Required:**
             - Review E2E test failures
             - Fix underlying issues before next release attempt
             - Consider hotfix if critical
-            
+
             ${testResults}
-            
+
             **Related Workflow Run:** https://github.com/${{ github.repository }}/actions/runs/${{ needs.prepare.outputs.triggered_by }}
-            
+
             cc: @motiadev/core-team`;
-            
+
             try {
               const issue = await github.rest.issues.create({
                 owner: context.repo.owner,
@@ -195,27 +197,27 @@ jobs:
           github-token: ${{ secrets.GITHUB_TOKEN }}
           script: |
             const issueBody = `## Release Rollback: ${{ needs.prepare.outputs.version }}
-            
+
             **Reason:** ${{ needs.prepare.outputs.reason }}
-            
+
             **Actions Taken:**
             - ❌ Pre-release packages removed from NPM
             - ❌ Git tag \`${{ needs.prepare.outputs.tag_name }}\` deleted
             - ❌ Pre-release NPM tags cleaned up
-            
+
             **Current Status:**
             - Latest stable release: (check manually)
             - Failed version: \`${{ needs.prepare.outputs.version }}\`
-            
+
             **Investigation Required:**
             - Review E2E test failures
             - Fix underlying issues before next release attempt
             - Consider hotfix if critical
-            
+
             **Related Workflow Run:** https://github.com/${{ github.repository }}/actions/runs/${{ needs.prepare.outputs.triggered_by }}
-            
+
             cc: @motiadev/core-team`;
-            
+
             try {
               const issue = await github.rest.issues.create({
                 owner: context.repo.owner,
@@ -241,4 +243,4 @@ jobs:
           echo "1. Review test failures"
           echo "2. Fix issues"
           echo "3. Test locally"
-          echo "4. Create new release" 
+          echo "4. Create new release"
