@@ -1,6 +1,8 @@
 import { test, expect } from '@playwright/test'
 import { WorkbenchPage, LogsPage } from '../page-objects'
 
+test.use({ viewport: { width: 1920, height: 1080 } })
+
 test.describe('CLI Generated Project - Workbench Navigation', () => {
   let workbench: WorkbenchPage
   let logsPage: LogsPage
