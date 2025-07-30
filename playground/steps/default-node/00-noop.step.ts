@@ -1,10 +1,13 @@
 import { NoopConfig } from 'motia'
 
 /**
- * NOOP Steps don't hold any logic in code, it's a
- * way to connect nodes in workflow to make it comprehensive
- * like representing a man in the loop or a manual operation that can
- * happen between one step and another.
+ * NOOP Steps don"t hold any logic in code. They are a way
+ * to create custom nodes for flows on the workbench and
+ * represent external actions such as human in the loop.
+ *
+ * In this case, we are using it to add a custom UI
+ * node with a play button to allow you to trigger the first
+ * API step in this flow.
  *
  * For more information, refer to the documentation: https://www.motia.dev/docs/workbench/noop-steps
  */
