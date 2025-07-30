@@ -10,7 +10,7 @@ on:
     branches:
       - main
     paths:
-      - 'packages/docker/**'
+      - 'packages/docker/Dockerfile'
 
 env:
   DOCKER_MOTIA_ORG: motiadev
@@ -57,5 +57,5 @@ jobs:
           tags: |
             ${{ env.DOCKER_MOTIA_ORG }}/${{ env.DOCKER_IMAGE_NAME }}:${{ github.event.inputs.version || env.GITHUB_SHA }}
             ${{ env.DOCKER_MOTIA_ORG }}/${{ env.DOCKER_IMAGE_NAME }}:latest
-          file: packages/docker/Dockerfile
-          context: packages/docker
+          file: packages/docker/config/Dockerfile
+          context: packages/docker/config
