@@ -108,23 +108,25 @@
     "id": "default",
     "config": {
       "steps/default-node/03-check-state-change.step.ts": {
-        "x": 20,
-        "y": 414
+        "x": 540,
+        "y": 305,
+        "targetHandlePosition": "left"
       },
       "steps/default-node/02-test-state.step.ts": {
-        "x": 258,
-        "y": 152,
+        "x": 211,
+        "y": 306,
+        "sourceHandlePosition": "right",
         "targetHandlePosition": "left"
       },
       "steps/default-node/01-api.step.ts": {
-        "x": -15,
-        "y": 118,
+        "x": -116,
+        "y": 271,
         "sourceHandlePosition": "right",
         "targetHandlePosition": "left"
       },
       "steps/default-node/00-noop.step.ts": {
-        "x": -196,
-        "y": 295,
+        "x": -322,
+        "y": 291,
         "sourceHandlePosition": "right"
       }
     }
