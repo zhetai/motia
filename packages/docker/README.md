@@ -11,8 +11,9 @@ This repository contains the Dockerfile and related files for building the motia
 You will need to implement your own Dockerfile where you will use this image as a base image. Use the following template for your Dockerfile:
 
 ```dockerfile
-# Specify platform to match your target architecture
-FROM --platform=linux/amd64 motiadev/motia:latest
+# NOTE: Some cloud providers will require you to specify the platform to match your target architecture
+# i.e.: AWS Lightsail requires arm64, therefore you update your FROM statement to: FROM --platform=linux/arm64 motiadev/motia:latest
+FROM motiadev/motia:latest
 
 # Install Dependencies
 COPY package*.json ./
