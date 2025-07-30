@@ -58,9 +58,9 @@ export default function ManifestoPage() {
 
           <section className={normalText}>
             <p>
-              Just as past complexity demanded new frameworks, this AI-driven influx requires a new solution. We've seen
-              the emergence of AI agent frameworks, but they are not designed for software
-              engineering teams, are disparate, and ill-suited:
+              Just as past complexity demanded new frameworks, this backend fragmentation requires a unified solution. 
+              Consider what it takes to build a typical backend today, teams are juggling Express.js/Flask for APIs, BullMQ for queues, 
+              traditional cron jobs for scheduling, Next.js API routes for endpoints, and separate workflow engines for orchestration, each requiring different setup, monitoring, and deployment strategies:
             </p>
           </section>
           <section className={normalText}>
