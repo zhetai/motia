@@ -5,6 +5,7 @@ import { executeCommand } from '../utils/execute-command'
 import { pythonInstall } from '../install'
 import { generateTypes } from '../generate-types'
 import { version } from '../version'
+import { CliContext } from '../cloud/config-utils'
 
 // eslint-disable-next-line @typescript-eslint/no-require-imports
 require('ts-node').register({
@@ -36,8 +37,8 @@ const getPackageManager = (dir: string): string => {
   }
 }
 
-const installRequiredDependencies = async (packageManager: string, rootDir: string) => {
-  console.log('📦 Installing dependencies...')
+const installRequiredDependencies = async (packageManager: string, rootDir: string, context: CliContext) => {
+  context.log('installing-dependencies', (message) => message.tag('info').append('Installing dependencies...'))
 
   const installCommand = {
     npm: 'npm install --save',
@@ -45,52 +46,67 @@ const installRequiredDependencies = async (packageManager: string, rootDir: stri
     pnpm: 'pnpm add',
   }[packageManager]
 
-  const dependencies = [`motia@^${version}`, 'zod@^3.24.4'].join(' ')
-  const devDependencies = ['ts-node@^10.9.2', 'typescript@^5.7.3', '@types/react@^18.3.18'].join(' ')
+  const dependencies = [`motia@${version}`, 'zod@3.24.4'].join(' ')
+  const devDependencies = ['ts-node@10.9.2', 'typescript@5.7.3', '@types/react@18.3.18'].join(' ')
 
   try {
     await executeCommand(`${installCommand} ${dependencies}`, rootDir)
     await executeCommand(`${installCommand} -D ${devDependencies}`, rootDir)
-    console.log('✅ Dependencies installed')
+
+    context.log('dependencies-installed', (message) => message.tag('success').append('Dependencies installed'))
   } catch (error) {
     console.error('❌ Failed to install dependencies:', error)
   }
 }
 
-const preparePackageManager = async (rootDir: string) => {
+const preparePackageManager = async (rootDir: string, context: CliContext) => {
   let packageManager = 'npm'
   const detectedPackageManager = getPackageManager(rootDir)
 
   if (detectedPackageManager !== 'unknown') {
-    console.log(`📦 Detected package manager: ${packageManager}`)
+    context.log('package-manager-detected', (message) =>
+      message.tag('info').append('Detected package manager').append(detectedPackageManager, 'gray'),
+    )
     packageManager = detectedPackageManager
   } else {
-    console.log(`📦 Using default package manager: ${packageManager}`)
+    context.log('package-manager-using-default', (message) =>
+      message.tag('info').append('Using default package manager').append(packageManager, 'gray'),
+    )
   }
 
   return packageManager
 }
 
-const wrapUpSetup = async (rootDir: string) => {
-  const packageManager = await preparePackageManager(rootDir)
+const installNodeDependencies = async (rootDir: string, context: CliContext) => {
+  const packageManager = await preparePackageManager(rootDir, context)
 
-  await installRequiredDependencies(packageManager, rootDir).catch((error: unknown) => {
-    console.log('❌ Failed to install dependencies')
+  await installRequiredDependencies(packageManager, rootDir, context).catch((error: unknown) => {
+    context.log('failed-to-install-dependencies', (message) =>
+      message.tag('failed').append('Failed to install dependencies'),
+    )
     console.error(error)
   })
 
-  console.log(`\n\nTo start the development server, run:\n\n${packageManager} run dev\n\n`)
+  return packageManager
+}
 
-  console.log('🚀 Project setup completed, happy coding!')
+const wrapUp = async (context: CliContext, packageManager: string) => {
+  context.log('project-setup-completed', (message) =>
+    message.tag('success').append('Project setup completed, happy coding!'),
+  )
+  context.log('package-manager-used', (message) =>
+    message.tag('info').append('To start the development server, run').append(`${packageManager} run dev`, 'gray'),
+  )
 }
 
 type Args = {
   projectName: string
   template?: string
   cursorEnabled?: boolean
+  context: CliContext
 }
 
-export const create = async ({ projectName, template, cursorEnabled }: Args): Promise<void> => {
+export const create = async ({ projectName, template, cursorEnabled, context }: Args): Promise<void> => {
   console.log(
     '\n\n' +
       `
@@ -107,13 +123,14 @@ export const create = async ({ projectName, template, cursorEnabled }: Args): Pr
 
   const isCurrentDir = projectName === '.' || projectName === './' || projectName === '.\\'
   const rootDir = isCurrentDir ? process.cwd() : path.join(process.cwd(), projectName)
-  console.log(`🛠️ Welcome to motia! Let's get you setup.`)
 
   if (!isCurrentDir && !checkIfDirectoryExists(rootDir)) {
     fs.mkdirSync(path.join(rootDir))
-    console.log(`✅ ${projectName} directory created`)
+    context.log('directory-created', (message) =>
+      message.tag('success').append('Directory created ').append(projectName, 'gray'),
+    )
   } else {
-    console.log(`📁 Using current directory`)
+    context.log('directory-using', (message) => message.tag('info').append('Using current directory'))
   }
 
   if (!checkIfFileExists(rootDir, 'package.json')) {
@@ -133,7 +150,10 @@ export const create = async ({ projectName, template, cursorEnabled }: Args): Pr
     }
 
     fs.writeFileSync(path.join(rootDir, 'package.json'), JSON.stringify(packageJsonContent, null, 2))
-    console.log('✅ package.json created')
+
+    context.log('package-json-created', (message) =>
+      message.tag('success').append('File').append('package.json', 'cyan').append('has been created.'),
+    )
   } else {
     const packageJsonPath = path.join(rootDir, 'package.json')
     const packageJson = JSON.parse(fs.readFileSync(packageJsonPath, 'utf-8'))
@@ -147,11 +167,20 @@ export const create = async ({ projectName, template, cursorEnabled }: Args): Pr
     } else {
       packageJson.scripts.olddev = packageJson.scripts.dev
       packageJson.scripts.dev = 'motia dev'
-      console.log('📁 dev command already exists in package.json')
+      context.log('dev-command-already-exists', (message) =>
+        message.tag('warning').append('dev command already exists in package.json'),
+      )
     }
 
     fs.writeFileSync(packageJsonPath, JSON.stringify(packageJson, null, 2))
-    console.log('✅ Updated dev command to package.json')
+    context.log('dev-command-updated', (message) =>
+      message
+        .tag('success')
+        .append('Updated')
+        .append('dev', 'gray')
+        .append('command to')
+        .append('package.json', 'gray'),
+    )
   }
 
   if (!checkIfFileExists(rootDir, 'tsconfig.json')) {
@@ -176,17 +205,9 @@ export const create = async ({ projectName, template, cursorEnabled }: Args): Pr
     }
 
     fs.writeFileSync(path.join(rootDir, 'tsconfig.json'), JSON.stringify(tsconfigContent, null, 2))
-    console.log('✅ tsconfig.json created')
-  }
-
-  if (!checkIfFileExists(rootDir, 'requirements.txt')) {
-    const requirementsContent = [
-      // TODO: motia PyPi package
-      // Add other Python dependencies as needed
-    ].join('\n')
-
-    fs.writeFileSync(path.join(rootDir, 'requirements.txt'), requirementsContent)
-    console.log('✅ requirements.txt created')
+    context.log('tsconfig-json-created', (message) =>
+      message.tag('success').append('File').append('tsconfig.json', 'cyan').append('has been created.'),
+    )
   }
 
   if (!checkIfFileExists(rootDir, '.gitignore')) {
@@ -202,7 +223,9 @@ export const create = async ({ projectName, template, cursorEnabled }: Args): Pr
     ].join('\n')
 
     fs.writeFileSync(path.join(rootDir, '.gitignore'), gitignoreContent)
-    console.log('✅ .gitignore created')
+    context.log('gitignore-created', (message) =>
+      message.tag('success').append('File').append('.gitignore', 'cyan').append('has been created.'),
+    )
   }
 
   const cursorTemplateDir = path.join(__dirname, '../../dot-files/.cursor')
@@ -210,37 +233,52 @@ export const create = async ({ projectName, template, cursorEnabled }: Args): Pr
 
   if (cursorEnabled && !checkIfDirectoryExists(cursorTargetDir)) {
     fs.cpSync(cursorTemplateDir, cursorTargetDir, { recursive: true })
-    console.log('✅ .cursor folder copied')
+    context.log('cursor-folder-created', (message) =>
+      message.tag('success').append('Folder').append('.cursor', 'cyan').append('has been created.'),
+    )
   }
 
   const stepsDir = path.join(rootDir, 'steps')
   if (!checkIfDirectoryExists(stepsDir)) {
     fs.mkdirSync(stepsDir)
-    console.log('✅ steps directory created')
+    context.log('steps-directory-created', (message) =>
+      message.tag('success').append('Folder').append('steps', 'cyan').append('has been created.'),
+    )
   }
 
-  if (!template) {
-    await wrapUpSetup(rootDir)
+  if (!template || !(template in templates)) {
+    context.log('template-not-found', (message) =>
+      message.tag('failed').append(`Template ${template} not found, please use one of the following:`),
+    )
+    context.log('available-templates', (message) =>
+      message.tag('info').append(`Available templates: \n\n ${Object.keys(templates).join('\n')}`),
+    )
+
     return
   }
 
-  if (template && !(template in templates)) {
-    console.error(`❌ Template ${template} not found, please use one of the following:`)
-    console.log(`📝 Available templates: \n\n ${Object.keys(templates).join('\n')}`)
+  await templates[template](rootDir, context)
 
-    await wrapUpSetup(rootDir)
-    return
-  }
-
-  await templates[template](stepsDir)
-
-  await wrapUpSetup(rootDir)
+  const packageManager = await installNodeDependencies(rootDir, context)
 
   if (template === 'python') {
+    if (!checkIfFileExists(rootDir, 'requirements.txt')) {
+      const requirementsContent = [
+        // TODO: motia PyPi package
+        // Add other Python dependencies as needed
+      ].join('\n')
+
+      fs.writeFileSync(path.join(rootDir, 'requirements.txt'), requirementsContent)
+      context.log('requirements-txt-created', (message) =>
+        message.tag('success').append('File').append('requirements.txt', 'gray').append('has been created.'),
+      )
+    }
+
     await pythonInstall({ baseDir: rootDir })
   }
 
   await generateTypes(rootDir)
+  await wrapUp(context, packageManager)
 
   return
 }

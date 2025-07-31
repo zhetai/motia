@@ -1,6 +1,6 @@
 import inquirer from 'inquirer'
-import colors from 'colors'
 import { create } from './index'
+import { CliContext } from '../cloud/config-utils'
 
 interface InteractiveAnswers {
   template: string
@@ -16,10 +16,11 @@ const choices: Record<string, string> = {
 
 interface CreateInteractiveArgs {
   skipConfirmation?: boolean
+  context: CliContext
 }
 
-export const createInteractive = async ({ skipConfirmation }: CreateInteractiveArgs): Promise<void> => {
-  console.log('\n🚀 ', colors.bold('Welcome to Motia Project Creator!\n'))
+export const createInteractive = async ({ skipConfirmation, context }: CreateInteractiveArgs): Promise<void> => {
+  context.log('welcome', (message) => message.tag('info').append('Welcome to Motia Project Creator!'))
 
   const answers: InteractiveAnswers = await inquirer.prompt([
     {
@@ -61,10 +62,22 @@ export const createInteractive = async ({ skipConfirmation }: CreateInteractiveA
     },
   ])
 
-  console.log('\n📋 ', colors.bold('Project Configuration:'))
-  console.log(`Template: ${colors.cyan(choices[answers.template])}`)
-  console.log(`Location: ${colors.cyan(answers.useCurrentFolder ? 'Current folder' : answers.folderName || 'current')}`)
-  console.log(`Cursor Rules: ${colors.cyan(answers.addCursorRules ? 'Yes' : 'No')}`)
+  context.log('project-configuration', (message) => message.tag('info').append('Project Configuration'))
+  context.log('template', (message) =>
+    message.tag('info').append('Template:').append(choices[answers.template], 'cyan'),
+  )
+  context.log('location', (message) =>
+    message
+      .tag('info')
+      .append('Location:')
+      .append(answers.useCurrentFolder ? 'Current folder' : answers.folderName || 'current', 'cyan'),
+  )
+  context.log('cursor-rules', (message) =>
+    message
+      .tag('info')
+      .append('Cursor Rules:')
+      .append(answers.addCursorRules ? 'Yes' : 'No', 'cyan'),
+  )
 
   if (!skipConfirmation) {
     const confirm = await inquirer.prompt([
@@ -77,15 +90,19 @@ export const createInteractive = async ({ skipConfirmation }: CreateInteractiveA
     ])
 
     if (!confirm.proceed) {
-      console.log('\n❌ Project creation cancelled.')
+      context.log('project-creation-cancelled', (message) =>
+        message.tag('warning').append('Project creation cancelled.'),
+      )
       return
     }
   }
-  console.log('\n🛠️ Creating your Motia project...\n')
+
+  context.log('creating-project', (message) => message.tag('info').append('Creating your Motia project...'))
 
   await create({
     projectName: answers.useCurrentFolder ? '.' : answers.folderName || '.',
     template: answers.template,
     cursorEnabled: answers.addCursorRules,
+    context,
   })
 }

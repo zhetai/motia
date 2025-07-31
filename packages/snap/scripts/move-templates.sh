@@ -7,8 +7,8 @@ copy_templates() {
     # Create the destination directory if it doesn't exist
     mkdir -p "$dest_dir"
 
-    # Copy all .txt files while preserving the directory structure
-    find "$src_dir" -type f -name "*.txt" | while read -r file; do
+    # Copy all non folder files while preserving the directory structure
+    find "$src_dir" -type f | while read -r file; do
         # Get the relative path of the file
         rel_path="${file#$src_dir/}"
         # Create the destination directory for the file
@@ -17,7 +17,7 @@ copy_templates() {
         cp "$file" "$dest_dir/$rel_path"
     done
 
-    echo "All .txt files from $src_dir have been copied successfully to $dest_dir."
+    echo "All files from $src_dir have been copied successfully to $dest_dir."
 }
 
 # Define source and destination directories
