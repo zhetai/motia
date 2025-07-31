@@ -21,6 +21,7 @@ export const config: PlaywrightTestConfig = {
     actionTimeout: 15000,
     navigationTimeout: 30000,
     testIdAttribute: 'data-testid',
+    viewport: { width: 1920, height: 1080 },
   },
 
   testIgnore: '**/release/**',
