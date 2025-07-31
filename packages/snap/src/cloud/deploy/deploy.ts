@@ -1,10 +1,10 @@
 import fs from 'fs'
 import path from 'path'
+import { version as motiaVersion } from '../../version'
 import { StepsConfigFile } from '../build/builder'
 import { CliContext } from '../config-utils'
 import { VersionResult } from './types'
 import { parseEnvFile } from './utils/env-parser'
-import { version as motiaVersion } from '../../version'
 
 export class VersionManager {
   async deploy(
@@ -57,10 +57,9 @@ export class VersionManager {
       environment.id,
       motiaVersion,
       versionName,
-      configFile.steps,
-      configFile.streams,
+      configFile,
     )
-    const uploadResult = await context.versionService.uploadProject(versionId, distDir, configFile.steps)
+    const uploadResult = await context.versionService.uploadProject(versionId, distDir, configFile)
 
     if (!uploadResult.success) {
       context.log('deploy-failed', (message) =>
@@ -132,7 +131,7 @@ export class VersionManager {
       message
         .tag('info')
         .append('To use the new version you must promote it using ')
-        .append('motiacloud environment update --version <versionId>', 'dark')
+        .append('motia cloud environment update --version-name <versionName>', 'dark')
         .append(' or access the https://motia.cloud to promote it'),
     )
   }

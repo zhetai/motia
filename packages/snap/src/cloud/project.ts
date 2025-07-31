@@ -87,8 +87,8 @@ export const createProject: CliHandler = async (options, context): Promise<void>
       message
         .tag('info')
         .append('Next steps:')
-        .append('\n  1. Create a environment with: motiacloud environment create')
-        .append('\n     motiacloud environment create -n <environment-name> -k <api-key>'),
+        .append('\n  1. Create a environment with: motia cloud environment create')
+        .append('\n     motia cloud environment create -n <environment-name> -k <api-key>'),
     )
 
     context.log('api-key', (message) =>
