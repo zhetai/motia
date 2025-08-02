@@ -5,7 +5,7 @@ import { Stream } from '../types-stream'
 import { generateTypeFromSchema } from './generate-type-from-schema'
 import { generateTypesFromResponse } from './generate-types-from-response'
 import { mergeSchemas } from './merge-schemas'
-import { JsonSchema, JsonSchemaError } from './schema.types'
+import { JsonSchema } from './schema.types'
 
 type HandlersMap = Record<string, { type: string; generics: string[] }>
 type StreamsMap = Record<string, string>
@@ -56,13 +56,9 @@ export const generateTypesFromSteps = (steps: Step[], printer: Printer): Handler
           topics[topic] = generateTypeFromSchema(schema)
           topicsSchemas[topic] = schema
         } catch (error) {
-          if (error instanceof JsonSchemaError) {
-            printer.printInvalidSchema(topic, topicsSteps[topic])
-            // invalid schema, the topic should be ignored
-            topics[topic] = 'never'
-          } else {
-            throw error
-          }
+          printer.printInvalidSchema(topic, topicsSteps[topic])
+          // invalid schema, the topic should be ignored
+          topics[topic] = 'never'
         }
       }
     }
